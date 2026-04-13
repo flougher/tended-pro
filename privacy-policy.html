@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Tended Health Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:      #0C1B33;
+    --teal:      #0B7A6E;
+    --teal-mid:  #0E9E8E;
+    --teal-pale: #D1F2EF;
+    --off-white: #F5F8FC;
+    --border:    #D8E2EE;
+    --text:      #1C2B42;
+    --muted:     #526280;
+    --light:     #8097B3;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    background: var(--off-white);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: var(--navy);
+    padding: 48px 24px 40px;
+    text-align: center;
+  }
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(20,196,178,.15);
+    border: 1px solid rgba(20,196,178,.3);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #14C4B2;
+    margin-bottom: 18px;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.2rem;
+    color: white;
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+  .header h1 span { color: #14C4B2; font-style: italic; }
+  .header-sub {
+    color: rgba(255,255,255,.5);
+    font-size: .9rem;
+    font-weight: 300;
+  }
+  .header-meta {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    font-size: .78rem;
+    color: rgba(255,255,255,.35);
+  }
+  .header-meta span { display: flex; align-items: center; gap: 5px; }
+
+  /* ── Layout ── */
+  .wrapper {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ── Summary box ── */
+  .summary {
+    background: var(--teal-pale);
+    border: 1.5px solid var(--teal-mid);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 40px;
+  }
+  .summary-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--teal);
+    margin-bottom: 14px;
+  }
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 20px;
+  }
+  .summary-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: .86rem;
+    color: var(--navy);
+  }
+  .summary-item .icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom: 40px;
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(12,27,51,.05);
+  }
+  .section-header {
+    background: var(--navy);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-num {
+    width: 26px; height: 26px;
+    background: var(--teal-mid);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .72rem;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+  }
+  .section-body {
+    padding: 22px 24px;
+  }
+  .section-body p {
+    color: var(--muted);
+    font-size: .9rem;
+    margin-bottom: 12px;
+  }
+  .section-body p:last-child { margin-bottom: 0; }
+  .section-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+  }
+  .section-body ul li {
+    padding: 6px 0 6px 22px;
+    position: relative;
+    font-size: .88rem;
+    color: var(--muted);
+    border-bottom: 1px solid var(--off-white);
+  }
+  .section-body ul li:last-child { border-bottom: none; }
+  .section-body ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--teal-mid);
+    font-weight: 700;
+  }
+  .highlight-box {
+    background: var(--off-white);
+    border-left: 3px solid var(--teal-mid);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: .86rem;
+    color: var(--muted);
+  }
+  .highlight-box strong { color: var(--navy); }
+  .warning-box {
+    background: #FFF8ED;
+    border-left: 3px solid #C9963A;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: .86rem;
+    color: #7A5A20;
+  }
+
+  /* ── Contact ── */
+  .contact {
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 28px 28px;
+    text-align: center;
+    margin-top: 40px;
+  }
+  .contact h3 {
+    font-family: 'Playfair Display', serif;
+    color: white;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+  .contact p { color: rgba(255,255,255,.5); font-size: .86rem; margin-bottom: 14px; }
+  .contact a {
+    color: #14C4B2;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: .9rem;
+  }
+  .contact a:hover { text-decoration: underline; }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    font-size: .75rem;
+    color: var(--light);
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+  }
+  .footer a { color: var(--teal); text-decoration: none; }
+
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.6rem; }
+    .summary-grid { grid-template-columns: 1fr; }
+    .wrapper { padding: 28px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-badge">🔒 Privacy Policy</div>
+  <h1>Tended Health Pro<br><span>Privacy Policy</span></h1>
+  <div class="header-sub">Professional Caregiver Documentation Platform</div>
+  <div class="header-meta">
+    <span>📅 Effective: January 1, 2025</span>
+    <span>🔄 Last Updated: April 2025</span>
+    <span>📱 Version 4.0</span>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  <!-- Plain-language summary -->
+  <div class="summary">
+    <div class="summary-title">📋 Plain-Language Summary</div>
+    <div class="summary-grid">
+      <div class="summary-item"><span class="icon">✅</span><span>All data stays on <strong>your device only</strong></span></div>
+      <div class="summary-item"><span class="icon">✅</span><span>We <strong>never collect</strong> patient information</span></div>
+      <div class="summary-item"><span class="icon">✅</span><span>No accounts, no logins required</span></div>
+      <div class="summary-item"><span class="icon">✅</span><span>No ads, no data selling, ever</span></div>
+      <div class="summary-item"><span class="icon">✅</span><span>No internet required to use the app</span></div>
+      <div class="summary-item"><span class="icon">✅</span><span>You control your data completely</span></div>
+    </div>
+  </div>
+
+  <!-- 1. Introduction -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-title">Introduction</div>
+    </div>
+    <div class="section-body">
+      <p>Tended Health Pro ("the App," "we," "our") is a professional caregiver documentation tool developed for Certified Nursing Assistants (CNAs), Home Health Aides (HHAs), and other direct care workers. This Privacy Policy explains how the App handles information.</p>
+      <p>By downloading or using Tended Health Pro, you agree to the practices described in this policy. If you do not agree, please discontinue use of the App.</p>
+      <div class="highlight-box"><strong>Developer:</strong> Frank Lougher · Reno, Nevada, USA · Contact: see Section 10 below</div>
+    </div>
+  </div>
+
+  <!-- 2. Data Storage -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-title">How Your Data Is Stored</div>
+    </div>
+    <div class="section-body">
+      <p>Tended Health Pro is a <strong>local-first application</strong>. All data you enter — including patient records, medication logs, incident reports, care plans, and billing entries — is stored exclusively on your device using your device's local storage.</p>
+      <ul>
+        <li>No data is transmitted to any server or cloud service</li>
+        <li>No data is shared with the developer or any third party</li>
+        <li>No internet connection is required to use the App</li>
+        <li>Data persists on your device between sessions automatically</li>
+        <li>Data is removed when you uninstall the App or clear app data</li>
+      </ul>
+      <div class="warning-box">⚠️ <strong>Important:</strong> Because data is stored locally, it is not automatically backed up. We strongly recommend using the Export feature in Settings regularly to back up your data to a secure location.</div>
+    </div>
+  </div>
+
+  <!-- 3. Patient Information -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-title">Patient & Health Information</div>
+    </div>
+    <div class="section-body">
+      <p>Tended Health Pro is designed to help caregivers document patient care. The App may be used to record Protected Health Information (PHI) as defined by HIPAA, including:</p>
+      <ul>
+        <li>Patient names, dates of birth, and room numbers</li>
+        <li>Medical conditions, allergies, and medications</li>
+        <li>Incident reports, wound assessments, and behavior logs</li>
+        <li>Care plans, dietary records, and toileting logs</li>
+        <li>Family contact information</li>
+      </ul>
+      <p>All such information is stored <strong>solely on your device</strong> and is never transmitted to, accessed by, or visible to the App developer or any third party. You are solely responsible for the security of your device and compliance with your employer's HIPAA policies.</p>
+      <div class="highlight-box"><strong>HIPAA Notice:</strong> Tended Health Pro is a device-based documentation tool. Caregivers are responsible for ensuring their device meets their agency's security requirements and that they are authorized to record the information they enter.</div>
+    </div>
+  </div>
+
+  <!-- 4. Information We Collect -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-title">Information We Collect</div>
+    </div>
+    <div class="section-body">
+      <p>Tended Health Pro collects <strong>no personal information</strong> from users. Specifically, we do not collect:</p>
+      <ul>
+        <li>Names, email addresses, or contact information</li>
+        <li>Location data or GPS coordinates</li>
+        <li>Device identifiers or advertising IDs</li>
+        <li>Usage analytics or app behavior data</li>
+        <li>Crash reports or diagnostic data</li>
+        <li>Any content you enter into the App</li>
+      </ul>
+      <p>The only data exchange that occurs is through Google Play's standard purchase verification when you purchase the app, which is handled entirely by Google and subject to Google's own Privacy Policy.</p>
+    </div>
+  </div>
+
+  <!-- 5. Purchases & Billing -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-title">In-App Purchases & Billing</div>
+    </div>
+    <div class="section-body">
+      <p>Tended Health Pro offers a one-time purchase to unlock full access ($14.99 USD) after a 10-day free trial. All purchase transactions are processed exclusively through <strong>Google Play Billing</strong>.</p>
+      <ul>
+        <li>We do not collect, store, or process your payment information</li>
+        <li>All payment data is handled by Google Play — see Google's Privacy Policy</li>
+        <li>Purchase status is verified through Google Play and stored locally on your device</li>
+        <li>Refund requests must be submitted through Google Play</li>
+      </ul>
+      <div class="highlight-box"><strong>Restore Purchase:</strong> If you reinstall the App, use the "Restore Purchase" option in Settings to re-verify your purchase through Google Play.</div>
+    </div>
+  </div>
+
+  <!-- 6. Permissions -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div class="section-title">Device Permissions</div>
+    </div>
+    <div class="section-body">
+      <p>Tended Health Pro requests only the permissions necessary for its core functionality:</p>
+      <ul>
+        <li><strong>Microphone</strong> — Used only for the Voice to Text feature when you explicitly tap the microphone button. Audio is processed on-device and is never recorded or transmitted.</li>
+        <li><strong>Internet access</strong> — Required for Google Play purchase verification and to load the app font resources on first launch only.</li>
+      </ul>
+      <p>The App does not request access to your camera, contacts, location, files, photos, or any other device resources.</p>
+    </div>
+  </div>
+
+  <!-- 7. Third-Party Services -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <div class="section-title">Third-Party Services</div>
+    </div>
+    <div class="section-body">
+      <p>Tended Health Pro uses a minimal set of third-party services:</p>
+      <ul>
+        <li><strong>Google Play Billing</strong> — For processing the one-time purchase. Subject to Google's Privacy Policy at policies.google.com/privacy</li>
+        <li><strong>Google Fonts</strong> — IBM Plex Sans and Playfair Display fonts are loaded from Google Fonts on first use. This involves a standard web request to Google's servers. Subject to Google's Privacy Policy.</li>
+      </ul>
+      <p>We do not use advertising networks, analytics services, crash reporting tools, or any other third-party SDKs.</p>
+    </div>
+  </div>
+
+  <!-- 8. Children's Privacy -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <div class="section-title">Children's Privacy</div>
+    </div>
+    <div class="section-body">
+      <p>Tended Health Pro is designed exclusively for use by professional adult caregivers (age 18+). The App is not directed at children and we do not knowingly collect any information from children under the age of 13.</p>
+      <p>If you believe a child has used this App and provided personal information, please contact us immediately at the address in Section 10 and we will take appropriate steps.</p>
+    </div>
+  </div>
+
+  <!-- 9. Your Rights & Data Control -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <div class="section-title">Your Rights & Data Control</div>
+    </div>
+    <div class="section-body">
+      <p>Because all data is stored locally on your device, you have complete control:</p>
+      <ul>
+        <li><strong>Access</strong> — All your data is visible within the App at all times</li>
+        <li><strong>Export</strong> — Use Settings → Export to download all your data as a JSON file</li>
+        <li><strong>Delete</strong> — Clear all data by clearing the App's storage in your device settings, or by uninstalling the App</li>
+        <li><strong>Portability</strong> — Your exported JSON file can be imported into any future version of Tended Health Pro</li>
+      </ul>
+      <p>Since we collect no personal data on our servers, there is no data to request deletion of from us directly.</p>
+    </div>
+  </div>
+
+  <!-- 10. Changes & Contact -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <div class="section-title">Changes to This Policy</div>
+    </div>
+    <div class="section-body">
+      <p>We may update this Privacy Policy from time to time. When we do, we will update the "Last Updated" date at the top of this page. Continued use of the App after any changes constitutes acceptance of the updated policy.</p>
+      <p>Material changes that affect how data is handled will be communicated through an in-app notice.</p>
+    </div>
+  </div>
+
+  <!-- Contact -->
+  <div class="contact">
+    <h3>Questions or Concerns?</h3>
+    <p>If you have any questions about this Privacy Policy or how Tended Health Pro handles data, please contact us:</p>
+    <a href="mailto:privacy@tendedpro.app">privacy@tendedpro.app</a>
+    <p style="margin-top:12px;font-size:.78rem">Tended Health Pro · Developed by Frank Lougher · Reno, Nevada, USA</p>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>© 2025 Tended Health Pro · <a href="index.html">← Back to App</a> · This policy is effective as of January 1, 2025</p>
+</div>
+
+</body>
+</html>
