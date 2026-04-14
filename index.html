@@ -208,6 +208,7 @@ body {
   background: var(--off-white);
   -webkit-overflow-scrolling: touch;
   min-height: 0;
+  height: 0;
 }
 .section { display: none; }
 .section.active { display: block; }
@@ -674,16 +675,17 @@ body {
   .sidebar { display: none; }
   .bnav { display: flex; }
   .shell { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-  .body-area { flex: 1; overflow: hidden; flex-direction: column; min-height: 0; }
+  .body-area { flex: 1; overflow: hidden; flex-direction: column; min-height: 0; display: flex; }
   .content { 
     flex: 1;
-    overflow-y: scroll;
+    overflow-y: scroll !important;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     padding: 16px 14px calc(90px + env(safe-area-inset-bottom,0px));
-    height: 100%;
     min-height: 0;
-    position: relative;
+    height: 0;
+    display: block;
+    touch-action: pan-y;
   }
   .section { 
     min-height: 100%;
