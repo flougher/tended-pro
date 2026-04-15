@@ -3451,6 +3451,9 @@ function exportAgencySummary(){
     const incs    = (D.incidents||[]).filter(i => i.dt?.startsWith(today) && i.patientId == p.id);
     const pain    = (D.pain||[]).filter(e => e.date === today && e.patientId == p.id);
     const wounds  = (D.wounds||[]).filter(w => w.patientId == p.id && w.status !== 'Healed');
+    const intake  = (D.intake||[]).filter(e => e.date === today && e.patientId == p.id);
+    const behaviors = (D.behaviors||[]).filter(b => b.dt?.startsWith(today) && b.patientId == p.id);
+    const toileting = (D.toileting||[]).filter(t => t.date === today && t.patientId == p.id);
     const fallLabel = p.fallRisk === 'high' ? '🔴 HIGH' : p.fallRisk === 'medium' ? '🟡 MEDIUM' : '🟢 LOW';
 
     // Meds table
@@ -3540,7 +3543,60 @@ function exportAgencySummary(){
         <tbody>${rows}</tbody></table>`;
     }
 
-    if(!ptMeds.length && !vitals.length && !incs.length && !pain.length && !wounds.length) return;
+    if(!ptMeds.length && !vitals.length && !incs.length && !pain.length && !wounds.length && !intake.length && !behaviors.length && !toileting.length) return;
+
+    // Diet & Fluid Intake table
+    let intakeHTML = '';
+    if(intake.length){
+      const totalFluid = intake.reduce((s,e) => s+(e.fluid||0), 0);
+      const meals = intake.filter(e => ['Breakfast','Lunch','Dinner','Snack'].includes(e.type));
+      const avgPct = meals.filter(e=>e.pct!=='').length
+        ? Math.round(meals.filter(e=>e.pct!=='').reduce((s,e)=>s+parseInt(e.pct||0),0)/meals.filter(e=>e.pct!=='').length)
+        : null;
+      const rows = intake.map(e => `<tr>
+        <td>${fmtTime(e.time||'')}</td>
+        <td>${e.type}</td>
+        <td>${e.pct!==''?e.pct+'% eaten':'—'}</td>
+        <td>${e.fluid?e.fluid+' ml':'—'}</td>
+        <td>${e.notes||'—'}</td>
+      </tr>`).join('');
+      intakeHTML = `<h4>Diet &amp; Fluid Intake${avgPct!==null?' — Avg meal: '+avgPct+'%':''} | Total fluid: ${totalFluid} ml</h4>
+        <table><thead><tr><th>Time</th><th>Type</th><th>Meal %</th><th>Fluid</th><th>Notes</th></tr></thead>
+        <tbody>${rows}</tbody></table>`;
+    }
+
+    // Behaviors table
+    let behaviorsHTML = '';
+    if(behaviors.length){
+      const rows = behaviors.map(b => {
+        const dt = new Date(b.dt);
+        return `<tr>
+          <td>${dt.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</td>
+          <td>${b.antecedent||'—'}</td>
+          <td style="font-weight:600">${b.behavior||'—'}</td>
+          <td>${b.consequence||'—'}</td>
+          <td>${b.intervention||'—'}</td>
+        </tr>`;
+      }).join('');
+      behaviorsHTML = `<h4>Behavior Log (ABC)</h4>
+        <table><thead><tr><th>Time</th><th>Antecedent</th><th>Behavior</th><th>Consequence</th><th>Intervention</th></tr></thead>
+        <tbody>${rows}</tbody></table>`;
+    }
+
+    // Toileting table
+    let toiletingHTML = '';
+    if(toileting.length){
+      const rows = toileting.map(t => `<tr>
+        <td>${fmtTime(t.time||'')}</td>
+        <td>${t.type||'—'}</td>
+        <td>${t.continent||'—'}</td>
+        <td>${t.assist||'—'}</td>
+        <td>${t.notes||'—'}</td>
+      </tr>`).join('');
+      toiletingHTML = `<h4>Toileting Log</h4>
+        <table><thead><tr><th>Time</th><th>Type</th><th>Continence</th><th>Assistance</th><th>Notes</th></tr></thead>
+        <tbody>${rows}</tbody></table>`;
+    }
 
     patientSections += `
       <div class="patient-section">
@@ -3554,7 +3610,7 @@ function exportAgencySummary(){
           <div class="fall-risk">Fall Risk: ${fallLabel}</div>
         </div>
         ${p.allergies?`<div class="allergies">⚠️ Allergies: ${p.allergies}</div>`:''}
-        ${medsHTML}${vitalsHTML}${incsHTML}${painHTML}${woundsHTML}
+        ${medsHTML}${vitalsHTML}${incsHTML}${painHTML}${intakeHTML}${toiletingHTML}${behaviorsHTML}${woundsHTML}
       </div>`;
   });
 
