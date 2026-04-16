@@ -1,8 +1,8 @@
 {
   "id": "com.flougher.tendedpro",
-  "name": "Tended Health Pro",
+  "name": "Tended Health Pro: CNA Shift & MAR Log",
   "short_name": "Tended Health Pro",
-  "description": "Professional shift documentation for CNAs and home health aides. MAR, incidents, vitals, care plans, and billing \u2014 offline PWA.",
+  "description": "CNA & HHA shift documentation: MAR, incident log, vitals, care notes, wound tracker & billing. Works offline. No login required.",
   "start_url": "/tended-pro/",
   "scope": "/tended-pro/",
   "display": "standalone",
