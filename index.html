@@ -1352,6 +1352,25 @@ body {
   <!-- Trigger Reminder + Sensory Profile -->
   <div id="dash-trigger-reminder" style="display:none;margin-bottom:20px"></div>
 
+  <!-- Daily Summary Export — prominent dashboard card -->
+  <div class="card" style="margin-bottom:20px;border:2px solid var(--teal);background:linear-gradient(135deg,#F0FDFB,white)">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:44px;height:44px;background:var(--teal);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">📋</div>
+        <div>
+          <div style="font-weight:700;font-size:.95rem;color:var(--navy)">Daily Shift Summary</div>
+          <div style="font-size:.78rem;color:var(--slate-mid);margin-top:2px">Export a complete PDF report — medications, vitals, incidents, meals, behaviors & more</div>
+        </div>
+      </div>
+      <button class="btn btn-teal" onclick="exportAgencySummary()" style="white-space:nowrap;flex-shrink:0">
+        📋 Export PDF Summary
+      </button>
+    </div>
+    <div style="margin-top:10px;font-size:.7rem;color:var(--slate-light);padding-top:8px;border-top:1px solid var(--border)">
+      ⚕️ Contains PHI — share only through your agency's approved secure channel
+    </div>
+  </div>
+
   <!-- How the app works -->
   <div class="card">
     <div class="card-title">📖 How Tended Health Pro Works</div>
@@ -6699,15 +6718,15 @@ function buildSampleData(){
   );
   const marNotes = { [todayISO]: 'Memantine refused — resident stated "I don\'t need that one." Supervisor notified.' };
   const incidents = [
-    { id:3001, severity:'moderate', type:'Near Fall', dt:dtAt(0,'10:22'),
+    { id:3001, patientId:pid, severity:'moderate', type:'Near Fall', dt:dtAt(0,'10:22'),
       desc:'Resident found gripping grab bar — appeared unsteady. BG: 68 mg/dL (hypoglycemic).',
       action:'OJ given. BG recheck = 94. Physician notified. Fall risk reassessment done.',
       reported:'Dr. Marks, Supervisor RN Stanton, daughter Linda Flores' },
-    { id:3002, severity:'minor', type:'Behavioral — Agitation', dt:dtAt(-1,'17:45'),
+    { id:3002, patientId:pid, severity:'minor', type:'Behavioral — Agitation', dt:dtAt(-1,'17:45'),
       desc:'Sundowning episode. Asked to "go home." Verbal agitation, no aggression.',
       action:'Redirected with family photos and music. Resolved in 20 min.',
       reported:'Documented per protocol.' },
-    { id:3003, severity:'critical', type:'Skin Integrity — Wound Worsening', dt:dtAt(-3,'09:00'),
+    { id:3003, patientId:pid, severity:'critical', type:'Skin Integrity — Wound Worsening', dt:dtAt(-3,'09:00'),
       desc:'Sacral pressure ulcer progressed from Stage 2 to Stage 3.',
       action:'Wound care per protocol. Physician and family notified immediately.',
       reported:'Dr. Marks, Wound Care Nurse, daughter Linda, DON' }
@@ -6741,10 +6760,10 @@ function buildSampleData(){
       status:'Unchanged', updatedAt:new Date().toISOString(), notes:'Occurred during morning transfer.' }
   ];
   const intake = [
-    { id:5001, date:todayISO, time:'07:45', type:'Breakfast',  pct:90,  fluid:180, notes:'Good appetite. Oatmeal, egg, OJ (thickened).' },
-    { id:5002, date:todayISO, time:'10:00', type:'Snack',      pct:100, fluid:90,  notes:'Applesauce and crackers.' },
-    { id:5003, date:todayISO, time:'12:15', type:'Lunch',      pct:70,  fluid:150, notes:'Fatigued. Chicken soup, mashed potato, pudding.' },
-    { id:5004, date:todayISO, time:'14:30', type:'Snack',      pct:100, fluid:60,  notes:'Yogurt.' },
+    { id:5001, patientId:pid, date:todayISO, time:'07:45', type:'Breakfast',  pct:90,  fluid:180, notes:'Good appetite. Oatmeal, egg, OJ (thickened).' },
+    { id:5002, patientId:pid, date:todayISO, time:'10:00', type:'Snack',      pct:100, fluid:90,  notes:'Applesauce and crackers.' },
+    { id:5003, patientId:pid, date:todayISO, time:'12:15', type:'Lunch',      pct:70,  fluid:150, notes:'Fatigued. Chicken soup, mashed potato, pudding.' },
+    { id:5004, patientId:pid, date:todayISO, time:'14:30', type:'Snack',      pct:100, fluid:60,  notes:'Yogurt.' },
     { id:5005, date:dStr(-1), time:'07:30', type:'Breakfast',  pct:85,  fluid:160, notes:'' },
     { id:5006, date:dStr(-1), time:'18:00', type:'Dinner',     pct:65,  fluid:120, notes:'Sundowning affected appetite.' }
   ];
@@ -6800,22 +6819,22 @@ function buildSampleData(){
       deescalation:'Introduce yourself each time. Point to familiar objects. Call Linda if distress persists.', category:'Routine disruption' }
   ];
   const behaviors = [
-    { id:9001, dt:dtAt(0,'10:20'), severity:'moderate', type:'Refusal of care',
+    { id:9001, patientId:pid, dt:dtAt(0,'10:20'), severity:'moderate', type:'Refusal of care',
       antecedent:'BG low (68). Caregiver initiated morning care.',
       behavior:'Refused care. Stated "leave me alone." Gentle hand push. No injury.',
       consequence:'Gave space. Offered OJ. Reapproached after 15 min. Accepted care.',
       duration:'10-15 minutes' },
-    { id:9002, dt:dtAt(-1,'17:45'), severity:'mild', type:'Verbal agitation',
+    { id:9002, patientId:pid, dt:dtAt(-1,'17:45'), severity:'mild', type:'Verbal agitation',
       antecedent:'Sundowning. Saw unfamiliar reflection in mirror.',
       behavior:'Stated "someone in my room." Pacing. Mildly tearful. No aggression.',
       consequence:'Redirected mirror. Family photos. Chopin. De-escalated in 20 min.',
       duration:'15-20 minutes' }
   ];
   const toileting = [
-    { id:10001, date:todayISO,  time:'07:15', type:'void', amount:'Large',    continent:'continent',   product:'', notes:'Morning void.' },
-    { id:10002, date:todayISO,  time:'09:45', type:'bm',   amount:'Small',    continent:'continent',   product:'', notes:'Small formed stool.' },
-    { id:10003, date:todayISO,  time:'11:30', type:'void', amount:'Large',    continent:'continent',   product:'', notes:'' },
-    { id:10004, date:todayISO,  time:'13:15', type:'void', amount:'Moderate', continent:'incontinent', product:'Brief', notes:'Brief saturated. Changed promptly.' },
+    { id:10001, patientId:pid, date:todayISO,  time:'07:15', type:'void', amount:'Large',    continent:'continent',   product:'', notes:'Morning void.' },
+    { id:10002, patientId:pid, date:todayISO,  time:'09:45', type:'bm',   amount:'Small',    continent:'continent',   product:'', notes:'Small formed stool.' },
+    { id:10003, patientId:pid, date:todayISO,  time:'11:30', type:'void', amount:'Large',    continent:'continent',   product:'', notes:'' },
+    { id:10004, patientId:pid, date:todayISO,  time:'13:15', type:'void', amount:'Moderate', continent:'incontinent', product:'Brief', notes:'Brief saturated. Changed promptly.' },
     { id:10005, date:dStr(-1),  time:'08:00', type:'void', amount:'Large',    continent:'continent',   product:'', notes:'' },
     { id:10006, date:dStr(-1),  time:'14:00', type:'bm',   amount:'Moderate', continent:'continent',   product:'', notes:'Normal stool.' }
   ];
