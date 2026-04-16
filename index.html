@@ -2321,7 +2321,9 @@ body {
         <input type="month" id="report-month" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
       </div>
       <div class="fg"><label>Patient Name (for header)</label>
-        <input id="report-patient" placeholder="Patient full name">
+        <select id="report-patient" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%" onchange="renderReport()">
+          <option value="">— Select patient —</option>
+        </select>
       </div>
     </div>
     <div class="form-row">
@@ -6514,6 +6516,16 @@ function renderReport(){
   if(rp && !rp.value && D.settings.agency) rp.value = D.settings.agency;
   const rc = document.getElementById('report-caregiver');
   if(rc && !rc.value && D.settings.name) rc.value = D.settings.name;
+  // Populate patient dropdown
+  const rpat = document.getElementById('report-patient');
+  if(rpat && rpat.tagName === 'SELECT'){
+    const currentVal = rpat.value;
+    rpat.innerHTML = '<option value="">— Select patient —</option>' +
+      (D.patients||[]).map(p => `<option value="${p.id}">${p.fname} ${p.lname}</option>`).join('');
+    if(currentVal) rpat.value = currentVal;
+    // Auto-select if only one patient
+    if(!rpat.value && D.patients.length >= 1) rpat.value = D.patients[0].id;
+  }
   const monthEl = document.getElementById('report-month');
   if(!monthEl?.value) return;
   const [year, month] = monthEl.value.split('-').map(Number);
@@ -6521,9 +6533,11 @@ function renderReport(){
   const monthEnd   = new Date(year, month, 0).toISOString().split('T')[0];
   const inMonth    = dt => dt && dt >= monthStart && dt <= monthEnd;
 
-  const patient  = document.getElementById('report-patient')?.value.trim()  || D.settings.name || 'Patient';
-  const provider = document.getElementById('report-provider')?.value.trim() || D.settings.agency || '';
-  const caregiver= document.getElementById('report-caregiver')?.value.trim()|| D.settings.name || '';
+  const patientId  = document.getElementById('report-patient')?.value || '';
+  const patientObj = (D.patients||[]).find(p => p.id == patientId);
+  const patient    = patientObj ? patientObj.fname + ' ' + patientObj.lname : D.settings.name || 'Patient';
+  const provider   = document.getElementById('report-provider')?.value.trim() || D.settings.agency || '';
+  const caregiver  = document.getElementById('report-caregiver')?.value.trim()|| D.settings.name || '';
   const monthName= new Date(year, month-1, 1).toLocaleDateString('en-US',{month:'long',year:'numeric'});
 
   const check = id => document.getElementById(id)?.checked;
