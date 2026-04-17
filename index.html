@@ -2891,6 +2891,37 @@ function renderDashboard(){
     ? D.settings.agency + (D.settings.role ? ' · ' + D.settings.role : '')
     : 'Professional caregiver dashboard';
 
+  // ── Empty state — show getting started guide when no patients ──
+  const emptyStateId = 'dash-empty-state';
+  const existingEmpty = document.getElementById(emptyStateId);
+  if(existingEmpty) existingEmpty.remove();
+
+  if(!D.patients.length){
+    const emptyCard = document.createElement('div');
+    emptyCard.id = emptyStateId;
+    emptyCard.style.cssText = 'margin-bottom:20px';
+    emptyCard.innerHTML = `
+      <div style="background:linear-gradient(135deg,#F0FDFB,white);border:2px solid var(--teal);border-radius:var(--r-lg);padding:24px 22px;text-align:center">
+        <div style="font-size:2.5rem;margin-bottom:12px">👋</div>
+        <div style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:8px">Welcome — let's get you set up</div>
+        <div style="font-size:.86rem;color:var(--slate-mid);line-height:1.7;margin-bottom:20px">Start by adding a patient to your roster. Once added, you can log medications, vitals, incidents, and more for each shift.</div>
+        <div style="display:flex;flex-direction:column;gap:10px;max-width:320px;margin:0 auto">
+          <button onclick="navTo('patients')" class="btn btn-teal" style="justify-content:center;font-size:.92rem">
+            👤 Step 1 — Add Your First Patient
+          </button>
+          <button onclick="navTo('mar')" class="btn btn-secondary" style="justify-content:center;font-size:.88rem">
+            💊 Step 2 — Set Up Medications (MAR)
+          </button>
+          <button onclick="navTo('settings')" class="btn btn-secondary" style="justify-content:center;font-size:.88rem">
+            ⚙️ Step 3 — Complete Caregiver Profile
+          </button>
+        </div>
+        <div style="margin-top:16px;font-size:.74rem;color:var(--slate-light)">Or <span style="color:var(--teal);cursor:pointer;text-decoration:underline" onclick="confirmLoadDemo()">load the sample patient</span> to explore all features first</div>
+      </div>`;
+    const banner = document.getElementById('dash-shift-banner');
+    if(banner) banner.insertAdjacentElement('afterend', emptyCard);
+  }
+
   // ── Stats ──────────────────────────────────────────────────
   document.getElementById('ds-patients').textContent = D.patients.length;
 
@@ -3162,7 +3193,7 @@ function renderPatients(){
     : 'Manage patient profiles and care information';
 
   if(!D.patients.length){
-    list.innerHTML = '<div class="empty"><div class="empty-icon">👤</div><div class="empty-text">No patients added yet.<br>Tap + Add Patient to create your first patient profile.</div></div>';
+    list.innerHTML = '<div class="empty"><div class="empty-icon">👤</div><div class="empty-text">No patients added yet.<br><br>Tap <strong style="color:var(--teal)">+ Add Patient</strong> above to create your first patient profile.<br><br><span style="font-size:.78rem;color:var(--slate-light)">Add name, room number, allergies, emergency contacts, and care notes.</span></div></div>';
     return;
   }
 
@@ -3798,7 +3829,8 @@ function renderMAR(){
     table.innerHTML = `<div class="card" style="text-align:center;padding:28px 20px">
       <div style="font-size:2rem;margin-bottom:12px">💊</div>
       <div style="font-weight:700;font-size:.95rem;color:var(--navy);margin-bottom:6px">No medications added yet</div>
-      <div style="font-size:.84rem;color:var(--slate-light);margin-bottom:18px">Add medications to start logging the MAR</div>
+      <div style="font-size:.84rem;color:var(--slate-light);margin-bottom:6px">Add medications to start logging the MAR for your patients.</div>
+      <div style="font-size:.78rem;color:var(--slate-light);margin-bottom:18px">Each medication can be assigned to a specific patient or shared across all patients.</div>
       <button class="btn btn-teal" onclick="openModal('med-modal')" style="margin:0 auto">+ Add First Medication</button>
     </div>`;
     return;
