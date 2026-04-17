@@ -1125,7 +1125,6 @@ body {
   <div>
     <div class="topbar-brand">Tended Health Pro</div>
   </div>
-  <span class="topbar-phase">All Phases ✓</span>
   <span class="premium-badge" id="premium-badge">⭐ Pro</span>
   <div class="topbar-right">
     <span class="topbar-user" id="topbar-user"></span>
@@ -1158,14 +1157,14 @@ body {
     <button class="nav-btn active" onclick="navTo('dashboard',this)"><span class="ni">🏠</span> Dashboard</button>
   </div>
   <div class="nav-group">
-    <div class="nav-label">Phase 1 — Core Tools</div>
+    <div class="nav-label">Patient Care</div>
     <button class="nav-btn" onclick="navTo('patients',this)"><span class="ni">👤</span> Patients <span class="nav-badge" id="nb-patients"></span></button>
     <button class="nav-btn" onclick="navTo('mar',this)"><span class="ni">💊</span> MAR</button>
     <button class="nav-btn" onclick="navTo('incidents',this)"><span class="ni">📋</span> Incidents <span class="nav-badge" id="nb-incidents"></span></button>
     <button class="nav-btn" onclick="navTo('handoff',this)"><span class="ni">🔄</span> Shift Handoff</button>
   </div>
   <div class="nav-group">
-    <div class="nav-label">Phase 2 — Documentation</div>
+    <div class="nav-label">Documentation</div>
     <button class="nav-btn" onclick="navTo('careplan',this)"><span class="ni">📌</span> Care Plan</button>
     <button class="nav-btn" onclick="navTo('wounds',this)"><span class="ni">🩹</span> Wound Tracker</button>
     <button class="nav-btn" onclick="navTo('intake',this)"><span class="ni">🍽️</span> Diet & Fluids</button>
@@ -1173,7 +1172,7 @@ body {
     <button class="nav-btn" onclick="navTo('pain',this)"><span class="ni">😣</span> Pain Scale <span class="nav-badge" id="nb-pain"></span></button>
   </div>
   <div class="nav-group">
-    <div class="nav-label">Phase 3 — Behavioral</div>
+    <div class="nav-label">Behavioral & Clinical</div>
     <button class="nav-btn" onclick="navTo('routines',this)"><span class="ni">📅</span> Routines</button>
     <button class="nav-btn" onclick="navTo('triggers',this)"><span class="ni">⚡</span> Triggers</button>
     <button class="nav-btn" onclick="navTo('behaviors',this)"><span class="ni">🧠</span> ABC Behavior</button>
@@ -1182,7 +1181,7 @@ body {
     <button class="nav-btn" onclick="navTo('vitals',this)"><span class="ni">🩺</span> Vital Signs <span class="nav-badge" id="nb-vitals"></span></button>
   </div>
   <div class="nav-group">
-    <div class="nav-label">Phase 4 — Professional</div>
+    <div class="nav-label">Professional Tools</div>
     <button class="nav-btn" onclick="navTo('voice',this)"><span class="ni">🎤</span> Voice to Text</button>
     <button class="nav-btn" onclick="navTo('creds',this)"><span class="ni">🎓</span> Credentials</button>
     <button class="nav-btn" onclick="navTo('billing',this)"><span class="ni">💳</span> Billing</button>
@@ -1678,10 +1677,13 @@ body {
     <div class="card-title">ℹ️ About Tended Health Pro</div>
     <div style="font-size:.86rem;color:var(--slate-mid);line-height:2">
       <div><strong style="color:var(--navy)">Version:</strong> 4.0.0</div>
-      <div><strong style="color:var(--navy)">Phase 1 — Core Tools:</strong> Patient Roster, MAR, Incidents, Shift Handoff</div>
-      <div><strong style="color:var(--navy)">Phase 2 — Documentation:</strong> Care Plan, Wound Tracker, Diet & Fluids, Family Comms</div>
-      <div><strong style="color:var(--navy)">Phase 3 — Behavioral:</strong> Routines, Triggers, ABC Behavior, Toileting, Weekly Trends</div>
-      <div style="margin-top:8px;font-size:.8rem;color:var(--slate-light)">✅ Phase 4 — Professional: Voice to Text · Credentials · Billing · Monthly Report</div>
+      <div style="font-size:.84rem;color:var(--slate-mid);line-height:1.9">
+        <div>👤 <strong style="color:var(--navy)">Patient Care:</strong> Patient Roster · MAR · Incidents · Shift Handoff</div>
+        <div>📋 <strong style="color:var(--navy)">Documentation:</strong> Care Plan · Wound Tracker · Diet &amp; Fluids · Family Comms · Pain Scale</div>
+        <div>🧠 <strong style="color:var(--navy)">Behavioral &amp; Clinical:</strong> Routines · Triggers · ABC Behavior · Toileting · Vital Signs · Weekly Trends</div>
+        <div>🎓 <strong style="color:var(--navy)">Professional Tools:</strong> Voice to Text · Credentials · Billing · Monthly Report</div>
+        <div>⚠️ <strong style="color:var(--navy)">Safety:</strong> FDA Black Box Warnings for 90+ medications</div>
+      </div>
     </div>
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
       <a href="https://flougher.github.io/tended-pro/privacy-policy.html"
