@@ -1,9 +1,10 @@
 [{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "com.flougher.tendedpro",
-        "sha256_cert_fingerprints": ["2E:F3:5B:B2:D8:C0:6C:E9:4D:9B:DA:94:9D:73:66:CF:6D:A9:AB:0D:C9:A0:1A:DF:5D:89:32:BD:5A:90:9A:16"]
-      }
-    }]
-
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.flougher.tendedpro",
+    "sha256_cert_fingerprints": [
+      "37:09:A0:52:82:0D:6F:24:85:19:0C:14:C1:96:8D:7F:E1:EE:B0:BF:28:74:74:66:73:82:C0:F0:32:33:65:EA"
+    ]
+  }
+}]
