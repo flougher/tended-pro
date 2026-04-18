@@ -7312,7 +7312,11 @@ function loadSamplePatient(){
   localStorage.setItem('tendedPro_welcomed', '1');
   const sample = buildSampleData();
   D = Object.assign(D, sample);
-  _sdShowAll = true; // Show all sundowning entries after loading sample
+  // Ensure memory care arrays are set
+  if(!D.sundowning || !D.sundowning.length) D.sundowning = sample.sundowning;
+  if(!D.wandering  || !D.wandering.length)  D.wandering  = sample.wandering;
+  if(!D.memorycare || !D.memorycare.length) D.memorycare = sample.memorycare;
+  _sdShowAll = true;
   save();
   updateTopbar(); updateTopbarUser(); renderDashboard();
   toast('✅ Sample patient Margaret Thompson loaded!', 'var(--given)');
@@ -7342,10 +7346,14 @@ function confirmLoadDemo(){
   D.routines.morning   = [...sample.routines.morning,   ...D.routines.morning];
   D.routines.afternoon = [...sample.routines.afternoon, ...D.routines.afternoon];
   D.routines.evening   = [...sample.routines.evening,   ...D.routines.evening];
-  D.sundowning = [...(sample.sundowning||[]), ...(D.sundowning||[])];
-  D.wandering  = [...(sample.wandering||[]),  ...(D.wandering||[])];
-  D.memorycare = [...(sample.memorycare||[]), ...(D.memorycare||[])];
-  _sdShowAll = true; // Show all sundowning entries after loading demo
+  // Always add memory care sample data — deduplicate by ID
+  const existingSD  = new Set((D.sundowning||[]).map(x=>x.id));
+  const existingWD  = new Set((D.wandering||[]).map(x=>x.id));
+  const existingMC  = new Set((D.memorycare||[]).map(x=>x.id));
+  (sample.sundowning||[]).forEach(e => { if(!existingSD.has(e.id)) D.sundowning.push(e); });
+  (sample.wandering||[]).forEach(e  => { if(!existingWD.has(e.id)) D.wandering.push(e); });
+  (sample.memorycare||[]).forEach(e => { if(!existingMC.has(e.id)) D.memorycare.push(e); });
+  _sdShowAll = true;
   const sdAllBtn = document.getElementById('sd-all-btn');
   if(sdAllBtn) sdAllBtn.textContent = '📅 Show by Date';
   if(!D.careplan || !D.careplan.pid) D.careplan = sample.careplan;
