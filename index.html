@@ -7978,6 +7978,13 @@ function stopShiftTimer(){
 function initSundowning(){
   const dateEl = document.getElementById('sundowning-date');
   if(dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+  // Auto show-all if data exists across multiple dates
+  const dates = [...new Set((D.sundowning||[]).map(e => e.date))];
+  if(dates.length > 1 && !_sdShowAll){
+    _sdShowAll = true;
+    const btn = document.getElementById('sd-all-btn');
+    if(btn) btn.textContent = '📅 Show by Date';
+  }
   renderSundowning();
 }
 
