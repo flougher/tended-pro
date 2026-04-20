@@ -3222,6 +3222,35 @@ function renderDashboard(){
       done:  billedToday,
       sub:   billedToday ? 'Visit logged for billing ✓' : 'Remember to log your hours',
       nav:   'billing', icon: '💳'
+    },
+    {
+      label: 'Memory care notes reviewed',
+      done:  (D.memorycare||[]).length > 0,
+      sub:   (D.memorycare||[]).length > 0
+           ? `${(D.memorycare||[]).length} note${(D.memorycare||[]).length>1?'s':''} on file — review before shift`
+           : 'No memory care notes yet — tap to add',
+      nav:   'memorycare', icon: '💬'
+    },
+    {
+      label: 'Sundowning & wandering risk checked',
+      done:  (D.sundowning||[]).filter(e => e.date === today).length > 0 ||
+             (D.wandering||[]).filter(e => e.date === today).length > 0,
+      sub:   (() => {
+               const sdToday = (D.sundowning||[]).filter(e => e.date === today).length;
+               const wdToday = (D.wandering||[]).filter(e => e.date === today).length;
+               if(sdToday > 0 || wdToday > 0) return `${sdToday+wdToday} memory care event${sdToday+wdToday>1?'s':''} logged today`;
+               const recentSD = (D.sundowning||[]).length;
+               return recentSD > 0 ? `${recentSD} prior episode${recentSD>1?'s':''} on file — verify alarms active` : 'Verify door and bed alarms are active';
+             })(),
+      nav:   'sundowning', icon: '🌅'
+    },
+    {
+      label: 'Wandering safeguards verified',
+      done:  false,
+      sub:   (D.wandering||[]).length > 0
+           ? `${(D.wandering||[]).length} prior incident${(D.wandering||[]).length>1?'s':''} on file — confirm prevention measures active`
+           : 'Confirm door alarms, bed sensors, and exit protocols active',
+      nav:   'wandering', icon: '🚶'
     }
   ];
 
