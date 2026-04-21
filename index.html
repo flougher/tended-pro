@@ -1936,6 +1936,7 @@ body {
     </div>
     <button class="btn btn-teal" onclick="saveCareplan()">💾 Save Care Plan</button>
   </div>
+  <div id="careplan-patient-bar" style="margin-bottom:14px"></div>
   <div class="grid-2">
     <div class="card">
       <div class="card-title">🎯 Goals of Care</div>
@@ -2098,6 +2099,7 @@ body {
   <div class="p3-panel active" id="routine-panel-morning">
     <div id="routine-list-morning"></div>
   </div>
+  <div id="routines-patient-bar" style="margin-bottom:14px"></div>
   <div class="p3-panel" id="routine-panel-afternoon">
     <div id="routine-list-afternoon"></div>
   </div>
@@ -2153,6 +2155,7 @@ body {
   <div id="trigger-list">
     <div class="empty"><div class="empty-icon">⚡</div><div class="empty-text">No triggers documented yet.<br>Tap + Add Trigger to build the library.</div></div>
   </div>
+  <div id="triggers-patient-bar" style="margin-bottom:14px"></div>
 </div>
 
 <!-- ═══ ABC BEHAVIOR ══════════════════════════════════════════ -->
@@ -2483,6 +2486,7 @@ body {
       <button class="btn btn-teal" onclick="openBillingModal()">+ Log Visit</button>
     </div>
   </div>
+  <div id="billing-patient-bar" style="margin-bottom:14px"></div>
 
   <!-- Billing summary cards -->
   <div class="grid-3" style="margin-bottom:16px">
@@ -2760,7 +2764,8 @@ body {
 // ═══════════════════════════════════════════════════════════════
 
 // ── Data ──────────────────────────────────────────────────────
-const STORE = 'tendedPro_v1';
+const STORE          = 'tendedPro_v1';
+const SCHEMA_VERSION = 2;
 const COLORS = ['#0C7A6E','#0C3B6E','#7A0C4A','#4A0C7A','#6E4A0C','#0C4A6E','#6E0C2A','#2A6E0C'];
 
 // ── BLACK BOX WARNING DATABASE ─────────────────────────────────
@@ -2933,7 +2938,7 @@ let D = {
   wounds:    [],
   intake:    [],
   comms:     [],
-  routines:  { morning:[], afternoon:[], evening:[] },
+  routines:  {},
   triggers:  [],
   behaviors: [],
   toileting: [],
@@ -2942,7 +2947,11 @@ let D = {
   shifts:    [],
   creds:     [],
   billing:   [],
-  settings:  { name:'', agency:'', role:'', initials:'', supervisor:'' }
+  sundowning:[],
+  wandering: [],
+  memorycare:[],
+  settings:  { name:'', agency:'', role:'', initials:'', supervisor:'' },
+  _schemaVersion: 0
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -2988,6 +2997,10 @@ function populatePatientBars(){
     { id:'sundowning-patient-bar',  fn:'renderSundowning',  label:'Viewing sundowning for:' },
     { id:'wandering-patient-bar',   fn:'renderWandering',   label:'Viewing wandering for:' },
     { id:'memorycare-patient-bar',  fn:'renderMemoryCare',  label:'Viewing notes for:' },
+    { id:'careplan-patient-bar',    fn:'loadCareplan',      label:'Care plan for:' },
+    { id:'routines-patient-bar',    fn:'renderRoutines',    label:'Routines for:' },
+    { id:'triggers-patient-bar',    fn:'renderTriggers',    label:'Triggers for:' },
+    { id:'billing-patient-bar',     fn:'renderBillingList', label:'Billing for:' },
   ];
   bars.forEach(bar => {
     const el = document.getElementById(bar.id);
@@ -3020,15 +3033,86 @@ function load(){
     if(s) D = Object.assign({
       patients:[], meds:[], mar:{}, marNotes:{}, incidents:[],
       careplan:{}, wounds:[], intake:[], comms:[],
-      routines:{ morning:[], afternoon:[], evening:[] },
+      routines:{},
       triggers:[], behaviors:[], toileting:[], vitals:[],
       pain:[], shifts:[], sundowning:[], wandering:[], memorycare:[],
       creds:[], billing:[],
-      settings:{ name:'', agency:'', role:'', initials:'', supervisor:'' }
+      settings:{ name:'', agency:'', role:'', initials:'', supervisor:'' },
+      _schemaVersion: 0
     }, JSON.parse(s));
+    migrateData();
   } catch(e){}
 }
 
+// ── ONE-TIME NON-DESTRUCTIVE MIGRATION ──────────────────────────
+function migrateData(){
+  if(D._schemaVersion >= SCHEMA_VERSION) return; // already migrated
+  const legacyPid = null; // unassigned legacy data uses null
+  const firstPid  = D.patients.length ? D.patients[0].id : null;
+
+  // 1. meds — tag any without patientId
+  (D.meds||[]).forEach(m => { if(m.patientId === undefined) m.patientId = legacyPid; });
+
+  // 2. triggers — tag any without patientId
+  (D.triggers||[]).forEach(t => { if(t.patientId === undefined) t.patientId = legacyPid; });
+
+  // 3. billing — tag any without patientId
+  (D.billing||[]).forEach(b => { if(b.patientId === undefined) b.patientId = legacyPid; });
+
+  // 4. careplan — migrate from flat object to keyed object
+  // Old shape: D.careplan = { goals:'...', dnr:'...', ... }
+  // New shape: D.careplan = { [patientId]: { goals:'...', ... } }
+  if(D.careplan && typeof D.careplan === 'object'){
+    // Detect old shape by presence of known careplan field keys
+    const oldKeys = ['goals','dnr','mobility','diet','activity','updatedBy'];
+    const isOldShape = oldKeys.some(k => D.careplan[k] !== undefined);
+    if(isOldShape){
+      const legacy = { ...D.careplan };
+      D.careplan = {};
+      // Assign to first patient if exists, else to 'legacy' key
+      const key = firstPid ? String(firstPid) : 'legacy';
+      D.careplan[key] = legacy;
+    }
+  }
+
+  // Mark migration as complete
+  D._schemaVersion = SCHEMA_VERSION;
+
+  // 5. routines — migrate from flat {morning:[],afternoon:[],evening:[]} 
+  // to keyed { [patientId]: {morning:[],afternoon:[],evening:[]} }
+  if(D.routines && typeof D.routines === 'object'){
+    const oldRoutineShape = Array.isArray(D.routines.morning) ||
+                            Array.isArray(D.routines.afternoon) ||
+                            Array.isArray(D.routines.evening);
+    if(oldRoutineShape){
+      const legacy = {
+        morning:   D.routines.morning   || [],
+        afternoon: D.routines.afternoon || [],
+        evening:   D.routines.evening   || []
+      };
+      D.routines = {};
+      const key = firstPid ? String(firstPid) : 'legacy';
+      D.routines[key] = legacy;
+    }
+  }
+}
+
+
+// Helper: get routines for a patient
+function getRoutinesForPatient(pid){
+  if(!pid) return { morning:[], afternoon:[], evening:[] };
+  const key = String(pid);
+  if(!D.routines[key]) D.routines[key] = { morning:[], afternoon:[], evening:[] };
+  return D.routines[key];
+}
+function getCarePlanForPatient(pid){
+  if(!pid) return {};
+  return D.careplan[String(pid)] || {};
+}
+function setCarePlanForPatient(pid, data){
+  if(!D.careplan) D.careplan = {};
+  D.careplan[String(pid)] = data;
+}
 function save(){
   try { localStorage.setItem(STORE, JSON.stringify(D)); } catch(e){}
 }
@@ -3241,8 +3325,9 @@ function renderDashboard(){
   const todayIntake    = (D.intake||[]).filter(e => e.date === todayISO);
   const todayToilet    = (D.toileting||[]).filter(e => e.date === todayISO);
   const todayBehaviors = (D.behaviors||[]).filter(b => b.dt && b.dt.startsWith(todayISO));
-  const morningDone    = (D.routines?.morning||[]).filter(r => r.done).length;
-  const morningTotal   = (D.routines?.morning||[]).length;
+  const _dashR = getRoutinesForPatient(_globalPatientId);
+  const morningDone    = (_dashR?.morning||[]).filter(r => r.done).length;
+  const morningTotal   = (_dashR?.morning||[]).length;
   const hasWounds      = (D.wounds||[]).length > 0;
   const woundChecked   = (D.wounds||[]).some(w => w.updatedAt && w.updatedAt.startsWith(todayISO));
   const billedToday    = (D.billing||[]).filter(b => b.date === todayISO).length > 0;
@@ -3559,8 +3644,9 @@ function openPatientDetail(id){
      <hr class="divider">
      ${p.conditions ? `<div style="font-size:.86rem;color:var(--slate-mid);line-height:1.7">${p.conditions}</div>` : '<div style="color:var(--slate-light);font-size:.84rem">No conditions recorded</div>'}`;
 
-  document.getElementById('detail-meds').innerHTML = D.meds.length
-    ? D.meds.map(m => `<div style="padding:7px 0;border-bottom:1px solid var(--border)">
+  const _detailMeds = (D.meds||[]).filter(m => String(m.patientId) === String(p.id));
+  document.getElementById('detail-meds').innerHTML = _detailMeds.length
+    ? _detailMeds.map(m => `<div style="padding:7px 0;border-bottom:1px solid var(--border)">
         <div style="display:flex;align-items:center;gap:8px">
           <span style="color:var(--teal);font-size:.9rem">💊</span>
           <div style="flex:1;min-width:0">
@@ -3626,9 +3712,31 @@ function showDeletePatientModal(id, name, meds, incidents, wounds){
 function confirmDeletePatient(id){
   const modal = document.getElementById('delete-patient-modal');
   if(modal) modal.remove();
-  D.patients = D.patients.filter(x => x.id !== id);
-  // Remove patient-specific meds
-  D.meds = (D.meds||[]).filter(m => !m.patientId || m.patientId != id);
+  const pidKey = String(id);
+  D.patients   = D.patients.filter(x => x.id !== id);
+  // Remove all patient-scoped data
+  const notPat = x => String(x.patientId) !== pidKey;
+  D.meds       = (D.meds||[]).filter(notPat);
+  D.triggers   = (D.triggers||[]).filter(notPat);
+  D.billing    = (D.billing||[]).filter(b => !b.patientId || String(b.patientId) !== pidKey);
+  D.incidents  = (D.incidents||[]).filter(notPat);
+  D.wounds     = (D.wounds||[]).filter(notPat);
+  D.intake     = (D.intake||[]).filter(notPat);
+  D.comms      = (D.comms||[]).filter(notPat);
+  D.behaviors  = (D.behaviors||[]).filter(notPat);
+  D.toileting  = (D.toileting||[]).filter(notPat);
+  D.vitals     = (D.vitals||[]).filter(notPat);
+  D.pain       = (D.pain||[]).filter(notPat);
+  D.sundowning = (D.sundowning||[]).filter(notPat);
+  D.wandering  = (D.wandering||[]).filter(notPat);
+  D.memorycare = (D.memorycare||[]).filter(notPat);
+  // Remove keyed careplan and routines
+  if(D.careplan) delete D.careplan[pidKey];
+  if(D.routines) delete D.routines[pidKey];
+  // Clear MAR entries for this patient
+  Object.keys(D.mar||{}).forEach(k => { if(k.includes(pidKey)) delete D.mar[k]; });
+  // If this was the selected patient, clear selection
+  if(String(_globalPatientId) === pidKey) setGlobalPatient('');
   save(); renderPatients();
   toast('Patient removed', 'var(--slate)');
 }
@@ -3677,7 +3785,8 @@ function saveMed(){
     if(idx !== -1) D.meds[idx] = { ...D.meds[idx], ...fields };
     toast('✅ Medication updated', 'var(--given)');
   } else {
-    D.meds.push({ id: Date.now(), ...fields });
+    if(!_globalPatientId){ toast('Please select a patient first', 'var(--held)'); return; }
+    D.meds.push({ id: Date.now(), patientId: _globalPatientId, ...fields });
     toast('✅ Medication added', 'var(--given)');
   }
   save(); closeModal('med-modal'); renderMedList();
@@ -3686,11 +3795,16 @@ function saveMed(){
 function renderMedList(){
   const el = document.getElementById('med-list');
   if(!el) return;
-  if(!D.meds.length){
-    el.innerHTML = '<div style="color:var(--slate-light);font-size:.82rem">No medications added yet.</div>';
+  const _listMeds = _globalPatientId
+    ? (D.meds||[]).filter(m => String(m.patientId) === String(_globalPatientId))
+    : (D.meds||[]);
+  if(!_listMeds.length){
+    el.innerHTML = '<div style="color:var(--slate-light);font-size:.82rem">' +
+      (_globalPatientId ? 'No medications added for this patient yet.' : 'Select a patient to view medications.') +
+      '</div>';
     return;
   }
-  el.innerHTML = D.meds.map(m => `
+  el.innerHTML = _listMeds.map(m => `
     <div style="padding:8px 0;border-bottom:1px solid var(--border)">
       <div style="display:flex;align-items:center;gap:8px">
         <div style="flex:1;min-width:0">
@@ -4131,7 +4245,7 @@ function exportAgencySummary(){
 
 function renderMAR(){
   const dateVal    = document.getElementById('mar-date')?.value || new Date().toISOString().split('T')[0];
-  const patientId  = document.getElementById('mar-patient')?.value || '';
+  const patientId  = document.getElementById('mar-patient')?.value || _globalPatientId || '';
   const table      = document.getElementById('mar-table');
   const notesEl    = document.getElementById('mar-notes');
   const notesDate  = document.getElementById('mar-notes-date');
@@ -4144,7 +4258,12 @@ function renderMAR(){
 
   if(!table) return;
 
-  if(!D.meds.length){
+  // Filter meds by selected patient
+  const patMeds = patientId
+    ? (D.meds||[]).filter(m => String(m.patientId) === String(patientId))
+    : (D.meds||[]);
+
+  if(!patMeds.length){
     table.innerHTML = `<div class="card" style="text-align:center;padding:28px 20px">
       <div style="font-size:2rem;margin-bottom:12px">💊</div>
       <div style="font-weight:700;font-size:.95rem;color:var(--navy);margin-bottom:6px">No medications added yet</div>
@@ -4155,7 +4274,7 @@ function renderMAR(){
     return;
   }
 
-  const sorted = [...D.meds].sort((a,b) => {
+  const sorted = [...patMeds].sort((a,b) => {
     const tm = t => {
       if(!t) return 9999;
       const m = t.match(/^(\d{1,2}):(\d{2})$/);
@@ -4302,7 +4421,9 @@ function printMAR(){
   const initials = D.settings.initials || document.getElementById('mar-initials')?.value || '___________';
   const notes    = D.marNotes[dateVal] || '';
 
-  const rows = D.meds.map(m => {
+  const rows = (patId
+    ? (D.meds||[]).filter(m => String(m.patientId) === String(patId))
+    : (D.meds||[])).map(m => {
     const key = dateVal + '|' + (patId||'default') + '|' + m.id;
     const rec = D.mar[key] || { status:'pending', timeGiven:'', initials:'' };
     const sc  = { given:'#0A7A4A', refused:'#C0392B', held:'#C47A00', pending:'#8097B3' };
@@ -5125,8 +5246,11 @@ function generateHandoff(){
   });
 
   // MAR summary
-  const firstPatId = D.patients.length ? D.patients[0].id : 'default';
-  const marLines = D.meds.map(m => {
+  const firstPatId = _globalPatientId || (D.patients.length ? D.patients[0].id : 'default');
+  const _handoffMeds = _globalPatientId
+    ? (D.meds||[]).filter(m => String(m.patientId) === String(_globalPatientId))
+    : (D.meds||[]);
+  const marLines = _handoffMeds.map(m => {
     const key = todayISO + '|' + firstPatId + '|' + m.id;
     const rec = D.mar[key] || { status:'pending' };
     const icon = { given:'✓', refused:'✗', held:'⏸', pending:'○' }[rec.status] || '○';
@@ -5387,9 +5511,9 @@ function importData(input){
       }, data);
       delete imported._meta;
       if(!imported.routines) imported.routines = { morning:[], afternoon:[], evening:[] };
-      if(!imported.routines.morning)   imported.routines.morning   = [];
-      if(!imported.routines.afternoon) imported.routines.afternoon = [];
-      if(!imported.routines.evening)   imported.routines.evening   = [];
+      if(!imported.routines || Array.isArray(imported.routines.morning)){
+        imported.routines = {};
+      }
       D = imported;
       save();
       renderDashboard();
@@ -5426,7 +5550,7 @@ function fmtTime(t){
 
 // ── 1. CARE PLAN ──────────────────────────────────────────────
 function loadCareplan(){
-  const cp = D.careplan || {};
+  const cp = getCarePlanForPatient(_globalPatientId);
   const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
   set('cp-goals',      cp.goals);
   set('cp-dnr',        cp.dnr);
@@ -5445,8 +5569,9 @@ function loadCareplan(){
 }
 
 function saveCareplan(){
+  if(!_globalPatientId){ toast('Please select a patient first', 'var(--held)'); return; }
   const get = id => document.getElementById(id)?.value?.trim() || '';
-  D.careplan = {
+  setCarePlanForPatient(_globalPatientId, {
     goals:        get('cp-goals'),
     dnr:          get('cp-dnr'),
     proxy:        get('cp-proxy'),
@@ -5462,7 +5587,7 @@ function saveCareplan(){
     updatedBy:    get('cp-updated-by'),
     notes:        get('cp-notes'),
     savedAt:      new Date().toISOString()
-  };
+  });
   save();
   toast('✅ Care plan saved', 'var(--given)');
 }
@@ -5844,7 +5969,8 @@ function openRoutineModal(period, editId){
   const isEdit = _editRoutineId !== null;
   document.getElementById('routine-modal-title').textContent = isEdit ? 'Edit Routine Item' : 'Add Routine Item';
   document.getElementById('rm-save').textContent = isEdit ? 'Update' : 'Add Item';
-  const item = isEdit ? (D.routines[_currentRoutinePeriod]||[]).find(x => x.id === _editRoutineId) : null;
+  const _rmRoutines = getRoutinesForPatient(_globalPatientId);
+  const item = isEdit ? (_rmRoutines[_currentRoutinePeriod]||[]).find(x => x.id === _editRoutineId) : null;
   document.getElementById('rm-task').value  = item?.task  || '';
   document.getElementById('rm-period').value= item?.period|| _currentRoutinePeriod;
   document.getElementById('rm-time').value  = item?.time  || '';
@@ -5855,20 +5981,21 @@ function openRoutineModal(period, editId){
 function saveRoutineItem(){
   const task = document.getElementById('rm-task')?.value.trim();
   if(!task){ toast('Please enter a routine task', 'var(--held)'); return; }
+  if(!_globalPatientId){ toast('Please select a patient first', 'var(--held)'); return; }
   const period = document.getElementById('rm-period')?.value || 'morning';
-  if(!D.routines) D.routines = { morning:[], afternoon:[], evening:[] };
-  if(!D.routines[period]) D.routines[period] = [];
+  const r = getRoutinesForPatient(_globalPatientId);
+  if(!r[period]) r[period] = [];
   const fields = {
     task, period,
     time:  document.getElementById('rm-time')?.value || '',
     notes: document.getElementById('rm-notes')?.value.trim() || ''
   };
   if(_editRoutineId !== null){
-    const idx = D.routines[period].findIndex(x => x.id === _editRoutineId);
-    if(idx !== -1) D.routines[period][idx] = { ...D.routines[period][idx], ...fields };
+    const idx = r[period].findIndex(x => x.id === _editRoutineId);
+    if(idx !== -1) r[period][idx] = { ...r[period][idx], ...fields };
     toast('✅ Routine item updated', 'var(--given)');
   } else {
-    D.routines[period].push({ id:Date.now(), done:false, ...fields });
+    r[period].push({ id:Date.now(), done:false, ...fields });
     toast('✅ Routine item added', 'var(--given)');
   }
   save(); closeModal('routine-modal');
@@ -5876,19 +6003,22 @@ function saveRoutineItem(){
 }
 
 function toggleRoutineDone(period, id){
-  if(!D.routines?.[period]) return;
-  const item = D.routines[period].find(x => x.id === id);
+  const r = getRoutinesForPatient(_globalPatientId);
+  if(!r?.[period]) return;
+  const item = r[period].find(x => x.id === id);
   if(item) item.done = !item.done;
   save(); renderRoutineList(period);
 }
 
 function deleteRoutineItem(period, id){
-  if(!D.routines?.[period]) return;
-  D.routines[period] = D.routines[period].filter(x => x.id !== id);
+  const r = getRoutinesForPatient(_globalPatientId);
+  if(!r?.[period]) return;
+  r[period] = r[period].filter(x => x.id !== id);
   save(); renderRoutineList(period);
 }
 
 function renderRoutines(){
+  populatePatientBars();
   loadSensory();
   renderRoutineList('morning');
 }
@@ -5896,7 +6026,8 @@ function renderRoutines(){
 function renderRoutineList(period){
   const el = document.getElementById('routine-list-' + period);
   if(!el) return;
-  const items = D.routines?.[period] || [];
+  const r = getRoutinesForPatient(_globalPatientId);
+  const items = r?.[period] || [];
   if(!items.length){
     const labels = { morning:'🌅 morning', afternoon:'☀️ afternoon', evening:'🌙 evening' };
     el.innerHTML = `<div class="empty" style="padding:28px"><div class="empty-icon" style="font-size:1.6rem">📋</div><div class="empty-text" style="font-size:.83rem">No ${labels[period]} routine items added yet.</div></div>`;
@@ -5921,8 +6052,8 @@ function renderRoutineList(period){
 }
 
 function saveSensory(){
-  if(!D.routines) D.routines = { morning:[], afternoon:[], evening:[] };
-  D.routines.sensory = {
+  const r = getRoutinesForPatient(_globalPatientId);
+  r.sensory = {
     noise:  document.getElementById('sens-noise')?.value  || '',
     light:  document.getElementById('sens-light')?.value  || '',
     temp:   document.getElementById('sens-temp')?.value   || '',
@@ -5932,7 +6063,8 @@ function saveSensory(){
 }
 
 function loadSensory(){
-  const s = D.routines?.sensory || {};
+  const r = getRoutinesForPatient(_globalPatientId);
+  const s = r?.sensory || {};
   const set = (id,val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
   set('sens-noise', s.noise);
   set('sens-light', s.light);
@@ -5958,7 +6090,8 @@ function saveTrigger(){
     if(idx !== -1) D.triggers[idx] = { ...D.triggers[idx], ...fields };
     toast('✅ Trigger updated', 'var(--given)');
   } else {
-    D.triggers.push({ id:Date.now(), ...fields });
+    if(!_globalPatientId){ toast('Please select a patient first', 'var(--held)'); return; }
+    D.triggers.push({ id:Date.now(), patientId: _globalPatientId, ...fields });
     toast('✅ Trigger added', 'var(--given)');
   }
   save(); closeModal('trigger-modal'); renderTriggers();
@@ -5979,9 +6112,13 @@ function openTriggerModal(editId){
 }
 
 function renderTriggers(){
+  populatePatientBars();
   const el = document.getElementById('trigger-list');
   if(!el) return;
-  if(!(D.triggers||[]).length){
+  const _trigPat = document.getElementById('triggers-patient-bar-sel')?.value || _globalPatientId || '';
+  let triggers = D.triggers||[];
+  if(_trigPat) triggers = triggers.filter(t => String(t.patientId) === String(_trigPat));
+  if(!triggers.length){
     el.innerHTML = '<div class="empty"><div class="empty-icon">⚡</div><div class="empty-text">No triggers documented yet.<br>Tap + Add Trigger to build the library.</div></div>';
     return;
   }
@@ -5990,7 +6127,7 @@ function renderTriggers(){
     'Physical / pain-related':'var(--refused)','Routine disruption':'var(--held)',
     'Cognitive / memory':'var(--navy-light)','Other':'var(--slate-light)'
   };
-  el.innerHTML = (D.triggers||[]).map(t => `
+  el.innerHTML = triggers.map(t => `
     <div class="trigger-card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
         <div>
@@ -6057,7 +6194,10 @@ function saveBehavior(){
 function populateBehaviorTriggerDropdown(){
   const sel = document.getElementById('bm-trigger-link');
   if(!sel) return;
-  const triggers = D.triggers || [];
+  const _allTriggers = D.triggers || [];
+  const triggers = _globalPatientId
+    ? _allTriggers.filter(t => !t.patientId || String(t.patientId) === String(_globalPatientId))
+    : _allTriggers;
   sel.innerHTML = '<option value="">— Not linked to a known trigger —</option>' +
     triggers.map(t => `<option value="${t.id}">${t.trigger.slice(0,60)}${t.trigger.length>60?'…':''}</option>`).join('');
 }
@@ -6115,7 +6255,9 @@ function renderBehaviorLog(){
 function renderBehaviorSummary(){
   const el = document.getElementById('behavior-summary');
   if(!el) return;
-  const behaviors = D.behaviors || [];
+  const _bsPatFilter = document.getElementById('behaviors-patient-bar-sel')?.value || _globalPatientId || '';
+  let behaviors = D.behaviors || [];
+  if(_bsPatFilter) behaviors = behaviors.filter(b => String(b.patientId) === String(_bsPatFilter));
   if(!behaviors.length){
     el.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><div class="empty-text">No behavior data yet. Log behaviors to see patterns.</div></div>';
     return;
@@ -6789,6 +6931,7 @@ function deleteCred(id){
 let _editBillId = null;
 
 function initBilling(){
+  populatePatientBars();
   const dateEl = document.getElementById('bl-date');
   if(dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
   renderBillingList();
@@ -6860,7 +7003,7 @@ function saveBilling(){
     if(idx !== -1) D.billing[idx] = { ...D.billing[idx], ...fields };
     toast('✅ Visit updated', 'var(--given)');
   } else {
-    D.billing.push({ id:Date.now(), ...fields });
+    D.billing.push({ id:Date.now(), patientId: _globalPatientId || '', ...fields });
     toast('✅ Visit logged', 'var(--given)');
   }
   D.billing.sort((a,b) => b.date.localeCompare(a.date));
@@ -6868,9 +7011,12 @@ function saveBilling(){
 }
 
 function renderBillingList(){
+  populatePatientBars();
   const el = document.getElementById('billing-list');
   if(!el) return;
-  const billing = D.billing || [];
+  const _billPat = document.getElementById('billing-patient-bar-sel')?.value || _globalPatientId || '';
+  let billing = D.billing || [];
+  if(_billPat) billing = billing.filter(b => String(b.patientId) === String(_billPat));
 
   // Summary stats
   const totalVisits = billing.length;
@@ -6910,7 +7056,11 @@ function deleteBilling(id){
 }
 
 function printBillingReport(){
-  const billing = D.billing || [];
+  // Billing is caregiver-level; optionally filter by patient if one is selected
+  const _allBilling = D.billing || [];
+  const billing = _globalPatientId
+    ? _allBilling.filter(b => !b.patientId || String(b.patientId) === String(_globalPatientId))
+    : _allBilling;
   if(!billing.length){ toast('No billing entries to print', 'var(--held)'); return; }
   const totalHours  = billing.reduce((s,b)=>s+(b.hours||0),0);
   const totalEarned = billing.reduce((s,b)=>s+(b.earned||0),0);
@@ -6976,8 +7126,12 @@ function renderReport(){
   const monthEnd   = new Date(year, month, 0).toISOString().split('T')[0];
   const inMonth    = dt => dt && dt >= monthStart && dt <= monthEnd;
 
-  const patientId  = document.getElementById('report-patient')?.value || '';
+  const patientId  = document.getElementById('report-patient')?.value || _globalPatientId || '';
   const patientObj = (D.patients||[]).find(p => p.id == patientId);
+  // Patient-scoped data for report
+  const rptMeds     = patientId ? (D.meds||[]).filter(m => String(m.patientId) === String(patientId)) : (D.meds||[]);
+  const rptTriggers = patientId ? (D.triggers||[]).filter(t => !t.patientId || String(t.patientId) === String(patientId)) : (D.triggers||[]);
+  const rptBilling  = patientId ? (D.billing||[]).filter(b => !b.patientId || String(b.patientId) === String(patientId)) : (D.billing||[]);
   const patient    = patientObj ? patientObj.fname + ' ' + patientObj.lname : D.settings.name || 'Patient';
   const provider   = document.getElementById('report-provider')?.value.trim() || D.settings.agency || '';
   const caregiver  = document.getElementById('report-caregiver')?.value.trim()|| D.settings.name || '';
@@ -6988,7 +7142,7 @@ function renderReport(){
   let sections = '';
 
   // Medications compliance
-  if(check('rpt-meds') && D.meds.length){
+  if(check('rpt-meds') && rptMeds.length){
     const marKeys  = Object.keys(D.mar).filter(k => { const datePart = k.split('|')[0] || ''; return datePart >= monthStart && datePart <= monthEnd; });
     const given    = marKeys.filter(k => D.mar[k]?.status==='given').length;
     const refused  = marKeys.filter(k => D.mar[k]?.status==='refused').length;
@@ -7002,7 +7156,7 @@ function renderReport(){
         <div style="background:#F0F4F8;border-radius:8px;padding:10px"><div style="font-size:1.3rem;font-weight:700;color:#C47A00;font-family:monospace">${held}</div><div style="font-size:.72rem;color:#8097B3;text-transform:uppercase">Held</div></div>
         <div style="background:#F0F4F8;border-radius:8px;padding:10px"><div style="font-size:1.3rem;font-weight:700;color:#0A7A4A;font-family:monospace">${pct}%</div><div style="font-size:.72rem;color:#8097B3;text-transform:uppercase">Compliance</div></div>
       </div>
-      <div style="font-size:.84rem;color:#526280"><strong>Current medications:</strong> ${D.meds.map(m=>m.name+' '+m.dose).join(', ')||'None'}</div>
+      <div style="font-size:.84rem;color:#526280"><strong>Current medications:</strong> ${rptMeds.map(m=>m.name+' '+m.dose).join(', ')||'None'}</div>
     </div>`;
   }
 
@@ -7102,17 +7256,18 @@ function renderReport(){
   }
 
   // Care plan summary
-  if(check('rpt-careplan') && D.careplan?.goals){
+  const _rptCp = getCarePlanForPatient(_globalPatientId);
+  if(check('rpt-careplan') && _rptCp?.goals){
     sections += `<div class="report-section"><div class="report-section-title">📌 Goals of Care</div>
       <div style="font-size:.84rem;color:#526280;line-height:1.8">
-        ${D.careplan.goals?`<div style="margin-bottom:4px"><strong>Goals:</strong> ${D.careplan.goals}</div>`:''}
-        ${D.careplan.dnr?`<div style="margin-bottom:4px"><strong>Code Status:</strong> ${D.careplan.dnr}</div>`:''}
-        ${D.careplan.mobility?`<div style="margin-bottom:4px"><strong>Mobility:</strong> ${D.careplan.mobility}</div>`:''}
-        ${D.careplan.diet?`<div style="margin-bottom:4px"><strong>Dietary:</strong> ${D.careplan.diet}</div>`:''}
-        ${D.careplan.pain?`<div style="margin-bottom:4px"><strong>Pain Management:</strong> ${D.careplan.pain}</div>`:''}
-        ${D.careplan.sleep?`<div style="margin-bottom:4px"><strong>Sleep:</strong> ${D.careplan.sleep}</div>`:''}
-        ${D.careplan.comfort?`<div style="margin-bottom:4px"><strong>Comfort &amp; Preferences:</strong> ${D.careplan.comfort}</div>`:''}
-        ${D.careplan.notes?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid #D8E2EE;font-style:italic">${D.careplan.notes}</div>`:''}
+        ${_rptCp.goals?`<div style="margin-bottom:4px"><strong>Goals:</strong> ${_rptCp.goals}</div>`:''}
+        ${_rptCp.dnr?`<div style="margin-bottom:4px"><strong>Code Status:</strong> ${_rptCp.dnr}</div>`:''}
+        ${_rptCp.mobility?`<div style="margin-bottom:4px"><strong>Mobility:</strong> ${_rptCp.mobility}</div>`:''}
+        ${_rptCp.diet?`<div style="margin-bottom:4px"><strong>Dietary:</strong> ${_rptCp.diet}</div>`:''}
+        ${_rptCp.pain?`<div style="margin-bottom:4px"><strong>Pain Management:</strong> ${_rptCp.pain}</div>`:''}
+        ${_rptCp.sleep?`<div style="margin-bottom:4px"><strong>Sleep:</strong> ${_rptCp.sleep}</div>`:''}
+        ${_rptCp.comfort?`<div style="margin-bottom:4px"><strong>Comfort &amp; Preferences:</strong> ${_rptCp.comfort}</div>`:''}
+        ${_rptCp.notes?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid #D8E2EE;font-style:italic">${_rptCp.notes}</div>`:''}
       </div>
     </div>`;
   }
@@ -7378,7 +7533,11 @@ function buildSampleData(){
     { id:14005, date:dStr2(-2),   time:'09:00', patientId:pid, score:3, location:'Bilateral knees', quality:'Aching',         action:'Medication administered (per MAR)',        notes:'Acetaminophen given per PRN order.' },
   ];
   D.shifts = D.shifts || [];
-  return { patients, meds, mar, marNotes, incidents, careplan, wounds, intake, comms, routines, triggers, behaviors, toileting, vitals, pain, creds, billing, settings,
+  // Convert flat routines to keyed format
+  const routinesKeyed = { [String(pid)]: routines };
+  // Convert careplan to keyed format
+  const careplanKeyed = { [String(pid)]: careplan };
+  return { patients, meds, mar, marNotes, incidents, careplan: careplanKeyed, wounds, intake, comms, routines: routinesKeyed, triggers, behaviors, toileting, vitals, pain, creds, billing, settings,
     sundowning: [
       { id:15001, patientId:pid, date:todayISO, time:'16:45', duration:'30–60 minutes', severity:'moderate',
         behaviors:'Pacing hallway. Asking to go home repeatedly. Refused dinner. Tearful.',
@@ -7458,12 +7617,14 @@ function loadSamplePatient(){
   document.getElementById('welcome-overlay').style.display = 'none';
   localStorage.setItem('tendedPro_welcomed', '1');
   const sample = buildSampleData();
+  // Use Object.assign but preserve keyed routines/careplan
   D = Object.assign(D, sample);
-  // Ensure memory care arrays are set
-  if(!D.sundowning || !D.sundowning.length) D.sundowning = sample.sundowning;
-  if(!D.wandering  || !D.wandering.length)  D.wandering  = sample.wandering;
-  if(!D.memorycare || !D.memorycare.length) D.memorycare = sample.memorycare;
+  // Ensure routines and careplan are keyed objects
+  if(!D.routines || Array.isArray(D.routines.morning)) D.routines = sample.routines;
+  if(!D.careplan || D.careplan.goals) D.careplan = sample.careplan;
   _sdShowAll = true;
+  // Auto-select Margaret
+  setGlobalPatient(1700000001);
   save();
   updateTopbar(); updateTopbarUser(); renderDashboard();
   toast('✅ Sample patient Margaret Thompson loaded!', 'var(--given)');
@@ -7475,68 +7636,94 @@ function dismissWelcome(){
 function confirmLoadDemo(){
   if(!confirm('Load demo data for Margaret Thompson? This will add a sample patient across all sections.\n\nTip: Export your data first if needed.')) return;
   const sample = buildSampleData();
-  const alreadyHas = D.patients.some(p => p.id === 1700000001);
-  if(!alreadyHas){ D.patients.unshift(sample.patients[0]); D.meds = [...sample.meds, ...D.meds]; }
-  D.incidents = [...sample.incidents, ...D.incidents];
-  D.wounds    = [...sample.wounds,    ...D.wounds];
-  D.intake    = [...sample.intake,    ...D.intake];
-  D.comms     = [...sample.comms,     ...D.comms];
-  D.behaviors = [...sample.behaviors, ...D.behaviors];
-  D.toileting = [...sample.toileting, ...D.toileting];
-  D.vitals    = [...(sample.vitals||[]), ...(D.vitals||[])];
-  D.pain      = [...(sample.pain||[]),   ...(D.pain||[])];
-  D.creds     = [...sample.creds,     ...D.creds];
-  D.billing   = [...sample.billing,   ...D.billing];
-  D.triggers  = [...sample.triggers,  ...D.triggers];
-  D.mar       = Object.assign({}, sample.mar, D.mar);
-  D.marNotes  = Object.assign({}, sample.marNotes, D.marNotes);
-  D.routines.morning   = [...sample.routines.morning,   ...D.routines.morning];
-  D.routines.afternoon = [...sample.routines.afternoon, ...D.routines.afternoon];
-  D.routines.evening   = [...sample.routines.evening,   ...D.routines.evening];
-  // Always add memory care sample data — deduplicate by ID
-  const existingSD  = new Set((D.sundowning||[]).map(x=>x.id));
-  const existingWD  = new Set((D.wandering||[]).map(x=>x.id));
-  const existingMC  = new Set((D.memorycare||[]).map(x=>x.id));
-  (sample.sundowning||[]).forEach(e => { if(!existingSD.has(e.id)) D.sundowning.push(e); });
-  (sample.wandering||[]).forEach(e  => { if(!existingWD.has(e.id)) D.wandering.push(e); });
-  (sample.memorycare||[]).forEach(e => { if(!existingMC.has(e.id)) D.memorycare.push(e); });
+  const pid = 1700000001;
+  const alreadyHas = D.patients.some(p => p.id === pid);
+  if(!alreadyHas){ D.patients.unshift(sample.patients[0]); }
+
+  // Merge meds (deduplicate by id)
+  const existingMedIds = new Set((D.meds||[]).map(x=>x.id));
+  (sample.meds||[]).forEach(m => { if(!existingMedIds.has(m.id)) D.meds.unshift(m); });
+
+  // Merge arrays with deduplication
+  const mergeArr = (target, src) => {
+    const existing = new Set((target||[]).map(x=>x.id));
+    (src||[]).forEach(x => { if(!existing.has(x.id)) target.push(x); });
+  };
+  D.incidents = D.incidents||[]; mergeArr(D.incidents, sample.incidents);
+  D.wounds    = D.wounds||[];    mergeArr(D.wounds,    sample.wounds);
+  D.intake    = D.intake||[];    mergeArr(D.intake,    sample.intake);
+  D.comms     = D.comms||[];     mergeArr(D.comms,     sample.comms);
+  D.behaviors = D.behaviors||[]; mergeArr(D.behaviors, sample.behaviors);
+  D.toileting = D.toileting||[]; mergeArr(D.toileting, sample.toileting);
+  D.vitals    = D.vitals||[];    mergeArr(D.vitals,    sample.vitals||[]);
+  D.pain      = D.pain||[];      mergeArr(D.pain,      sample.pain||[]);
+  D.creds     = D.creds||[];     mergeArr(D.creds,     sample.creds);
+  D.billing   = D.billing||[];   mergeArr(D.billing,   sample.billing);
+  D.triggers  = D.triggers||[];  mergeArr(D.triggers,  sample.triggers);
+  D.sundowning= D.sundowning||[];mergeArr(D.sundowning, sample.sundowning||[]);
+  D.wandering = D.wandering||[]; mergeArr(D.wandering,  sample.wandering||[]);
+  D.memorycare= D.memorycare||[];mergeArr(D.memorycare, sample.memorycare||[]);
+
+  // Merge MAR
+  D.mar      = Object.assign({}, sample.mar, D.mar);
+  D.marNotes = Object.assign({}, sample.marNotes, D.marNotes);
+
+  // Merge keyed routines
+  if(!D.routines) D.routines = {};
+  const pidKey = String(pid);
+  const sampleR = sample.routines[pidKey] || { morning:[], afternoon:[], evening:[] };
+  if(!D.routines[pidKey]){
+    D.routines[pidKey] = sampleR;
+  } else {
+    ['morning','afternoon','evening'].forEach(p => {
+      const existing = new Set((D.routines[pidKey][p]||[]).map(x=>x.id));
+      (sampleR[p]||[]).forEach(x => { if(!existing.has(x.id)) D.routines[pidKey][p].push(x); });
+    });
+  }
+
+  // Merge keyed careplan
+  if(!D.careplan) D.careplan = {};
+  if(!D.careplan[pidKey]) D.careplan[pidKey] = sample.careplan[pidKey] || {};
+
+  if(!D.settings.name) D.settings = sample.settings;
   _sdShowAll = true;
   const sdAllBtn = document.getElementById('sd-all-btn');
   if(sdAllBtn) sdAllBtn.textContent = '📅 Show by Date';
-  if(!D.careplan || !D.careplan.pid) D.careplan = sample.careplan;
-  if(!D.settings.name) D.settings = sample.settings;
+  // Auto-select Margaret
+  setGlobalPatient(pid);
   save(); updateTopbar(); updateTopbarUser(); renderDashboard();
   toast('✅ Demo data loaded — Margaret Thompson added!', 'var(--given)');
 }
 function confirmClearDemo(){
   if(!confirm('Remove all sample patient data for Margaret Thompson?\n\nThis will delete her patient profile, medications, incidents, wounds, vitals, memory care data, and all other demo entries.\n\nYour own real patient data will not be affected.')) return;
   const pid = 1700000001;
+  const pidKey = String(pid);
   // Remove Margaret from patients
-  D.patients    = (D.patients||[]).filter(p => p.id !== pid);
-  // Remove all data linked to Margaret
-  D.incidents   = (D.incidents||[]).filter(i => i.patientId != pid && !i.id?.toString().startsWith('3'));
-  D.wounds      = (D.wounds||[]).filter(w => w.patientId != pid && !w.id?.toString().startsWith('4'));
-  D.intake      = (D.intake||[]).filter(e => e.patientId != pid && !e.id?.toString().startsWith('5'));
-  D.comms       = (D.comms||[]).filter(c => !c.id?.toString().startsWith('6'));
-  D.behaviors   = (D.behaviors||[]).filter(b => b.patientId != pid && !b.id?.toString().startsWith('9'));
-  D.toileting   = (D.toileting||[]).filter(t => t.patientId != pid && !t.id?.toString().startsWith('10'));
-  D.vitals      = (D.vitals||[]).filter(v => v.patientId != pid && !v.id?.toString().startsWith('13'));
-  D.pain        = (D.pain||[]).filter(p => p.patientId != pid && !p.id?.toString().startsWith('14'));
-  D.sundowning  = (D.sundowning||[]).filter(s => s.patientId != pid && !s.id?.toString().startsWith('15'));
-  D.wandering   = (D.wandering||[]).filter(w => w.patientId != pid && !w.id?.toString().startsWith('16'));
-  D.memorycare  = (D.memorycare||[]).filter(m => m.patientId != pid && !m.id?.toString().startsWith('17'));
-  D.creds       = (D.creds||[]).filter(c => !c.id?.toString().startsWith('11'));
-  D.billing     = (D.billing||[]).filter(b => !b.id?.toString().startsWith('12'));
-  D.triggers    = (D.triggers||[]).filter(t => !t.id?.toString().startsWith('8'));
-  D.meds        = (D.meds||[]).filter(m => ![2001,2002,2003,2004,2005,2006].includes(m.id));
+  D.patients   = (D.patients||[]).filter(p => p.id !== pid);
+  // Remove all data linked to Margaret by patientId
+  const notMarg = x => String(x.patientId) !== pidKey;
+  D.incidents  = (D.incidents||[]).filter(notMarg);
+  D.wounds     = (D.wounds||[]).filter(notMarg);
+  D.intake     = (D.intake||[]).filter(notMarg);
+  D.comms      = (D.comms||[]).filter(notMarg);
+  D.behaviors  = (D.behaviors||[]).filter(notMarg);
+  D.toileting  = (D.toileting||[]).filter(notMarg);
+  D.vitals     = (D.vitals||[]).filter(notMarg);
+  D.pain       = (D.pain||[]).filter(notMarg);
+  D.sundowning = (D.sundowning||[]).filter(notMarg);
+  D.wandering  = (D.wandering||[]).filter(notMarg);
+  D.memorycare = (D.memorycare||[]).filter(notMarg);
+  D.meds       = (D.meds||[]).filter(notMarg);
+  D.triggers   = (D.triggers||[]).filter(notMarg);
+  D.billing    = (D.billing||[]).filter(notMarg);
+  D.creds      = (D.creds||[]).filter(notMarg);
   // Clear MAR entries for Margaret
-  Object.keys(D.mar).forEach(k => { if(k.includes(`|${pid}|`)) delete D.mar[k]; });
-  // Clear care plan if it was Margaret's
-  if(D.careplan?.updatedBy === 'RN Amy Stanton') D.careplan = {};
-  // Clear routines sample data
-  D.routines.morning   = (D.routines.morning||[]).filter(r => !r.id?.toString().startsWith('7'));
-  D.routines.afternoon = (D.routines.afternoon||[]).filter(r => !r.id?.toString().startsWith('7'));
-  D.routines.evening   = (D.routines.evening||[]).filter(r => !r.id?.toString().startsWith('7'));
+  Object.keys(D.mar||{}).forEach(k => { if(k.includes(pidKey)) delete D.mar[k]; });
+  // Clear keyed careplan and routines for Margaret
+  if(D.careplan) delete D.careplan[pidKey];
+  if(D.routines) delete D.routines[pidKey];
+  // If global patient was Margaret, clear selection
+  if(String(_globalPatientId) === pidKey) setGlobalPatient('');
   save(); updateTopbar(); updateTopbarUser(); renderDashboard();
   toast('✅ Demo data cleared — ready for your real patients', 'var(--given)');
 }
@@ -7630,7 +7817,10 @@ function renderBBWSection(){
   const emptyEl = document.getElementById('bbw-empty');
   if(!listEl) return;
 
-  const flagged = (D.meds||[]).filter(m => getBBW(m.name));
+  const _bbwMeds = _globalPatientId
+    ? (D.meds||[]).filter(m => String(m.patientId) === String(_globalPatientId))
+    : (D.meds||[]);
+  const flagged = _bbwMeds.filter(m => getBBW(m.name));
 
   // Update nav badge
   const nb = document.getElementById('nb-bbw');
@@ -7675,7 +7865,10 @@ function renderBBWSection(){
 function renderBBWDashboardAlert(){
   // Called from renderDashboard — injects or removes alert banner
   const existing = document.getElementById('dash-bbw-alert');
-  const flagged  = (D.meds||[]).filter(m => getBBW(m.name));
+  const _dashMeds = _globalPatientId
+    ? (D.meds||[]).filter(m => String(m.patientId) === String(_globalPatientId))
+    : (D.meds||[]);
+  const flagged  = _dashMeds.filter(m => getBBW(m.name));
   const banner   = document.getElementById('dash-shift-banner');
   if(!banner) return;
 
@@ -8110,7 +8303,7 @@ function clockOut(){
   D.billing.unshift({
     id: Date.now(), date: shift.date, start: startT, end: endT,
     hours: hrs, patient: '', service: 'Personal care', rate: 0, earned: 0,
-    miles: 0, status: 'pending',
+    miles: 0, status: 'pending', patientId: _globalPatientId || '',
     notes: `Auto-logged from shift clock. ${shift.clockInDisp} – ${shift.clockOutDisp}`
   });
   save();
@@ -8665,8 +8858,12 @@ function renderTriggerReminderCard(){
   const el = document.getElementById('dash-trigger-reminder');
   if(!el) return;
 
-  const triggers = D.triggers || [];
-  const sensory  = D.routines?.sensory || {};
+  const _allTrig = D.triggers || [];
+  const triggers = _globalPatientId
+    ? _allTrig.filter(t => !t.patientId || String(t.patientId) === String(_globalPatientId))
+    : _allTrig;
+  const _dashRt  = getRoutinesForPatient(_globalPatientId);
+  const sensory  = _dashRt?.sensory || {};
   const hasSensory = sensory.noise || sensory.light || sensory.temp || sensory.calm;
 
   if(!triggers.length && !hasSensory){
