@@ -3486,11 +3486,13 @@ function savePatient(){
     if(idx !== -1) D.patients[idx] = { ...D.patients[idx], ...fields };
     toast('✅ Patient updated', 'var(--given)');
   } else {
+    const newId = Date.now();
     D.patients.push({
-      id:    Date.now(),
+      id:    newId,
       color: COLORS[D.patients.length % COLORS.length],
       ...fields
     });
+    setGlobalPatient(newId);
     toast('✅ Patient added', 'var(--given)');
   }
 
@@ -5059,7 +5061,8 @@ function renderIncidents(){
 
   // Update nav badge
   const todayISO = new Date().toISOString().split('T')[0];
-  const _incSource = _patFilter ? (D.incidents||[]).filter(i=>i.patientId==_patFilter) : (D.incidents||[]);
+  const _incMulti = (D.patients||[]).length > 1;
+  const _incSource = (_patFilter || !_incMulti) ? (_patFilter ? (D.incidents||[]).filter(i=>i.patientId==_patFilter) : (D.incidents||[])) : [];
   const todayInc = _incSource.filter(i => i.dt && i.dt.startsWith(todayISO));
   const nb = document.getElementById('nb-incidents');
   if(nb){ nb.textContent = todayInc.length; nb.classList.toggle('show', todayInc.length > 0); }
@@ -5520,7 +5523,8 @@ function renderWounds(){
   const el = document.getElementById('wound-list');
   if(!el) return;
   const _patFilter = document.getElementById('wounds-patient-bar-sel')?.value || _globalPatientId || '';
-  const _woundsFiltered = _patFilter ? (D.wounds||[]).filter(w=>w.patientId==_patFilter) : (D.wounds||[]);
+  const _wMulti = (D.patients||[]).length > 1;
+  const _woundsFiltered = (_patFilter || !_wMulti) ? (_patFilter ? (D.wounds||[]).filter(w=>w.patientId==_patFilter) : (D.wounds||[])) : [];
   if(!_woundsFiltered.length){
     el.innerHTML = '<div class="empty"><div class="empty-icon">🩹</div><div class="empty-text">No wounds or skin conditions documented.<br>Tap + Add Wound to start tracking.</div></div>';
     return;
@@ -5643,7 +5647,9 @@ function renderIntake(){
   const sub = document.getElementById('intake-date-sub');
   if(sub) sub.textContent = new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
 
-  const entries = (D.intake||[]).filter(e => e.date === dateVal);
+  const _intakePat = document.getElementById('global-patient-intake')?.value || _globalPatientId || '';
+  const _multiPatients = (D.patients||[]).length > 1;
+  const entries = (D.intake||[]).filter(e => e.date === dateVal && (!_multiPatients || !_intakePat || e.patientId == _intakePat));
 
   // Totals
   const meals       = entries.filter(e => ['Breakfast','Lunch','Dinner','Snack'].includes(e.type));
@@ -5762,7 +5768,8 @@ function renderComms(){
   const el = document.getElementById('comm-list');
   if(!el) return;
   const _patFilter = document.getElementById('comms-patient-bar-sel')?.value || _globalPatientId || '';
-  const _commsFiltered = _patFilter ? (D.comms||[]).filter(x=>x.patientId==_patFilter) : (D.comms||[]);
+  const _cMulti = (D.patients||[]).length > 1;
+  const _commsFiltered = (_patFilter || !_cMulti) ? (_patFilter ? (D.comms||[]).filter(x=>x.patientId==_patFilter) : (D.comms||[])) : [];
   if(!_commsFiltered.length){
     el.innerHTML = '<div class="empty"><div class="empty-icon">📞</div><div class="empty-text">No communications logged yet.<br>Tap + Log Contact to document family contact.</div></div>';
     return;
@@ -6061,7 +6068,8 @@ function renderBehaviorLog(){
   const el = document.getElementById('behavior-list');
   if(!el) return;
   const _patFilter = document.getElementById('behaviors-patient-bar-sel')?.value || _globalPatientId || '';
-  const _behaviorsFiltered = _patFilter ? (D.behaviors||[]).filter(b=>b.patientId==_patFilter) : (D.behaviors||[]);
+  const _bMulti = (D.patients||[]).length > 1;
+  const _behaviorsFiltered = (_patFilter || !_bMulti) ? (_patFilter ? (D.behaviors||[]).filter(b=>b.patientId==_patFilter) : (D.behaviors||[])) : [];
   if(!_behaviorsFiltered.length){
     el.innerHTML = '<div class="empty"><div class="empty-icon">🧠</div><div class="empty-text">No behaviors logged yet.<br>Tap + Log Behavior to start ABC tracking.</div></div>';
     return;
@@ -6253,7 +6261,9 @@ function renderToileting(){
   const sub = document.getElementById('toilet-date-sub');
   if(sub) sub.textContent = new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
 
-  const entries = (D.toileting||[]).filter(e => e.date === dateVal);
+  const _toiletPat = document.getElementById('global-patient-toileting')?.value || _globalPatientId || '';
+  const _multiPatToi = (D.patients||[]).length > 1;
+  const entries = (D.toileting||[]).filter(e => e.date === dateVal && (!_multiPatToi || !_toiletPat || e.patientId == _toiletPat));
   const voids      = entries.filter(e => e.type==='void'||e.type==='both').length;
   const bms        = entries.filter(e => e.type==='bm'||e.type==='both').length;
   const incontinent= entries.filter(e => e.continent==='incontinent').length;
@@ -8212,7 +8222,9 @@ function renderSundowning(){
   const el = document.getElementById('sundowning-list');
   if(!el) return;
   const dateVal = document.getElementById('sundowning-date')?.value || new Date().toISOString().split('T')[0];
-  const allEntries = D.sundowning||[];
+  const _sdPat = document.getElementById('sundowning-patient-bar-sel')?.value || _globalPatientId || '';
+  const _sdMulti = (D.patients||[]).length > 1;
+  const allEntries = (_sdPat || !_sdMulti) ? (_sdPat ? (D.sundowning||[]).filter(e => e.patientId == _sdPat) : (D.sundowning||[])) : [];
   const entries = _sdShowAll ? allEntries : allEntries.filter(e => e.date === dateVal);
   const allCount = allEntries.length;
 
@@ -8327,7 +8339,9 @@ function renderWandering(){
   populatePatientBars();
   const el = document.getElementById('wandering-list');
   if(!el) return;
-  const entries = D.wandering||[];
+  const _wdPat = document.getElementById('wandering-patient-bar-sel')?.value || _globalPatientId || '';
+  const _wdMulti = (D.patients||[]).length > 1;
+  const entries = (_wdPat || !_wdMulti) ? (_wdPat ? (D.wandering||[]).filter(e => e.patientId == _wdPat) : (D.wandering||[])) : [];
   if(!entries.length){
     el.innerHTML = '<div class="empty"><div class="empty-icon">🚶</div><div class="empty-text">No wandering incidents logged.<br>Tap + Log Incident to document an event.</div></div>';
     return;
@@ -8433,7 +8447,9 @@ function renderMemoryCare(){
   populatePatientBars();
   const el = document.getElementById('memorycare-list');
   if(!el) return;
-  const entries = D.memorycare||[];
+  const _mcPat = document.getElementById('memorycare-patient-bar-sel')?.value || _globalPatientId || '';
+  const _mcMulti = (D.patients||[]).length > 1;
+  const entries = (_mcPat || !_mcMulti) ? (_mcPat ? (D.memorycare||[]).filter(e => e.patientId == _mcPat) : (D.memorycare||[])) : [];
   if(!entries.length){
     el.innerHTML = '<div class="empty"><div class="empty-icon">💬</div><div class="empty-text">No memory care notes yet.<br>Tap + Add Note to document what works for your patient today.</div></div>';
     return;
