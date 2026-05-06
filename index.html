@@ -1848,6 +1848,9 @@ body {
         <!-- Export explainer -->
         <div style="background:var(--teal-pale);border:1.5px solid var(--teal-mid);border-radius:var(--r);padding:14px 16px;margin-bottom:12px">
           <div style="font-weight:700;font-size:.84rem;color:var(--teal);margin-bottom:6px">📤 Back Up Your Data</div>
+          <div style="background:#FFF3D0;border:1.5px solid #C47A00;border-radius:var(--r);padding:10px 14px;margin-bottom:10px;font-size:.78rem;color:#92400E;line-height:1.5">
+            ⚠️ <strong>Important:</strong> All your data is stored on this device only. If you clear your browser or app data, or switch phones, your data will be permanently lost. <strong>Export a backup regularly.</strong>
+          </div>
           <p style="font-size:.8rem;color:var(--navy);line-height:1.7;margin-bottom:8px">
             Tapping <strong>Export All Data</strong> saves a complete backup of everything in the app —
             all patients, medications, MAR records, incidents, care plans, wounds, behaviors,
@@ -2805,7 +2808,7 @@ body {
 
 <!-- MAR Status Modal (cycle through statuses) -->
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js" defer></script><script>
+<script>
 "use strict";
 // ═══════════════════════════════════════════════════════════════
 // TENDED PRO — PHASE 1: COMPLETE JAVASCRIPT
@@ -3292,6 +3295,16 @@ function navTo(id, btn){
     const oc = b.getAttribute('onclick') || '';
     if(oc.includes("'" + id + "'")) b.classList.add('active');
   });
+
+  // Check trial/premium before navigating to gated sections
+  const FREE_SECTIONS = ['dashboard','patients','settings'];
+  if(!FREE_SECTIONS.includes(id) && !isPremium()){
+    const trial = getTrialState();
+    if(trial.expired){
+      openPaywall('nav');
+      return;
+    }
+  }
 
   // Render relevant section
   const renders = {
@@ -5183,10 +5196,39 @@ if('serviceWorker' in navigator){
     // Re-register fresh SW
     const APP_VERSION = '4.1.0-b6';
     const swCode = `
-const CACHE = 'tended-pro-v6';
-self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll([])).catch(()=>{})); self.skipWaiting(); });
-self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))); self.clients.claim(); });
-self.addEventListener('fetch', e => { e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); });
+const CACHE = 'tended-pro-v8';
+const APP_SHELL = [
+  'https://flougher.github.io/tended-pro/',
+  'https://flougher.github.io/tended-pro/index.html',
+  'https://flougher.github.io/tended-pro/manifest.json',
+  'https://flougher.github.io/tended-pro/icon-192.png',
+  'https://flougher.github.io/tended-pro/icon-512.png'
+];
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open(CACHE).then(cache => cache.addAll(APP_SHELL).catch(() => {}))
+  );
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys =>
+    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+  ));
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  if (e.request.mode === 'navigate') {
+    e.respondWith(
+      fetch(e.request).then(r => {
+        const clone = r.clone();
+        caches.open(CACHE).then(cache => cache.put(e.request, clone));
+        return r;
+      }).catch(() => caches.match(e.request).then(r => r || caches.match('https://flougher.github.io/tended-pro/')))
+    );
+  } else {
+    e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+  }
+});
 `;
     try {
       const blob = new Blob([swCode], {type:'application/javascript'});
@@ -7881,10 +7923,28 @@ function getPremiumState(){ try { const r=localStorage.getItem(PREMIUM_KEY); ret
 function setPremiumState(s){ try { localStorage.setItem(PREMIUM_KEY, JSON.stringify(s)); } catch(e){} }
 function isPremium(){ const s=getPremiumState(); return s&&s.status==='premium'; }
 function getTrialState(){
-  const start = localStorage.getItem(TRIAL_KEY);
-  if(!start) return { active:false, daysLeft:0, expired:false };
+  // Primary trial start from localStorage
+  let start = localStorage.getItem(TRIAL_KEY);
+  // Secondary fingerprint check — if trial was previously expired, keep it expired
+  const TRIAL_EXPIRED_KEY = 'tendedPro_trialExpired';
+  const wasExpired = localStorage.getItem(TRIAL_EXPIRED_KEY) === 'true';
+  // IndexedDB-backed expiry flag (survives Chrome data clear better than localStorage)
+  // If no trial start found but was previously expired — return expired
+  if(!start){
+    if(wasExpired || sessionStorage.getItem(TRIAL_EXPIRED_KEY) === 'true'){
+      return { active:false, daysLeft:0, expired:true };
+    }
+    // Genuine first install — start trial
+    start = new Date().toISOString();
+    localStorage.setItem(TRIAL_KEY, start);
+  }
   const elapsed = Math.floor((Date.now()-new Date(start).getTime())/(1000*60*60*24));
   const daysLeft = Math.max(0, TRIAL_DAYS-elapsed);
+  // Persist expiry flag so it survives accidental data clear
+  if(daysLeft === 0){
+    localStorage.setItem(TRIAL_EXPIRED_KEY, 'true');
+    sessionStorage.setItem(TRIAL_EXPIRED_KEY, 'true');
+  }
   return { active:daysLeft>0, daysLeft, expired:daysLeft===0 };
 }
 function startTrialIfNew(){ if(!localStorage.getItem(TRIAL_KEY)) localStorage.setItem(TRIAL_KEY, new Date().toISOString()); }
@@ -7932,7 +7992,7 @@ function updatePremiumUI(){
   if(!banner||!bannerTxt) return;
   if(premium){ banner.style.display='none'; return; }
   if(trial.active){ banner.style.display='flex'; banner.className='trial-banner'; bannerTxt.textContent=`⏳ Free trial — ${trial.daysLeft} day${trial.daysLeft!==1?'s':''} remaining`; }
-  else if(trial.expired){ banner.style.display='flex'; banner.className='trial-banner expired'; bannerTxt.textContent='🔒 Your 10-day trial has ended — unlock to continue'; }
+  else if(trial.expired){ banner.style.display='flex'; banner.className='trial-banner expired'; bannerTxt.textContent='🔒 Your 30-day trial has ended — unlock to continue'; }
   else { banner.style.display='none'; }
 }
 function renderPremiumCard(){
@@ -9469,51 +9529,5 @@ function init(){
 
 init();
 </script>
-
-<script>
-if('serviceWorker' in navigator){
-  window.addEventListener('load', () => {
-    const loc = window.location;
-    const isRealHost = loc.protocol === 'https:' || loc.hostname === 'localhost' || loc.hostname === '127.0.0.1';
-    if(!isRealHost) return;
-    // Unregister ALL existing service workers to force fresh load on Android
-    navigator.serviceWorker.getRegistrations().then(regs => {
-      regs.forEach(reg => reg.unregister());
-    });
-    // Clear all caches
-    if('caches' in window){
-      caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
-    }
-    // Re-register fresh SW
-    const APP_VERSION = '4.1.0-b6';
-    const swCode = `
-const CACHE = 'tended-pro-v6';
-self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll([])).catch(()=>{})); self.skipWaiting(); });
-self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))); self.clients.claim(); });
-self.addEventListener('fetch', e => { e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); });
-`;
-    try {
-      const blob = new Blob([swCode], {type:'application/javascript'});
-      const blobUrl = URL.createObjectURL(blob);
-      navigator.serviceWorker.register(blobUrl).catch(() => {});
-    } catch(e) {}
-  });
-}
-var _deferredInstall = null;
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault(); _deferredInstall = e;
-  setTimeout(() => { if(_deferredInstall && !window.matchMedia('(display-mode: standalone)').matches) showInstallBanner(); }, 30000);
-});
-function showInstallBanner(){
-  if(document.getElementById('install-banner')) return;
-  const banner = document.createElement('div');
-  banner.id = 'install-banner';
-  banner.innerHTML = `<div style="position:fixed;bottom:72px;left:12px;right:12px;background:#0C1B33;color:white;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(12,27,51,.4);z-index:8000;animation:mUp .3s ease"><div style="width:36px;height:36px;background:linear-gradient(135deg,#0E9E8E,#14C4B2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">➕</div><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:.87rem">Add Tended Health Pro to Home Screen</div><div style="font-size:.74rem;color:rgba(255,255,255,.6);margin-top:2px">Works offline · No app store needed</div></div><button onclick="installPWA()" style="background:#0E9E8E;color:white;border:none;border-radius:8px;padding:7px 13px;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap">Install</button><button onclick="document.getElementById('install-banner').remove()" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:1.2rem;cursor:pointer;padding:0 4px">✕</button></div>`;
-  document.body.appendChild(banner);
-}
-function installPWA(){
-  if(!_deferredInstall) return;
-  _deferredInstall.prompt();
-  _deferredInstall.userChoice.then(() => { _deferredInstall=null; const b=document.getElementById('install-banner'); if(b) b.remove(); });
-}
-window.addEventListener('
+</body>
+</html>
