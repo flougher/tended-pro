@@ -5265,6 +5265,7 @@ window.addEventListener('appinstalled', () => { _deferredInstall=null; const b=d
 let _editIncidentId = null;
 
 function openIncidentModal(editId){
+  if(!D.patients||!D.patients.length){ toast('Please add a patient first', 'var(--held)'); return; }
   _editIncidentId = editId !== undefined ? editId : null;
   const isEdit = _editIncidentId !== null;
   const inc = isEdit ? (D.incidents||[]).find(x => x.id === _editIncidentId) : null;
@@ -5632,7 +5633,7 @@ function updateTopbarUser(){
 // ═══════════════════════════════════════════════════════════════
 function exportData(){
   const payload = {
-    _meta: { app:'tended-pro', version:'4.0.0', phases:'1-4-complete', exported: new Date().toISOString() },
+    _meta: { app:'tended-pro', version:'4.1.0', phases:'1-4-complete', exported: new Date().toISOString() },
     ...D
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
@@ -5746,6 +5747,7 @@ function saveCareplan(){
 let _editWoundId = null;
 
 function openWoundModal(editId){
+  if(!D.patients||!D.patients.length){ toast('Please add a patient first', 'var(--held)'); return; }
   _editWoundId = editId !== undefined ? editId : null;
   const isEdit = _editWoundId !== null;
   document.getElementById('wound-modal-title').textContent = isEdit ? 'Update Wound Record' : 'Add Wound / Skin Condition';
@@ -5863,6 +5865,7 @@ function initIntake(){
 }
 
 function openIntakeModal(editId){
+  if(!D.patients||!D.patients.length){ toast('Please add a patient first', 'var(--held)'); return; }
   _editIntakeId = editId !== undefined ? editId : null;
   const isEdit = _editIntakeId !== null;
   const e = isEdit ? (D.intake||[]).find(x => x.id === _editIntakeId) : null;
@@ -6071,6 +6074,7 @@ function renderComms(){
 }
 
 function deleteComm(id){
+  if(!confirm('Delete this communication entry? This cannot be undone.')) return;
   D.comms = (D.comms||[]).filter(x => x.id !== id);
   save(); renderComms();
 }
@@ -6620,6 +6624,7 @@ function editToileting(id){
 let _editToiletId = null;
 
 function deleteToileting(id){
+  if(!confirm('Delete this toileting entry? This cannot be undone.')) return;
   D.toileting = (D.toileting||[]).filter(x => x.id !== id);
   save(); renderToileting();
 }
@@ -7217,6 +7222,7 @@ function renderBillingList(){
 }
 
 function deleteBilling(id){
+  if(!confirm('Delete this billing entry? This cannot be undone.')) return;
   D.billing = (D.billing||[]).filter(x => x.id !== id);
   save(); renderBillingList();
 }
@@ -9383,6 +9389,7 @@ function renderPainLog(){
 }
 
 function deletePain(id){
+  if(!confirm('Delete this pain assessment? This cannot be undone.')) return;
   D.pain = (D.pain||[]).filter(x => x.id !== id);
   save(); renderPainLog();
 }
