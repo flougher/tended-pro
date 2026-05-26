@@ -151,6 +151,7 @@ body {
   border-right: 1px solid rgba(255,255,255,.06);
 }
 .nav-group { margin-bottom: 4px; }
+.nav-group.collapsed .nav-btn { display: none; }
 .nav-label {
   font-size: .62rem;
   font-weight: 700;
@@ -158,7 +159,18 @@ body {
   text-transform: uppercase;
   color: rgba(255,255,255,.25);
   padding: 14px 18px 5px;
+  cursor: pointer;
+  user-select: none;
+  display: flex; align-items: center; justify-content: space-between;
 }
+.nav-label::after {
+  content: '▾';
+  font-size: .9rem;
+  transition: transform .15s;
+  opacity: .5;
+}
+.nav-group.collapsed .nav-label::after { transform: rotate(-90deg); }
+.nav-label:hover { color: rgba(255,255,255,.55); }
 .nav-btn {
   width: 100%;
   text-align: left;
@@ -336,15 +348,22 @@ body {
   border: 1.5px solid #FECACA;
 }
 .btn-danger:hover { background: var(--refused); color: white; }
-.btn-sm { padding: 6px 12px; font-size: .8rem; min-height: 34px; }
-.btn-xs { padding: 4px 9px; font-size: .74rem; min-height: 28px; }
+.btn-sm { padding: 6px 12px; font-size: .8rem; min-height: 44px; }
+/* BUG-016 — tap target ≥44dp via padding even when visual size is smaller */
+.btn-xs {
+  padding: 4px 9px;
+  font-size: .74rem;
+  min-height: 44px;
+  position: relative;
+}
 .btn-icon {
-  width: 34px; height: 34px;
-  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   padding: 0;
   justify-content: center;
   font-size: .95rem;
-  min-height: unset;
+  min-height: 44px;
 }
 
 /* ── FORMS ────────────────────────────────────────────────── */
@@ -361,12 +380,13 @@ body {
   width: 100%;
   border: 1.5px solid var(--border);
   border-radius: var(--r);
-  padding: 9px 12px;
+  padding: 11px 12px;
   font-family: var(--font-body);
-  font-size: .9rem;
+  font-size: 16px; /* UX-008 — 16px minimum prevents iOS auto-zoom and aids older readers */
   color: var(--text);
   background: white;
   outline: none;
+  min-height: 44px;
   transition: border-color .18s;
 }
 .fg input:focus, .fg textarea:focus, .fg select:focus {
@@ -420,6 +440,12 @@ body {
   from { opacity:0; transform:translateY(16px); }
   to   { opacity:1; transform:translateY(0); }
 }
+/* BUG-024 — smooth out delete re-renders */
+@keyframes rowFadeOut {
+  from { opacity:1; transform:translateX(0);   max-height:200px; }
+  to   { opacity:0; transform:translateX(20px); max-height:0; padding-top:0; padding-bottom:0; margin:0; }
+}
+.row-removing { animation: rowFadeOut .18s ease forwards; overflow:hidden; pointer-events:none; }
 
 /* ── PATIENT CARDS ────────────────────────────────────────── */
 .patient-card {
@@ -921,18 +947,36 @@ body {
 /* Voice to text */
 .mic-btn {
   display:inline-flex; align-items:center; justify-content:center;
-  width:34px; height:34px; border-radius:50%;
+  width:44px; height:44px; border-radius:50%;
   background:var(--navy-mid); border:none; cursor:pointer;
-  font-size:1rem; flex-shrink:0; transition:all .2s;
+  font-size:1.1rem; flex-shrink:0; transition:all .2s;
   vertical-align:middle; margin-left:6px;
+  position:relative;
 }
 .mic-btn:hover { background:var(--teal); }
 .mic-btn.recording {
-  background:var(--refused); animation:mic-pulse 1s ease infinite;
+  background:var(--refused); animation:mic-pulse 1.2s ease infinite;
+  color:white;
+}
+.mic-btn.recording::after {
+  /* UX-010 — large, unmistakable recording badge */
+  content:'';
+  position:absolute;
+  top:-4px; right:-4px;
+  width:14px; height:14px;
+  border-radius:50%;
+  background:#FF3B30;
+  border:2px solid white;
+  box-shadow:0 0 0 0 rgba(255,59,48,.6);
+  animation:rec-dot 1s ease infinite;
 }
 @keyframes mic-pulse {
-  0%,100%{ box-shadow:0 0 0 0 rgba(192,57,43,.4); }
-  50%    { box-shadow:0 0 0 8px rgba(192,57,43,0); }
+  0%,100%{ box-shadow:0 0 0 0 rgba(192,57,43,.5); }
+  50%    { box-shadow:0 0 0 12px rgba(192,57,43,0); }
+}
+@keyframes rec-dot {
+  0%,100%{ transform:scale(1); box-shadow:0 0 0 0 rgba(255,59,48,.6); }
+  50%    { transform:scale(1.15); box-shadow:0 0 0 6px rgba(255,59,48,0); }
 }
 .voice-field-wrap { display:flex; align-items:flex-start; gap:4px; }
 .voice-field-wrap textarea,
@@ -1075,6 +1119,21 @@ body {
     <div style="font-family:var(--font-head);font-size:1.6rem;font-weight:700;color:var(--navy);margin-bottom:8px">Welcome to Tended Health Pro</div>
     <div style="font-size:.92rem;color:var(--slate-mid);line-height:1.7;margin-bottom:6px">Professional shift documentation for <strong style="color:var(--navy)">CNAs, HHAs, and direct care workers.</strong></div>
     <div style="font-size:.84rem;color:var(--slate-light);line-height:1.6;margin-bottom:24px">MAR · Incidents · Vitals · Wound Tracker · Behavior Log · <strong style="color:#7C3AED">Memory Care</strong> · Billing · Monthly Report — all in one secure offline app.</div>
+    <!-- UX-001 — capture caregiver name/initials up front -->
+    <div style="background:var(--off-white);border-radius:14px;padding:18px;margin-bottom:18px;text-align:left">
+      <div style="font-size:.8rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Your details (used on MAR and reports):</div>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px">
+        <div>
+          <label style="display:block;font-size:.74rem;color:var(--slate-light);margin-bottom:3px">Your full name</label>
+          <input id="welcome-name" type="text" placeholder="e.g. Jane Doe" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:16px">
+        </div>
+        <div>
+          <label style="display:block;font-size:.74rem;color:var(--slate-light);margin-bottom:3px">Your initials</label>
+          <input id="welcome-initials" type="text" maxlength="10" placeholder="JD" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:16px;text-transform:uppercase">
+        </div>
+      </div>
+      <div style="font-size:.7rem;color:var(--slate-light);margin-top:6px">You can change these later in Settings.</div>
+    </div>
     <div style="background:var(--off-white);border-radius:14px;padding:18px;margin-bottom:24px;text-align:left">
       <div style="font-size:.8rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Load sample patient to explore all sections:</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;font-size:.82rem;color:var(--navy)">
@@ -1242,9 +1301,12 @@ body {
     <div style="font-family:var(--font-mono);font-size:1.5rem;font-weight:700;color:#14C4B2" id="shift-timer">0:00</div>
   </div>
 
+  <!-- Backup-nag banner (BUG-003) -->
+  <div id="backup-nag-banner" style="display:none"></div>
+
   <!-- Launch Promo Banner -->
   <div id="launch-promo-banner" style="display:none;background:var(--teal);color:white;border-radius:var(--r-lg);padding:14px 18px;margin-bottom:16px;align-items:flex-start;gap:12px;flex-wrap:wrap">
-    <span style="flex:1;font-size:.84rem;line-height:1.5">🎉 <strong>Tended Health Pro is available free during our launch month.</strong> After that, new users can Unlock Forever for $14.99 starting in June — we appreciate your support and value your feedback as an early user.</span>
+    <span style="flex:1;font-size:.84rem;line-height:1.5">🎉 <strong>Welcome — you have a 30-day free trial.</strong> After your trial ends, unlock forever for a one-time $14.99. No subscription. Thanks for being an early user.</span>
     <button onclick="dismissLaunchBanner()" aria-label="Dismiss" style="background:rgba(255,255,255,.25);border:none;color:white;font-size:.78rem;cursor:pointer;padding:4px 10px;border-radius:6px;flex-shrink:0;font-weight:700;white-space:nowrap">✕ Dismiss</button>
   </div>
 
@@ -1532,13 +1594,18 @@ body {
       <div class="ph-title">🔄 Shift Handoff Report</div>
       <div class="ph-sub">Auto-generates from today's MAR, incidents, and vitals</div>
     </div>
-    <div style="display:flex;gap:8px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-secondary" onclick="generateHandoff()">🔄 Generate</button>
-      <button class="btn btn-teal" onclick="printHandoff()">🖨️ Print</button>
+      <button class="btn btn-teal" onclick="printHandoff()">🖨️ Print Single-Patient Handoff</button>
+      <button class="btn btn-secondary" onclick="exportAgencySummary()" title="Generates a Multi-Patient Handoff covering every patient on your roster">🧾 Multi-Patient Handoff</button>
     </div>
   </div>
 
   <div class="card" style="margin-bottom:16px">
+    <div style="font-size:.78rem;color:var(--slate-light);margin-bottom:10px">
+      💡 <strong>Single-patient handoff</strong> covers the patient selected in the bar above.
+      <strong>Multi-patient handoff</strong> rolls every patient on your roster into one printable summary for end-of-shift handover.
+    </div>
     <div class="form-row">
       <div class="fg" style="margin:0"><label>Outgoing Caregiver</label><input id="ho-out" placeholder="Your name or initials"></div>
       <div class="fg" style="margin:0"><label>Incoming Caregiver</label><input id="ho-in" placeholder="Receiving caregiver name"></div>
@@ -1838,6 +1905,15 @@ body {
         <label>Supervisor</label>
         <input id="set-supervisor" placeholder="Supervisor name and contact" oninput="markSettingsDirty()">
       </div>
+      <div class="fg" style="margin-bottom:16px">
+        <label>Default hourly rate ($/hr)</label>
+        <input id="set-default-rate" type="number" min="0" step="0.25" placeholder="e.g. 28" inputmode="decimal" oninput="markSettingsDirty()">
+        <div style="font-size:.72rem;color:var(--slate-light);margin-top:3px">Used to auto-populate billing entries created from Clock Out.</div>
+      </div>
+      <div class="fg" style="margin-bottom:16px">
+        <label>Facility name (optional, for printed reports)</label>
+        <input id="set-facility" placeholder="e.g. Sunrise Manor — North Wing" oninput="markSettingsDirty()">
+      </div>
       <button class="btn btn-teal" id="settings-save-btn" onclick="saveSettings()" style="width:100%;justify-content:center;font-size:.92rem">💾 Save Caregiver Profile</button>
       <div id="settings-saved-msg" style="display:none;text-align:center;font-size:.78rem;color:var(--given);margin-top:8px">✅ Profile saved successfully</div>
     </div>
@@ -1983,6 +2059,7 @@ body {
     <button class="btn btn-teal" onclick="saveCareplan()">💾 Save Care Plan</button>
   </div>
   <div id="careplan-patient-bar" style="margin-bottom:14px"></div>
+  <div id="careplan-last-updated" style="margin-bottom:14px;font-size:.78rem;color:var(--slate-light)"></div>
   <div class="grid-2">
     <div class="card">
       <div class="card-title">🎯 Goals of Care</div>
@@ -2816,7 +2893,7 @@ body {
 
 // ── Data ──────────────────────────────────────────────────────
 const STORE          = 'tendedPro_v1';
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 3;
 const COLORS = ['#0C7A6E','#0C3B6E','#7A0C4A','#4A0C7A','#6E4A0C','#0C4A6E','#6E0C2A','#2A6E0C'];
 
 // ── BLACK BOX WARNING DATABASE ─────────────────────────────────
@@ -3187,8 +3264,38 @@ function migrateData(){
     }
   }
 
+  // 6. marNotes — migrate from date-only key to date|patientId key (schema v3)
+  // Old shape: D.marNotes = { 'YYYY-MM-DD': 'text' }
+  // New shape: D.marNotes = { 'YYYY-MM-DD|patientId': 'text' }
+  if(D.marNotes && typeof D.marNotes === 'object'){
+    const migratedNotes = {};
+    const targetPid = firstPid ? String(firstPid) : 'legacy';
+    Object.keys(D.marNotes).forEach(k => {
+      if(k.indexOf('|') === -1){
+        // Legacy date-only key — attribute to first patient
+        migratedNotes[k + '|' + targetPid] = D.marNotes[k];
+      } else {
+        migratedNotes[k] = D.marNotes[k];
+      }
+    });
+    D.marNotes = migratedNotes;
+  }
+
   // Mark migration complete — must be last line
   D._schemaVersion = SCHEMA_VERSION;
+}
+
+// Helper: MAR notes are keyed by date|patientId
+function marNotesKey(dateStr, pid){
+  return dateStr + '|' + (pid || 'unassigned');
+}
+function getMARNotes(dateStr, pid){
+  if(!D.marNotes) return '';
+  return D.marNotes[marNotesKey(dateStr, pid)] || '';
+}
+function setMARNotes(dateStr, pid, text){
+  if(!D.marNotes) D.marNotes = {};
+  D.marNotes[marNotesKey(dateStr, pid)] = text;
 }
 
 
@@ -3207,8 +3314,76 @@ function setCarePlanForPatient(pid, data){
   if(!D.careplan) D.careplan = {};
   D.careplan[String(pid)] = data;
 }
+// BUG-003 / BUG-004 — IndexedDB shadow store. localStorage is the primary;
+// IndexedDB mirrors writes so a Chrome data clear that wipes localStorage still
+// leaves a recoverable backup (IndexedDB lives in a separate origin storage area
+// in some Android scenarios; not a guarantee, but adds a real layer).
+let _idbHandle = null;
+const IDB_NAME = 'tendedPro';
+const IDB_STORE = 'snapshots';
+
+function _openIDB(){
+  if(_idbHandle) return Promise.resolve(_idbHandle);
+  if(!('indexedDB' in window)) return Promise.resolve(null);
+  return new Promise(resolve => {
+    try {
+      const req = indexedDB.open(IDB_NAME, 1);
+      req.onupgradeneeded = e => {
+        const db = e.target.result;
+        if(!db.objectStoreNames.contains(IDB_STORE)) db.createObjectStore(IDB_STORE);
+      };
+      req.onsuccess = e => { _idbHandle = e.target.result; resolve(_idbHandle); };
+      req.onerror = () => resolve(null);
+    } catch(e){ resolve(null); }
+  });
+}
+async function _idbPut(key, val){
+  const db = await _openIDB(); if(!db) return;
+  try {
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).put(val, key);
+  } catch(e){}
+}
+async function _idbGet(key){
+  const db = await _openIDB(); if(!db) return null;
+  return new Promise(resolve => {
+    try {
+      const tx = db.transaction(IDB_STORE, 'readonly');
+      const req = tx.objectStore(IDB_STORE).get(key);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    } catch(e){ resolve(null); }
+  });
+}
+
+let _saveDebounce = null;
 function save(){
   try { localStorage.setItem(STORE, JSON.stringify(D)); } catch(e){}
+  // Debounced IndexedDB shadow write — protects against catastrophic save loops
+  if(_saveDebounce) clearTimeout(_saveDebounce);
+  _saveDebounce = setTimeout(() => {
+    _idbPut('store', D);
+    _idbPut('lastBackupAt', new Date().toISOString());
+  }, 250);
+}
+// Auto-restore from IndexedDB when localStorage is empty (typical Clear-Data scenario)
+async function _maybeRestoreFromShadow(){
+  try {
+    const ls = localStorage.getItem(STORE);
+    if(ls) return false; // primary store is intact
+    const shadow = await _idbGet('store');
+    if(!shadow || typeof shadow !== 'object') return false;
+    const lastBackupAt = await _idbGet('lastBackupAt');
+    const proceed = confirm(
+      'Welcome back. We detected a recoverable backup from this device.\n\n' +
+      (lastBackupAt ? 'Last backed up: ' + new Date(lastBackupAt).toLocaleString() + '\n\n' : '') +
+      'OK = restore that backup\n' +
+      'Cancel = start fresh (the backup remains and can be exported later)'
+    );
+    if(!proceed) return false;
+    localStorage.setItem(STORE, JSON.stringify(shadow));
+    return true;
+  } catch(e){ return false; }
 }
 
 // ── Toast ──────────────────────────────────────────────────────
@@ -3223,11 +3398,51 @@ function toast(msg, color){
   _toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
 }
 
+// ── History / back-button integration ──────────────────────────
+let _suppressHistoryPush = false;
+let _currentSection = 'dashboard';
+
+function _pushHistory(state){
+  if(_suppressHistoryPush) return;
+  try { history.pushState(state, '', ''); } catch(e){}
+}
+
+window.addEventListener('popstate', e => {
+  const state = e.state || {};
+  // Close any open modals first
+  const openModalEl = document.querySelector('.modal.open');
+  if(openModalEl){
+    _suppressHistoryPush = true;
+    closeModal(openModalEl.id);
+    _suppressHistoryPush = false;
+    return;
+  }
+  // Navigate to the state's section (or dashboard fallback)
+  const target = (state && state.section) ? state.section : 'dashboard';
+  if(target && target !== _currentSection){
+    _suppressHistoryPush = true;
+    navTo(target);
+    _suppressHistoryPush = false;
+  }
+});
+
 // ── Modals ─────────────────────────────────────────────────────
+// BUG-012 — modals whose data lives in gated sections; opening these from a
+// dashboard quick-action used to bypass the paywall. Gate them here too.
+const GATED_MODALS = new Set([
+  'incident-modal','behavior-modal','toilet-modal','vitals-modal','pain-modal',
+  'sundowning-modal','wandering-modal','memorycare-modal','wound-modal',
+  'intake-modal','comm-modal','trigger-modal','cred-modal','billing-modal',
+  'med-modal','routine-modal','refusal-modal'
+]);
 function openModal(id){
   const el = document.getElementById(id);
   if(!el) return;
+  if(GATED_MODALS.has(id) && !checkUnlock()) return;
+  // Capture scroll for BUG-025 restore on close
+  if(_savedScroll === null) _savedScroll = window.scrollY || 0;
   el.classList.add('open');
+  _pushHistory({ modal: id, section: _currentSection });
   // Auto-fill datetime for incident modal
   if(id === 'incident-modal' || id === 'comm-modal' || id === 'behavior-modal'){
     const dtMap = { 'incident-modal':'inc-dt', 'comm-modal':'cm-dt', 'behavior-modal':'bm-dt' };
@@ -3264,6 +3479,7 @@ function openModal(id){
 
 function closeModal(id){
   const el = document.getElementById(id);
+  const wasOpen = el && el.classList.contains('open');
   if(el) el.classList.remove('open');
   // Reset edit IDs when modal is closed
   const resetMap = {
@@ -3275,7 +3491,26 @@ function closeModal(id){
     'memorycare-modal': () => { _editMemoryCareId  = null; const t=document.querySelector('#memorycare-modal .modal-title'); if(t) t.textContent='💬 Add Memory Care Note'; const b=document.querySelector('#memorycare-modal .btn-teal'); if(b) b.textContent='Save Note'; },
   };
   if(resetMap[id]) resetMap[id]();
+  // Pop history entry if we pushed one on openModal — but skip if popstate triggered this call
+  if(wasOpen && !_suppressHistoryPush){
+    const st = history.state || {};
+    if(st.modal === id){
+      _suppressHistoryPush = true;
+      history.back();
+      // popstate fires async; reset flag in next tick
+      setTimeout(() => { _suppressHistoryPush = false; }, 0);
+    }
+  }
+  // Restore scroll position if captured (BUG-025)
+  if(_savedScroll !== null){
+    const y = _savedScroll;
+    _savedScroll = null;
+    requestAnimationFrame(() => window.scrollTo({ top: y, left: 0, behavior: 'instant' in window.scrollTo ? 'instant' : 'auto' }));
+  }
 }
+
+// Scroll-position preservation across modal open/close (BUG-025)
+let _savedScroll = null;
 
 // ── Navigation ─────────────────────────────────────────────────
 function navTo(id, btn){
@@ -3289,6 +3524,12 @@ function navTo(id, btn){
   const sec = document.getElementById('section-' + id);
   if(sec) sec.classList.add('active');
   if(btn) btn.classList.add('active');
+
+  // Push history entry for back-button support — skipped when triggered by popstate
+  if(id !== _currentSection){
+    _pushHistory({ section: id });
+    _currentSection = id;
+  }
 
   // Sync bottom nav
   document.querySelectorAll('.bn-btn').forEach(b => {
@@ -3367,6 +3608,7 @@ function dismissLaunchBanner(){
 
 function renderDashboard(){
   renderLaunchBanner();
+  renderBackupNagBanner();
   const todayISO = new Date().toISOString().split('T')[0];
   const h = new Date().getHours();
 
@@ -3445,7 +3687,7 @@ function renderDashboard(){
   const todayToilet    = (D.toileting||[]).filter(e => e.date === todayISO);
   const todayBehaviors = (D.behaviors||[]).filter(b => b.dt && b.dt.startsWith(todayISO));
   const _dashR = getRoutinesForPatient(_globalPatientId);
-  const morningDone    = (_dashR?.morning||[]).filter(r => r.done).length;
+  const morningDone    = (_dashR?.morning||[]).filter(r => isRoutineDoneToday(r)).length;
   const morningTotal   = (_dashR?.morning||[]).length;
   const hasWounds      = (D.wounds||[]).length > 0;
   const woundChecked   = (D.wounds||[]).some(w => w.updatedAt && w.updatedAt.startsWith(todayISO));
@@ -3527,14 +3769,37 @@ function renderDashboard(){
              })(),
       nav:   'sundowning', icon: '🌅'
     },
-    {
-      label: 'Wandering safeguards verified',
-      done:  false,
-      sub:   (D.wandering||[]).length > 0
-           ? `${(D.wandering||[]).length} prior incident${(D.wandering||[]).length>1?'s':''} on file — confirm prevention measures active`
-           : 'Confirm door alarms, bed sensors, and exit protocols active',
-      nav:   'wandering', icon: '🚶'
-    }
+    (() => {
+      const todayISO = new Date().toISOString().split('T')[0];
+      const activePat = _globalPatientId ? D.patients.find(p => String(p.id) === String(_globalPatientId)) : null;
+      const risk = (activePat?.fallRisk || '').toLowerCase();
+      const nonRisky = !activePat || risk === '' || risk === 'none' || risk === 'low';
+      const todayWandering = (D.wandering||[]).filter(w =>
+        (w.dt||'').startsWith(todayISO) &&
+        (!_globalPatientId || String(w.patientId) === String(_globalPatientId))
+      );
+      const allWandering = (D.wandering||[]).filter(w =>
+        !_globalPatientId || String(w.patientId) === String(_globalPatientId)
+      );
+      const done = nonRisky || todayWandering.length > 0;
+      let sub;
+      if(nonRisky){
+        sub = activePat
+          ? `Fall risk ${activePat.fallRisk || 'not set'} — safeguards not required`
+          : 'Select a patient to assess';
+      } else if(todayWandering.length > 0){
+        sub = `Verified today — ${todayWandering.length} check${todayWandering.length>1?'s':''} logged`;
+      } else {
+        sub = allWandering.length > 0
+          ? `${allWandering.length} prior incident${allWandering.length>1?'s':''} — log today's check to verify`
+          : 'Confirm door alarms, bed sensors, exit protocols (log in Wandering)';
+      }
+      return {
+        label: 'Wandering safeguards verified',
+        done, sub,
+        nav: 'wandering', icon: '🚶'
+      };
+    })()
   ];
 
   const doneCount = checkItems.filter(i => i.done).length;
@@ -3779,14 +4044,18 @@ function openPatientDetail(id){
 
   document.getElementById('detail-emergency').innerHTML = p.emergency
     ? (() => {
-        // Parse phone numbers from emergency contact string and make tappable
         const text = p.emergency;
         const phoneRegex = /(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/g;
+        const phones = (text.match(phoneRegex) || []).map(s => s.trim());
         const linked = text.replace(phoneRegex, '<a href="tel:$1" style="color:var(--teal);font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px">📞 $1</a>');
-        return `<div style="font-size:.88rem;color:var(--navy);line-height:1.8">${linked}</div>
-          <a href="tel:${text.match(phoneRegex)?.[0]||''}" style="display:inline-flex;align-items:center;gap:6px;background:var(--teal);color:white;border-radius:8px;padding:8px 16px;font-weight:600;font-size:.84rem;text-decoration:none;margin-top:10px">
-            📞 Call Emergency Contact
-          </a>`;
+        const callButtons = phones.length === 0
+          ? ''
+          : phones.length === 1
+            ? `<a href="tel:${phones[0]}" style="display:inline-flex;align-items:center;gap:6px;background:var(--teal);color:white;border-radius:8px;padding:10px 16px;font-weight:600;font-size:.84rem;text-decoration:none;margin-top:10px;min-height:44px">📞 Call ${phones[0]}</a>`
+            : `<div style="display:flex;flex-direction:column;gap:6px;margin-top:10px">
+                ${phones.map((ph, i) => `<a href="tel:${ph}" style="display:inline-flex;align-items:center;gap:6px;background:${i===0?'var(--teal)':'var(--off-white)'};color:${i===0?'white':'var(--teal)'};border:${i===0?'none':'1.5px solid var(--teal)'};border-radius:8px;padding:10px 16px;font-weight:600;font-size:.84rem;text-decoration:none;min-height:44px">📞 Call ${ph}${i===0?' (primary)':''}</a>`).join('')}
+              </div>`;
+        return `<div style="font-size:.88rem;color:var(--navy);line-height:1.8">${linked}</div>${callButtons}`;
       })()
     : '<div style="color:var(--slate-light);font-size:.84rem">No emergency contact recorded</div>';
 }
@@ -3938,7 +4207,17 @@ function renderMedList(){
 }
 
 function deleteMed(id){
-  if(!confirm('Remove this medication from the shared list?')) return;
+  const med = (D.meds||[]).find(x => x.id === id);
+  const name = med ? `${med.name}${med.dose ? ' ' + med.dose : ''}` : 'this medication';
+  // Count downstream MAR records keyed on this med id
+  const marRecordCount = Object.keys(D.mar||{}).filter(k => {
+    const parts = k.split('|');
+    return parts.length >= 3 && parts[2] === String(id);
+  }).length;
+  const warning = marRecordCount > 0
+    ? `Delete ${name}?\n\n${marRecordCount} MAR record${marRecordCount>1?'s':''} reference this medication. The records will remain but show as orphaned.`
+    : `Delete ${name}?`;
+  if(!confirm(warning)) return;
   D.meds = D.meds.filter(x => x.id !== id);
   save(); renderMedList();
 }
@@ -4292,6 +4571,7 @@ function exportAgencySummary(){
 <body>
 <div class="page">
 
+  ${D.settings?.facility ? `<div style="text-align:center;font-weight:700;font-size:14pt;color:#0C1B33;border-bottom:2px solid #0B7A6E;padding-bottom:6px;margin-bottom:10px">${D.settings.facility}</div>` : ''}
   <div class="report-header">
     <div>
       <div class="report-title">Daily Shift Summary</div>
@@ -4357,7 +4637,7 @@ function exportAgencySummary(){
 </html>`;
 
   const win = window.open('', '_blank', 'width=960,height=800');
-  if(!win){ toast('⚠ Please allow popups to view the PDF summary', 'var(--held)'); return; }
+  if(!win){ _showPopupBlockedHelp('the PDF summary'); return; }
   win.document.write(html);
   win.document.close();
   toast('✅ Daily summary opened — tap Save as PDF / Print', 'var(--given)');
@@ -4374,7 +4654,7 @@ function renderMAR(){
   const dateDisp = new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   if(sub)       sub.textContent      = dateDisp;
   if(notesDate) notesDate.textContent = dateDisp;
-  if(notesEl)   notesEl.value        = D.marNotes[dateVal] || '';
+  if(notesEl)   notesEl.value        = getMARNotes(dateVal, patientId);
 
   if(!table) return;
 
@@ -4469,19 +4749,33 @@ function renderMAR(){
 
 function cycleMAR(key, newStatus){
   if(!D.mar[key]) D.mar[key] = {};
-  D.mar[key].status   = newStatus;
-  D.mar[key].initials = D.settings.initials || document.getElementById('mar-initials')?.value || '';
-  if(newStatus === 'given' && !D.mar[key].timeGiven){
+  const rec = D.mar[key];
+  const prevStatus = rec.status || 'pending';
+  const who = D.settings.initials || document.getElementById('mar-initials')?.value || '';
+  // Append-only audit trail: every state change adds an entry
+  if(!Array.isArray(rec.history)) rec.history = [];
+  if(prevStatus !== newStatus){
+    rec.history.push({
+      at:   new Date().toISOString(),
+      who:  who || '(unknown)',
+      from: prevStatus,
+      to:   newStatus
+    });
+  }
+  rec.status   = newStatus;
+  rec.initials = who;
+  if(newStatus === 'given' && !rec.timeGiven){
     const n = new Date();
-    D.mar[key].timeGiven = n.toTimeString().slice(0,5);
+    rec.timeGiven = n.toTimeString().slice(0,5);
   }
-  // Clear refusal details if cycling away from refused
+  // Clear refusal details if cycling away from refused (history preserves the prior refusal)
   if(newStatus !== 'refused'){
-    delete D.mar[key].refusalReason;
-    delete D.mar[key].refusalAttempted;
-    delete D.mar[key].refusalNotified;
-    delete D.mar[key].refusalNotes;
+    delete rec.refusalReason;
+    delete rec.refusalAttempted;
+    delete rec.refusalNotified;
+    delete rec.refusalNotes;
   }
+  if('vibrate' in navigator) navigator.vibrate(15);
   save();
   renderMAR();
   // Open refusal modal when marking refused
@@ -4528,7 +4822,8 @@ function setMARTime(key, time){
 
 function saveMARNotes(){
   const dateVal = document.getElementById('mar-date')?.value || new Date().toISOString().split('T')[0];
-  D.marNotes[dateVal] = document.getElementById('mar-notes')?.value || '';
+  const patId   = document.getElementById('mar-patient')?.value || _globalPatientId || '';
+  setMARNotes(dateVal, patId, document.getElementById('mar-notes')?.value || '');
   save();
   toast('✅ MAR notes saved', 'var(--given)');
 }
@@ -4539,7 +4834,7 @@ function printMAR(){
   const patient  = D.patients.find(p => p.id == patId);
   const dateDisp = new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   const initials = D.settings.initials || document.getElementById('mar-initials')?.value || '___________';
-  const notes    = D.marNotes[dateVal] || '';
+  const notes    = getMARNotes(dateVal, patId);
 
   const rows = (patId
     ? (D.meds||[]).filter(m => String(m.patientId) === String(patId))
@@ -4557,6 +4852,7 @@ function printMAR(){
   }).join('');
 
   const w = window.open('','_blank');
+  if(!w){ _showPopupBlockedHelp('this report'); return; }
   w.document.write(`<!DOCTYPE html><html><head><title>MAR — ${dateDisp}</title>
 <style>
   body{font-family:'IBM Plex Sans',system-ui,sans-serif;max-width:760px;margin:30px auto;font-size:13px;color:#1C2B42}
@@ -4572,6 +4868,7 @@ function printMAR(){
   .foot{margin-top:16px;padding-top:10px;border-top:1px solid #D8E2EE;font-size:.7rem;color:#8097B3;display:flex;justify-content:space-between}
   @media print{@page{size:A4;margin:12mm}}
 
+  ${D.settings?.facility ? `<div style="text-align:center;font-weight:700;font-size:13pt;margin-bottom:6px">${D.settings.facility}</div>` : ''}
   <h1>Medication Administration Record</h1>
   <div class="meta">
     ${dateDisp} &nbsp;·&nbsp;
@@ -5185,24 +5482,17 @@ if('serviceWorker' in navigator){
     const loc = window.location;
     const isRealHost = loc.protocol === 'https:' || loc.hostname === 'localhost' || loc.hostname === '127.0.0.1';
     if(!isRealHost) return;
-    // Unregister ALL existing service workers to force fresh load on Android
-    navigator.serviceWorker.getRegistrations().then(regs => {
-      regs.forEach(reg => reg.unregister());
-    });
-    // Clear all caches
-    if('caches' in window){
-      caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
-    }
-    // Re-register fresh SW
-    const APP_VERSION = '4.1.0-b6';
+
+    const APP_VERSION = '4.1.0-b7';
     const swCode = `
-const CACHE = 'tended-pro-v8';
+const CACHE = 'tended-pro-v9';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
   'https://flougher.github.io/tended-pro/manifest.json',
   'https://flougher.github.io/tended-pro/icon-192.png',
-  'https://flougher.github.io/tended-pro/icon-512.png'
+  'https://flougher.github.io/tended-pro/icon-512.png',
+  'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap'
 ];
 self.addEventListener('install', e => {
   e.waitUntil(
@@ -5217,6 +5507,18 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 self.addEventListener('fetch', e => {
+  const url = e.request.url;
+  // Cache-first for Google Fonts + gstatic font files so print previews work offline
+  if(url.indexOf('fonts.googleapis.com') !== -1 || url.indexOf('fonts.gstatic.com') !== -1){
+    e.respondWith(
+      caches.match(e.request).then(cached => cached || fetch(e.request).then(r => {
+        const clone = r.clone();
+        caches.open(CACHE).then(cache => cache.put(e.request, clone)).catch(()=>{});
+        return r;
+      }).catch(() => cached))
+    );
+    return;
+  }
   if (e.request.mode === 'navigate') {
     e.respondWith(
       fetch(e.request).then(r => {
@@ -5226,15 +5528,51 @@ self.addEventListener('fetch', e => {
       }).catch(() => caches.match(e.request).then(r => r || caches.match('https://flougher.github.io/tended-pro/')))
     );
   } else {
-    e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+    // Stale-while-revalidate for other GETs
+    if(e.request.method === 'GET'){
+      e.respondWith(
+        caches.match(e.request).then(cached => {
+          const fetched = fetch(e.request).then(r => {
+            if(r && r.ok){
+              const clone = r.clone();
+              caches.open(CACHE).then(cache => cache.put(e.request, clone)).catch(()=>{});
+            }
+            return r;
+          }).catch(() => cached);
+          return cached || fetched;
+        })
+      );
+    }
   }
 });
 `;
-    try {
-      const blob = new Blob([swCode], {type:'application/javascript'});
-      const blobUrl = URL.createObjectURL(blob);
-      navigator.serviceWorker.register(blobUrl).catch(() => {});
-    } catch(e) {}
+
+    const registerFresh = () => {
+      try {
+        const blob = new Blob([swCode], {type:'application/javascript'});
+        const blobUrl = URL.createObjectURL(blob);
+        navigator.serviceWorker.register(blobUrl).catch(() => {});
+      } catch(e) {}
+    };
+
+    // Force-update path: append ?sw=update to URL to wipe and re-register
+    const forceUpdate = (loc.search || '').indexOf('sw=update') !== -1;
+    if(forceUpdate){
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        return Promise.all(regs.map(r => r.unregister()));
+      }).then(() => {
+        if('caches' in window){
+          return caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))));
+        }
+      }).then(registerFresh).catch(() => registerFresh());
+      return;
+    }
+
+    // Normal path: idempotent. Only register if no SW is currently controlling the page.
+    // The SW's own activate handler prunes stale caches via the CACHE version constant.
+    if(!navigator.serviceWorker.controller){
+      registerFresh();
+    }
   });
 }
 var _deferredInstall = null;
@@ -5266,6 +5604,7 @@ let _editIncidentId = null;
 
 function openIncidentModal(editId){
   if(!D.patients||!D.patients.length){ toast('Please add a patient first', 'var(--held)'); return; }
+  if(!checkUnlock()) return;
   _editIncidentId = editId !== undefined ? editId : null;
   const isEdit = _editIncidentId !== null;
   const inc = isEdit ? (D.incidents||[]).find(x => x.id === _editIncidentId) : null;
@@ -5406,7 +5745,7 @@ function generateHandoff(){
     return icon + ' ' + m.name + ' ' + (m.dose||'') + (rec.timeGiven ? ' @ ' + fmtTime(rec.timeGiven) : '') + (rec.status === 'refused' ? ' — REFUSED' : '') + (rec.status === 'held' ? ' — HELD' : '');
   });
   const marSummary = marLines.length ? marLines.join('\n') : 'No medications in shared list';
-  const marNotes   = D.marNotes[todayISO] || '';
+  const marNotes   = getMARNotes(todayISO, firstPatId);
 
   // Incidents today
   const todayInc = D.incidents.filter(i => i.dt.startsWith(todayISO));
@@ -5498,6 +5837,7 @@ function printHandoff(){
   const incoming = document.getElementById('ho-in')?.value.trim()   || '___________';
   const today    = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   const w = window.open('','_blank');
+  if(!w){ _showPopupBlockedHelp('this report'); return; }
   w.document.write(`<!DOCTYPE html><html><head><title>Shift Handoff</title>
 <style>
   body{font-family:'IBM Plex Sans',system-ui,sans-serif;max-width:760px;margin:30px auto;font-size:13px;color:#1C2B42}
@@ -5511,6 +5851,7 @@ function printHandoff(){
   .foot{margin-top:16px;padding-top:10px;border-top:1px solid #D8E2EE;font-size:.7rem;color:#8097B3;display:flex;justify-content:space-between}
   @media print{@page{size:A4;margin:12mm}}
 
+  ${D.settings?.facility ? `<div style="text-align:center;font-weight:700;font-size:13pt;margin-bottom:6px">${D.settings.facility}</div>` : ''}
   <h1>Shift Handoff Report</h1>
   <div class="meta"><span>${today}</span><span>${out} → ${incoming}</span></div>
   ${preview.innerHTML}
@@ -5539,6 +5880,8 @@ function loadSettings(){
   set('set-role',       s.role);
   set('set-initials',   s.initials);
   set('set-supervisor', s.supervisor);
+  set('set-default-rate', s.defaultRate);
+  set('set-facility',     s.facility);
   if(typeof renderPremiumCard === 'function') renderPremiumCard();
   renderProfileCompletion();
   // Clear dirty state on load
@@ -5601,12 +5944,16 @@ function saveSettings(){
     return;
   }
 
+  const rateRaw = parseFloat(document.getElementById('set-default-rate')?.value || '');
   D.settings = {
+    ...D.settings,
     name,
     agency:     (document.getElementById('set-agency')?.value     || '').trim(),
     role:       (document.getElementById('set-role')?.value       || '').trim(),
     initials,
-    supervisor: (document.getElementById('set-supervisor')?.value || '').trim()
+    supervisor: (document.getElementById('set-supervisor')?.value || '').trim(),
+    defaultRate: (!isNaN(rateRaw) && rateRaw >= 0) ? rateRaw : 0,
+    facility:   (document.getElementById('set-facility')?.value || '').trim()
   };
   save();
   updateTopbarUser();
@@ -5631,26 +5978,122 @@ function updateTopbarUser(){
 // ═══════════════════════════════════════════════════════════════
 // EXPORT / IMPORT
 // ═══════════════════════════════════════════════════════════════
-function exportData(){
+async function exportData(){
+  // PHI warning before plaintext export (BUG-017)
+  const warn = '⚠ This backup file contains all patient information in plain text\n' +
+               '(names, DOBs, allergies, medications, MAR history, vitals, billing).\n\n' +
+               'Store it on a device you control. Do not email it to yourself,\n' +
+               'upload to public cloud, or share over chat.\n\n' +
+               'Optionally, you can encrypt the backup with a passphrase.\n\n' +
+               'Tap OK to choose. Cancel to abort.';
+  if(!confirm(warn)) return;
+  const wantsEncrypt = confirm('Encrypt this backup with a passphrase?\n\nOK = encrypt (recommended)\nCancel = export plain JSON');
   const payload = {
     _meta: { app:'tended-pro', version:'4.1.0', phases:'1-4-complete', exported: new Date().toISOString() },
     ...D
   };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
-  const a    = document.createElement('a');
-  a.href     = URL.createObjectURL(blob);
-  a.download = 'tended-pro-backup-' + new Date().toISOString().split('T')[0] + '.json';
-  a.click();
-  toast('✅ Data exported', 'var(--given)');
+  const plaintext = JSON.stringify(payload, null, 2);
+  const baseName  = 'tended-pro-backup-' + new Date().toISOString().split('T')[0];
+  if(wantsEncrypt){
+    const pass = prompt('Enter a passphrase (min 8 chars). You will need this to restore the backup.');
+    if(!pass || pass.length < 8){ toast('Passphrase too short — export cancelled', 'var(--refused)'); return; }
+    try {
+      const enc = new TextEncoder();
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const iv   = crypto.getRandomValues(new Uint8Array(12));
+      const baseKey = await crypto.subtle.importKey('raw', enc.encode(pass), 'PBKDF2', false, ['deriveKey']);
+      const key = await crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt, iterations: 250000, hash: 'SHA-256' },
+        baseKey,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['encrypt']
+      );
+      const cipher = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(plaintext));
+      const b64 = b => btoa(String.fromCharCode(...new Uint8Array(b)));
+      const envelope = {
+        _meta: { app:'tended-pro', version:'4.1.0', exported: new Date().toISOString(), encrypted: true, kdf:'PBKDF2-SHA256', iterations: 250000, cipher: 'AES-GCM-256' },
+        salt: b64(salt), iv: b64(iv), data: b64(cipher)
+      };
+      const blob = new Blob([JSON.stringify(envelope)], { type:'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = baseName + '.encrypted.json';
+      a.click();
+      toast('🔒 Encrypted backup downloaded', 'var(--given)');
+    } catch(err){
+      console.error(err);
+      toast('Encryption failed — try a plain backup instead', 'var(--refused)');
+    }
+  } else {
+    const blob = new Blob([plaintext], { type:'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = baseName + '.json';
+    a.click();
+    toast('✅ Plain backup downloaded — store it securely', 'var(--given)');
+  }
+  try { localStorage.setItem('tendedPro_lastExportAt', new Date().toISOString()); } catch(e){}
+  _idbPut('lastExportAt', new Date().toISOString());
+  renderBackupNagBanner();
+}
+
+// BUG-003 — surface a Backup CTA when no export has happened in 7+ days
+function renderBackupNagBanner(){
+  const host = document.getElementById('backup-nag-banner');
+  if(!host) return;
+  let last = null;
+  try { last = localStorage.getItem('tendedPro_lastExportAt'); } catch(e){}
+  const hasData = (D.patients||[]).length > 0 || Object.keys(D.mar||{}).length > 0;
+  if(!hasData){ host.style.display = 'none'; return; }
+  const daysSince = last ? Math.floor((Date.now() - new Date(last).getTime()) / (24*60*60*1000)) : 999;
+  if(daysSince >= 7){
+    host.style.display = 'block';
+    host.innerHTML = `<div style="background:#FFF3D0;border:1.5px solid #C47A00;border-radius:var(--r);padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:1.1rem">💾</span>
+      <span style="flex:1;min-width:180px;font-size:.82rem;color:#7A4A00;line-height:1.5">
+        <strong>Back up your data.</strong> ${last ? `Last backup: ${daysSince} day${daysSince===1?'':'s'} ago.` : 'No backup found.'}
+        If you clear browser data or switch devices, unsaved data will be lost.
+      </span>
+      <button class="btn btn-teal btn-sm" onclick="exportData()" style="white-space:nowrap">Back up now</button>
+    </div>`;
+  } else {
+    host.style.display = 'none';
+  }
 }
 
 function importData(input){
   const file = input.files[0];
   if(!file) return;
   const reader = new FileReader();
-  reader.onload = e => {
+  reader.onload = async e => {
     try {
-      const data = JSON.parse(e.target.result);
+      let data = JSON.parse(e.target.result);
+      // Detect encrypted envelope
+      if(data && data._meta && data._meta.encrypted){
+        const pass = prompt('This backup is encrypted. Enter passphrase to restore.');
+        if(!pass){ toast('Import cancelled', 'var(--held)'); input.value=''; return; }
+        try {
+          const b64ToBytes = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+          const enc = new TextEncoder();
+          const salt = b64ToBytes(data.salt);
+          const iv   = b64ToBytes(data.iv);
+          const cipher = b64ToBytes(data.data);
+          const baseKey = await crypto.subtle.importKey('raw', enc.encode(pass), 'PBKDF2', false, ['deriveKey']);
+          const key = await crypto.subtle.deriveKey(
+            { name: 'PBKDF2', salt, iterations: data._meta.iterations || 250000, hash: 'SHA-256' },
+            baseKey,
+            { name: 'AES-GCM', length: 256 },
+            false,
+            ['decrypt']
+          );
+          const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, cipher);
+          data = JSON.parse(new TextDecoder().decode(plain));
+        } catch(err){
+          toast('❌ Wrong passphrase or corrupted file', 'var(--refused)');
+          input.value=''; return;
+        }
+      }
       const imported = Object.assign({
         patients:[], meds:[], mar:{}, marNotes:{}, incidents:[],
         careplan:{}, wounds:[], intake:[], comms:[],
@@ -5701,6 +6144,19 @@ function fmtTime(t){
 function loadCareplan(){
   const cp = getCarePlanForPatient(_globalPatientId);
   const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
+  // UX-006 — surface last-updated indicator
+  const lu = document.getElementById('careplan-last-updated');
+  if(lu){
+    if(cp.savedAt){
+      const d = new Date(cp.savedAt);
+      const diff = Date.now() - d.getTime();
+      const days = Math.floor(diff / 86400000);
+      const rel = days === 0 ? 'today' : days === 1 ? 'yesterday' : days + ' days ago';
+      lu.innerHTML = `📌 Last updated ${rel} (${d.toLocaleString()})${cp.updatedBy ? ' · by ' + cp.updatedBy : ''}`;
+    } else {
+      lu.innerHTML = '<em>No care plan saved yet for this patient.</em>';
+    }
+  }
   set('cp-goals',      cp.goals);
   set('cp-dnr',        cp.dnr);
   set('cp-proxy',      cp.proxy);
@@ -5957,7 +6413,7 @@ function renderIntake(){
       <div>Time</div><div>Meal / Fluid</div><div>Amount</div><div></div>
     </div>` +
     entries.map(e => `
-    <div class="intake-row">
+    <div class="intake-row" data-row-id="intake-${e.id}">
       <div style="font-family:var(--font-mono);font-size:.82rem;color:var(--slate-mid)">${fmtTime(e.time)}</div>
       <div>
         <span class="intake-type ${typeClass(e.type)}">${e.type}</span>
@@ -5975,8 +6431,11 @@ function renderIntake(){
 }
 
 function deleteIntake(id){
-  D.intake = (D.intake||[]).filter(x => x.id !== id);
-  save(); renderIntake();
+  if(!confirm('Delete this intake entry?')) return;
+  _animateRowOut(`[data-row-id="intake-${id}"]`, () => {
+    D.intake = (D.intake||[]).filter(x => x.id !== id);
+    save(); renderIntake();
+  });
 }
 
 // ── 4. FAMILY COMMUNICATIONS ──────────────────────────────────
@@ -6168,11 +6627,26 @@ function saveRoutineItem(){
   renderRoutineList(period);
 }
 
+function _todayKey(){ return new Date().toISOString().split('T')[0]; }
+function isRoutineDoneToday(item){
+  if(!item) return false;
+  const t = _todayKey();
+  if(item.doneByDate && typeof item.doneByDate === 'object') return !!item.doneByDate[t];
+  return false;
+}
 function toggleRoutineDone(period, id){
   const r = getRoutinesForPatient(_globalPatientId);
   if(!r?.[period]) return;
   const item = r[period].find(x => x.id === id);
-  if(item) item.done = !item.done;
+  if(item){
+    if(!item.doneByDate || typeof item.doneByDate !== 'object') item.doneByDate = {};
+    const t = _todayKey();
+    item.doneByDate[t] = !item.doneByDate[t];
+    // Cleanup: keep only last 14 days of history
+    const cutoff = new Date(Date.now() - 14*24*60*60*1000).toISOString().split('T')[0];
+    Object.keys(item.doneByDate).forEach(k => { if(k < cutoff) delete item.doneByDate[k]; });
+    if('vibrate' in navigator) navigator.vibrate(20);
+  }
   save(); renderRoutineList(period);
 }
 
@@ -6200,13 +6674,15 @@ function renderRoutineList(period){
     return;
   }
   const sorted = [...items].sort((a,b) => (a.time||'99:99').localeCompare(b.time||'99:99'));
-  el.innerHTML = sorted.map(item => `
+  el.innerHTML = sorted.map(item => {
+    const done = isRoutineDoneToday(item);
+    return `
     <div class="routine-item">
-      <div class="routine-check ${item.done?'done':''}" onclick="toggleRoutineDone('${period}',${item.id})">
-        ${item.done ? '✓' : ''}
+      <div class="routine-check ${done?'done':''}" onclick="toggleRoutineDone('${period}',${item.id})">
+        ${done ? '✓' : ''}
       </div>
       <div style="flex:1;min-width:0">
-        <div style="font-weight:${item.done?'400':'600'};color:${item.done?'var(--slate-light)':'var(--navy)'};text-decoration:${item.done?'line-through':'none'};font-size:.9rem">${item.task}</div>
+        <div style="font-weight:${done?'400':'600'};color:${done?'var(--slate-light)':'var(--navy)'};text-decoration:${done?'line-through':'none'};font-size:.9rem">${item.task}</div>
         ${item.time ? `<div style="font-size:.74rem;color:var(--slate-light);font-family:var(--font-mono)">${fmtTime(item.time)}</div>` : ''}
         ${item.notes ? `<div style="font-size:.76rem;color:var(--slate-light);font-style:italic">${item.notes}</div>` : ''}
       </div>
@@ -6214,7 +6690,8 @@ function renderRoutineList(period){
         <button class="btn btn-secondary btn-xs btn-icon" onclick="openRoutineModal('${period}',${item.id})">✏️</button>
         <button class="btn btn-danger btn-xs btn-icon" onclick="deleteRoutineItem('${period}',${item.id})">✕</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function saveSensory(){
@@ -6334,8 +6811,7 @@ function saveBehavior(){
     antecedent:  document.getElementById('bm-antecedent')?.value.trim()  || '',
     behavior,
     consequence: document.getElementById('bm-consequence')?.value.trim() || '',
-    duration:    document.getElementById('bm-duration')?.value           || '< 5 minutes',
-    patientId:   document.getElementById('mar-patient')?.value || ''
+    duration:    document.getElementById('bm-duration')?.value           || '< 5 minutes'
   };
   if(_editBehaviorId !== null){
     const idx = D.behaviors.findIndex(x => x.id === _editBehaviorId);
@@ -6343,7 +6819,8 @@ function saveBehavior(){
     toast('✅ Behavior updated', 'var(--given)');
     _editBehaviorId = null;
   } else {
-    D.behaviors.push({ id: Date.now(), patientId: _globalPatientId || '', ...fields });
+    if(!_globalPatientId){ toast('Select a patient before logging a behavior', 'var(--refused)'); return; }
+    D.behaviors.push({ id: Date.now(), ...fields, patientId: _globalPatientId });
     toast('✅ Behavior logged', 'var(--given)');
   }
   D.behaviors.sort((a,b) => new Date(b.dt) - new Date(a.dt));
@@ -6542,8 +7019,7 @@ function saveToileting(){
     amount:    document.getElementById('tl-amount')?.value    || 'Moderate',
     continent: document.getElementById('tl-continent')?.value || 'continent',
     product:   document.getElementById('tl-product')?.value   || '',
-    notes:     document.getElementById('tl-notes')?.value.trim() || '',
-    patientId: document.getElementById('mar-patient')?.value || ''
+    notes:     document.getElementById('tl-notes')?.value.trim() || ''
   };
   if(_editToiletId !== null){
     const idx = D.toileting.findIndex(x => x.id === _editToiletId);
@@ -6551,7 +7027,8 @@ function saveToileting(){
     toast('✅ Toileting entry updated', 'var(--given)');
     _editToiletId = null;
   } else {
-    D.toileting.push({ id: Date.now(), patientId: _globalPatientId || '', ...fields });
+    if(!_globalPatientId){ toast('Select a patient before logging toileting', 'var(--refused)'); return; }
+    D.toileting.push({ id: Date.now(), ...fields, patientId: _globalPatientId });
     toast('✅ Toileting entry logged', 'var(--given)');
   }
   D.toileting.sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
@@ -6591,7 +7068,7 @@ function renderToileting(){
   const contLabel = { continent:'✓ Continent', incontinent:'✗ Incontinent', assisted:'★ Assisted' };
   const contColor = { continent:'var(--given)', incontinent:'var(--refused)', assisted:'var(--held)' };
   log.innerHTML = entries.map(e => `
-    <div class="toilet-row">
+    <div class="toilet-row" data-row-id="toilet-${e.id}">
       <div style="font-family:var(--font-mono);font-size:.8rem;color:var(--slate-mid)">${fmtTime(e.time)}</div>
       <div>
         <span class="toilet-type-badge ${typeClass[e.type]||'tt-void'}">${typeLabel[e.type]||e.type}</span>
@@ -6602,6 +7079,26 @@ function renderToileting(){
       <div style="font-size:.76rem;color:var(--slate-light)">${e.product||'—'}</div>
       <div style="display:flex;gap:3px"><button class="btn btn-secondary btn-xs" style="font-size:.68rem;padding:2px 7px" onclick="editToileting(${e.id})">✏️</button><button class="btn btn-danger btn-xs btn-icon" onclick="deleteToileting(${e.id})">✕</button></div>
     </div>`).join('');
+}
+
+// BUG-022 — clear, actionable guidance when Chrome blocks the print/popup window
+function _showPopupBlockedHelp(what){
+  const msg =
+    `Chrome blocked the print window for ${what || 'this report'}.\n\n` +
+    `To allow:\n` +
+    `1. Look at the URL bar — there's a small "blocked popup" icon on the right side.\n` +
+    `2. Tap it, then choose "Always allow popups from this site".\n` +
+    `3. Tap the print button again.\n\n` +
+    `On Android, you may need to: Settings → Site settings → Pop-ups and redirects → Allowed for this site.`;
+  alert(msg);
+}
+
+// BUG-024 — animate-out a single row, then run the actual delete logic
+function _animateRowOut(selector, after){
+  const row = document.querySelector(selector);
+  if(!row){ after(); return; }
+  row.classList.add('row-removing');
+  setTimeout(after, 180);
 }
 
 function editToileting(id){
@@ -6625,8 +7122,10 @@ let _editToiletId = null;
 
 function deleteToileting(id){
   if(!confirm('Delete this toileting entry? This cannot be undone.')) return;
-  D.toileting = (D.toileting||[]).filter(x => x.id !== id);
-  save(); renderToileting();
+  _animateRowOut(`[data-row-id="toilet-${id}"]`, () => {
+    D.toileting = (D.toileting||[]).filter(x => x.id !== id);
+    save(); renderToileting();
+  });
 }
 
 // ── 5. WEEKLY TRENDS ──────────────────────────────────────────
@@ -6856,6 +7355,52 @@ function isVoiceSupported(){
   return 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window;
 }
 
+// BUG-015 — post-process Android speech engine output against a medical-term lexicon.
+// Conservative: only replace whole-word matches; preserve case and punctuation.
+const MED_TRANSCRIPT_FIXES = [
+  // Common ACEi / ARB / beta blockers / statins
+  [/\bmet (?:as|us)\s*prolol\b/gi, 'metoprolol'],
+  [/\blisin?o?pril\b/gi, 'lisinopril'],
+  [/\blisten o pril\b/gi, 'lisinopril'],
+  [/\bfuro(?:sa|se)mide\b/gi, 'furosemide'],
+  [/\bla six\b/gi, 'Lasix'],
+  [/\bmemantine\b/gi, 'memantine'],
+  [/\bmem and teen\b/gi, 'memantine'],
+  [/\batorvastatin\b/gi, 'atorvastatin'],
+  [/\blipitor\b/gi, 'Lipitor'],
+  [/\bsimvastatin\b/gi, 'simvastatin'],
+  [/\bmetformin\b/gi, 'metformin'],
+  [/\bmeta foreman\b/gi, 'metformin'],
+  [/\bamlodipine\b/gi, 'amlodipine'],
+  [/\bgabapentin\b/gi, 'gabapentin'],
+  [/\bhydrochlorothiazide\b/gi, 'hydrochlorothiazide'],
+  [/\bhctz\b/gi, 'HCTZ'],
+  // Units
+  [/(\d+)\s*(?:milligrams?|milli ?gram)\b/gi, '$1 mg'],
+  [/(\d+)\s*(?:micrograms?|micro ?gram)\b/gi, '$1 mcg'],
+  [/(\d+)\s*(?:milliliters?|milli ?liter)\b/gi, '$1 mL'],
+  // Schedule abbreviations
+  [/\bp\.?\s?r\.?\s?n\.?\b/gi, 'PRN'],
+  [/\bas needed\b/gi, 'PRN'],
+  [/\bq\s*6\s*h\b/gi, 'q6h'],
+  [/\bq\s*8\s*h\b/gi, 'q8h'],
+  [/\bevery\s*6\s*hours?\b/gi, 'q6h'],
+  [/\bevery\s*8\s*hours?\b/gi, 'q8h'],
+  [/\btwice\s*(?:a\s*)?day\b/gi, 'BID'],
+  [/\bthree\s*times\s*(?:a\s*)?day\b/gi, 'TID'],
+  [/\bfour\s*times\s*(?:a\s*)?day\b/gi, 'QID'],
+  [/\bonce\s*(?:a\s*)?day\b/gi, 'QD'],
+  // Common conditions
+  [/\bhyper ?tension\b/gi, 'hypertension'],
+  [/\bhypo ?tension\b/gi, 'hypotension'],
+];
+function _postProcessMedicalTranscript(text){
+  if(!text) return text;
+  let out = text;
+  MED_TRANSCRIPT_FIXES.forEach(([re, sub]) => { out = out.replace(re, sub); });
+  return out;
+}
+
 function startVoice(fieldId){
   const field = document.getElementById(fieldId);
   const micBtn = document.getElementById('mic-' + fieldId);
@@ -6898,7 +7443,7 @@ function startVoice(fieldId){
     let final = original;
     for(let i = event.resultIndex; i < event.results.length; i++){
       if(event.results[i].isFinal){
-        final += event.results[i][0].transcript + ' ';
+        final += _postProcessMedicalTranscript(event.results[i][0].transcript) + ' ';
       } else {
         interim += event.results[i][0].transcript;
       }
@@ -7246,6 +7791,7 @@ function printBillingReport(){
     <td>${b.earned>0?'$'+b.earned.toFixed(2):'—'}</td>
   </tr>`).join('');
   const w = window.open('','_blank');
+  if(!w){ _showPopupBlockedHelp('this report'); return; }
   w.document.write(`<!DOCTYPE html><html><head><title>Billing Report</title>
 <style>body{font-family:system-ui,sans-serif;max-width:900px;margin:24px auto;font-size:13px;color:#1C2B42}
 h1{font-size:1.4rem;color:#0C1B33;border-bottom:2px solid #0B7A6E;padding-bottom:8px;margin-bottom:4px}
@@ -7258,6 +7804,7 @@ td{padding:7px 8px;border-bottom:1px solid #D8E2EE;font-size:.84rem}tr:nth-child
 .tot-lbl{font-size:.72rem;color:#8097B3;text-transform:uppercase;letter-spacing:.05em}
 .foot{margin-top:20px;padding-top:10px;border-top:1px solid #D8E2EE;font-size:.7rem;color:#8097B3;display:flex;justify-content:space-between}
 @media print{@page{size:A4 landscape;margin:8mm}}</style></head><body>
+${D.settings?.facility ? `<div style="text-align:center;font-weight:700;font-size:13pt;margin-bottom:4px">${D.settings.facility}</div>` : ''}
 <h1>Billing & Time Tracking Report</h1>
 <div class="meta">Caregiver: ${D.settings.name||'—'} · Agency: ${D.settings.agency||'—'} · Printed ${new Date().toLocaleDateString()}</div>
 <table><thead><tr><th>Date</th><th>Patient</th><th>Service</th><th>Time</th><th>Hours</th><th>Rate</th><th>Miles</th><th>Status</th><th>Earned</th></tr></thead>
@@ -7313,9 +7860,17 @@ function renderReport(){
 
   let sections = '';
 
-  // Medications compliance
+  // Medications compliance — keys are formatted as `date|patientId|medId`
   if(check('rpt-meds') && rptMeds.length){
-    const marKeys  = Object.keys(D.mar).filter(k => { const datePart = k.split('|')[0] || ''; return datePart >= monthStart && datePart <= monthEnd; });
+    const marKeys  = Object.keys(D.mar).filter(k => {
+      const parts = k.split('|');
+      const datePart = parts[0] || '';
+      const pidPart  = parts[1] || '';
+      if(datePart < monthStart || datePart > monthEnd) return false;
+      // Scope to selected patient when one is chosen
+      if(patientId && String(pidPart) !== String(patientId)) return false;
+      return true;
+    });
     const given    = marKeys.filter(k => D.mar[k]?.status==='given').length;
     const refused  = marKeys.filter(k => D.mar[k]?.status==='refused').length;
     const held     = marKeys.filter(k => D.mar[k]?.status==='held').length;
@@ -7501,12 +8056,14 @@ function printReport(){
     return;
   }
   const w = window.open('','_blank');
+  if(!w){ _showPopupBlockedHelp('this report'); return; }
   w.document.write(`<!DOCTYPE html><html><head><title>Monthly Care Report</title>
 <style>body{font-family:system-ui,sans-serif;max-width:800px;margin:24px auto;font-size:13px;color:#1C2B42}
 .report-section{border:1px solid #D8E2EE;border-radius:8px;padding:14px 16px;margin-bottom:12px}
 .report-section-title{font-size:.95rem;font-weight:700;color:#0C1B33;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #0B7A6E}
 .foot{margin-top:20px;padding-top:10px;border-top:1px solid #D8E2EE;font-size:.7rem;color:#8097B3;display:flex;justify-content:space-between}
 @media print{@page{size:A4;margin:12mm}body{margin:0}}</style></head><body>
+${D.settings?.facility ? `<div style="text-align:center;font-weight:700;font-size:14pt;color:#0C1B33;border-bottom:2px solid #0B7A6E;padding-bottom:6px;margin-bottom:12px">${D.settings.facility}</div>` : ''}
 ${preview.innerHTML}
 <div class="foot"><span>Tended Health Pro — Monthly Care Report</span><span>Printed ${new Date().toLocaleString()}</span></div>
 </body></html>`);
@@ -7552,7 +8109,7 @@ function buildSampleData(){
     mk(2003,'given','07:02','CNA-JR'), mk(2004,'given','08:07','CNA-JR'),
     mk(2005,'refused','09:15','RN-AS'), mk(2006,'given','14:30','CNA-JR')
   );
-  const marNotes = { [todayISO]: 'Memantine refused — resident stated "I don\'t need that one." Supervisor notified.' };
+  const marNotes = { [`${todayISO}|${pid}`]: 'Memantine refused — resident stated "I don\'t need that one." Supervisor notified.' };
   const incidents = [
     { id:3001, patientId:pid, severity:'moderate', type:'Near Fall', dt:dtAt(0,'10:22'),
       desc:'Resident found gripping grab bar — appeared unsteady. BG: 68 mg/dL (hypoglycemic).',
@@ -7797,7 +8354,16 @@ function buildSampleData(){
   };
 }
 
+// UX-001 — capture caregiver name/initials from the welcome inputs (if filled)
+function _saveWelcomeCaregiver(){
+  const n = (document.getElementById('welcome-name')?.value || '').trim();
+  const i = (document.getElementById('welcome-initials')?.value || '').trim().toUpperCase();
+  if(n) D.settings.name = n;
+  if(i) D.settings.initials = i;
+}
+
 function loadSamplePatient(){
+  _saveWelcomeCaregiver();
   document.getElementById('welcome-overlay').style.display = 'none';
   localStorage.setItem('tendedPro_welcomed', '1');
   const sample = buildSampleData();
@@ -7814,6 +8380,9 @@ function loadSamplePatient(){
   toast('✅ Sample patient Margaret Thompson loaded!', 'var(--given)');
 }
 function dismissWelcome(){
+  _saveWelcomeCaregiver();
+  save();
+  updateTopbarUser();
   document.getElementById('welcome-overlay').style.display = 'none';
   localStorage.setItem('tendedPro_welcomed', '1');
 }
@@ -7926,34 +8495,88 @@ const TRIAL_DAYS    = 30;
 const PRICE_DISPLAY = '$14.99';
 
 function getPremiumState(){ try { const r=localStorage.getItem(PREMIUM_KEY); return r?JSON.parse(r):null; } catch(e){ return null; } }
-function setPremiumState(s){ try { localStorage.setItem(PREMIUM_KEY, JSON.stringify(s)); } catch(e){} }
+function setPremiumState(s){
+  try { localStorage.setItem(PREMIUM_KEY, JSON.stringify(s)); } catch(e){}
+  // Mirror to IndexedDB shadow for BUG-004 recovery
+  _idbPut('premium', s);
+}
 function isPremium(){ const s=getPremiumState(); return s&&s.status==='premium'; }
+
+// BUG-004 — write trial fingerprint to every layer we have
+function _writeTrialFingerprint(startIso, expired){
+  try { localStorage.setItem(TRIAL_KEY, startIso); } catch(e){}
+  try { sessionStorage.setItem(TRIAL_KEY, startIso); } catch(e){}
+  _idbPut('trialStart', startIso);
+  if(expired){
+    try { localStorage.setItem('tendedPro_trialExpired', 'true'); } catch(e){}
+    try { sessionStorage.setItem('tendedPro_trialExpired', 'true'); } catch(e){}
+    _idbPut('trialExpired', true);
+  }
+  // Cookies survive some Chrome data clears (especially the "browsing data" subset)
+  try {
+    const expires = new Date(Date.now() + 5*365*24*60*60*1000).toUTCString();
+    document.cookie = `${TRIAL_KEY}=${encodeURIComponent(startIso)}; path=/; expires=${expires}; SameSite=Strict`;
+    if(expired) document.cookie = `tendedPro_trialExpired=true; path=/; expires=${expires}; SameSite=Strict`;
+  } catch(e){}
+}
+function _readCookie(name){
+  try {
+    const m = document.cookie.match(new RegExp('(?:^|;\\s*)' + name + '=([^;]+)'));
+    return m ? decodeURIComponent(m[1]) : null;
+  } catch(e){ return null; }
+}
+
 function getTrialState(){
-  // Primary trial start from localStorage
-  let start = localStorage.getItem(TRIAL_KEY);
-  // Secondary fingerprint check — if trial was previously expired, keep it expired
-  const TRIAL_EXPIRED_KEY = 'tendedPro_trialExpired';
-  const wasExpired = localStorage.getItem(TRIAL_EXPIRED_KEY) === 'true';
-  // IndexedDB-backed expiry flag (survives Chrome data clear better than localStorage)
-  // If no trial start found but was previously expired — return expired
+  // Read from every layer we wrote to; first hit wins. This makes the trial fingerprint
+  // survive a wider class of "Clear Data" actions (some clear localStorage but not
+  // sessionStorage; some clear both but not cookies; etc.)
+  let start =
+       localStorage.getItem(TRIAL_KEY)
+    || sessionStorage.getItem(TRIAL_KEY)
+    || _readCookie(TRIAL_KEY)
+    || null;
+
+  const wasExpired =
+       localStorage.getItem('tendedPro_trialExpired') === 'true'
+    || sessionStorage.getItem('tendedPro_trialExpired') === 'true'
+    || _readCookie('tendedPro_trialExpired') === 'true';
+
   if(!start){
-    if(wasExpired || sessionStorage.getItem(TRIAL_EXPIRED_KEY) === 'true'){
-      return { active:false, daysLeft:0, expired:true };
-    }
+    if(wasExpired) return { active:false, daysLeft:0, expired:true };
     // Genuine first install — start trial
     start = new Date().toISOString();
-    localStorage.setItem(TRIAL_KEY, start);
+    _writeTrialFingerprint(start, false);
+  } else {
+    // Re-pin so any layer that's been wiped gets rehydrated from a layer that survived
+    _writeTrialFingerprint(start, wasExpired);
   }
   const elapsed = Math.floor((Date.now()-new Date(start).getTime())/(1000*60*60*24));
   const daysLeft = Math.max(0, TRIAL_DAYS-elapsed);
-  // Persist expiry flag so it survives accidental data clear
-  if(daysLeft === 0){
-    localStorage.setItem(TRIAL_EXPIRED_KEY, 'true');
-    sessionStorage.setItem(TRIAL_EXPIRED_KEY, 'true');
-  }
+  if(daysLeft === 0) _writeTrialFingerprint(start, true);
   return { active:daysLeft>0, daysLeft, expired:daysLeft===0 };
 }
-function startTrialIfNew(){ if(!localStorage.getItem(TRIAL_KEY)) localStorage.setItem(TRIAL_KEY, new Date().toISOString()); }
+
+// Async helper: if all sync layers are empty but IndexedDB has a trial start, restore it.
+// Called from init() before getTrialState so cold-launch after Clear Data still finds the fingerprint.
+async function _rehydrateTrialFromIDB(){
+  const hasSync =
+       localStorage.getItem(TRIAL_KEY)
+    || sessionStorage.getItem(TRIAL_KEY)
+    || _readCookie(TRIAL_KEY);
+  if(hasSync) return;
+  const idbStart    = await _idbGet('trialStart');
+  const idbExpired  = await _idbGet('trialExpired');
+  if(idbStart) _writeTrialFingerprint(idbStart, !!idbExpired);
+  // Also rehydrate premium status from IDB if localStorage is empty
+  if(!localStorage.getItem(PREMIUM_KEY)){
+    const idbPrem = await _idbGet('premium');
+    if(idbPrem && idbPrem.status === 'premium'){
+      try { localStorage.setItem(PREMIUM_KEY, JSON.stringify(idbPrem)); } catch(e){}
+    }
+  }
+}
+
+function startTrialIfNew(){ if(!localStorage.getItem(TRIAL_KEY)) _writeTrialFingerprint(new Date().toISOString(), false); }
 function activatePremium(source){
   setPremiumState({ status:'premium', source:source||'purchase', activatedAt:new Date().toISOString(), orderId:window._pendingOrderId||null });
   window._pendingOrderId = null;
@@ -7988,6 +8611,15 @@ function restorePremium(){
 }
 function revokePremium(){ localStorage.removeItem(PREMIUM_KEY); updatePremiumUI(); renderPremiumCard(); toast('Premium revoked (dev mode)','var(--held)'); }
 function openPaywall(source){ if(!isPremium()){ const el=document.getElementById('paywall-overlay'); if(el) el.classList.add('open'); } }
+// BUG-012 — sealing premium gating for direct action buttons. Returns true if the user
+// is allowed to proceed, opens the paywall + returns false if not.
+function checkUnlock(){
+  if(isPremium()) return true;
+  const trial = getTrialState();
+  if(!trial.expired) return true;
+  openPaywall('action');
+  return false;
+}
 function closePaywall(){ const el=document.getElementById('paywall-overlay'); if(el) el.classList.remove('open'); }
 function dismissTrialBanner(){ const el=document.getElementById('trial-banner'); if(el) el.style.display='none'; }
 function updatePremiumUI(){
@@ -8122,6 +8754,25 @@ function populateVitalsPatients(){
   });
 }
 
+// Physiologically-plausible ranges. Outside these → reject or confirm.
+const VITAL_RANGES = {
+  bpSys:   { min: 50,  max: 260, label: 'Systolic BP'  },
+  bpDia:   { min: 20,  max: 180, label: 'Diastolic BP' },
+  pulse:   { min: 20,  max: 250, label: 'Pulse'        },
+  resp:    { min: 4,   max: 60,  label: 'Respirations' },
+  temp:    { min: 85,  max: 110, label: 'Temperature'  },
+  spo2:    { min: 40,  max: 100, label: 'SpO2'         },
+  glucose: { min: 20,  max: 700, label: 'Glucose'      },
+  weight:  { min: 30,  max: 800, label: 'Weight (lb)'  }
+};
+function _validateVital(val, key){
+  if(val === null || val === undefined || isNaN(val)) return null;
+  const r = VITAL_RANGES[key];
+  if(!r) return null;
+  if(val < r.min || val > r.max) return `${r.label} ${val} is outside the expected range (${r.min}–${r.max}). Did you mean something else?`;
+  return null;
+}
+
 function saveVitals(){
   const date = document.getElementById('vm-date')?.value;
   const time = document.getElementById('vm-time')?.value;
@@ -8146,6 +8797,21 @@ function saveVitals(){
     notes:    document.getElementById('vm-notes')?.value.trim() || '',
     alerts:   []
   };
+
+  // Range validation: collect any out-of-range values
+  const rangeErrors = [];
+  ['bpSys','bpDia','pulse','resp','temp','spo2','glucose','weight'].forEach(k => {
+    const err = _validateVital(entry[k], k);
+    if(err) rangeErrors.push(err);
+  });
+  if(rangeErrors.length){
+    const proceed = confirm(
+      'These values look out of range:\n\n' +
+      rangeErrors.join('\n') +
+      '\n\nSave anyway? Tap Cancel to correct.'
+    );
+    if(!proceed) return;
+  }
 
   // Auto-generate clinical alerts
   entry.alerts = vitalsAlerts(entry);
@@ -8474,6 +9140,7 @@ const SHIFT_KEY = 'tendedPro_activeShift';
 let _shiftTimerInterval = null;
 
 function clockIn(){
+  if(!checkUnlock()) return;
   const now = new Date();
   const shift = {
     id:          Date.now(),
@@ -8481,11 +9148,14 @@ function clockIn(){
     clockInDisp: now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}),
     caregiver:   D.settings.name || 'Caregiver',
     date:        now.toISOString().split('T')[0],
-    clockOut:    null
+    clockOut:    null,
+    fgActiveMs:  0,
+    lastTickMs:  now.getTime()
   };
   localStorage.setItem(SHIFT_KEY, JSON.stringify(shift));
   updateClockUI(shift);
   startShiftTimer(now);
+  if('vibrate' in navigator) navigator.vibrate(25);
   toast('🟢 Clocked in at ' + shift.clockInDisp, 'var(--given)');
 }
 
@@ -8493,23 +9163,47 @@ function clockOut(){
   const raw = localStorage.getItem(SHIFT_KEY);
   if(!raw) return;
   const shift = JSON.parse(raw);
+  // Fold final foreground delta before computing hours
+  _shiftHeartbeat(true);
+  const stored = JSON.parse(localStorage.getItem(SHIFT_KEY) || raw);
   const now   = new Date();
-  shift.clockOut     = now.toISOString();
-  shift.clockOutDisp = now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-  const ms   = now - new Date(shift.clockIn);
+  stored.clockOut     = now.toISOString();
+  stored.clockOutDisp = now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  const wallMs = now - new Date(stored.clockIn);
+  const fgMs   = typeof stored.fgActiveMs === 'number' ? stored.fgActiveMs : wallMs;
+  // BUG-002: prefer foreground time. If wall-clock is dramatically larger,
+  // the user likely force-closed / rebooted — confirm with them.
+  let ms = fgMs;
+  if(wallMs - fgMs > 30 * 60 * 1000){
+    const wallH = Math.round(wallMs / 36000) / 100;
+    const fgH   = Math.round(fgMs / 36000) / 100;
+    const useWall = confirm(
+      `Active shift was open for ${wallH}h by the clock, but the app was only in use for ${fgH}h.\n\n` +
+      `OK = log ${wallH}h (you stayed on the floor, app was closed)\n` +
+      `Cancel = log ${fgH}h (auto-tracked active time)\n\n` +
+      `If unsure, choose Cancel and edit the billing entry afterwards.`
+    );
+    ms = useWall ? wallMs : fgMs;
+  }
   const hrs  = Math.round(ms / 36000) / 100;
-  shift.hours = hrs;
+  const shift_ = Object.assign({}, stored);
+  shift_.hours = hrs;
+  // For downstream code below, alias back to `shift`
+  Object.assign(shift, shift_);
   if(!D.shifts) D.shifts = [];
   D.shifts.unshift(shift);
   // Auto-create billing entry
   const startT = new Date(shift.clockIn).toTimeString().slice(0,5);
   const endT   = now.toTimeString().slice(0,5);
   if(!D.billing) D.billing = [];
+  const defRate = parseFloat(D.settings?.defaultRate) || 0;
   D.billing.unshift({
     id: Date.now(), date: shift.date, start: startT, end: endT,
-    hours: hrs, patient: '', service: 'Personal care', rate: 0, earned: 0,
+    hours: hrs, patient: '', service: 'Personal care',
+    rate: defRate,
+    earned: Math.round(hrs * defRate * 100) / 100,
     miles: 0, status: 'pending', patientId: _globalPatientId || '',
-    notes: `Auto-logged from shift clock. ${shift.clockInDisp} – ${shift.clockOutDisp}`
+    notes: `Auto-logged from shift clock. ${shift.clockInDisp} – ${shift.clockOutDisp}` + (defRate === 0 ? ' (rate not set — add a default hourly rate in Settings)' : '')
   });
   save();
   localStorage.removeItem(SHIFT_KEY);
@@ -8536,15 +9230,39 @@ function updateClockUI(shift){
   }
 }
 
+// BUG-002 — heartbeat that accumulates foreground-only elapsed ms in shift.fgActiveMs.
+// Pauses when page is hidden (Page Visibility API) so backgrounded/closed app doesn't inflate hours.
+function _shiftHeartbeat(force){
+  const raw = localStorage.getItem(SHIFT_KEY);
+  if(!raw) return;
+  const shift = JSON.parse(raw);
+  if(shift.clockOut) return;
+  const now = Date.now();
+  const last = shift.lastTickMs || now;
+  // Only count time when document was actually visible at last tick
+  const wasVisible = (force || document.visibilityState === 'visible');
+  if(wasVisible){
+    const delta = now - last;
+    // Cap any single delta at 5 minutes — guards against suspended JS timers that resume
+    // after a long sleep and would otherwise dump 30+ min into fgActiveMs in one tick.
+    const capped = Math.min(delta, 5 * 60 * 1000);
+    shift.fgActiveMs = (shift.fgActiveMs || 0) + Math.max(0, capped);
+  }
+  shift.lastTickMs = now;
+  localStorage.setItem(SHIFT_KEY, JSON.stringify(shift));
+}
+
 function startShiftTimer(startTime){
   stopShiftTimer();
   const timerEl = document.getElementById('shift-timer');
-  if(!timerEl) return;
   const update = () => {
-    const elapsed = Date.now() - startTime.getTime();
-    const h = Math.floor(elapsed / 3600000);
-    const m = Math.floor((elapsed % 3600000) / 60000);
-    timerEl.textContent = h + ':' + String(m).padStart(2,'0');
+    if(timerEl){
+      const elapsed = Date.now() - startTime.getTime();
+      const h = Math.floor(elapsed / 3600000);
+      const m = Math.floor((elapsed % 3600000) / 60000);
+      timerEl.textContent = h + ':' + String(m).padStart(2,'0');
+    }
+    _shiftHeartbeat();
   };
   update();
   _shiftTimerInterval = setInterval(update, 10000);
@@ -8552,6 +9270,48 @@ function startShiftTimer(startTime){
 
 function stopShiftTimer(){
   if(_shiftTimerInterval){ clearInterval(_shiftTimerInterval); _shiftTimerInterval = null; }
+}
+
+// Reset lastTickMs when returning to foreground so the next heartbeat doesn't count the
+// time we were hidden.
+document.addEventListener('visibilitychange', () => {
+  if(document.visibilityState === 'visible'){
+    const raw = localStorage.getItem(SHIFT_KEY);
+    if(!raw) return;
+    const shift = JSON.parse(raw);
+    shift.lastTickMs = Date.now();
+    localStorage.setItem(SHIFT_KEY, JSON.stringify(shift));
+  } else {
+    // Fold any pending delta before going hidden
+    _shiftHeartbeat();
+  }
+});
+
+// On launch, if a shift was open from a previous session, prompt about the gap.
+function _checkStaleShiftOnLaunch(){
+  const raw = localStorage.getItem(SHIFT_KEY);
+  if(!raw) return;
+  let shift; try { shift = JSON.parse(raw); } catch(e){ return; }
+  if(!shift || shift.clockOut) return;
+  const startMs = new Date(shift.clockIn).getTime();
+  const elapsedH = (Date.now() - startMs) / 3600000;
+  // If shift has been "open" for more than 14h since last tick, warn the user
+  const sinceLastTick = (Date.now() - (shift.lastTickMs || startMs)) / 3600000;
+  if(sinceLastTick > 6){
+    const choice = confirm(
+      `Your shift has been open since ${new Date(shift.clockIn).toLocaleString()} ` +
+      `(${elapsedH.toFixed(1)}h ago). The app hasn't been active for ${sinceLastTick.toFixed(1)}h.\n\n` +
+      `OK = keep shift open (you're still working)\n` +
+      `Cancel = close it out now and review the billing entry`
+    );
+    if(!choice){
+      clockOut();
+      return;
+    }
+    // Reset lastTickMs so the gap doesn't count
+    shift.lastTickMs = Date.now();
+    localStorage.setItem(SHIFT_KEY, JSON.stringify(shift));
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -9219,6 +9979,7 @@ function initShiftClock(){
       const shift = JSON.parse(raw);
       updateClockUI(shift);
       startShiftTimer(new Date(shift.clockIn));
+      _checkStaleShiftOnLaunch();
     } catch(e){ localStorage.removeItem(SHIFT_KEY); }
   } else {
     updateClockUI(null);
@@ -9300,6 +10061,7 @@ function editPain(id){
 }
 
 function savePain(){
+  if(!checkUnlock()) return;
   const score = document.getElementById('pain-score-val')?.value;
   const date  = document.getElementById('pain-date')?.value;
   const time  = document.getElementById('pain-time')?.value;
@@ -9367,7 +10129,7 @@ function renderPainLog(){
     const face    = PAIN_FACE[e.score];
     const col     = PAIN_COLOR[e.score];
     const level   = e.score<=2?'None':e.score<=4?'Mild':e.score<=6?'Moderate':e.score<=8?'Severe':'Worst';
-    return `<div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start">
+    return `<div data-row-id="pain-${e.id}" style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start">
       <div style="width:48px;height:48px;background:var(--off-white);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;border:2px solid ${col}">
         <div style="font-size:1.3rem">${face}</div>
         <div style="font-size:.65rem;font-weight:700;color:${col}">${e.score}/10</div>
@@ -9390,8 +10152,10 @@ function renderPainLog(){
 
 function deletePain(id){
   if(!confirm('Delete this pain assessment? This cannot be undone.')) return;
-  D.pain = (D.pain||[]).filter(x => x.id !== id);
-  save(); renderPainLog();
+  _animateRowOut(`[data-row-id="pain-${id}"]`, () => {
+    D.pain = (D.pain||[]).filter(x => x.id !== id);
+    save(); renderPainLog();
+  });
 }
 
 function painFaceHtml(score){
@@ -9494,8 +10258,39 @@ function renderTriggerReminderCard(){
 // ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
-function init(){
+// UX-004 — sidebar groups collapsible; state persisted in localStorage
+function _wireSidebarCollapse(){
+  const labels = document.querySelectorAll('.nav-group .nav-label');
+  let collapsed = [];
+  try { collapsed = JSON.parse(localStorage.getItem('tendedPro_sidebarCollapsed') || '[]'); } catch(e){}
+  labels.forEach((lbl, idx) => {
+    const groupKey = (lbl.textContent || ('group-'+idx)).trim();
+    if(collapsed.includes(groupKey)) lbl.parentElement.classList.add('collapsed');
+    lbl.addEventListener('click', () => {
+      const group = lbl.parentElement;
+      group.classList.toggle('collapsed');
+      const isCollapsed = group.classList.contains('collapsed');
+      let cur = [];
+      try { cur = JSON.parse(localStorage.getItem('tendedPro_sidebarCollapsed') || '[]'); } catch(e){}
+      cur = cur.filter(x => x !== groupKey);
+      if(isCollapsed) cur.push(groupKey);
+      try { localStorage.setItem('tendedPro_sidebarCollapsed', JSON.stringify(cur)); } catch(e){}
+    });
+  });
+}
+
+async function init(){
+  // Try IndexedDB shadow restore first if localStorage is empty (post Clear-Data scenario)
+  try { await _maybeRestoreFromShadow(); } catch(e){}
+  try { await _rehydrateTrialFromIDB(); } catch(e){}
   load();
+  _wireSidebarCollapse();
+  // Auto-rehydrate premium from native Play Billing on every launch (BUG-004 mitigation)
+  try {
+    if(typeof window.Android !== 'undefined' && typeof window.Android.restorePurchases === 'function'){
+      window.Android.restorePurchases();
+    }
+  } catch(e){}
   updateTopbar();
   updateTopbarUser();
   renderDashboard();
@@ -9534,7 +10329,7 @@ function init(){
   checkFirstLaunch();
 }
 
-init();
+init().catch(e => console.error('init failed', e));
 </script>
 </body>
 </html>
