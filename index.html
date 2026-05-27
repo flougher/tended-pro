@@ -1306,7 +1306,7 @@ body {
 
   <!-- Launch Promo Banner -->
   <div id="launch-promo-banner" style="display:none;background:var(--teal);color:white;border-radius:var(--r-lg);padding:14px 18px;margin-bottom:16px;align-items:flex-start;gap:12px;flex-wrap:wrap">
-    <span style="flex:1;font-size:.84rem;line-height:1.5">🎉 <strong>Welcome — you have a 30-day free trial.</strong> After your trial ends, unlock forever for a one-time $14.99. No subscription. Thanks for being an early user.</span>
+    <span style="flex:1;font-size:.84rem;line-height:1.5">🎉 <strong>Welcome — you have a 10-day free trial.</strong> After your trial ends, unlock forever for a one-time $14.99. No subscription. Thanks for being an early user.</span>
     <button onclick="dismissLaunchBanner()" aria-label="Dismiss" style="background:rgba(255,255,255,.25);border:none;color:white;font-size:.78rem;cursor:pointer;padding:4px 10px;border-radius:6px;flex-shrink:0;font-weight:700;white-space:nowrap">✕ Dismiss</button>
   </div>
 
@@ -3357,14 +3357,45 @@ async function _idbGet(key){
 }
 
 let _saveDebounce = null;
+let _saveErrorShown = false;     // avoid toast spam on every save attempt
+let _quotaWarningShown = false;  // show once per session
 function save(){
-  try { localStorage.setItem(STORE, JSON.stringify(D)); } catch(e){}
+  let primaryOk = true;
+  try {
+    localStorage.setItem(STORE, JSON.stringify(D));
+    _saveErrorShown = false;
+  } catch(e){
+    primaryOk = false;
+    // Surface the failure honestly — silent failure was the bug
+    if(!_saveErrorShown){
+      _saveErrorShown = true;
+      const msg = (e && (e.name === 'QuotaExceededError' || /quota/i.test(String(e))))
+        ? '⚠ Storage is full — your last change was NOT saved. Export your data now from Settings to free space.'
+        : '⚠ Save failed — your last change may not be saved. Try again or restart the app.';
+      try { toast(msg, 'var(--refused)'); } catch(_){}
+    }
+  }
   // Debounced IndexedDB shadow write — protects against catastrophic save loops
   if(_saveDebounce) clearTimeout(_saveDebounce);
   _saveDebounce = setTimeout(() => {
-    _idbPut('store', D);
-    _idbPut('lastBackupAt', new Date().toISOString());
+    _idbPut('store', D).catch(()=>{});
+    _idbPut('lastBackupAt', new Date().toISOString()).catch(()=>{});
   }, 250);
+
+  // Storage-quota warning at 80% — once per session, non-blocking
+  if(!_quotaWarningShown && navigator.storage && navigator.storage.estimate){
+    navigator.storage.estimate().then(est => {
+      if(!est || !est.quota || !est.usage) return;
+      const pct = est.usage / est.quota;
+      if(pct >= 0.8){
+        _quotaWarningShown = true;
+        try {
+          toast('⚠ Storage is ' + Math.round(pct*100) + '% full — back up and clear old data soon.', 'var(--held)');
+        } catch(_){}
+      }
+    }).catch(()=>{});
+  }
+  return primaryOk;
 }
 // Auto-restore from IndexedDB when localStorage is empty (typical Clear-Data scenario)
 async function _maybeRestoreFromShadow(){
@@ -8491,7 +8522,7 @@ const PREMIUM_KEY          = 'tendedPro_premium';
 const TRIAL_KEY            = 'tendedPro_trialStart';
 const LAUNCH_BANNER_EXPIRY = '2026-06-30';
 const BANNER_DISMISSED_KEY = 'tendedPro_bannerDismissed';
-const TRIAL_DAYS    = 30;
+const TRIAL_DAYS    = 10;
 const PRICE_DISPLAY = '$14.99';
 
 function getPremiumState(){ try { const r=localStorage.getItem(PREMIUM_KEY); return r?JSON.parse(r):null; } catch(e){ return null; } }
@@ -8585,10 +8616,30 @@ function activatePremium(source){
   updatePremiumUI(); renderPremiumCard();
   toast('⭐ Tended Health Pro unlocked! Thank you.', 'var(--teal)');
 }
+// The Android wrapper sets a specific UA suffix ("TendedHealthPro/..."). The TWA's MainActivity
+// passes ?premium=true on launch when the user has previously purchased. We honor that flag ONLY
+// when the request is coming from inside our wrapper — a regular browser hitting the URL with
+// ?premium=true will be ignored.
+function _isInsideAndroidWrapper(){
+  try {
+    const ua = navigator.userAgent || '';
+    return /TendedHealthPro\//.test(ua) || (typeof window.Android !== 'undefined' && !!window.Android);
+  } catch(e){ return false; }
+}
 function checkURLPremiumFlag(){
   try {
+    if(!_isInsideAndroidWrapper()) {
+      // Strip the flag from the URL to discourage sharing exploit links
+      const u = new URL(window.location.href);
+      if(u.searchParams.has('premium')){ u.searchParams.delete('premium'); u.searchParams.delete('orderId'); window.history.replaceState({},'',u.pathname + (u.search||'') + (u.hash||'')); }
+      return;
+    }
     const params = new URLSearchParams(window.location.search);
-    if(params.get('premium')==='true'){ window._pendingOrderId=params.get('orderId')||null; activatePremium('url_flag'); window.history.replaceState({},'',window.location.pathname); }
+    if(params.get('premium')==='true'){
+      window._pendingOrderId = params.get('orderId') || null;
+      activatePremium('url_flag');
+      window.history.replaceState({},'',window.location.pathname);
+    }
   } catch(e){}
 }
 window.TendedProBilling = {
@@ -8602,12 +8653,20 @@ function triggerGooglePlayPurchase(){
   else { if(confirm('Google Play Billing is only available in the installed app.\n\nDev mode: Simulate a successful purchase?')) activatePremium('dev'); }
 }
 function restorePremium(){
-  if(window.Android&&typeof window.Android.restorePurchases==='function'){ window.Android.restorePurchases(); toast('Checking purchase history…','var(--held)'); }
-  else {
-    const existing = getPremiumState();
-    if(existing&&existing.status==='premium'){ toast('✅ Premium already active on this device.','var(--teal)'); closePaywall(); }
-    else { const code=prompt('Enter your restore code:'); if(code&&code.trim().toUpperCase()==='TENDED-PRO-UNLOCK') activatePremium('restore_code'); else if(code) toast('Code not recognised. Contact support.','var(--refused)'); }
+  if(window.Android && typeof window.Android.restorePurchases === 'function'){
+    window.Android.restorePurchases();
+    toast('Checking purchase history…','var(--held)');
+    return;
   }
+  // Web (non-Android) restore — point users to the Play Store. No hardcoded codes,
+  // no client-side bypasses. Real purchase restoration only happens through Google Play.
+  const existing = getPremiumState();
+  if(existing && existing.status === 'premium'){
+    toast('✅ Premium already active on this device.','var(--teal)');
+    closePaywall();
+    return;
+  }
+  toast('To restore a purchase, open the Tended Health Pro app on the device where you bought it.','var(--held)');
 }
 function revokePremium(){ localStorage.removeItem(PREMIUM_KEY); updatePremiumUI(); renderPremiumCard(); toast('Premium revoked (dev mode)','var(--held)'); }
 function openPaywall(source){ if(!isPremium()){ const el=document.getElementById('paywall-overlay'); if(el) el.classList.add('open'); } }
@@ -8630,7 +8689,7 @@ function updatePremiumUI(){
   if(!banner||!bannerTxt) return;
   if(premium){ banner.style.display='none'; return; }
   if(trial.active){ banner.style.display='flex'; banner.className='trial-banner'; bannerTxt.textContent=`⏳ Free trial — ${trial.daysLeft} day${trial.daysLeft!==1?'s':''} remaining`; }
-  else if(trial.expired){ banner.style.display='flex'; banner.className='trial-banner expired'; bannerTxt.textContent='🔒 Your 30-day trial has ended — unlock to continue'; }
+  else if(trial.expired){ banner.style.display='flex'; banner.className='trial-banner expired'; bannerTxt.textContent=`🔒 Your ${TRIAL_DAYS}-day trial has ended — unlock to continue`; }
   else { banner.style.display='none'; }
 }
 function renderPremiumCard(){
