@@ -3655,23 +3655,42 @@ function renderDashboard(){
     ? D.settings.agency + (D.settings.role ? ' · ' + D.settings.role : '')
     : 'Professional caregiver dashboard';
 
-  // ── Empty state — show getting started guide when no patients ──
+  // ── Empty state — show 3-step wizard when no patients OR only the demo patient is loaded ──
+  // Demo-aware: keeps guidance visible for users who clicked "Load Sample Patient" so they
+  // still have a clear path to adding their own real patient.
   const emptyStateId = 'dash-empty-state';
   const existingEmpty = document.getElementById(emptyStateId);
   if(existingEmpty) existingEmpty.remove();
 
-  if(!D.patients.length){
+  const DEMO_PATIENT_ID = 1700000001;
+  const hasOnlyDemo = D.patients.length === 1 && D.patients[0].id === DEMO_PATIENT_ID;
+  const noPatients  = !D.patients.length;
+
+  if(noPatients || hasOnlyDemo){
+    const headline = hasOnlyDemo
+      ? "Now add your own real patient"
+      : "Welcome — let's get you set up";
+    const subCopy = hasOnlyDemo
+      ? "Margaret Thompson is loaded as a sample so you can explore. When you're ready, these 3 steps will get you logging your first real shift."
+      : "Start by adding a patient to your roster. Once added, you can log medications, vitals, incidents, and more for each shift.";
+    const step1Label = hasOnlyDemo
+      ? "👤 Step 1 — Add Your Real Patient"
+      : "👤 Step 1 — Add Your First Patient";
+    const sampleLink = hasOnlyDemo
+      ? ''
+      : `<div style="margin-top:16px;font-size:.74rem;color:var(--slate-light)">Or <span style="color:var(--teal);cursor:pointer;text-decoration:underline" onclick="confirmLoadDemo()">load the sample patient</span> to explore all features first</div>`;
+
     const emptyCard = document.createElement('div');
     emptyCard.id = emptyStateId;
     emptyCard.style.cssText = 'margin-bottom:20px';
     emptyCard.innerHTML = `
       <div style="background:linear-gradient(135deg,#F0FDFB,white);border:2px solid var(--teal);border-radius:var(--r-lg);padding:24px 22px;text-align:center">
         <div style="font-size:2.5rem;margin-bottom:12px">👋</div>
-        <div style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:8px">Welcome — let's get you set up</div>
-        <div style="font-size:.86rem;color:var(--slate-mid);line-height:1.7;margin-bottom:20px">Start by adding a patient to your roster. Once added, you can log medications, vitals, incidents, and more for each shift.</div>
+        <div style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:8px">${headline}</div>
+        <div style="font-size:.86rem;color:var(--slate-mid);line-height:1.7;margin-bottom:20px">${subCopy}</div>
         <div style="display:flex;flex-direction:column;gap:10px;max-width:320px;margin:0 auto">
-          <button onclick="navTo('patients')" class="btn btn-teal" style="justify-content:center;font-size:.92rem">
-            👤 Step 1 — Add Your First Patient
+          <button onclick="openPatientModal()" class="btn btn-teal" style="justify-content:center;font-size:.92rem">
+            ${step1Label}
           </button>
           <button onclick="navTo('mar')" class="btn btn-secondary" style="justify-content:center;font-size:.88rem">
             💊 Step 2 — Set Up Medications (MAR)
@@ -3680,7 +3699,7 @@ function renderDashboard(){
             ⚙️ Step 3 — Complete Caregiver Profile
           </button>
         </div>
-        <div style="margin-top:16px;font-size:.74rem;color:var(--slate-light)">Or <span style="color:var(--teal);cursor:pointer;text-decoration:underline" onclick="confirmLoadDemo()">load the sample patient</span> to explore all features first</div>
+        ${sampleLink}
       </div>`;
     const banner = document.getElementById('dash-shift-banner');
     if(banner) banner.insertAdjacentElement('afterend', emptyCard);
