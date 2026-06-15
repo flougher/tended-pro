@@ -245,26 +245,53 @@ function execCopy(text) {
   return ok;
 }
 
-// Copy row question
+// Copy row question — then open modal with buttons ready
 function copyQ(ci, qi, q) {
-  var ok = execCopy(PREFIX + q);
+  var full = PREFIX + q;
+  var ok = execCopy(full);
   var btn = document.getElementById("cpbtn-"+ci+"-"+qi);
   if (!btn) return;
+
   if (ok) {
+    // Show copied state on button briefly
     btn.textContent = "✓ Copied";
     btn.style.background = "#2E7D32";
     btn.style.color = "white";
     btn.style.borderColor = "#2E7D32";
+    setTimeout(function() {
+      btn.textContent = "Copy";
+      btn.style.background = "#F8FAFC";
+      btn.style.color = "#0E9E8E";
+      btn.style.borderColor = "#E2E8F0";
+    }, 1500);
+
+    // Open modal with copy already done
+    modalText = full;
+    hasCopied = true;
+    document.getElementById("modal-preview").textContent = full;
+
+    var copyBtn = document.getElementById("modal-copy-btn");
+    copyBtn.textContent = "✅ Copied to clipboard";
+    copyBtn.style.background = "#2E7D32";
+
+    document.getElementById("modal-sub2").textContent = "✅ Question copied! Now tap Ask Claude or Ask ChatGPT below";
+
+    // Activate AI buttons immediately
+    activateAIBtns();
+
+    // Show modal after short delay so user sees the copy confirmation
+    setTimeout(function() {
+      document.getElementById("overlay").style.display = "flex";
+    }, 600);
+
   } else {
     btn.textContent = "Failed";
     btn.style.color = "#DC2626";
+    setTimeout(function() {
+      btn.textContent = "Copy";
+      btn.style.color = "#0E9E8E";
+    }, 2000);
   }
-  setTimeout(function() {
-    btn.textContent = "Copy";
-    btn.style.background = "#F8FAFC";
-    btn.style.color = "#0E9E8E";
-    btn.style.borderColor = "#E2E8F0";
-  }, 2500);
 }
 
 // Custom search
