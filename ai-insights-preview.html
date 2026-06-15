@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Learning Resources — Tended Health Pro</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0f1a;display:flex;flex-direction:column;align-items:center;padding:16px 16px 40px;min-height:100vh;font-family:system-ui,-apple-system,sans-serif}
+.label{color:rgba(255,255,255,.35);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;padding:12px 0 8px}
+.app{width:100%;max-width:420px;background:#F8FAFC;border-radius:24px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.5)}
+.topbar{background:#0C1B33;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-title{color:white;font-size:14px;font-weight:700}
+.topbar-badge{background:#0E9E8E;color:white;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px}
+.body{padding:16px}
+.blue-card{background:#EEF7FF;border:1.5px solid #93C5FD;border-radius:14px;padding:12px 14px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start}
+.amber-card{background:#FFF8E7;border:1.5px solid #F59E0B;border-radius:14px;padding:12px 14px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start}
+.card-icon{font-size:18px;flex-shrink:0}
+.blue-text{font-size:11px;color:#1E3A5F;line-height:1.9}
+.amber-text{font-size:11px;color:#78350F;line-height:1.6}
+.section-gap{margin-bottom:20px}
+.cat-label{font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.search-card{background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:14px}
+.search-warning{background:#FFF8E7;border:1px solid #F59E0B;border-radius:8px;padding:8px 12px;font-size:11px;color:#78350F;margin-bottom:10px;line-height:1.5}
+.search-input{width:100%;border:1.5px solid #E2E8F0;border-radius:10px;padding:10px 12px;font-size:12px;font-family:inherit;color:#0C1B33;resize:none;line-height:1.5;margin-bottom:6px;outline:none;display:block}
+.search-input:focus{border-color:#0E9E8E}
+.char-count{font-size:10px;color:#64748B;text-align:right;margin-bottom:10px}
+.search-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cat-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;background:transparent;border:none;padding:6px 0;cursor:pointer;font-family:inherit;margin-bottom:6px}
+.cat-label-txt{font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.08em}
+.question-card{background:white;border:1.5px solid #E2E8F0;border-radius:14px;overflow:hidden;margin-bottom:4px}
+.question-row{display:flex;align-items:center;gap:10px;padding:10px 14px}
+.question-text{flex:1;font-size:12px;color:#0C1B33;line-height:1.45}
+.footer-note{text-align:center;font-size:10px;color:#CBD5E1;padding:16px 0 8px;line-height:1.6}
+.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.78);z-index:9999;display:none;align-items:center;justify-content:center;padding:16px}
+.modal{background:white;border-radius:20px;padding:22px;width:100%;max-width:380px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.modal-h{font-size:14px;font-weight:700;color:#0C1B33;margin-bottom:4px}
+.modal-sub{font-size:11px;color:#64748B;margin-bottom:10px;line-height:1.5}
+.modal-preview{background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:10px;padding:10px 12px;font-size:11px;color:#0C1B33;line-height:1.5;margin-bottom:10px;max-height:80px;overflow-y:auto}
+.modal-divider{border-top:1px solid #E2E8F0;margin:14px 0}
+.modal-ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.step3-card{background:#EEF7FF;border:1px solid #93C5FD;border-radius:8px;padding:9px 12px;font-size:11px;color:#1E3A5F;line-height:1.5;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<div class="label">⚗️ Tended Health Pro — AI Learning Resources Preview</div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-title">💡 AI Learning Resources</div>
+    <div class="topbar-badge">Preview</div>
+  </div>
+  <div class="body">
+
+    <div class="blue-card">
+      <div class="card-icon">💡</div>
+      <div class="blue-text">
+        <strong>How it works:</strong><br>
+        1️⃣ Tap <strong>Copy</strong> next to any question<br>
+        2️⃣ Tap <strong>Ask Claude</strong> or <strong>Ask ChatGPT</strong><br>
+        3️⃣ Paste into the chat box and tap <strong>Send</strong>
+      </div>
+    </div>
+
+    <div class="amber-card">
+      <div class="card-icon">⚠️</div>
+      <div class="amber-text">
+        <strong>AI provides general education only.</strong> Never replace clinical judgment or agency protocols.
+        <strong>Never enter patient names or identifying information.</strong>
+      </div>
+    </div>
+
+    <div class="section-gap">
+      <div class="cat-label">🔍 Ask Your Own Question</div>
+      <div class="search-card">
+        <div class="search-warning">⚠️ <strong>Never include patient names</strong> or identifying information</div>
+        <textarea id="custom-q" class="search-input" rows="3" placeholder="Type your caregiving question here..."></textarea>
+        <div class="char-count" id="char-count">0 / 500</div>
+        <div class="search-btns">
+          <button id="btn-claude" onclick="openModal('claude')"
+            style="background:#CBD5E1;color:white;border:none;border-radius:10px;padding:11px;font-size:12px;font-weight:700;cursor:not-allowed;font-family:inherit;opacity:.6">
+            🤖 Ask Claude
+          </button>
+          <button id="btn-gpt" onclick="openModal('gpt')"
+            style="background:#CBD5E1;color:white;border:none;border-radius:10px;padding:11px;font-size:12px;font-weight:700;cursor:not-allowed;font-family:inherit;opacity:.6">
+            💬 Ask ChatGPT
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="cats"></div>
+
+    <div class="footer-note">
+      AI responses are for general education only.<br>
+      Always follow your agency protocols and clinical judgment.
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal-box">
+
+    <div class="modal-h">📋 Step 1 — Copy your question</div>
+    <div class="modal-sub">Tap the green button to copy your question</div>
+    <div class="modal-preview" id="modal-preview"></div>
+    <button id="modal-copy-btn"
+      onclick="doCopy()"
+      style="width:100%;background:#0E9E8E;color:white;border:none;border-radius:10px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:0">
+      👆 Copy question
+    </button>
+
+    <div class="modal-divider"></div>
+
+    <div class="modal-h">Step 2 — Ask Claude or Ask ChatGPT</div>
+    <div class="modal-sub" id="modal-sub2">Copy your question first — then tap a button below</div>
+    <div class="modal-ai-grid">
+      <button id="modal-btn-claude"
+        onclick="goTo('https://claude.ai')"
+        style="background:#CBD5E1;color:white;border:none;border-radius:10px;padding:12px;font-size:12px;font-weight:700;cursor:not-allowed;font-family:inherit;width:100%;opacity:.6">
+        🤖 Ask Claude
+      </button>
+      <button id="modal-btn-gpt"
+        onclick="goTo('https://chat.openai.com')"
+        style="background:#CBD5E1;color:white;border:none;border-radius:10px;padding:12px;font-size:12px;font-weight:700;cursor:not-allowed;font-family:inherit;width:100%;opacity:.6">
+        💬 Ask ChatGPT
+      </button>
+    </div>
+
+    <div class="step3-card">
+      Step 3 — Paste your question into the chat box and tap <strong>Send</strong>
+    </div>
+
+    <button onclick="closeModal()"
+      style="width:100%;background:transparent;color:#94A3B8;border:none;padding:8px;font-size:11px;cursor:pointer;font-family:inherit">
+      Cancel
+    </button>
+  </div>
+</div>
+
+<script>
+var PREFIX = "I am a CNA or dementia caregiver looking for general educational information only, not medical advice. Please give a practical helpful response to this question: ";
+var CATS = [
+  {id:"dementia",icon:"💜",label:"Understanding Dementia Behaviors",qs:[
+    "What causes sundowning in dementia patients and what helps reduce it?",
+    "Why do dementia patients ask to go home repeatedly and how should I respond?",
+    "Why do dementia patients become aggressive and what de-escalation techniques work?",
+    "What does late stage dementia look like and what should I expect?",
+    "What should I say to a patient who is crying and asking for a deceased spouse?"
+  ]},
+  {id:"clinical",icon:"🩺",label:"Clinical Reference",qs:[
+    "What are the warning signs of a urinary tract infection in elderly patients?",
+    "What blood pressure readings require immediate supervisor notification?",
+    "What are the signs of aspiration in a patient with swallowing difficulties?",
+    "What medications commonly cause falls in elderly patients?",
+    "What does a normal versus abnormal blood oxygen reading mean?"
+  ]},
+  {id:"wellbeing",icon:"❤️",label:"Caregiver Wellbeing",qs:[
+    "What is compassion fatigue and how do I know if I have it?",
+    "What are healthy ways to decompress after a difficult caregiving shift?",
+    "How do I talk to a family member in denial about their loved ones decline?",
+    "How do I cope with grief when a patient I care for passes away?",
+    "How do I set boundaries at work without feeling guilty as a caregiver?"
+  ]},
+  {id:"sundowning",icon:"🌅",label:"Sundowning",qs:[
+    "What triggers sundowning and how can I reduce them during my shift?",
+    "What is the difference between sundowning and regular evening agitation?",
+    "What calming techniques work best during a sundowning episode?",
+    "Does lighting affect sundowning and what environmental changes can help?",
+    "When should I notify a supervisor during a sundowning episode?"
+  ]},
+  {id:"wandering",icon:"🚶",label:"Wandering and Elopement",qs:[
+    "What are the most common reasons dementia patients wander?",
+    "What is the difference between wandering and elopement risk?",
+    "How do I safely redirect a wandering dementia patient without physical restraint?",
+    "What environmental changes help reduce wandering behavior?",
+    "What steps should I take immediately if a patient attempts to elope?"
+  ]},
+  {id:"eol",icon:"🕊️",label:"End of Life Awareness",qs:[
+    "What are the signs that a patient is in their final days or hours of life?",
+    "What comfort measures can a CNA provide to a patient who is actively dying?",
+    "What do I say to a family member present when their loved one passes?",
+    "How do I process my own grief after a patient I cared for passes away?"
+  ]}
+];
+
+var openCat = "dementia";
+var hasCopied = false;
+var modalText = "";
+
+// Build categories
+function buildCats() {
+  var h = "";
+  for (var i = 0; i < CATS.length; i++) {
+    var c = CATS[i];
+    h += '<div class="section-gap">';
+    h += '<button class="cat-toggle" onclick="toggleCat(\''+c.id+'\')">';
+    h += '<span class="cat-label-txt">'+c.icon+' '+c.label+'</span>';
+    h += '<span id="arr-'+c.id+'">'+(c.id===openCat?'▲':'▼')+'</span>';
+    h += '</button>';
+    h += '<div class="question-card" id="card-'+c.id+'" style="display:'+(c.id===openCat?'block':'none')+'">';
+    for (var j = 0; j < c.qs.length; j++) {
+      var q = c.qs[j];
+      var safe = q.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      var border = j < c.qs.length-1 ? 'border-bottom:1px solid #E2E8F0' : '';
+      h += '<div class="question-row" style="'+border+'">';
+      h += '<div class="question-text">'+q+'</div>';
+      h += '<button id="cpbtn-'+i+'-'+j+'" onclick="copyQ('+i+','+j+',\''+safe+'\')" style="background:#F8FAFC;color:#0E9E8E;border:1px solid #E2E8F0;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:inherit">Copy</button>';
+      h += '</div>';
+    }
+    h += '</div></div>';
+  }
+  document.getElementById("cats").innerHTML = h;
+}
+
+function toggleCat(id) {
+  if (openCat) {
+    var oc = document.getElementById("card-"+openCat);
+    var oa = document.getElementById("arr-"+openCat);
+    if (oc) oc.style.display = "none";
+    if (oa) oa.textContent = "▼";
+  }
+  openCat = (openCat === id) ? null : id;
+  if (openCat) {
+    var nc = document.getElementById("card-"+openCat);
+    var na = document.getElementById("arr-"+openCat);
+    if (nc) nc.style.display = "block";
+    if (na) na.textContent = "▲";
+  }
+}
+
+// Reliable copy using execCommand
+function execCopy(text) {
+  var ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0";
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  var ok = false;
+  try { ok = document.execCommand("copy"); } catch(e) { ok = false; }
+  document.body.removeChild(ta);
+  return ok;
+}
+
+// Copy row question
+function copyQ(ci, qi, q) {
+  var ok = execCopy(PREFIX + q);
+  var btn = document.getElementById("cpbtn-"+ci+"-"+qi);
+  if (!btn) return;
+  if (ok) {
+    btn.textContent = "✓ Copied";
+    btn.style.background = "#2E7D32";
+    btn.style.color = "white";
+    btn.style.borderColor = "#2E7D32";
+  } else {
+    btn.textContent = "Failed";
+    btn.style.color = "#DC2626";
+  }
+  setTimeout(function() {
+    btn.textContent = "Copy";
+    btn.style.background = "#F8FAFC";
+    btn.style.color = "#0E9E8E";
+    btn.style.borderColor = "#E2E8F0";
+  }, 2500);
+}
+
+// Custom search
+var customQ = document.getElementById("custom-q");
+var charCount = document.getElementById("char-count");
+var btnClaude = document.getElementById("btn-claude");
+var btnGpt = document.getElementById("btn-gpt");
+
+customQ.addEventListener("input", function() {
+  var len = Math.min(this.value.length, 500);
+  if (this.value.length > 500) this.value = this.value.slice(0, 500);
+  charCount.textContent = len + " / 500";
+  charCount.style.color = len > 400 ? "#DC2626" : "#64748B";
+  var on = this.value.trim().length > 0;
+  setSearchBtns(on);
+});
+
+function setSearchBtns(on) {
+  btnClaude.style.background = on ? "#0E9E8E" : "#CBD5E1";
+  btnClaude.style.cursor = on ? "pointer" : "not-allowed";
+  btnClaude.style.opacity = on ? "1" : ".6";
+  btnGpt.style.background = on ? "#0C1B33" : "#CBD5E1";
+  btnGpt.style.cursor = on ? "pointer" : "not-allowed";
+  btnGpt.style.opacity = on ? "1" : ".6";
+}
+
+function openModal(service) {
+  var q = customQ.value.trim();
+  if (!q) return;
+  modalText = PREFIX + q;
+  hasCopied = false;
+
+  // Reset modal UI
+  document.getElementById("modal-preview").textContent = modalText;
+  var copyBtn = document.getElementById("modal-copy-btn");
+  copyBtn.textContent = "👆 Copy question";
+  copyBtn.style.background = "#0E9E8E";
+
+  document.getElementById("modal-sub2").textContent = "Copy your question first — then tap a button below";
+
+  // Reset AI buttons — greyed out
+  resetAIBtns();
+
+  // Show overlay
+  document.getElementById("overlay").style.display = "flex";
+}
+
+function resetAIBtns() {
+  var bc = document.getElementById("modal-btn-claude");
+  var bg = document.getElementById("modal-btn-gpt");
+  bc.style.background = "#CBD5E1";
+  bc.style.cursor = "not-allowed";
+  bc.style.opacity = ".6";
+  bg.style.background = "#CBD5E1";
+  bg.style.cursor = "not-allowed";
+  bg.style.opacity = ".6";
+}
+
+function activateAIBtns() {
+  var bc = document.getElementById("modal-btn-claude");
+  var bg = document.getElementById("modal-btn-gpt");
+  bc.style.background = "#0E9E8E";
+  bc.style.cursor = "pointer";
+  bc.style.opacity = "1";
+  bg.style.background = "#0C1B33";
+  bg.style.cursor = "pointer";
+  bg.style.opacity = "1";
+}
+
+function doCopy() {
+  var ok = execCopy(modalText);
+  var copyBtn = document.getElementById("modal-copy-btn");
+  var sub2 = document.getElementById("modal-sub2");
+  if (ok) {
+    hasCopied = true;
+    copyBtn.textContent = "✅ Copied to clipboard";
+    copyBtn.style.background = "#2E7D32";
+    sub2.textContent = "✅ Question copied! Now tap Ask Claude or Ask ChatGPT below";
+    activateAIBtns();
+  } else {
+    copyBtn.textContent = "❌ Copy failed — tap to try again";
+    copyBtn.style.background = "#DC2626";
+  }
+}
+
+function goTo(url) {
+  if (!hasCopied) {
+    var sub2 = document.getElementById("modal-sub2");
+    sub2.textContent = "⚠️ Please copy your question first by tapping the button above";
+    var copyBtn = document.getElementById("modal-copy-btn");
+    copyBtn.style.boxShadow = "0 0 0 3px #F59E0B";
+    setTimeout(function() { copyBtn.style.boxShadow = ""; }, 1500);
+    return;
+  }
+  window.open(url, "_blank");
+  closeModal();
+}
+
+function closeModal() {
+  document.getElementById("overlay").style.display = "none";
+  hasCopied = false;
+}
+
+// Close on overlay background click
+document.getElementById("overlay").addEventListener("click", function(e) {
+  if (e.target === this) closeModal();
+});
+
+buildCats();
+</script>
+</body>
+</html>
