@@ -3,9 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta property="og:title" content="In The Moment — Tended Health Pro">
+<meta property="og:description" content="Real time guidance for dementia caregivers in crisis. No download required.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://flougher.github.io/tended-pro/in-the-moment-preview.html">
+<meta name="robots" content="index, follow">
 <title>In The Moment — Preview</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&family=Playfair+Display:wght@700&display=swap');
+  /* System fonts used for maximum compatibility */
 
   :root {
     --navy:    #0C1B33;
@@ -24,9 +29,9 @@
     --off-white: #F8FAFC;
     --r:       10px;
     --r-lg:    16px;
-    --font:    'IBM Plex Sans', sans-serif;
-    --font-head: 'Playfair Display', serif;
-    --font-mono: 'IBM Plex Mono', monospace;
+    --font:    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    --font-head: Georgia, 'Times New Roman', serif;
+    --font-mono: 'Courier New', Courier, monospace;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -480,7 +485,7 @@
     <!-- ══ SCREEN 1: Entry ═══════════════════════ -->
     <div id="screen-entry" class="screen active">
       <div class="topbar">
-        <button class="topbar-back" onclick="alert('Returns to main app')">← Back</button>
+        <button class="topbar-back" onclick="goBack()">← Back</button>
         <span class="topbar-title">In The Moment</span>
         <span class="topbar-patient">👤 Margaret T.</span>
       </div>
@@ -746,6 +751,15 @@ const scenarios = {
 
 let currentScenario = null;
 let stepsDone = [];
+
+function goBack() {
+  // If there is browser history go back otherwise stay on entry screen
+  if (document.referrer && document.referrer !== window.location.href) {
+    window.history.back();
+  } else {
+    showScreen('entry');
+  }
+}
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
