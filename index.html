@@ -401,10 +401,11 @@ body {
   display: none;
   position: fixed; inset: 0;
   background: rgba(12,27,51,.6);
-  z-index: 2000;
+  /* Above .bnav (3000) so modal save buttons aren't hidden by bottom nav on phones */
+  z-index: 4000;
   align-items: flex-start;
   justify-content: center;
-  padding: 20px;
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0px));
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   backdrop-filter: blur(3px);
@@ -8665,7 +8666,19 @@ window.TendedProBilling = {
   onPurchaseSuccess: function(orderId){ window._pendingOrderId=orderId; activatePremium('purchase'); },
   onRestoreSuccess:  function(orderId){ window._pendingOrderId=orderId; activatePremium('restore'); },
   onPurchaseCancelled: function(){ toast('Purchase cancelled.','var(--held)'); },
-  onPurchaseFailed:    function(err){ toast('Purchase failed — please try again.','var(--refused)'); }
+  onPurchaseFailed:    function(err){
+    // Auto-restore at launch fires this with "no_existing_purchase" on every fresh install.
+    // Don't shout "Purchase failed" at users who never tried to buy anything — only surface
+    // failures that came from a user-initiated action.
+    var userInitiated = window._userInitiatedRestore === true;
+    window._userInitiatedRestore = false;
+    if(err === 'no_existing_purchase'){
+      if(userInitiated) toast('No previous purchase found on this account.','var(--held)');
+      return;
+    }
+    if(!userInitiated && (err === 'billing_not_ready' || err === 'query_failed')) return;
+    toast('Purchase failed — please try again.','var(--refused)');
+  }
 };
 function triggerGooglePlayPurchase(){
   if(window.Android&&typeof window.Android.launchBilling==='function'){ window.Android.launchBilling('tended_pro_unlock'); }
@@ -8673,6 +8686,7 @@ function triggerGooglePlayPurchase(){
 }
 function restorePremium(){
   if(window.Android && typeof window.Android.restorePurchases === 'function'){
+    window._userInitiatedRestore = true;
     window.Android.restorePurchases();
     toast('Checking purchase history…','var(--held)');
     return;
