@@ -1074,13 +1074,16 @@ body {
 .premium-badge.show { display: inline-block; }
 #paywall-overlay {
   display: none; position: fixed; inset: 0; background: rgba(12,27,51,.88);
-  z-index: 9000; align-items: center; justify-content: center;
-  padding: 20px; backdrop-filter: blur(4px);
+  z-index: 9000; align-items: flex-start; justify-content: center;
+  /* flex-start + scroll + safe-area so the close button is never trapped below the fold on smaller phones (Galaxy A54 etc.) */
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  backdrop-filter: blur(4px);
 }
 #paywall-overlay.open { display: flex; }
 .paywall-modal {
   background: white; border-radius: 20px; padding: 36px 32px;
-  max-width: 480px; width: 100%; text-align: center;
+  max-width: 480px; width: 100%; text-align: center; position: relative; margin: auto 0;
   box-shadow: 0 24px 64px rgba(12,27,51,.4); animation: mUp .25s ease;
 }
 .paywall-icon {
@@ -1164,9 +1167,10 @@ body {
 <!-- ═══ PAYWALL OVERLAY ════════════════════════════════════════ -->
 <div id="paywall-overlay">
   <div class="paywall-modal">
+    <button onclick="closePaywall()" aria-label="Close" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:1.35rem;line-height:1;color:var(--slate-light);cursor:pointer;padding:4px 8px">✕</button>
     <div class="paywall-icon">⭐</div>
     <div class="paywall-title">Unlock Tended Health Pro</div>
-    <div class="paywall-sub">Your 10-day free trial has ended. Unlock complete professional documentation — <strong>one-time purchase, no subscription, no recurring fees.</strong></div>
+    <div class="paywall-sub" id="paywall-sub">Your 10-day free trial has ended. Unlock complete professional documentation — <strong>one-time purchase, no subscription, no recurring fees.</strong></div>
     <div class="paywall-features">
       <div>✅ Full MAR logging</div><div>✅ FDA BBW alerts</div>
       <div>✅ Wound tracker</div><div>✅ Incident log</div>
@@ -8702,7 +8706,20 @@ function restorePremium(){
   toast('To restore a purchase, open the Tended Health Pro app on the device where you bought it.','var(--held)');
 }
 function revokePremium(){ localStorage.removeItem(PREMIUM_KEY); updatePremiumUI(); renderPremiumCard(); toast('Premium revoked (dev mode)','var(--held)'); }
-function openPaywall(source){ if(!isPremium()){ const el=document.getElementById('paywall-overlay'); if(el) el.classList.add('open'); } }
+function openPaywall(source){
+  if(isPremium()) return;
+  const el=document.getElementById('paywall-overlay'); if(!el) return;
+  // Set subtitle to match actual trial state — don't tell an active-trial user their trial has ended.
+  const sub=document.getElementById('paywall-sub');
+  if(sub){
+    const trial=getTrialState();
+    const lead = trial.active
+      ? `You're on the free trial — ${trial.daysLeft} day${trial.daysLeft!==1?'s':''} left. Unlock now to keep full access when it ends.`
+      : `Your ${TRIAL_DAYS}-day free trial has ended. Unlock complete professional documentation.`;
+    sub.innerHTML = `${lead} <strong>One-time purchase, no subscription, no recurring fees.</strong>`;
+  }
+  el.classList.add('open');
+}
 // BUG-012 — sealing premium gating for direct action buttons. Returns true if the user
 // is allowed to proceed, opens the paywall + returns false if not.
 function checkUnlock(){
