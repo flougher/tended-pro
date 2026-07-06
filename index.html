@@ -2757,7 +2757,13 @@ body {
       <div class="fg"><label>Last Name *</label><input id="pm-lname" placeholder="Williams"></div>
     </div>
     <div class="form-row">
-      <div class="fg"><label>Date of Birth</label><input type="date" id="pm-dob"></div>
+      <div class="fg"><label>Date of Birth</label>
+      <input type="date" id="pm-dob" min="1920-01-01" max="1980-12-31"
+        onfocus="if(!this.value)this.value='1940-01-01'"
+        onblur="if(this.value==='1940-01-01')this.value=''"
+        placeholder="YYYY-MM-DD">
+      <small style="color:var(--slate-light);font-size:.75rem">Tap field — starts at 1940. Use keyboard icon to type directly.</small>
+      </div>
       <div class="fg"><label>Room / Unit</label><input id="pm-room" placeholder="Room 12B"></div>
     </div>
     <div class="form-row">
