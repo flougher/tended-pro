@@ -2,808 +2,611 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta property="og:title" content="In The Moment — Tended Health Pro">
-<meta property="og:description" content="Real time guidance for dementia caregivers in crisis. No download required.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://flougher.github.io/tended-pro/in-the-moment-preview.html">
-<meta name="robots" content="index, follow">
-<title>In The Moment — Preview</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>In The Moment — Tended Health Pro</title>
 <style>
-  /* System fonts used for maximum compatibility */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0C1B33;--teal:#0E9E8E;--teal-dark:#0C7A6E;
+  --slate:#334155;--slate-mid:#64748B;--slate-light:#94A3B8;
+  --border:#E2E8F0;--off:#F8FAFC;--white:#ffffff;
+  --red:#DC2626;--red-bg:#FEF2F2;--red-border:#FECACA;
+  --amber:#D97706;--amber-bg:#FFFBEB;--amber-border:#FDE68A;
+  --green:#059669;--green-bg:#ECFDF5;--green-border:#A7F3D0;
+  --blue:#2563EB;--blue-bg:#EFF6FF;--blue-border:#BFDBFE;
+  --purple:#7C3AED;--purple-bg:#F5F3FF;--purple-border:#DDD6FE;
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+}
+body{font-family:var(--font);background:#0a0f1a;display:flex;flex-direction:column;align-items:center;padding:16px 16px 40px;min-height:100vh}
+.preview-label{color:rgba(255,255,255,.3);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;padding:10px 0 6px}
+.app{width:100%;max-width:420px;background:var(--off);border-radius:24px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.6)}
 
-  :root {
-    --navy:    #0C1B33;
-    --teal:    #0E9E8E;
-    --teal-bright: #14C4B2;
-    --teal-dark:   #0C7A6E;
-    --given:   #2E7D32;
-    --given-bg:#E8F5E9;
-    --held:    #E65100;
-    --refused: #C62828;
-    --refused-bg: #FFEBEE;
-    --slate:   #334155;
-    --slate-mid: #64748B;
-    --slate-light: #94A3B8;
-    --border:  #E2E8F0;
-    --off-white: #F8FAFC;
-    --r:       10px;
-    --r-lg:    16px;
-    --font:    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-    --font-head: Georgia, 'Times New Roman', serif;
-    --font-mono: 'Courier New', Courier, monospace;
-  }
+/* TOPBAR */
+.topbar{background:var(--navy);padding:13px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-back{background:rgba(255,255,255,.1);border:none;color:white;padding:6px 12px;border-radius:20px;font-size:.8rem;cursor:pointer;font-family:var(--font)}
+.topbar-title{color:white;font-size:.9rem;font-weight:700}
+.topbar-badge{background:var(--teal);color:white;font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:20px}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* PATIENT BANNER */
+.patient-banner{background:var(--teal);padding:10px 16px;display:flex;align-items:center;gap:8px}
+.patient-banner .icon{font-size:1.1rem}
+.patient-banner .info{flex:1}
+.patient-banner .name{color:white;font-size:.85rem;font-weight:700}
+.patient-banner .detail{color:rgba(255,255,255,.8);font-size:.72rem}
+.patient-banner .risk{background:var(--red);color:white;font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:12px}
 
-  body {
-    font-family: var(--font);
-    background: #0a0f1a;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-  }
+/* ENTRY SCREEN */
+.entry-body{padding:16px}
+.entry-header{margin-bottom:14px}
+.entry-title{font-size:1.1rem;font-weight:800;color:var(--navy);margin-bottom:4px}
+.entry-sub{font-size:.78rem;color:var(--slate-mid);line-height:1.5}
 
-  /* Phone frame */
-  .phone {
-    width: 100%;
-    max-width: 390px;
-    background: var(--off-white);
-    border-radius: 40px;
-    overflow: hidden;
-    box-shadow: 0 40px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.08);
-    position: relative;
-  }
+/* KNOWN TRIGGERS */
+.triggers-card{background:var(--amber-bg);border:1.5px solid var(--amber-border);border-radius:14px;padding:12px 14px;margin-bottom:16px}
+.triggers-title{font-size:.72rem;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.trigger-tag{display:inline-block;background:white;border:1px solid var(--amber-border);border-radius:20px;padding:3px 10px;font-size:.72rem;color:var(--slate);margin:3px 3px 0 0}
 
-  /* Topbar */
-  .topbar {
-    background: var(--navy);
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-  .topbar-back {
-    background: rgba(255,255,255,.1);
-    border: none;
-    color: white;
-    font-family: var(--font);
-    font-size: .8rem;
-    padding: 6px 12px;
-    border-radius: 20px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .topbar-title {
-    font-family: var(--font-head);
-    font-size: 1rem;
-    color: white;
-    letter-spacing: .01em;
-  }
-  .topbar-patient {
-    background: var(--teal);
-    color: white;
-    font-size: .68rem;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 20px;
-  }
+/* WHAT WORKED */
+.worked-card{background:var(--green-bg);border:1.5px solid var(--green-border);border-radius:14px;padding:12px 14px;margin-bottom:16px}
+.worked-title{font-size:.72rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.worked-item{font-size:.76rem;color:var(--slate);padding:3px 0;display:flex;align-items:flex-start;gap:6px}
+.worked-item::before{content:"✓";color:var(--green);font-weight:700;flex-shrink:0}
 
-  /* Screens */
-  .screen { display: none; }
-  .screen.active { display: block; }
+/* SCENARIO GRID */
+.scenario-label{font-size:.72rem;font-weight:700;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.scenario-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.scenario-btn{background:white;border:1.5px solid var(--border);border-radius:16px;padding:14px 10px;text-align:center;cursor:pointer;font-family:var(--font);transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:5px}
+.scenario-btn:hover,.scenario-btn:active{border-color:var(--teal);background:var(--green-bg);transform:translateY(-1px)}
+.scenario-btn.urgent{border-color:var(--red-border);background:var(--red-bg)}
+.scenario-btn.urgent:hover{background:#fee2e2}
+.scenario-btn.warning{border-color:var(--amber-border);background:var(--amber-bg)}
+.scenario-btn.warning:hover{background:#fef3c7}
+.scenario-btn .icon{font-size:1.5rem}
+.scenario-btn .label{font-size:.76rem;font-weight:700;color:var(--navy);line-height:1.3}
+.scenario-btn .sub{font-size:.65rem;color:var(--slate-mid)}
+.scenario-btn.urgent .label{color:var(--red)}
+.scenario-btn.warning .label{color:var(--amber)}
 
-  /* ── SCREEN 1: Entry ─────────────────────────── */
-  .entry-hero {
-    background: linear-gradient(160deg, var(--navy) 0%, #0C3B6E 60%, var(--teal-dark) 100%);
-    padding: 32px 20px 28px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .entry-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 50% 0%, rgba(14,158,142,.3) 0%, transparent 70%);
-  }
-  .entry-pulse {
-    width: 72px; height: 72px;
-    background: rgba(14,158,142,.2);
-    border: 2px solid rgba(14,158,142,.5);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 16px;
-    font-size: 1.8rem;
-    position: relative;
-    animation: pulse 2.5s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%,100% { box-shadow: 0 0 0 0 rgba(14,158,142,.4); }
-    50% { box-shadow: 0 0 0 16px rgba(14,158,142,0); }
-  }
-  .entry-hero h1 {
-    font-family: var(--font-head);
-    font-size: 1.5rem;
-    color: white;
-    margin-bottom: 6px;
-    position: relative;
-  }
-  .entry-hero p {
-    font-size: .8rem;
-    color: rgba(255,255,255,.65);
-    line-height: 1.5;
-    position: relative;
-  }
+/* GUIDANCE SCREEN */
+.guidance-body{padding:16px}
+.translation-card{background:var(--blue-bg);border:1.5px solid var(--blue-border);border-radius:14px;padding:14px;margin-bottom:16px}
+.translation-label{font-size:.68rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.translation-text{font-size:.8rem;color:var(--navy);line-height:1.6}
+.scenario-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:700;margin-bottom:12px}
+.badge-urgent{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.badge-warning{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.badge-normal{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
 
-  /* Risk alert banner */
-  .risk-alert {
-    margin: 16px;
-    background: linear-gradient(135deg, #7C0000, var(--refused));
-    border-radius: var(--r-lg);
-    padding: 14px 16px;
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    animation: slideIn .4s ease;
-  }
-  @keyframes slideIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
-  .risk-alert-icon { font-size: 1.4rem; flex-shrink: 0; }
-  .risk-alert-text h3 { color: white; font-size: .82rem; font-weight: 700; margin-bottom: 3px; }
-  .risk-alert-text p { color: rgba(255,255,255,.8); font-size: .72rem; line-height: 1.4; }
+/* PATIENT SPECIFIC */
+.patient-specific{background:var(--purple-bg);border:1.5px solid var(--purple-border);border-radius:14px;padding:12px 14px;margin-bottom:16px}
+.ps-title{font-size:.68rem;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.ps-item{font-size:.76rem;color:var(--slate);padding:3px 0;display:flex;align-items:flex-start;gap:6px;line-height:1.4}
+.ps-item::before{content:"★";color:var(--purple);font-size:.7rem;flex-shrink:0;margin-top:2px}
 
-  /* Scenario grid */
-  .scenario-section {
-    padding: 16px;
-  }
-  .scenario-label {
-    font-size: .68rem;
-    font-weight: 700;
-    color: var(--slate-mid);
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    margin-bottom: 10px;
-  }
-  .scenario-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  .scenario-btn {
-    background: white;
-    border: 1.5px solid var(--border);
-    border-radius: var(--r-lg);
-    padding: 14px 12px;
-    cursor: pointer;
-    text-align: left;
-    transition: all .2s;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    font-family: var(--font);
-  }
-  .scenario-btn:hover, .scenario-btn:active {
-    border-color: var(--teal);
-    background: #EDF7F6;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(14,158,142,.15);
-  }
-  .scenario-btn .icon { font-size: 1.4rem; }
-  .scenario-btn .label {
-    font-size: .78rem;
-    font-weight: 600;
-    color: var(--navy);
-    line-height: 1.3;
-  }
-  .scenario-btn .sub {
-    font-size: .68rem;
-    color: var(--slate-mid);
-    line-height: 1.3;
-  }
-  .scenario-btn.urgent {
-    border-color: #FFCDD2;
-    background: #FFF5F5;
-  }
-  .scenario-btn.urgent:hover {
-    border-color: var(--refused);
-    background: var(--refused-bg);
-  }
+/* STEPS */
+.steps-title{font-size:.72rem;font-weight:700;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.step-card{background:white;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:8px}
+.step-row{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer}
+.step-row:last-child{border-bottom:none}
+.step-row.done{background:var(--green-bg)}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--off);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:var(--slate-mid);flex-shrink:0;margin-top:1px}
+.step-row.done .step-num{background:var(--green);border-color:var(--green);color:white}
+.step-content{flex:1}
+.step-text{font-size:.8rem;color:var(--navy);font-weight:600;line-height:1.4;margin-bottom:3px}
+.step-sub{font-size:.72rem;color:var(--slate-mid);line-height:1.4}
+.step-row.done .step-text{color:var(--green)}
 
-  /* ── SCREEN 2: Guidance ─────────────────────── */
-  .guidance-header {
-    background: linear-gradient(135deg, var(--teal-dark), var(--teal));
-    padding: 20px 18px;
-    color: white;
-  }
-  .guidance-scenario {
-    font-size: .7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    opacity: .75;
-    margin-bottom: 4px;
-  }
-  .guidance-title {
-    font-family: var(--font-head);
-    font-size: 1.15rem;
-    margin-bottom: 6px;
-  }
-  .guidance-translation {
-    background: rgba(255,255,255,.15);
-    border-radius: var(--r);
-    padding: 10px 14px;
-    font-size: .78rem;
-    line-height: 1.5;
-    backdrop-filter: blur(4px);
-  }
-  .guidance-translation strong { display: block; margin-bottom: 3px; font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; opacity: .75; }
+/* RESOLVE */
+.resolve-section{margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.resolve-btn{width:100%;background:var(--green);color:white;border:none;border-radius:14px;padding:14px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-bottom:8px}
+.escalate-btn{width:100%;background:var(--red);color:white;border:none;border-radius:14px;padding:14px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-bottom:8px}
+.back-btn{width:100%;background:transparent;color:var(--slate-mid);border:1.5px solid var(--border);border-radius:14px;padding:12px;font-size:.82rem;cursor:pointer;font-family:var(--font)}
 
-  .guidance-body { padding: 16px; }
+/* RESOLVED SCREEN */
+.resolved-body{padding:20px}
+.resolved-icon{text-align:center;font-size:3rem;margin-bottom:12px}
+.resolved-title{text-align:center;font-size:1.1rem;font-weight:800;color:var(--navy);margin-bottom:6px}
+.resolved-sub{text-align:center;font-size:.8rem;color:var(--slate-mid);margin-bottom:20px;line-height:1.5}
+.log-card{background:var(--green-bg);border:1.5px solid var(--green-border);border-radius:14px;padding:14px;margin-bottom:12px}
+.log-title{font-size:.72rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.log-item{font-size:.78rem;color:var(--slate);padding:3px 0;display:flex;gap:8px}
+.log-label{color:var(--slate-mid);min-width:70px;flex-shrink:0}
+.new-scenario-btn{width:100%;background:var(--navy);color:white;border:none;border-radius:14px;padding:14px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-bottom:8px}
 
-  .protocol-card {
-    background: white;
-    border: 1.5px solid var(--border);
-    border-radius: var(--r-lg);
-    overflow: hidden;
-    margin-bottom: 12px;
-  }
-  .protocol-title {
-    background: var(--off-white);
-    padding: 10px 14px;
-    font-size: .72rem;
-    font-weight: 700;
-    color: var(--slate-mid);
-    text-transform: uppercase;
-    letter-spacing: .07em;
-    border-bottom: 1px solid var(--border);
-  }
-  .protocol-step {
-    padding: 11px 14px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    cursor: pointer;
-    transition: background .15s;
-  }
-  .protocol-step:last-child { border-bottom: none; }
-  .protocol-step:hover { background: var(--off-white); }
-  .protocol-step.done { opacity: .5; }
-  .protocol-step.done .step-text { text-decoration: line-through; }
-  .step-num {
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    background: var(--teal);
-    color: white;
-    font-size: .68rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-    transition: background .2s;
-  }
-  .protocol-step.done .step-num { background: var(--given); }
-  .step-text { font-size: .8rem; color: var(--navy); line-height: 1.4; }
-  .step-sub { font-size: .71rem; color: var(--teal); margin-top: 2px; font-style: italic; }
-
-  /* What worked card */
-  .worked-card {
-    background: var(--given-bg);
-    border: 1.5px solid var(--given);
-    border-radius: var(--r-lg);
-    padding: 14px;
-    margin-bottom: 12px;
-  }
-  .worked-title {
-    font-size: .68rem;
-    font-weight: 700;
-    color: var(--given);
-    text-transform: uppercase;
-    letter-spacing: .07em;
-    margin-bottom: 8px;
-  }
-  .worked-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: .78rem;
-    color: var(--navy);
-    margin-bottom: 5px;
-    line-height: 1.3;
-  }
-  .worked-item::before { content: '✓'; color: var(--given); font-weight: 700; flex-shrink: 0; }
-
-  /* Contact card */
-  .contact-card {
-    background: white;
-    border: 1.5px solid var(--border);
-    border-radius: var(--r-lg);
-    padding: 14px;
-    margin-bottom: 12px;
-  }
-  .contact-title {
-    font-size: .68rem;
-    font-weight: 700;
-    color: var(--slate-mid);
-    text-transform: uppercase;
-    letter-spacing: .07em;
-    margin-bottom: 10px;
-  }
-  .contact-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 7px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .contact-row:last-child { border-bottom: none; }
-  .contact-name { font-size: .8rem; font-weight: 600; color: var(--navy); }
-  .contact-role { font-size: .7rem; color: var(--slate-mid); }
-  .contact-call {
-    background: var(--teal);
-    color: white;
-    border: none;
-    border-radius: 20px;
-    font-size: .72rem;
-    font-weight: 600;
-    padding: 5px 12px;
-    cursor: pointer;
-    font-family: var(--font);
-  }
-
-  /* Document button */
-  .doc-btn {
-    width: 100%;
-    background: var(--navy);
-    color: white;
-    border: none;
-    border-radius: var(--r-lg);
-    padding: 14px;
-    font-family: var(--font);
-    font-size: .88rem;
-    font-weight: 600;
-    cursor: pointer;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background .2s;
-  }
-  .doc-btn:hover { background: #0C3B6E; }
-  .resolve-btn {
-    width: 100%;
-    background: var(--given-bg);
-    color: var(--given);
-    border: 1.5px solid var(--given);
-    border-radius: var(--r-lg);
-    padding: 12px;
-    font-family: var(--font);
-    font-size: .85rem;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all .2s;
-  }
-
-  /* ── SCREEN 3: Resolved ─────────────────────── */
-  .resolved-screen {
-    padding: 40px 20px;
-    text-align: center;
-  }
-  .resolved-icon {
-    font-size: 3rem;
-    margin-bottom: 16px;
-    animation: bounceIn .5s ease;
-  }
-  @keyframes bounceIn {
-    0% { transform: scale(0); opacity: 0; }
-    60% { transform: scale(1.1); }
-    100% { transform: scale(1); opacity: 1; }
-  }
-  .resolved-title {
-    font-family: var(--font-head);
-    font-size: 1.4rem;
-    color: var(--navy);
-    margin-bottom: 8px;
-  }
-  .resolved-sub {
-    font-size: .82rem;
-    color: var(--slate-mid);
-    line-height: 1.5;
-    margin-bottom: 24px;
-  }
-  .auto-logged {
-    background: var(--given-bg);
-    border: 1.5px solid var(--given);
-    border-radius: var(--r-lg);
-    padding: 14px;
-    text-align: left;
-    margin-bottom: 20px;
-  }
-  .auto-logged-title {
-    font-size: .7rem;
-    font-weight: 700;
-    color: var(--given);
-    text-transform: uppercase;
-    letter-spacing: .07em;
-    margin-bottom: 8px;
-  }
-  .auto-logged-item {
-    font-size: .78rem;
-    color: var(--navy);
-    padding: 4px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .auto-logged-item::before { content: '✓'; color: var(--given); font-weight: 700; }
-  .back-btn {
-    width: 100%;
-    background: var(--teal);
-    color: white;
-    border: none;
-    border-radius: var(--r-lg);
-    padding: 14px;
-    font-family: var(--font);
-    font-size: .9rem;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  /* Preview label */
-  .preview-label {
-    text-align: center;
-    color: rgba(255,255,255,.3);
-    font-size: .7rem;
-    font-family: var(--font-mono);
-    padding: 12px 0 4px;
-    letter-spacing: .1em;
-  }
+.screen{display:none}
+.screen.active{display:block}
 </style>
 </head>
 <body>
 
-<div style="width:100%;max-width:390px;margin:0 auto">
-  <div class="preview-label">IN THE MOMENT — PREVIEW ONLY</div>
-  <div class="phone">
+<div class="preview-label">🫂 In The Moment — Tended Health Pro Demo</div>
 
-    <!-- ══ SCREEN 1: Entry ═══════════════════════ -->
-    <div id="screen-entry" class="screen active">
-      <div class="topbar">
-        <button class="topbar-back" onclick="goBack()">← Back</button>
-        <span class="topbar-title">In The Moment</span>
-        <span class="topbar-patient">👤 Margaret T.</span>
-      </div>
+<div class="app">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <button class="topbar-back" id="topbar-back" onclick="goBack()">← Back</button>
+    <div class="topbar-title">🫂 In The Moment</div>
+    <div class="topbar-badge" id="topbar-badge">Live</div>
+  </div>
 
-      <div class="entry-hero">
-        <div class="entry-pulse">🫂</div>
-        <h1>What's happening?</h1>
-        <p>Your patient's history is ready.<br>Tell me what you're seeing right now.</p>
-      </div>
-
-      <!-- Active risk alert pulled from sundowning prediction -->
-      <div class="risk-alert">
-        <div class="risk-alert-icon">⚠️</div>
-        <div class="risk-alert-text">
-          <h3>Active Sundowning Window — 4:15 PM – 6:45 PM</h3>
-          <p>Margaret is currently in her peak risk window based on 4 logged episodes. Last episode resolved with Chopin and family photos.</p>
-        </div>
-      </div>
-
-      <div class="scenario-section">
-        <div class="scenario-label">Select what you're seeing</div>
-        <div class="scenario-grid">
-          <button class="scenario-btn" onclick="showGuidance('home')">
-            <span class="icon">🏠</span>
-            <span class="label">Asking to go home</span>
-            <span class="sub">Repeated requests, distress</span>
-          </button>
-          <button class="scenario-btn" onclick="showGuidance('agitated')">
-            <span class="icon">😰</span>
-            <span class="label">Agitated or pacing</span>
-            <span class="sub">Restless, won't settle</span>
-          </button>
-          <button class="scenario-btn" onclick="showGuidance('crying')">
-            <span class="icon">😢</span>
-            <span class="label">Crying or distressed</span>
-            <span class="sub">Tearful, calling for family</span>
-          </button>
-          <button class="scenario-btn" onclick="showGuidance('refusing')">
-            <span class="icon">🚫</span>
-            <span class="label">Refusing care</span>
-            <span class="sub">Won't eat, bathe, or medicate</span>
-          </button>
-          <button class="scenario-btn urgent" onclick="showGuidance('wandering')">
-            <span class="icon">🚪</span>
-            <span class="label">Trying to leave</span>
-            <span class="sub">Wandering, exit-seeking</span>
-          </button>
-          <button class="scenario-btn urgent" onclick="showGuidance('combative')">
-            <span class="icon">⚠️</span>
-            <span class="label">Combative</span>
-            <span class="sub">Hitting, scratching, verbal</span>
-          </button>
-        </div>
-      </div>
+  <!-- PATIENT BANNER -->
+  <div class="patient-banner">
+    <div class="icon">👤</div>
+    <div class="info">
+      <div class="name">Margaret Thompson · Rm 4B</div>
+      <div class="detail">Age 84 · Stage 7 Alzheimer's · High elopement risk</div>
     </div>
+    <div class="risk">⚠ HIGH RISK</div>
+  </div>
 
-    <!-- ══ SCREEN 2: Guidance ════════════════════ -->
-    <div id="screen-guidance" class="screen">
-      <div class="topbar">
-        <button class="topbar-back" onclick="showScreen('entry')">← Back</button>
-        <span class="topbar-title">In The Moment</span>
-        <span class="topbar-patient">👤 Margaret T.</span>
+  <!-- ENTRY SCREEN -->
+  <div class="screen active" id="screen-entry">
+    <div class="entry-body">
+      <div class="entry-header">
+        <div class="entry-title">What are you seeing right now?</div>
+        <div class="entry-sub">Tap the situation closest to what Margaret is experiencing. Guidance is built from her documented history.</div>
       </div>
 
-      <div class="guidance-header">
-        <div class="guidance-scenario" id="guidance-scenario-label">Scenario</div>
-        <div class="guidance-title" id="guidance-title">Guidance</div>
-        <div class="guidance-translation">
-          <strong>🧠 What this likely means</strong>
-          <span id="guidance-translation"></span>
-        </div>
+      <!-- Known triggers -->
+      <div class="triggers-card">
+        <div class="triggers-title">⚡ Margaret's Known Triggers</div>
+        <span class="trigger-tag">Loud noise / intercom</span>
+        <span class="trigger-tag">Routine disruption</span>
+        <span class="trigger-tag">Low / dim lighting</span>
+        <span class="trigger-tag">Unfamiliar faces</span>
+        <span class="trigger-tag">Late afternoon</span>
+        <span class="trigger-tag">Missed nap</span>
       </div>
 
-      <div class="guidance-body">
+      <!-- What worked -->
+      <div class="worked-card">
+        <div class="worked-title">✓ What Works For Margaret</div>
+        <div class="worked-item">Chopin — resolved 3 of last 4 episodes</div>
+        <div class="worked-item">Daughter Linda's phone call</div>
+        <div class="worked-item">Blue cardigan comfort anchor</div>
+        <div class="worked-item">One-on-one quiet time</div>
+        <div class="worked-item">Verbal reassurance about dinner</div>
+      </div>
 
-        <!-- What worked — from existing sundowning/memory care data -->
-        <div class="worked-card">
-          <div class="worked-title">✅ What has worked for Margaret</div>
-          <div id="worked-list"></div>
-        </div>
+      <div class="scenario-label">Select what you are seeing</div>
 
-        <!-- Step by step comfort protocol -->
-        <div class="protocol-card">
-          <div class="protocol-title">🫂 Comfort Protocol — follow in order</div>
-          <div id="protocol-steps"></div>
-        </div>
+      <!-- SCENARIO GRID — 12 scenarios -->
+      <div class="scenario-grid">
 
-        <!-- Escalation contacts from care plan -->
-        <div class="contact-card">
-          <div class="contact-title">📞 Escalate if no improvement in 10 min</div>
-          <div class="contact-row">
-            <div>
-              <div class="contact-name">Charge Nurse Martinez</div>
-              <div class="contact-role">On duty supervisor</div>
-            </div>
-            <button class="contact-call">📞 Call</button>
-          </div>
-          <div class="contact-row">
-            <div>
-              <div class="contact-name">Linda Flores</div>
-              <div class="contact-role">Daughter — 702-555-0182</div>
-            </div>
-            <button class="contact-call">📞 Call</button>
-          </div>
-        </div>
-
-        <button class="doc-btn" onclick="showResolved()">
-          📋 Episode resolved — document it
-        </button>
-        <button class="resolve-btn" onclick="showResolved()">
-          ✓ All good — no documentation needed
+        <button class="scenario-btn" onclick="showGuidance('home')">
+          <span class="icon">🏠</span>
+          <span class="label">Asking to go home</span>
+          <span class="sub">Repeated, distressed</span>
         </button>
 
+        <button class="scenario-btn" onclick="showGuidance('agitated')">
+          <span class="icon">🔄</span>
+          <span class="label">Agitated or pacing</span>
+          <span class="sub">Restless, won't settle</span>
+        </button>
+
+        <button class="scenario-btn" onclick="showGuidance('crying')">
+          <span class="icon">😢</span>
+          <span class="label">Crying or distressed</span>
+          <span class="sub">Tearful, calling family</span>
+        </button>
+
+        <button class="scenario-btn warning" onclick="showGuidance('refusing_care')">
+          <span class="icon">🚫</span>
+          <span class="label">Refusing care</span>
+          <span class="sub">Meds, bathing, eating</span>
+        </button>
+
+        <button class="scenario-btn warning" onclick="showGuidance('refusing_food')">
+          <span class="icon">🍽️</span>
+          <span class="label">Refusing to eat</span>
+          <span class="sub">Won't take food or fluids</span>
+        </button>
+
+        <button class="scenario-btn warning" onclick="showGuidance('sundowning')">
+          <span class="icon">🌅</span>
+          <span class="label">Sundowning episode</span>
+          <span class="sub">Late day confusion</span>
+        </button>
+
+        <button class="scenario-btn urgent" onclick="showGuidance('wandering')">
+          <span class="icon">🚪</span>
+          <span class="label">Trying to leave</span>
+          <span class="sub">Exit-seeking — urgent</span>
+        </button>
+
+        <button class="scenario-btn urgent" onclick="showGuidance('combative')">
+          <span class="icon">⚠️</span>
+          <span class="label">Combative behavior</span>
+          <span class="sub">Hitting or aggressive</span>
+        </button>
+
+        <button class="scenario-btn urgent" onclick="showGuidance('fall')">
+          <span class="icon">🩹</span>
+          <span class="label">Fall or injury</span>
+          <span class="sub">Has fallen — urgent</span>
+        </button>
+
+        <button class="scenario-btn urgent" onclick="showGuidance('medical')">
+          <span class="icon">🚨</span>
+          <span class="label">Medical emergency</span>
+          <span class="sub">Chest pain, not breathing</span>
+        </button>
+
+        <button class="scenario-btn" onclick="showGuidance('hallucinating')">
+          <span class="icon">👁️</span>
+          <span class="label">Hallucinating</span>
+          <span class="sub">Seeing or hearing things</span>
+        </button>
+
+        <button class="scenario-btn" onclick="showGuidance('eol')">
+          <span class="icon">🕊️</span>
+          <span class="label">End of life signs</span>
+          <span class="sub">Breathing changes, unresponsive</span>
+        </button>
+
       </div>
     </div>
+  </div>
 
-    <!-- ══ SCREEN 3: Resolved ════════════════════ -->
-    <div id="screen-resolved" class="screen">
-      <div class="topbar">
-        <button class="topbar-back" onclick="showScreen('entry')">← New scenario</button>
-        <span class="topbar-title">In The Moment</span>
-        <span class="topbar-patient">👤 Margaret T.</span>
+  <!-- GUIDANCE SCREEN -->
+  <div class="screen" id="screen-guidance">
+    <div class="guidance-body">
+      <div id="scenario-badge" class="scenario-badge badge-normal">Scenario</div>
+      <div class="translation-card">
+        <div class="translation-label">💡 What this behavior means</div>
+        <div class="translation-text" id="guidance-translation"></div>
       </div>
-
-      <div class="resolved-screen">
-        <div class="resolved-icon">✅</div>
-        <div class="resolved-title">Well handled.</div>
-        <div class="resolved-sub">This episode has been added to Margaret's sundowning log automatically. Your documentation builds her prediction for next shift.</div>
-
-        <div class="auto-logged">
-          <div class="auto-logged-title">📋 Auto-logged to Margaret's record</div>
-          <div class="auto-logged-item">Sundowning episode — today 5:18 PM</div>
-          <div class="auto-logged-item">Severity: Moderate</div>
-          <div class="auto-logged-item">Intervention: Familiar music + redirection</div>
-          <div class="auto-logged-item">Outcome: Resolved in ~12 minutes</div>
-          <div class="auto-logged-item">Prediction updated for next shift</div>
-        </div>
-
-        <button class="back-btn" onclick="showScreen('entry')">Done — back to scenarios</button>
+      <div class="patient-specific" id="patient-specific-card">
+        <div class="ps-title">★ What works for Margaret specifically</div>
+        <div id="patient-specific-content"></div>
+      </div>
+      <div class="steps-title">Step by step — tap each as you complete it</div>
+      <div id="steps-container"></div>
+      <div class="resolve-section">
+        <button class="resolve-btn" onclick="showResolved()">✅ Episode resolved</button>
+        <button class="escalate-btn" id="escalate-btn" onclick="showEscalated()">📞 Escalate to supervisor</button>
+        <button class="back-btn" onclick="showScreen('entry')">← Different scenario</button>
       </div>
     </div>
+  </div>
 
-  </div><!-- /phone -->
+  <!-- RESOLVED SCREEN -->
+  <div class="screen" id="screen-resolved">
+    <div class="resolved-body">
+      <div class="resolved-icon">✅</div>
+      <div class="resolved-title">Episode resolved</div>
+      <div class="resolved-sub">Margaret is settled. This episode has been logged to her record automatically.</div>
+      <div class="log-card">
+        <div class="log-title">📋 Auto-logged to Margaret's record</div>
+        <div class="log-item"><span class="log-label">Time:</span><span id="log-time"></span></div>
+        <div class="log-item"><span class="log-label">Scenario:</span><span id="log-scenario"></span></div>
+        <div class="log-item"><span class="log-label">Steps done:</span><span id="log-steps"></span></div>
+        <div class="log-item"><span class="log-label">Status:</span><span style="color:var(--green);font-weight:700">Resolved</span></div>
+      </div>
+      <button class="new-scenario-btn" onclick="showScreen('entry')">← New scenario</button>
+      <button class="back-btn" onclick="showScreen('entry')">Back to patient</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
-const scenarios = {
+var currentScenario = null;
+var stepsDone = [];
+
+var scenarios = {
   home: {
     label: 'Asking to go home',
-    title: '"I want to go home"',
-    translation: 'Margaret is feeling unsafe or disoriented. "Home" represents emotional security — a familiar, safe place. She is not confused about geography, she is expressing an emotional need.',
-    worked: [
-      'Familiar music — Chopin responded immediately (3 of 4 episodes)',
-      'Family photos — showing daughter Linda calmed her within 5 minutes',
-      'One-on-one quiet time — sitting together without TV or noise',
-      'Daughter\'s phone call — most effective when escalated'
+    badge: 'normal',
+    translation: 'Margaret is feeling unsafe or disoriented. Home represents emotional security. She is not confused about geography — she is expressing an emotional need for safety and familiarity.',
+    patientSpecific: [
+      'Chopin has resolved 3 of her last 4 episodes — try this first',
+      'Daughter Linda\'s voice is her most effective comfort — call if escalating',
+      'Blue cardigan is her documented comfort anchor',
+      'Avoid saying "you are already home" — creates conflict with Margaret specifically'
     ],
     steps: [
-      { text: 'Turn off the TV and reduce all background noise', sub: 'Noise is her #1 environmental trigger' },
-      { text: 'Sit at her level — do not stand over her', sub: 'Eye contact and calm presence first' },
-      { text: 'Validate the feeling — "I hear you, you want to feel safe at home"', sub: 'Never say "you are home" — it creates conflict' },
-      { text: 'Redirect with a memory — "Tell me about your home. What did it look like?"', sub: 'Engaging long-term memory shifts focus' },
-      { text: 'Offer her comfort anchor — blue cardigan or family photo album', sub: 'Documented comfort objects from Memory Care Notes' },
-      { text: 'Put on Chopin softly in the background', sub: 'Resolved 3 of her last 4 sundowning episodes' }
+      { text: 'Turn off the TV and reduce all background noise', sub: 'Loud noise is Margaret\'s #1 documented trigger' },
+      { text: 'Sit at her level — do not stand over her', sub: 'Eye contact and calm presence before any words' },
+      { text: 'Validate — "I hear you, you want to feel safe"', sub: 'Never say "you are home" — document shows this escalates her' },
+      { text: 'Redirect — "Tell me about your home. What did it look like?"', sub: 'Engaging long-term memory shifts focus away from distress' },
+      { text: 'Offer her blue cardigan or family photo album', sub: 'Documented comfort anchors from her Memory Care Notes' },
+      { text: 'Put Chopin on softly in the background', sub: 'Resolved 3 of her last 4 sundowning episodes' }
     ]
   },
   agitated: {
     label: 'Agitated or pacing',
-    title: 'Restless and agitated',
-    translation: 'Pacing is often a self-regulating behavior — Margaret may be trying to reduce internal distress through movement. Stopping the movement abruptly can escalate the episode.',
-    worked: [
-      'Walking alongside her — matching her pace before gently redirecting',
-      'Dimming room lights — low light reduces visual overstimulation',
-      'Offering warm tea — tactile comfort and familiar routine',
-      'Moving her rocking chair to the hallway window'
+    badge: 'normal',
+    translation: 'Pacing is often self-regulating behavior — Margaret may be reducing internal distress through movement. Stopping her abruptly almost always escalates the episode. Walk with her first.',
+    patientSpecific: [
+      'Dim the lights immediately — low light is her documented trigger',
+      'Rocking chair at the hallway window has calmed her before',
+      'Warm tea is a documented tactile comfort for Margaret',
+      'Do not approach from behind — she startles easily'
     ],
     steps: [
-      { text: 'Do not block her path or physically stop her', sub: 'Let her move — walking alongside is safer' },
-      { text: 'Dim the lights and close the door to reduce stimulation', sub: 'Environmental triggers first' },
-      { text: 'Walk beside her calmly — match her pace', sub: 'Side-by-side is less threatening than face-to-face' },
-      { text: 'Offer warm tea or a small snack with familiar taste', sub: 'Tactile and taste anchors ground her' },
+      { text: 'Do not block her path or stop her physically', sub: 'Let her move — walking alongside is always safer' },
+      { text: 'Dim the lights and close the door', sub: 'Environmental triggers come first — lighting is her #2 trigger' },
+      { text: 'Walk calmly beside her — match her pace', sub: 'Side-by-side is less threatening than face-to-face for Margaret' },
+      { text: 'Offer warm tea or a small familiar snack', sub: 'Tactile and taste anchors have grounded her before' },
       { text: 'Gently guide toward her rocking chair at the window', sub: 'Rocking motion is naturally self-calming' },
-      { text: 'Play Chopin softly once she is seated', sub: 'Music transition documented as effective' }
+      { text: 'Play Chopin softly once she is seated', sub: 'Music transition documented as effective for Margaret' }
     ]
   },
   crying: {
     label: 'Crying or distressed',
-    title: 'Tearful and calling for family',
-    translation: 'Margaret is experiencing grief or loss in this moment — she may be mourning her husband or feeling profound loneliness. This is real emotional pain, not confusion. Meet it with empathy first.',
-    worked: [
-      'Sitting quietly beside her without speaking immediately',
-      'Daughter Linda\'s phone call — most effective for tearful episodes',
-      'Holding her hand and allowing her to express the feeling',
-      'Sharing a memory about her husband gently'
+    badge: 'normal',
+    translation: 'Margaret is experiencing real grief or profound loneliness in this moment. This is not confusion — it is genuine emotional pain. Do not try to stop the crying immediately. Sit with the feeling first.',
+    patientSpecific: [
+      'Allow her to cry for 3-5 minutes before redirecting — she needs to feel heard',
+      'Daughter Linda\'s phone call is most effective for tearful episodes',
+      'Sharing a warm memory of her husband has helped before',
+      'Physical warmth — tea and her blue cardigan — documented as soothing'
     ],
     steps: [
-      { text: 'Sit beside her — do not try to immediately stop the crying', sub: 'Allow the emotion before redirecting' },
-      { text: 'Place your hand on hers and say "I\'m right here with you"', sub: 'Physical presence is the first comfort' },
+      { text: 'Sit beside her — do not immediately try to stop the crying', sub: 'Allow the emotion before redirecting — she needs to feel heard' },
+      { text: 'Place your hand on hers — "I\'m right here with you"', sub: 'Physical presence is her first comfort' },
       { text: 'Ask gently — "Who are you thinking about right now?"', sub: 'Naming the person validates the grief' },
-      { text: 'If asking for her husband — share a warm memory', sub: '"I heard he was a wonderful man. Tell me about him."' },
-      { text: 'After 5 minutes — offer to call daughter Linda', sub: 'Hearing a familiar voice has resolved these episodes' },
-      { text: 'Offer warm tea and her blue cardigan', sub: 'Physical warmth and comfort anchors' }
+      { text: 'Share a warm memory if she mentions her husband', sub: '"I heard he was a wonderful man. Tell me about him."' },
+      { text: 'After 5 minutes — offer to call daughter Linda', sub: 'Hearing Linda\'s voice has resolved these episodes before' },
+      { text: 'Offer warm tea and her blue cardigan', sub: 'Physical warmth and her comfort anchor' }
     ]
   },
-  refusing: {
+  refusing_care: {
     label: 'Refusing care',
-    title: 'Refusing medication or care',
-    translation: 'Refusal is often about loss of control or fear — not the specific task. Offering a choice restores a sense of control and dramatically reduces resistance.',
-    worked: [
-      'Offering a choice — "Do you want to eat now or in 10 minutes?"',
-      'Making it routine — "Time for your morning routine, just like always"',
-      'Coming back in 15 minutes after initial refusal',
-      'Asking what she would prefer instead'
+    badge: 'warning',
+    translation: 'Refusal is almost always about loss of control or fear — not the specific task. Margaret needs to feel she has a choice. Offering options restores control and dramatically reduces resistance.',
+    patientSpecific: [
+      'Come back in 15-20 minutes — short-term memory means refusal often does not persist',
+      'Frame as routine — "This is what we do every morning together"',
+      'Never force medications — document and notify charge nurse',
+      'A choice between two options works better than a yes/no question with Margaret'
     ],
     steps: [
-      { text: 'Do not insist or repeat the request immediately', sub: 'Repetition increases resistance' },
-      { text: 'Step back and give her space for 2–3 minutes', sub: 'Pressure removal often resets the refusal' },
-      { text: 'Return with a choice — never a yes/no question', sub: '"Would you like to eat now, or shall we sit together first?"' },
-      { text: 'Frame it as routine — "This is what we do every morning together"', sub: 'Familiar framing reduces perceived threat' },
-      { text: 'If medication refused — document and notify charge nurse', sub: 'Do not force. Follow agency refusal protocol.' },
-      { text: 'Try again in 15–20 minutes with a different approach', sub: 'Short-term memory means the refusal may not persist' }
+      { text: 'Do not repeat the request immediately', sub: 'Repetition increases resistance with Margaret specifically' },
+      { text: 'Step back and give her space for 2-3 minutes', sub: 'Removing pressure often resets the refusal' },
+      { text: 'Return with a choice — never a yes/no question', sub: '"Would you like to do this now or shall we sit together first?"' },
+      { text: 'Frame it as familiar routine', sub: '"This is what we do every morning together — just like always"' },
+      { text: 'If medication refused — document and notify charge nurse', sub: 'Never force. Follow agency refusal protocol exactly.' },
+      { text: 'Try again in 15-20 minutes with a different approach', sub: 'Her short-term memory means the refusal may not persist' }
+    ]
+  },
+  refusing_food: {
+    label: 'Refusing to eat',
+    badge: 'warning',
+    translation: 'Food and fluid refusal in late-stage Alzheimer\'s can signal pain, nausea, swallowing difficulty, depression or approaching end of life. Document carefully — this is clinically significant beyond one meal.',
+    patientSpecific: [
+      'Check: is she grimacing or guarding? Could indicate pain — use PAINAD scale',
+      'Verbal reassurance about dinner has previously helped Margaret accept food',
+      'Small frequent offerings work better than one full meal for her',
+      'If refusing fluids for more than one shift — notify charge nurse immediately'
+    ],
+    steps: [
+      { text: 'Check for signs of pain or discomfort first', sub: 'Grimacing, guarding, vocalizations — refusal is often pain-driven' },
+      { text: 'Check positioning — is she sitting upright at 90 degrees?', sub: 'Aspiration risk increases with poor positioning' },
+      { text: 'Offer small portions of her preferred foods', sub: 'Familiarity increases acceptance — what does her care plan list?' },
+      { text: 'Try verbal reassurance — "Dinner is almost ready, just like always"', sub: 'Documented as effective for Margaret specifically' },
+      { text: 'If swallowing difficulty observed — stop and notify charge nurse', sub: 'Aspiration risk requires immediate clinical assessment' },
+      { text: 'Document exactly what was offered, what was refused and why', sub: 'Two or more consecutive meal refusals require supervisor notification' }
+    ]
+  },
+  sundowning: {
+    label: 'Sundowning episode',
+    badge: 'warning',
+    translation: 'Margaret\'s documented peak risk window is 4:21 PM to 6:21 PM. If you are seeing this outside that window it may indicate a new trigger or escalating progression. Document timing carefully.',
+    patientSpecific: [
+      'Peak documented window: 4:21 PM — 6:21 PM based on 4 logged episodes',
+      'Extra lighting has resolved mild episodes — turn all lights on now',
+      'Small snack offered before peak window has prevented two episodes',
+      'Intercom announcements are her #1 documented sundowning trigger — notify nursing station'
+    ],
+    steps: [
+      { text: 'Turn on all available lights immediately', sub: 'Extra lighting is Margaret\'s most documented effective intervention' },
+      { text: 'Turn off or mute the intercom if possible', sub: 'Loud announcements are her primary sundowning trigger' },
+      { text: 'Maintain a calm consistent routine — no sudden changes', sub: 'Routine disruption is her second most common trigger' },
+      { text: 'Offer a small familiar snack', sub: 'Documented as effective during peak risk window for Margaret' },
+      { text: 'Put on Chopin softly', sub: 'Music intervention most effective before full escalation' },
+      { text: 'Notify charge nurse if escalating beyond mild agitation', sub: 'Severe sundowning episodes require supervisor awareness' }
     ]
   },
   wandering: {
     label: 'Trying to leave',
-    title: 'Exit-seeking behavior',
-    translation: 'Margaret has 1 prior elopement attempt on record. Exit-seeking means she is experiencing a strong drive to leave — driven by fear, disorientation, or the need to fulfill a role (going to work, picking up children). Do not argue about where she is going.',
-    worked: [
-      'Daughter\'s phone call — resolved the prior elopement attempt',
-      'Gentle redirection to a task — "Can you help me with something?"',
-      'Validation of her goal before redirecting',
-      'Moving her away from the exit door with a walk together'
+    badge: 'urgent',
+    translation: 'Margaret has 1 prior elopement attempt on record. Exit-seeking means she has a strong drive to leave — driven by fear, disorientation or an internal role she believes she must fulfill. Do not argue about where she is going.',
+    patientSpecific: [
+      '⚠ PRIOR ELOPEMENT on record — this is high priority',
+      'Daughter Linda\'s phone call resolved her prior elopement attempt',
+      'Gentle redirection to a task has worked — "Can you help me with something?"',
+      'Validation of her goal before redirecting reduces resistance with Margaret'
     ],
     steps: [
-      { text: '🚨 Verify all door alarms are active immediately', sub: 'Safety first — check exit points now' },
-      { text: 'Stay calm — do not block or physically restrain', sub: 'Restraint escalates. Redirection is safer.' },
+      { text: '🚨 Verify all door alarms are active immediately', sub: 'Safety first — check all exit points now before anything else' },
+      { text: 'Stay calm — do not block or physically restrain her', sub: 'Restraint escalates. Redirection is always safer.' },
       { text: 'Ask where she is going — validate her answer', sub: '"You need to pick up the children? Of course, let me help you get ready."' },
       { text: 'Create a task that delays — "First let me show you something important"', sub: 'A purposeful task redirects the drive to leave' },
       { text: 'Walk with her away from the exit toward a comfortable area', sub: 'Motion with you is safer than motion alone' },
-      { text: 'Notify charge nurse — this is an elopement risk event', sub: 'Prior elopement history requires supervisor notification' }
+      { text: '📞 Notify charge nurse — elopement risk event — document now', sub: 'Prior elopement history requires immediate supervisor notification' }
     ]
   },
   combative: {
     label: 'Combative behavior',
-    title: 'Hitting or verbal aggression',
-    translation: 'Combative behavior in dementia is almost always a fear response — Margaret is protecting herself from a perceived threat. You are not the target. The behavior communicates "I am scared and I cannot express it any other way."',
-    worked: [
-      'Immediately stepping back and giving space',
-      'Lowering voice and slowing all movements',
-      'Leaving the room briefly then returning calmly',
-      'Calling charge nurse — this episode required supervisor support'
+    badge: 'urgent',
+    translation: 'Combative behavior is almost always a fear response. Margaret is not attacking you — she is terrified and cannot express it any other way. You are not the target. The behavior means "I am scared and I cannot say it."',
+    patientSpecific: [
+      'Immediately stepping back has de-escalated her before — give 6 feet of space',
+      'Leaving the room for 2-3 minutes removes the perceived threat',
+      'Lowering your voice and slowing movements documented as effective',
+      'This has required charge nurse support in past episodes — call early'
     ],
     steps: [
-      { text: '🚨 Step back immediately — ensure your own safety first', sub: 'You cannot help if you are injured' },
-      { text: 'Do not restrain, grab, or raise your voice', sub: 'Physical contact during combative episodes escalates danger' },
-      { text: 'Lower your body — crouch or sit if possible', sub: 'Standing tall is perceived as threatening' },
-      { text: 'Speak very slowly and softly — "I am not going to hurt you. You are safe."', sub: 'Tone matters more than words in this moment' },
-      { text: 'Leave the room for 2–3 minutes if safe to do so', sub: 'Your absence removes the perceived threat' },
+      { text: '🚨 Step back immediately — 6 feet — ensure your own safety', sub: 'You cannot help Margaret if you are injured' },
+      { text: 'Do not restrain, grab or raise your voice', sub: 'Physical contact during combative episodes escalates danger' },
+      { text: 'Lower your body — crouch or sit if safe', sub: 'Standing tall is perceived as threatening to her' },
+      { text: 'Speak very slowly — "I am not going to hurt you. You are safe."', sub: 'Tone and pace matter more than words in this moment' },
+      { text: 'Leave the room for 2-3 minutes if safe to do so', sub: 'Your absence removes the perceived threat — documented as effective' },
       { text: '📞 Notify charge nurse now — document this episode', sub: 'Combative episodes require supervisor notification per protocol' }
+    ]
+  },
+  fall: {
+    label: 'Fall or injury',
+    badge: 'urgent',
+    translation: 'A fall requires an immediate structured response. Do not move Margaret until you have assessed for injury. Your calm presence prevents a secondary fall from panic. Follow the exact sequence below.',
+    patientSpecific: [
+      'Margaret is on medications that increase fall risk — document all medications on her MAR',
+      'She has allergies to Penicillin and Sulfa drugs — relevant if treatment needed',
+      'Family contact: Daughter Linda Flores (702) 555-0182',
+      'Do not attempt to lift her alone — wait for assistance'
+    ],
+    steps: [
+      { text: '🚨 Stay with her — do not leave her alone', sub: 'Ensure she is conscious and breathing before anything else' },
+      { text: 'Do not move her until injury is assessed', sub: 'Spinal or hip injury may be present — movement can worsen' },
+      { text: 'Call for help immediately — use call button or shout', sub: 'You need a second person before attempting to assist her up' },
+      { text: 'Keep her warm and calm while waiting', sub: '"I\'m right here Margaret. Help is coming. You are safe."' },
+      { text: '📞 Notify charge nurse immediately — this is mandatory', sub: 'All falls require supervisor notification and incident report' },
+      { text: 'Document exactly — time, location, what you witnessed, her condition', sub: 'Incident report required — complete within your shift' }
+    ]
+  },
+  medical: {
+    label: 'Medical emergency',
+    badge: 'urgent',
+    translation: '🚨 THIS IS A MEDICAL EMERGENCY. Follow the sequence below immediately. Do not delay to document — document after emergency response is complete.',
+    patientSpecific: [
+      '⚠ ALLERGIES: Penicillin (rash/hives), Sulfa drugs (severe), Codeine (nausea)',
+      'Emergency contact: Daughter Linda Flores (702) 555-0182',
+      'DNR status — check her care plan immediately if cardiac arrest',
+      'Room 4B — give exact location when calling for help'
+    ],
+    steps: [
+      { text: '🚨 CALL 911 IMMEDIATELY if life threatening', sub: 'Chest pain, difficulty breathing, unresponsive, seizure — call now' },
+      { text: '📞 Notify charge nurse and supervisor simultaneously', sub: 'Do not wait — both need to know immediately' },
+      { text: 'Do not leave her alone — stay present and monitor', sub: 'Talk to her calmly even if she appears unresponsive' },
+      { text: 'Check DNR status in her care plan before beginning CPR', sub: 'DNR status must be confirmed — it is in her chart' },
+      { text: 'Note exact time symptoms began and what you observed', sub: 'This information is critical for emergency responders' },
+      { text: 'Contact daughter Linda Flores (702) 555-0182', sub: 'Family notification is required for medical emergencies' }
+    ]
+  },
+  hallucinating: {
+    label: 'Hallucinating',
+    badge: 'normal',
+    translation: 'Hallucinations in Alzheimer\'s are real experiences for Margaret — what she sees or hears is completely real to her. Do not argue that it is not real. Enter her reality and help her feel safe within it.',
+    patientSpecific: [
+      'Do not argue or try to convince her the hallucination is not real',
+      'Dim lighting has been associated with more frequent visual hallucinations for Margaret',
+      'Turning on all lights has reduced visual hallucination frequency',
+      'Documenting what she sees helps identify patterns — note exact content'
+    ],
+    steps: [
+      { text: 'Stay calm — do not express alarm or disbelief', sub: 'Your reaction tells her whether to be afraid' },
+      { text: 'Do not argue that it is not real', sub: '"I understand you can see that. That must be frightening."' },
+      { text: 'Turn on all lights in the room', sub: 'Lighting changes often reduce visual hallucinations' },
+      { text: 'Gently redirect attention to something familiar', sub: 'A photo, her cardigan, a familiar song — anchor her to the present' },
+      { text: 'Check for pain, fever or UTI signs', sub: 'New or worsening hallucinations can indicate infection or pain' },
+      { text: 'Document exactly what she described seeing or hearing', sub: 'Pattern documentation helps identify triggers over time' }
+    ]
+  },
+  eol: {
+    label: 'End of life signs',
+    badge: 'urgent',
+    translation: 'Changes in breathing, mottling, unresponsiveness or withdrawal from food and fluids may indicate Margaret is entering the final stage of life. Your calm, compassionate presence is the most important thing you can offer her and her family right now.',
+    patientSpecific: [
+      'Family contact immediately: Daughter Linda Flores (702) 555-0182',
+      'Margaret has been your patient — you know her. Your presence matters.',
+      'Familiar music — Chopin — may provide comfort even if she cannot respond',
+      'Document all observations with exact times — this record matters to the family'
+    ],
+    steps: [
+      { text: 'Stay with her — do not leave her alone', sub: 'Your presence is the most important thing you can give her now' },
+      { text: '📞 Notify charge nurse and supervisor immediately', sub: 'End of life changes require immediate clinical and family notification' },
+      { text: 'Contact daughter Linda Flores — (702) 555-0182', sub: 'Family has the right to be present — notify immediately' },
+      { text: 'Ensure she is comfortable — reposition if needed', sub: 'Pain and discomfort assessment even if she cannot communicate' },
+      { text: 'Play Chopin softly — speak gently even if she seems unresponsive', sub: 'Hearing is often the last sense to fade — she may still hear you' },
+      { text: 'Document all observations with exact times', sub: 'Breathing pattern, skin color, responsiveness — time-stamped record' }
     ]
   }
 };
 
-let currentScenario = null;
-let stepsDone = [];
-
-function goBack() {
-  // If there is browser history go back otherwise stay on entry screen
-  if (document.referrer && document.referrer !== window.location.href) {
-    window.history.back();
-  } else {
-    showScreen('entry');
-  }
-}
-
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
   document.getElementById('screen-' + id).classList.add('active');
+  document.getElementById('topbar-back').style.display = id === 'entry' ? 'none' : 'block';
 }
 
-function showGuidance(scenarioKey) {
-  currentScenario = scenarioKey;
+function showGuidance(key) {
+  currentScenario = key;
   stepsDone = [];
-  const s = scenarios[scenarioKey];
+  var s = scenarios[key];
 
-  document.getElementById('guidance-scenario-label').textContent = s.label;
-  document.getElementById('guidance-title').textContent = s.title;
+  // Set badge
+  var badge = document.getElementById('scenario-badge');
+  badge.textContent = (key === 'medical' || key === 'fall' || key === 'wandering' || key === 'combative' || key === 'eol') ? '🚨 ' + s.label : s.label;
+  badge.className = 'scenario-badge badge-' + (s.badge || 'normal');
+
+  // Set translation
   document.getElementById('guidance-translation').textContent = s.translation;
 
-  // Worked list
-  const workedEl = document.getElementById('worked-list');
-  workedEl.innerHTML = s.worked.map(w =>
-    `<div class="worked-item">${w}</div>`
-  ).join('');
+  // Set patient specific
+  var psContent = document.getElementById('patient-specific-content');
+  psContent.innerHTML = s.patientSpecific.map(function(item){
+    return '<div class="ps-item">' + item + '</div>';
+  }).join('');
 
-  // Protocol steps
-  const stepsEl = document.getElementById('protocol-steps');
-  stepsEl.innerHTML = s.steps.map((step, i) => `
-    <div class="protocol-step" id="step-${i}" onclick="toggleStep(${i})">
-      <div class="step-num">${i + 1}</div>
-      <div>
-        <div class="step-text">${step.text}</div>
-        <div class="step-sub">${step.sub}</div>
-      </div>
-    </div>
-  `).join('');
+  // Build steps
+  var stepsContainer = document.getElementById('steps-container');
+  stepsContainer.innerHTML = s.steps.map(function(step, i){
+    return '<div class="step-card"><div class="step-row" id="step-' + i + '" onclick="toggleStep(' + i + ')">' +
+      '<div class="step-num" id="step-num-' + i + '">' + (i+1) + '</div>' +
+      '<div class="step-content">' +
+      '<div class="step-text">' + step.text + '</div>' +
+      '<div class="step-sub">' + step.sub + '</div>' +
+      '</div></div></div>';
+  }).join('');
 
   showScreen('guidance');
 }
 
 function toggleStep(i) {
-  const el = document.getElementById('step-' + i);
-  el.classList.toggle('done');
+  var row = document.getElementById('step-' + i);
+  var num = document.getElementById('step-num-' + i);
+  var idx = stepsDone.indexOf(i);
+  if (idx >= 0) {
+    stepsDone.splice(idx, 1);
+    row.classList.remove('done');
+    num.textContent = (i + 1);
+  } else {
+    stepsDone.push(i);
+    row.classList.add('done');
+    num.textContent = '✓';
+  }
 }
 
 function showResolved() {
+  var now = new Date();
+  var timeStr = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  var s = scenarios[currentScenario];
+  document.getElementById('log-time').textContent = timeStr;
+  document.getElementById('log-scenario').textContent = s ? s.label : '';
+  document.getElementById('log-steps').textContent = stepsDone.length + ' of ' + (s ? s.steps.length : 0) + ' completed';
   showScreen('resolved');
 }
+
+function showEscalated() {
+  alert('Charge nurse notified. Document this episode in the Incident Report section.');
+  showScreen('entry');
+}
+
+function goBack() {
+  var entry = document.getElementById('screen-entry');
+  var guidance = document.getElementById('screen-guidance');
+  if (guidance.classList.contains('active')) {
+    showScreen('entry');
+  } else {
+    showScreen('entry');
+  }
+}
+
+// Hide back button on entry screen initially
+document.getElementById('topbar-back').style.display = 'none';
 </script>
 </body>
 </html>
