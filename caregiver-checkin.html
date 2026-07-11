@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Caregiver Check-In — Tended Health Pro</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0C1B33;--teal:#0E9E8E;
+  --slate:#334155;--slate-mid:#64748B;--slate-light:#94A3B8;
+  --border:#E2E8F0;--off:#F8FAFC;
+  --red:#DC2626;--red-bg:#FEF2F2;--red-border:#FECACA;
+  --amber:#D97706;--amber-bg:#FFFBEB;--amber-border:#FDE68A;
+  --green:#059669;--green-bg:#ECFDF5;--green-border:#A7F3D0;
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+}
+body{font-family:var(--font);background:#0a0f1a;display:flex;flex-direction:column;align-items:center;padding:16px 16px 40px;min-height:100vh}
+.preview-label{color:rgba(255,255,255,.3);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;padding:10px 0 6px}
+.app{width:100%;max-width:420px;background:var(--off);border-radius:24px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.6)}
+.topbar{background:var(--navy);padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+.topbar-title{color:white;font-size:.9rem;font-weight:700}
+.topbar-time{color:rgba(255,255,255,.5);font-size:.78rem}
+.screen{display:none}
+.screen.active{display:block}
+.body{padding:28px 20px 24px}
+
+/* OPENING QUESTION - simple and warm */
+.opening-icon{font-size:2.2rem;text-align:center;margin-bottom:20px}
+.opening-question{font-size:1.3rem;font-weight:800;color:var(--navy);text-align:center;line-height:1.35;margin-bottom:8px}
+.opening-sub{font-size:.82rem;color:var(--slate-mid);text-align:center;line-height:1.6;margin-bottom:30px}
+.three-btns{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.choice{background:white;border:2px solid var(--border);border-radius:18px;padding:18px 20px;text-align:center;cursor:pointer;font-family:var(--font);font-size:.92rem;font-weight:700;color:var(--navy);transition:all .15s;line-height:1.4}
+.choice:active{transform:scale(.98)}
+.choice.g{border-color:var(--green-border);background:var(--green-bg);color:var(--green)}
+.choice.a{border-color:var(--amber-border);background:var(--amber-bg);color:var(--amber)}
+.choice.r{border-color:var(--red-border);background:var(--red-bg);color:var(--red)}
+.skip{width:100%;background:none;border:none;color:var(--slate-light);font-size:.75rem;cursor:pointer;padding:6px;font-family:var(--font)}
+
+/* PRESENCE CARD - the most important element */
+.presence{background:var(--navy);border-radius:20px;padding:22px;margin-bottom:20px}
+.presence-text{font-size:.88rem;color:rgba(255,255,255,.95);line-height:1.8;margin-bottom:14px}
+.presence-text strong{color:var(--teal)}
+.presence-sig{font-size:.74rem;color:rgba(255,255,255,.5);border-top:1px solid rgba(255,255,255,.1);padding-top:10px;margin-top:2px}
+
+/* ONE THING */
+.one-thing-label{font-size:.69rem;font-weight:700;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.08em;text-align:center;margin-bottom:14px}
+.one-thing{background:white;border:2px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:10px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:14px}
+.one-thing:active{transform:scale(.98)}
+.one-thing-icon{font-size:1.5rem;flex-shrink:0}
+.one-thing-text{font-size:.82rem;font-weight:600;color:var(--navy);line-height:1.4}
+.one-thing-sub{font-size:.72rem;color:var(--slate-mid);line-height:1.4;margin-top:2px}
+
+/* BREATHE SCREEN */
+.breathe-wrapper{text-align:center;padding:10px 0 20px}
+.breathe-instruction-top{font-size:.82rem;color:var(--slate-mid);margin-bottom:20px;line-height:1.6}
+.circle-container{position:relative;width:180px;height:180px;margin:0 auto 20px}
+.breathe-ring{width:180px;height:180px;border-radius:50%;background:rgba(14,158,142,.15);border:2px solid rgba(14,158,142,.3);display:flex;align-items:center;justify-content:center;animation:breathe 8s ease-in-out infinite}
+.breathe-inner{width:110px;height:110px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;animation:breathe-inner 8s ease-in-out infinite}
+.breathe-word{color:white;font-size:.85rem;font-weight:700;text-align:center;line-height:1.4;transition:opacity .3s ease}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+@keyframes breathe-inner{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.breathe-count{font-size:.78rem;color:var(--slate-mid);margin-bottom:20px;line-height:1.6;text-align:center}
+
+/* GROUNDING - ONE STEP AT A TIME */
+.ground-card{background:white;border:2px solid var(--teal);border-radius:18px;padding:20px;margin-bottom:16px;text-align:center}
+.ground-step-num{font-size:.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.ground-step-text{font-size:.95rem;font-weight:700;color:var(--navy);line-height:1.4;margin-bottom:6px}
+.ground-step-detail{font-size:.78rem;color:var(--slate-mid);line-height:1.6}
+.ground-done-btn{width:100%;background:var(--teal);color:white;border:none;border-radius:14px;padding:14px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-bottom:10px}
+
+/* TRUTH SCREEN */
+.truth-item{margin-bottom:18px}
+.truth-text{font-size:.88rem;color:var(--slate);line-height:1.75;padding-left:14px;border-left:3px solid var(--teal)}
+
+/* CRISIS SCREEN */
+.crisis-top{background:var(--navy);padding:20px;margin-bottom:0}
+.crisis-top-text{font-size:.88rem;color:rgba(255,255,255,.9);line-height:1.7;text-align:center}
+.crisis-actions{padding:20px}
+.crisis-action{background:white;border:2px solid var(--border);border-radius:16px;padding:15px 18px;margin-bottom:10px;cursor:pointer;font-family:var(--font);transition:all .15s;text-align:left}
+.crisis-action:active{transform:scale(.98)}
+.ca-label{font-size:.88rem;font-weight:700;color:var(--navy);margin-bottom:3px}
+.ca-detail{font-size:.74rem;color:var(--slate-mid);line-height:1.4}
+.crisis-action.primary-action{background:var(--teal);border-color:var(--teal)}
+.crisis-action.primary-action .ca-label{color:white}
+.crisis-action.primary-action .ca-detail{color:rgba(255,255,255,.8)}
+
+/* PRIMARY / SECONDARY BTNS */
+.primary-btn{width:100%;background:var(--teal);color:white;border:none;border-radius:14px;padding:14px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-bottom:10px}
+.secondary-btn{width:100%;background:transparent;border:1.5px solid var(--border);border-radius:14px;padding:12px;font-size:.82rem;color:var(--slate-mid);cursor:pointer;font-family:var(--font);margin-bottom:10px}
+
+/* LOGGED */
+.logged-body{padding:28px 20px;text-align:center}
+.logged-icon{font-size:2.8rem;margin-bottom:14px}
+.logged-title{font-size:1.05rem;font-weight:800;color:var(--navy);margin-bottom:6px}
+.logged-sub{font-size:.8rem;color:var(--slate-mid);line-height:1.55;margin-bottom:20px}
+.log-card{background:var(--green-bg);border:1.5px solid var(--green-border);border-radius:14px;padding:14px;margin-bottom:16px;text-align:left}
+.log-title{font-size:.69rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.log-row{font-size:.78rem;color:var(--slate);padding:3px 0;display:flex;gap:8px}
+.log-lbl{color:var(--slate-mid);min-width:60px;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<div class="preview-label">💚 Caregiver Check-In — Tended Health Pro</div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-title">💚 Caregiver Check-In</div>
+    <div class="topbar-time" id="clock"></div>
+  </div>
+
+  <!-- SCREEN 1: THE QUESTION -->
+  <div class="screen active" id="screen-checkin">
+    <div class="body">
+      <div class="opening-icon">🌿</div>
+      <div class="opening-question">How are you right now?</div>
+      <div class="opening-sub">Not your loved one. Not the shift. You.</div>
+      <div class="three-btns">
+        <button class="choice g" onclick="go('okay')">I am okay. Tired but okay.</button>
+        <button class="choice a" onclick="go('struggling')">I am struggling today.</button>
+        <button class="choice r" onclick="go('crisis')">I am not okay right now.</button>
+      </div>
+      <button class="skip" onclick="logAndGo('skipped')">Skip for now</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: OKAY -->
+  <div class="screen" id="screen-okay">
+    <div class="body">
+      <div class="presence">
+        <div class="presence-text">
+          You showed up today.<br><br>
+          For someone who may not always know your name. Who may have been afraid in the night. Who needs you in ways most people around you will never fully understand.<br><br>
+          <strong>Tired but okay is more than enough.</strong> It is actually everything.
+        </div>
+        <div class="presence-sig">— Frank, fellow caregiver · tendedheathapps@gmail.com</div>
+      </div>
+
+      <button class="primary-btn" onclick="logAndGo('okay')">Thank you. Continuing. ✓</button>
+      <button class="secondary-btn" onclick="go('checkin')">← Back to menu</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: STRUGGLING -->
+  <div class="screen" id="screen-struggling">
+    <div class="body">
+      <div class="presence">
+        <div class="presence-text">
+          I hear you.<br><br>
+          A heavy day does not mean you are failing. It means you have been giving more than you have for longer than anyone should have to.<br><br>
+          Someone in this community recently said she cries in the car before walking back inside. Someone else said he has not slept through the night in three years. Someone else said she is afraid this will take her before it takes her mother.<br><br>
+          <strong>That is not weakness. That is all of us.</strong>
+        </div>
+        <div class="presence-sig">— Frank</div>
+      </div>
+
+      <div class="one-thing-label">One thing. Pick what you need most right now.</div>
+
+      <div class="one-thing" onclick="go('breathe')">
+        <span class="one-thing-icon">🌬️</span>
+        <div>
+          <div class="one-thing-text">Help me breathe for 60 seconds</div>
+          <div class="one-thing-sub">No thinking. Just breathe with the circle.</div>
+        </div>
+      </div>
+
+      <div class="one-thing" onclick="go('ground')">
+        <span class="one-thing-icon">⚓</span>
+        <div>
+          <div class="one-thing-text">Get me out of my head</div>
+          <div class="one-thing-sub">Three simple steps to come back to right now.</div>
+        </div>
+      </div>
+
+      <div class="one-thing" onclick="go('truth')">
+        <span class="one-thing-icon">💙</span>
+        <div>
+          <div class="one-thing-text">Tell me something true</div>
+          <div class="one-thing-sub">Real words from people who have been exactly here.</div>
+        </div>
+      </div>
+      <button class="secondary-btn" style="margin-top:4px" onclick="go('checkin')">← Back to menu</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3A: BREATHE -->
+  <div class="screen" id="screen-breathe">
+    <div class="body">
+      <div class="breathe-wrapper">
+        <div class="breathe-instruction-top">Just watch the circle.<br>Breathe in as it grows. Breathe out as it shrinks.<br>Nothing else for 60 seconds.</div>
+        <div class="circle-container">
+          <div class="breathe-ring">
+            <div class="breathe-inner">
+              <div class="breathe-word" id="breathe-word">Breathe<br>in</div>
+            </div>
+          </div>
+        </div>
+        <div class="breathe-count">In for 4 · Hold for 2 · Out for 6<br>Your nervous system is resetting right now.</div>
+      </div>
+
+      <div class="presence">
+        <div class="presence-text">You do not have to fix anything right now. You just have to get through the next breath. <strong>That is the only thing.</strong></div>
+        <div class="presence-sig">— Frank</div>
+      </div>
+
+      <button class="primary-btn" onclick="logAndGo('struggling')">I feel a little steadier ✓</button>
+      <button class="secondary-btn" onclick="go('struggling')">← Back to options</button>
+      <button class="secondary-btn" onclick="go('checkin')">← Back to menu</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3B: GROUNDING - one step at a time -->
+  <div class="screen" id="screen-ground">
+    <div class="body">
+      <div class="ground-card" id="ground-card">
+        <div class="ground-step-num" id="ground-num">Step 1 of 3</div>
+        <div class="ground-step-text" id="ground-text">Look around and find something blue.</div>
+        <div class="ground-step-detail" id="ground-detail">Just look for it. Take your time. When you find it — tap the button below.</div>
+      </div>
+      <button class="ground-done-btn" id="ground-btn" onclick="nextGround()">Found it ✓</button>
+      <button class="secondary-btn" onclick="go('struggling')">← Back to options</button>
+      <button class="secondary-btn" onclick="go('checkin')">← Back to menu</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3C: TRUTH -->
+  <div class="screen" id="screen-truth">
+    <div class="body">
+      <div class="presence" style="margin-bottom:20px">
+        <div class="presence-text">These are true. Right now. Even if you cannot feel them yet.</div>
+        <div class="presence-sig">— Frank</div>
+      </div>
+
+      <div class="truth-item">
+        <div class="truth-text">You did not have to show up today. You chose to. That choice matters more than you know.</div>
+      </div>
+      <div class="truth-item">
+        <div class="truth-text">The fact that you feel this heavily means you love this deeply. That is not a burden. That is who you are.</div>
+      </div>
+      <div class="truth-item">
+        <div class="truth-text">Done is enough today. You do not need to do this perfectly. You just need to get through it.</div>
+      </div>
+      <div class="truth-item">
+        <div class="truth-text">This moment will pass. You have gotten through every hard moment before this one. You will get through this one too.</div>
+      </div>
+      <div class="truth-item">
+        <div class="truth-text">You are not alone in this. There are people in this community awake right now carrying exactly what you are carrying.</div>
+      </div>
+
+      <button class="primary-btn" onclick="logAndGo('struggling')">I needed that. Thank you. ✓</button>
+      <button class="secondary-btn" onclick="go('struggling')">← Back to options</button>
+      <button class="secondary-btn" onclick="go('checkin')">← Back to menu</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: NOT OKAY / CRISIS -->
+  <div class="screen" id="screen-crisis">
+    <div class="crisis-top">
+      <div class="crisis-top-text">
+        I see you.<br><br>
+        Not okay is a real place to be. You are not being dramatic. You are not weak. You have been holding something enormous for a very long time and right now it is too heavy.<br><br>
+        <strong style="color:var(--teal)">Stay with this screen for a moment. You do not have to do anything yet.</strong>
+      </div>
+    </div>
+    <div class="crisis-actions">
+
+      <div style="font-size:.72rem;font-weight:700;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;text-align:center">What would help most right now</div>
+
+      <div class="crisis-action primary-action" onclick="go('breathe')">
+        <div class="ca-label">🌬️ Help me breathe right now</div>
+        <div class="ca-detail">60 seconds. Just breathe with the circle. Nothing else.</div>
+      </div>
+
+      <div class="crisis-action" onclick="go('ground')">
+        <div class="ca-label">⚓ Get me out of my head</div>
+        <div class="ca-detail">Three simple steps to come back to right now.</div>
+      </div>
+
+      <div class="crisis-action" onclick="doText()">
+        <div class="ca-label">📱 Text someone right now</div>
+        <div class="ca-detail">Send this: "I am having a really hard time today. I just needed to tell someone." One sentence is enough.</div>
+      </div>
+
+      <div class="crisis-action" onclick="doPhysical()">
+        <div class="ca-label">💧 Cold water on my face or wrists</div>
+        <div class="ca-detail">Go do this right now. It physically resets your nervous system. Takes 10 seconds.</div>
+      </div>
+
+      <div class="crisis-action" onclick="go('truth')">
+        <div class="ca-label">💙 Tell me something true</div>
+        <div class="ca-detail">Words from people who have been exactly here.</div>
+      </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
+        <div style="font-size:.74rem;color:var(--slate-mid);text-align:center;line-height:1.6;margin-bottom:12px">A real person is available right now. You do not have to explain everything. Just call.</div>
+
+        <div class="crisis-action" style="background:#EFF6FF;border-color:#BFDBFE;margin-bottom:10px" onclick="callPhone('18002723900')">
+          <div class="ca-label" style="color:#1D4ED8">📞 Alzheimer's Association Helpline</div>
+          <div class="ca-detail">1-800-272-3900 · Available 24 hours · 365 days · Real person · Free · Over 200 languages</div>
+        </div>
+
+        <div class="crisis-action" style="background:#F5F3FF;border-color:#DDD6FE;margin-bottom:10px" onclick="callPhone('18662328484')">
+          <div class="ca-label" style="color:#6D28D9">📞 Alzheimer's Foundation of America</div>
+          <div class="ca-detail">1-866-232-8484 · Licensed social workers trained in dementia care · Phone, text or chat · 7 days a week</div>
+        </div>
+
+        <div class="crisis-action" style="background:var(--green-bg);border-color:var(--green-border)" onclick="callPhone('18552273640')">
+          <div class="ca-label" style="color:var(--green)">📞 Caregiver Action Network</div>
+          <div class="ca-detail">1-855-227-3640 · Free support specifically for family caregivers · Mon–Fri 8am–7pm ET</div>
+        </div>
+
+        <div class="crisis-action" style="background:#FFF7ED;border-color:#FED7AA" onclick="callPhone('18004384380')">
+          <div class="ca-label" style="color:#C2410C">📞 ADEAR — National Institute on Aging</div>
+          <div class="ca-detail">1-800-438-4380 · Government backed · Information specialists · Diagnosis, treatment and research questions · Free</div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <button class="secondary-btn" onclick="logAndGo('crisis')">I am going to be okay. Thank you.</button>
+      <button class="secondary-btn" onclick="go('checkin')">← Back to menu</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SCREEN 5: LOGGED -->
+  <div class="screen" id="screen-logged">
+    <div class="logged-body">
+      <div class="logged-icon">✅</div>
+      <div class="logged-title">Check-in recorded.</div>
+      <div class="logged-sub">How you are doing matters. This moment has been saved.</div>
+      <div class="log-card">
+        <div class="log-title">📋 Saved</div>
+        <div class="log-row"><span class="log-lbl">Time:</span><span id="log-time"></span></div>
+        <div class="log-row"><span class="log-lbl">Status:</span><span id="log-status"></span></div>
+        <div class="log-row"><span class="log-lbl">Date:</span><span id="log-date"></span></div>
+      </div>
+      <button class="primary-btn" onclick="go('checkin')">← New check-in</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// GROUNDING - one step at a time, no list
+var groundSteps = [
+  {
+    num: 'Step 1 of 3',
+    text: 'Look around and find something blue.',
+    detail: 'Just look for it. Take your time. When you find it — tap Done below.',
+    btn: 'Found it ✓'
+  },
+  {
+    num: 'Step 2 of 3',
+    text: 'Feel your feet on the floor.',
+    detail: 'Press them down a little. Feel the ground underneath you. You are here. You are real. You are not floating away.',
+    btn: 'I feel it ✓'
+  },
+  {
+    num: 'Step 3 of 3',
+    text: 'Say this out loud or in your head.',
+    detail: '"I am here. I am safe right now. I can get through the next five minutes."',
+    btn: 'I said it ✓'
+  }
+];
+var groundIdx = 0;
+
+function nextGround() {
+  groundIdx++;
+  if (groundIdx >= groundSteps.length) {
+    logAndGo('struggling');
+    groundIdx = 0;
+    return;
+  }
+  var s = groundSteps[groundIdx];
+  document.getElementById('ground-num').textContent = s.num;
+  document.getElementById('ground-text').textContent = s.text;
+  document.getElementById('ground-detail').textContent = s.detail;
+  document.getElementById('ground-btn').textContent = s.btn;
+}
+
+function resetGround() {
+  groundIdx = 0;
+  var s = groundSteps[0];
+  document.getElementById('ground-num').textContent = s.num;
+  document.getElementById('ground-text').textContent = s.text;
+  document.getElementById('ground-detail').textContent = s.detail;
+  document.getElementById('ground-btn').textContent = s.btn;
+}
+
+// BREATHE - animate the word
+var breathePhase = 0;
+var breatheWords = ['Breathe\nin', 'Hold', 'Breathe\nout', 'Hold'];
+var breatheInterval;
+
+function startBreathe() {
+  clearInterval(breatheInterval);
+  breathePhase = 0;
+  var el = document.getElementById('breathe-word');
+  var times = [4000, 2000, 6000, 2000];
+  el.textContent = 'Breathe\nin';
+  function next() {
+    breathePhase = (breathePhase + 1) % 4;
+    el.style.opacity = '0';
+    setTimeout(function(){
+      el.textContent = breatheWords[breathePhase];
+      el.style.opacity = '1';
+    }, 300);
+    breatheInterval = setTimeout(next, times[breathePhase]);
+  }
+  breatheInterval = setTimeout(next, times[0]);
+}
+
+function doText() {
+  alert('Send this message to someone you trust:\n\n"I am having a really hard time today. I just needed to tell someone."\n\nYou do not need to say anything else. Just send it.');
+}
+
+function doPhysical() {
+  alert('Go do this right now:\n\nSplash cold water on your face and wrists.\n\nTake 10 seconds. Come back when you are done.');
+}
+
+function callPhone(n) { window.location.href = 'tel:' + n; }
+
+function go(screen) {
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById('screen-' + screen).classList.add('active');
+  if (screen === 'breathe') startBreathe();
+  if (screen === 'ground') resetGround();
+}
+
+function logAndGo(status) {
+  clearInterval(breatheInterval);
+  var now = new Date();
+  document.getElementById('log-time').textContent = now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('log-date').textContent = now.toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'});
+  var map = {
+    okay:'🌱 Doing okay',
+    struggling:'🌧️ Worked through it',
+    crisis:'🤝 In crisis — reached out',
+    skipped:'Skipped'
+  };
+  document.getElementById('log-status').textContent = map[status] || status;
+  go('logged');
+}
+
+function tick() {
+  document.getElementById('clock').textContent = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+}
+tick();
+setInterval(tick, 30000);
+</script>
+</body>
+</html>
