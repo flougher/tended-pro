@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Emergency Mode — Tended Health Pro</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0C1B33;--teal:#0E9E8E;
+  --slate:#334155;--slate-mid:#64748B;--slate-light:#94A3B8;
+  --border:#E2E8F0;--off:#F8FAFC;--white:#ffffff;
+  --red:#DC2626;--red-bg:#FEF2F2;--red-border:#FECACA;
+  --amber:#D97706;--amber-bg:#FFFBEB;--amber-border:#FDE68A;
+  --green:#059669;--green-bg:#ECFDF5;--green-border:#A7F3D0;
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+}
+body{font-family:var(--font);background:#0a0f1a;display:flex;flex-direction:column;align-items:center;padding:16px 16px 40px;min-height:100vh}
+.preview-label{color:rgba(255,255,255,.3);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;padding:10px 0 6px}
+.app{width:100%;max-width:420px;background:var(--off);border-radius:24px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.6)}
+
+/* TOPBAR */
+.topbar{background:var(--navy);padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+.topbar-title{color:white;font-size:.9rem;font-weight:700}
+.topbar-time{color:rgba(255,255,255,.5);font-size:.78rem}
+
+/* SCREENS */
+.screen{display:none}
+.screen.active{display:block}
+
+/* DASHBOARD — entry point */
+.dash-body{padding:24px 20px}
+.dash-patient{background:var(--teal);border-radius:16px;padding:16px;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.dash-patient-icon{font-size:2rem}
+.dash-patient-name{color:white;font-size:1rem;font-weight:800}
+.dash-patient-detail{color:rgba(255,255,255,.8);font-size:.76rem;margin-top:2px}
+.dash-label{font-size:.69rem;font-weight:700;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+
+/* EMERGENCY BUTTON — unmissable */
+.emergency-btn{width:100%;background:var(--red);border:none;border-radius:18px;padding:20px;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:14px;margin-bottom:14px;transition:all .15s}
+.emergency-btn:active{transform:scale(.98)}
+.emergency-btn-icon{font-size:2rem;flex-shrink:0}
+.emergency-btn-label{color:white;font-size:1rem;font-weight:800;text-align:left}
+.emergency-btn-sub{color:rgba(255,255,255,.8);font-size:.76rem;margin-top:3px;text-align:left}
+
+/* OTHER QUICK ACCESS */
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.quick-btn{background:white;border:1.5px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;font-family:var(--font);text-align:center;transition:all .15s}
+.quick-btn:active{transform:scale(.98)}
+.quick-btn-icon{font-size:1.4rem;margin-bottom:4px}
+.quick-btn-label{font-size:.76rem;font-weight:700;color:var(--navy)}
+
+/* EMERGENCY SCREEN */
+.emr-header{background:var(--red);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.emr-header-left{}
+.emr-badge{background:rgba(255,255,255,.2);color:white;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:3px 10px;border-radius:20px;margin-bottom:6px;display:inline-block}
+.emr-name{color:white;font-size:1.2rem;font-weight:800;line-height:1.2}
+.emr-dob{color:rgba(255,255,255,.8);font-size:.76rem;margin-top:2px}
+.emr-close{background:rgba(255,255,255,.15);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1.1rem;font-family:var(--font);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+.emr-body{padding:16px 16px 24px}
+
+/* CRITICAL ALERT */
+.critical-card{background:var(--red-bg);border:2px solid var(--red-border);border-radius:14px;padding:14px;margin-bottom:14px}
+.critical-label{font-size:.69rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.critical-row{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start}
+.critical-key{font-size:.76rem;font-weight:700;color:var(--navy);min-width:80px;flex-shrink:0}
+.critical-val{font-size:.76rem;color:var(--slate);line-height:1.4}
+.critical-val.red{color:var(--red);font-weight:700}
+.critical-val.amber{color:var(--amber);font-weight:700}
+
+/* SECTION CARDS */
+.emr-section{background:white;border:1.5px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden}
+.emr-section-header{background:var(--navy);padding:10px 14px;display:flex;align-items:center;gap:8px}
+.emr-section-icon{font-size:1rem}
+.emr-section-title{color:white;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.emr-section-body{padding:12px 14px}
+.emr-row{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.emr-row:last-child{border-bottom:none}
+.emr-key{font-size:.74rem;font-weight:700;color:var(--slate-mid);min-width:100px;flex-shrink:0;line-height:1.5}
+.emr-val{font-size:.78rem;color:var(--slate);line-height:1.5;flex:1}
+.emr-val.bold{font-weight:700;color:var(--navy)}
+.emr-val.red{color:var(--red);font-weight:700}
+.emr-val.green{color:var(--green);font-weight:700}
+
+/* MED ITEM */
+.med-item{padding:8px 0;border-bottom:1px solid var(--border)}
+.med-item:last-child{border-bottom:none}
+.med-name{font-size:.82rem;font-weight:700;color:var(--navy);margin-bottom:2px}
+.med-detail{font-size:.72rem;color:var(--slate-mid);line-height:1.4}
+.med-alert{font-size:.7rem;color:var(--red);font-weight:700;margin-top:3px;display:flex;align-items:center;gap:4px}
+
+/* ALLERGY BADGE */
+.allergy-list{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0}
+.allergy-badge{background:var(--red-bg);border:1.5px solid var(--red-border);border-radius:20px;padding:4px 12px;font-size:.74rem;font-weight:700;color:var(--red)}
+.allergy-badge.amber{background:var(--amber-bg);border-color:var(--amber-border);color:var(--amber)}
+
+/* EMERGENCY CONTACT */
+.contact-item{padding:8px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.contact-item:last-child{border-bottom:none}
+.contact-left{}
+.contact-name{font-size:.82rem;font-weight:700;color:var(--navy)}
+.contact-role{font-size:.72rem;color:var(--slate-mid)}
+.contact-call{background:var(--teal);color:white;border:none;border-radius:20px;padding:6px 14px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:var(--font)}
+
+/* CALL 911 */
+.call-911{width:100%;background:var(--red);color:white;border:none;border-radius:14px;padding:16px;font-size:1rem;font-weight:800;cursor:pointer;font-family:var(--font);margin-top:16px;display:flex;align-items:center;justify-content:center;gap:10px}
+.call-911:active{transform:scale(.98)}
+
+/* TIMESTAMP */
+.timestamp{font-size:.7rem;color:var(--slate-light);text-align:center;margin-top:12px}
+</style>
+</head>
+<body>
+
+<div class="preview-label">🚨 Emergency Mode — Tended Health Pro</div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-title">Tended Health Pro</div>
+    <div class="topbar-time" id="clock"></div>
+  </div>
+
+  <!-- SCREEN 1: DASHBOARD -->
+  <div class="screen active" id="screen-dash">
+    <div class="dash-body">
+
+      <div class="dash-patient">
+        <div class="dash-patient-icon">👤</div>
+        <div>
+          <div class="dash-patient-name">Margaret Thompson</div>
+          <div class="dash-patient-detail">Age 84 · Rm 4B · Stage 7 Alzheimer's</div>
+        </div>
+      </div>
+
+      <div class="dash-label">Quick Access</div>
+
+      <!-- THE EMERGENCY BUTTON -->
+      <button class="emergency-btn" onclick="go('emergency')">
+        <span class="emergency-btn-icon">🚨</span>
+        <div>
+          <div class="emergency-btn-label">Emergency Mode</div>
+          <div class="emergency-btn-sub">Meds · Allergies · Contacts · Hand to clinician</div>
+        </div>
+      </button>
+
+      <div class="quick-grid">
+        <div class="quick-btn" onclick="go('emergency')">
+          <div class="quick-btn-icon">💊</div>
+          <div class="quick-btn-label">Medications</div>
+        </div>
+        <div class="quick-btn" onclick="go('emergency')">
+          <div class="quick-btn-icon">⚠️</div>
+          <div class="quick-btn-label">Allergies</div>
+        </div>
+        <div class="quick-btn" onclick="go('emergency')">
+          <div class="quick-btn-icon">📞</div>
+          <div class="quick-btn-label">Contacts</div>
+        </div>
+        <div class="quick-btn" onclick="go('emergency')">
+          <div class="quick-btn-icon">🏥</div>
+          <div class="quick-btn-label">Conditions</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SCREEN 2: EMERGENCY MODE -->
+  <div class="screen" id="screen-emergency">
+
+    <div class="emr-header">
+      <div class="emr-header-left">
+        <div class="emr-badge">🚨 Emergency Mode</div>
+        <div class="emr-name">Margaret Thompson</div>
+        <div class="emr-dob">DOB: March 14, 1941 · Age 84 · Blood Type: A+</div>
+      </div>
+      <button class="emr-close" onclick="go('dash')">✕</button>
+    </div>
+
+    <!-- SHOW THIS SCREEN BANNER -->
+    <div style="background:#FFF7ED;border-bottom:2px solid #FED7AA;padding:12px 16px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:1.4rem;flex-shrink:0">📱</span>
+      <div>
+        <div style="font-size:.78rem;font-weight:800;color:#C2410C;margin-bottom:2px">Show this screen to any EMT, nurse or doctor.</div>
+        <div style="font-size:.72rem;color:#92400E;line-height:1.4">Tap nothing — just hand them the phone. All critical information is on this screen.</div>
+      </div>
+    </div>
+
+    <div class="emr-body">
+
+      <!-- CRITICAL ALERTS -->
+      <div class="critical-card">
+        <div class="critical-label">⚠️ Critical — Read First</div>
+        <div class="critical-row">
+          <span class="critical-key">Allergies</span>
+          <span class="critical-val red">Penicillin (anaphylaxis) · Sulfa drugs (severe) · Codeine (nausea)</span>
+        </div>
+        <div class="critical-row">
+          <span class="critical-key">DNR Status</span>
+          <span class="critical-val amber">DNR on file — confirm before CPR</span>
+        </div>
+        <div class="critical-row">
+          <span class="critical-key">Primary MD</span>
+          <span class="critical-val">Dr. Sarah Chen · (775) 555-0147</span>
+        </div>
+        <div class="critical-row">
+          <span class="critical-key">Family Contact</span>
+          <span class="critical-val">Linda Flores (daughter) · (702) 555-0182</span>
+        </div>
+      </div>
+
+      <!-- ACTIVE MEDICATIONS -->
+      <div class="emr-section">
+        <div class="emr-section-header">
+          <span class="emr-section-icon">💊</span>
+          <span class="emr-section-title">Active Medications</span>
+        </div>
+        <div class="emr-section-body">
+
+          <div class="med-item">
+            <div class="med-name">Donepezil (Aricept) 10mg</div>
+            <div class="med-detail">Once daily · 8:00 PM · Alzheimer's disease</div>
+          </div>
+
+          <div class="med-item">
+            <div class="med-name">Memantine (Namenda) 20mg</div>
+            <div class="med-detail">Once daily · 8:00 AM · Alzheimer's disease</div>
+          </div>
+
+          <div class="med-item">
+            <div class="med-name">Lisinopril 5mg</div>
+            <div class="med-detail">Once daily · 8:00 AM · Hypertension</div>
+          </div>
+
+          <div class="med-item">
+            <div class="med-name">Metoprolol 25mg</div>
+            <div class="med-detail">Twice daily · 8AM + 8PM · Cardiac arrhythmia</div>
+            <div class="med-alert">⚠️ FDA Black Box — do not stop abruptly</div>
+          </div>
+
+          <div class="med-item">
+            <div class="med-name">Sertraline 50mg</div>
+            <div class="med-detail">Once daily · 8:00 AM · Depression</div>
+          </div>
+
+          <div class="med-item">
+            <div class="med-name">Lorazepam 0.5mg PRN</div>
+            <div class="med-detail">As needed · Max 2x daily · Severe agitation</div>
+            <div class="med-alert">⚠️ Controlled substance — benzodiazepine</div>
+          </div>
+
+          <div class="med-item">
+            <div class="med-name">Calcium + Vitamin D3</div>
+            <div class="med-detail">Once daily · 12:00 PM · Bone health</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ALLERGIES -->
+      <div class="emr-section">
+        <div class="emr-section-header">
+          <span class="emr-section-icon">⚠️</span>
+          <span class="emr-section-title">Known Allergies</span>
+        </div>
+        <div class="emr-section-body">
+          <div class="allergy-list">
+            <span class="allergy-badge">Penicillin — anaphylaxis</span>
+            <span class="allergy-badge">Sulfa drugs — severe rash</span>
+            <span class="allergy-badge amber">Codeine — nausea/vomiting</span>
+            <span class="allergy-badge amber">Latex — contact dermatitis</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONDITIONS -->
+      <div class="emr-section">
+        <div class="emr-section-header">
+          <span class="emr-section-icon">🏥</span>
+          <span class="emr-section-title">Active Conditions</span>
+        </div>
+        <div class="emr-section-body">
+          <div class="emr-row">
+            <span class="emr-key">Primary</span>
+            <span class="emr-val bold">Stage 7 Alzheimer's Disease</span>
+          </div>
+          <div class="emr-row">
+            <span class="emr-key">Cardiac</span>
+            <span class="emr-val">Atrial fibrillation · Hypertension</span>
+          </div>
+          <div class="emr-row">
+            <span class="emr-key">Other</span>
+            <span class="emr-val">Osteoporosis · Depression · Urinary incontinence</span>
+          </div>
+          <div class="emr-row">
+            <span class="emr-key">Mobility</span>
+            <span class="emr-val">Non-ambulatory · Requires full assistance</span>
+          </div>
+          <div class="emr-row">
+            <span class="emr-key">DNR</span>
+            <span class="emr-val red">Do Not Resuscitate — signed May 2024</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMERGENCY CONTACTS -->
+      <div class="emr-section">
+        <div class="emr-section-header">
+          <span class="emr-section-icon">📞</span>
+          <span class="emr-section-title">Emergency Contacts</span>
+        </div>
+        <div class="emr-section-body">
+
+          <div class="contact-item">
+            <div class="contact-left">
+              <div class="contact-name">Linda Flores</div>
+              <div class="contact-role">Daughter · Primary contact · (702) 555-0182</div>
+            </div>
+            <button class="contact-call" onclick="callPhone('17025550182')">Call</button>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-left">
+              <div class="contact-name">Dr. Sarah Chen</div>
+              <div class="contact-role">Primary Physician · (775) 555-0147</div>
+            </div>
+            <button class="contact-call" onclick="callPhone('17755550147')">Call</button>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-left">
+              <div class="contact-name">Robert Thompson</div>
+              <div class="contact-role">Son · Secondary contact · (415) 555-0293</div>
+            </div>
+            <button class="contact-call" onclick="callPhone('14155550293')">Call</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- INSURANCE -->
+      <div class="emr-section">
+        <div class="emr-section-header">
+          <span class="emr-section-icon">🪪</span>
+          <span class="emr-section-title">Insurance & ID</span>
+        </div>
+        <div class="emr-section-body">
+          <div class="emr-row">
+            <span class="emr-key">Medicare</span>
+            <span class="emr-val bold">1EG4-TE5-MK72</span>
+          </div>
+          <div class="emr-row">
+            <span class="emr-key">Medicaid</span>
+            <span class="emr-val">NV-2941-8847-001</span>
+          </div>
+          <div class="emr-row">
+            <span class="emr-key">Supplement</span>
+            <span class="emr-val">AARP/UHC Plan G · ID: 88472019</span>
+          </div>
+          <div class="emr-row">
+            <span class="emr-key">Facility</span>
+            <span class="emr-val">Sunrise Memory Care · Room 4B · (775) 555-0100</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHARE BUTTON -->
+      <button onclick="shareEmergency()" style="width:100%;background:#1D4ED8;color:white;border:none;border-radius:14px;padding:16px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:16px;display:flex;align-items:center;justify-content:center;gap:10px">
+        <span>📤</span>
+        <span>Share Emergency Info</span>
+      </button>
+
+      <!-- CALL 911 -->
+      <button class="call-911" onclick="callPhone('911')">
+        <span>📞</span>
+        <span>Call 911</span>
+      </button>
+
+      <div class="timestamp" id="emr-timestamp"></div>
+
+      <div style="margin-top:16px">
+        <button onclick="go('dash')" style="width:100%;background:transparent;border:1.5px solid var(--border);border-radius:14px;padding:12px;font-size:.82rem;color:var(--slate-mid);cursor:pointer;font-family:var(--font)">← Back to dashboard</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+function go(screen) {
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById('screen-' + screen).classList.add('active');
+  if (screen === 'emergency') {
+    var now = new Date();
+    document.getElementById('emr-timestamp').textContent =
+      'Generated ' + now.toLocaleDateString([], {weekday:'long', month:'long', day:'numeric'}) +
+      ' at ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  }
+}
+
+function callPhone(n) { window.location.href = 'tel:' + n; }
+
+function getEmergencyText() {
+  var now = new Date();
+  var timeStr = now.toLocaleDateString([], {weekday:'long', month:'long', day:'numeric'}) +
+    ' at ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  return [
+    'EMERGENCY MEDICAL INFORMATION',
+    '==============================',
+    'Patient: Margaret Thompson',
+    'DOB: March 14, 1941 (Age 84)',
+    'Blood Type: A+',
+    'Location: Sunrise Memory Care Room 4B',
+    '',
+    'ALLERGIES - READ FIRST',
+    '- Penicillin: ANAPHYLAXIS',
+    '- Sulfa drugs: SEVERE RASH',
+    '- Codeine: nausea/vomiting',
+    '- Latex: contact dermatitis',
+    '',
+    'DNR STATUS: Do Not Resuscitate',
+    'DNR signed May 2024 - confirm before CPR',
+    '',
+    'ACTIVE MEDICATIONS',
+    '- Donepezil (Aricept) 10mg - once daily 8PM',
+    '- Memantine (Namenda) 20mg - once daily 8AM',
+    '- Lisinopril 5mg - once daily 8AM',
+    '- Metoprolol 25mg - twice daily 8AM+8PM WARNING: Do not stop abruptly',
+    '- Sertraline 50mg - once daily 8AM',
+    '- Lorazepam 0.5mg PRN - max 2x daily - Controlled substance',
+    '- Calcium + Vitamin D3 - once daily 12PM',
+    '',
+    'CONDITIONS',
+    '- Stage 7 Alzheimer Disease (primary)',
+    '- Atrial fibrillation, Hypertension',
+    '- Osteoporosis, Depression',
+    '- Non-ambulatory - requires full assistance',
+    '',
+    'EMERGENCY CONTACTS',
+    '- Linda Flores (daughter): 702-555-0182',
+    '- Dr. Sarah Chen (MD): 775-555-0147',
+    '- Robert Thompson (son): 415-555-0293',
+    '',
+    'INSURANCE',
+    '- Medicare: 1EG4-TE5-MK72',
+    '- Medicaid: NV-2941-8847-001',
+    '- Supplement: AARP/UHC Plan G 88472019',
+    '',
+    'Generated by Tended Health Pro - ' + timeStr
+  ].join('\n');
+}
+
+function shareEmergency() {
+  var text = getEmergencyText();
+  // Try Web Share API first
+  if (navigator.share) {
+    navigator.share({
+      title: 'Emergency Info - Margaret Thompson',
+      text: text
+    }).then(function() {
+      console.log('Shared successfully');
+    }).catch(function(err) {
+      console.log('Share failed:', err);
+      showShareModal(text);
+    });
+  } else {
+    showShareModal(text);
+  }
+}
+
+function showShareModal(text) {
+  // Create a modal with the text and copy button
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:flex-end;padding:16px';
+  
+  var modal = document.createElement('div');
+  modal.style.cssText = 'background:white;border-radius:20px;padding:20px;width:100%;max-height:70vh;overflow-y:auto';
+  
+  modal.innerHTML = '<div style="font-size:.9rem;font-weight:800;color:#0C1B33;margin-bottom:12px">Share Emergency Info</div>' +
+    '<textarea id="share-text" readonly style="width:100%;height:180px;border:1.5px solid #E2E8F0;border-radius:10px;padding:10px;font-size:.72rem;font-family:monospace;resize:none;color:#334155;background:#F8FAFC">' + text + '</textarea>' +
+    '<button onclick="copyShareText()" style="width:100%;background:#0E9E8E;color:white;border:none;border-radius:12px;padding:13px;font-size:.88rem;font-weight:700;cursor:pointer;margin-top:10px;font-family:inherit">Copy All — Then Paste Into Text or Email</button>' +
+    '<button onclick="this.parentNode.parentNode.remove()" style="width:100%;background:transparent;border:1.5px solid #E2E8F0;border-radius:12px;padding:11px;font-size:.82rem;color:#64748B;cursor:pointer;margin-top:8px;font-family:inherit">Close</button>';
+  
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  
+  // Auto-select the text
+  setTimeout(function() {
+    var ta = document.getElementById('share-text');
+    if (ta) ta.select();
+  }, 100);
+}
+
+function copyShareText() {
+  var ta = document.getElementById('share-text');
+  if (ta) {
+    ta.select();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(ta.value).then(function() {
+        var btn = ta.nextElementSibling;
+        if (btn) { btn.textContent = 'Copied! Now paste into text or email'; btn.style.background = '#059669'; }
+      }).catch(function() {
+        document.execCommand('copy');
+        var btn = ta.nextElementSibling;
+        if (btn) { btn.textContent = 'Copied!'; btn.style.background = '#059669'; }
+      });
+    } else {
+      document.execCommand('copy');
+      var btn = ta.nextElementSibling;
+      if (btn) { btn.textContent = 'Copied!'; btn.style.background = '#059669'; }
+    }
+  }
+}
+
+
+function tick() {
+  document.getElementById('clock').textContent =
+    new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+}
+tick();
+setInterval(tick, 30000);
+</script>
+</body>
+</html>
