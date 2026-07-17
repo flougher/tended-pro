@@ -1112,6 +1112,83 @@ body {
 }
 .paywall-restore { font-size: .75rem; color: var(--slate-light); margin-top: 12px; cursor: pointer; text-decoration: underline; }
 .paywall-restore:hover { color: var(--teal); }
+
+/* ═══ Fluid unit toggle (Diet & Fluids) ═══ */
+.im-unit-toggle{display:inline-flex;border:1.5px solid var(--border);border-radius:8px;overflow:hidden}
+.im-unit-btn{background:white;border:none;padding:4px 12px;font-size:.8rem;font-weight:700;color:var(--slate-mid);cursor:pointer;font-family:inherit}
+.im-unit-btn.active{background:var(--teal);color:#fff}
+
+/* ═══ Caregiver Check-In (section-checkin) ═══ */
+#section-checkin .ci-screen{display:none}
+#section-checkin .ci-screen.active{display:block}
+#section-checkin .ci-wrap{max-width:520px;margin:0 auto}
+#section-checkin .ci-icon{font-size:2.2rem;text-align:center;margin-bottom:16px}
+#section-checkin .ci-q{font-size:1.35rem;font-weight:800;color:var(--navy);text-align:center;line-height:1.35;margin-bottom:8px}
+#section-checkin .ci-sub{font-size:.9rem;color:var(--slate-mid);text-align:center;line-height:1.6;margin-bottom:26px}
+#section-checkin .ci-choice{display:block;width:100%;background:#fff;border:2px solid var(--border);border-radius:16px;padding:18px 20px;text-align:center;cursor:pointer;font-family:inherit;font-size:.95rem;font-weight:700;color:var(--navy);line-height:1.4;margin-bottom:10px;transition:transform .12s}
+#section-checkin .ci-choice:active{transform:scale(.98)}
+#section-checkin .ci-choice.g{border-color:var(--green-border,#A7F3D0);background:var(--green-bg,#ECFDF5);color:var(--given,#059669)}
+#section-checkin .ci-choice.a{border-color:#FDE68A;background:#FFFBEB;color:#D97706}
+#section-checkin .ci-choice.r{border-color:#FECACA;background:#FEF2F2;color:#DC2626}
+#section-checkin .ci-skip{display:block;width:100%;background:none;border:none;color:var(--slate-light);font-size:.8rem;cursor:pointer;padding:10px;font-family:inherit}
+#section-checkin .ci-presence{background:var(--navy);border-radius:18px;padding:22px;margin-bottom:18px}
+#section-checkin .ci-presence-text{font-size:.9rem;color:rgba(255,255,255,.95);line-height:1.8}
+#section-checkin .ci-presence-text strong{color:var(--teal)}
+#section-checkin .ci-presence-sig{font-size:.74rem;color:rgba(255,255,255,.5);border-top:1px solid rgba(255,255,255,.12);padding-top:10px;margin-top:12px}
+#section-checkin .ci-one-label{font-size:.7rem;font-weight:700;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.08em;text-align:center;margin-bottom:12px}
+#section-checkin .ci-one{background:#fff;border:2px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:transform .12s;text-align:left}
+#section-checkin .ci-one:active{transform:scale(.98)}
+#section-checkin .ci-one-ic{font-size:1.5rem;flex-shrink:0}
+#section-checkin .ci-one-t{font-size:.86rem;font-weight:700;color:var(--navy)}
+#section-checkin .ci-one-s{font-size:.74rem;color:var(--slate-mid);margin-top:2px}
+#section-checkin .ci-primary{width:100%;background:var(--teal);color:#fff;border:none;border-radius:14px;padding:14px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:10px}
+#section-checkin .ci-secondary{width:100%;background:transparent;border:1.5px solid var(--border);border-radius:14px;padding:12px;font-size:.84rem;color:var(--slate-mid);cursor:pointer;font-family:inherit;margin-bottom:8px}
+#section-checkin .ci-ring{width:170px;height:170px;border-radius:50%;background:rgba(14,158,142,.15);border:2px solid rgba(14,158,142,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;animation:ciBreathe 8s ease-in-out infinite}
+#section-checkin .ci-ring-inner{width:105px;height:105px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center}
+#section-checkin .ci-ring-word{color:#fff;font-size:.85rem;font-weight:700;text-align:center;line-height:1.4;transition:opacity .3s}
+@keyframes ciBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+#section-checkin .ci-ground{background:#fff;border:2px solid var(--teal);border-radius:16px;padding:20px;margin-bottom:14px;text-align:center}
+#section-checkin .ci-truth{font-size:.9rem;color:var(--slate);line-height:1.75;padding-left:14px;border-left:3px solid var(--teal);margin-bottom:16px}
+#section-checkin .ci-crisis{background:#fff;border:2px solid var(--border);border-radius:14px;padding:15px 18px;margin-bottom:10px;cursor:pointer;font-family:inherit;text-align:left;transition:transform .12s}
+#section-checkin .ci-crisis:active{transform:scale(.98)}
+#section-checkin .ci-crisis .cl{font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:3px}
+#section-checkin .ci-crisis .cd{font-size:.74rem;color:var(--slate-mid);line-height:1.4}
+#section-checkin .ci-crisis.pri{background:var(--teal);border-color:var(--teal)}
+#section-checkin .ci-crisis.pri .cl{color:#fff}
+#section-checkin .ci-crisis.pri .cd{color:rgba(255,255,255,.85)}
+
+/* ═══ Emergency Mode (section-emergency) ═══ */
+#section-emergency .em-wrap{max-width:520px;margin:0 auto}
+#section-emergency .em-head{background:#DC2626;border-radius:16px 16px 0 0;padding:16px 18px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+#section-emergency .em-badge{background:rgba(255,255,255,.2);color:#fff;font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:6px}
+#section-emergency .em-name{color:#fff;font-size:1.2rem;font-weight:800;line-height:1.2}
+#section-emergency .em-dob{color:rgba(255,255,255,.85);font-size:.76rem;margin-top:3px}
+#section-emergency .em-banner{background:#FFF7ED;border:2px solid #FED7AA;border-top:none;padding:12px 16px;display:flex;align-items:center;gap:10px}
+#section-emergency .em-banner .t{font-size:.78rem;font-weight:800;color:#C2410C}
+#section-emergency .em-banner .s{font-size:.72rem;color:#92400E;line-height:1.4;margin-top:2px}
+#section-emergency .em-body{background:var(--off-white,#F8FAFC);border:1px solid var(--border);border-top:none;border-radius:0 0 16px 16px;padding:16px}
+#section-emergency .em-critical{background:#FEF2F2;border:2px solid #FECACA;border-radius:14px;padding:14px;margin-bottom:14px}
+#section-emergency .em-critical .lbl{font-size:.69rem;font-weight:700;color:#DC2626;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+#section-emergency .em-row{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start}
+#section-emergency .em-key{font-size:.76rem;font-weight:700;color:var(--navy);min-width:82px;flex-shrink:0}
+#section-emergency .em-val{font-size:.76rem;color:var(--slate);line-height:1.5;flex:1}
+#section-emergency .em-val.red{color:#DC2626;font-weight:700}
+#section-emergency .em-sec{background:#fff;border:1.5px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden}
+#section-emergency .em-sec-h{background:var(--navy);padding:10px 14px;display:flex;align-items:center;gap:8px}
+#section-emergency .em-sec-t{color:#fff;font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+#section-emergency .em-sec-b{padding:12px 14px}
+#section-emergency .em-med{padding:8px 0;border-bottom:1px solid var(--border)}
+#section-emergency .em-med:last-child{border-bottom:none}
+#section-emergency .em-med-n{font-size:.82rem;font-weight:700;color:var(--navy)}
+#section-emergency .em-med-d{font-size:.72rem;color:var(--slate-mid);margin-top:2px}
+#section-emergency .em-contact{padding:8px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+#section-emergency .em-contact:last-child{border-bottom:none}
+#section-emergency .em-contact-n{font-size:.82rem;font-weight:700;color:var(--navy)}
+#section-emergency .em-contact-r{font-size:.72rem;color:var(--slate-mid)}
+#section-emergency .em-call{background:var(--teal);color:#fff;border:none;border-radius:20px;padding:7px 15px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0}
+#section-emergency .em-share{width:100%;background:#1D4ED8;color:#fff;border:none;border-radius:14px;padding:15px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:10px}
+#section-emergency .em-911{width:100%;background:#DC2626;color:#fff;border:none;border-radius:14px;padding:16px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px}
+#section-emergency .em-911:active,#section-emergency .em-share:active{transform:scale(.99)}
 </style>
 </head>
 <body>
@@ -1266,6 +1343,11 @@ body {
   <div class="nav-group">
     <div class="nav-label">Safety</div>
     <button class="nav-btn" onclick="navTo('bbw',this)" style="color:rgba(255,200,50,.85)"><span class="ni">⚠️</span> Black Box Warnings <span class="nav-badge" id="nb-bbw" style="background:#C9963A"></span></button>
+    <button class="nav-btn" onclick="navTo('emergency',this)" style="color:rgba(255,120,120,.95)"><span class="ni">🚨</span> Emergency Mode</button>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">💚 Caregiver Wellness</div>
+    <button class="nav-btn" onclick="navTo('checkin',this)"><span class="ni">💚</span> Caregiver Check-In</button>
   </div>
   <div class="nav-group">
     <div class="nav-label">Account</div>
@@ -2701,6 +2783,145 @@ body {
   </div>
 </div>
 
+<!-- ═══ EMERGENCY MODE ═════════════════════════════════════ -->
+<div id="section-emergency" class="section">
+  <div class="em-wrap">
+    <div style="margin-bottom:14px">
+      <h2 style="font-size:1.3rem;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px">🚨 Emergency Mode</h2>
+      <div style="font-size:.84rem;color:var(--slate-mid);margin-top:4px">One screen with everything a first responder needs — pulled from this patient's record. Hand them the phone.</div>
+    </div>
+    <div class="fg" style="margin-bottom:14px">
+      <label>Patient</label>
+      <select id="em-patient" onchange="emPatientChange(this.value)" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%"></select>
+    </div>
+    <div id="em-body"></div>
+  </div>
+</div>
+
+<!-- ═══ CAREGIVER CHECK-IN ══════════════════════════════════ -->
+<div id="section-checkin" class="section">
+  <div class="ci-wrap">
+
+    <!-- Q -->
+    <div class="ci-screen active" id="ci-screen-checkin">
+      <div class="ci-icon">🌿</div>
+      <div class="ci-q">How are you right now?</div>
+      <div class="ci-sub">Not your loved one. Not the shift. You.</div>
+      <button class="ci-choice g" onclick="ciGo('okay')">I am okay. Tired but okay.</button>
+      <button class="ci-choice a" onclick="ciGo('struggling')">I am struggling today.</button>
+      <button class="ci-choice r" onclick="ciGo('crisis')">I am not okay right now.</button>
+      <button class="ci-skip" onclick="ciLogAndGo('skipped')">Skip for now</button>
+    </div>
+
+    <!-- OKAY -->
+    <div class="ci-screen" id="ci-screen-okay">
+      <div class="ci-presence">
+        <div class="ci-presence-text">
+          You showed up today.<br><br>
+          For someone who may not always know your name. Who may have been afraid in the night. Who needs you in ways most people around you will never fully understand.<br><br>
+          <strong>Tired but okay is more than enough.</strong> It is actually everything.
+        </div>
+        <div class="ci-presence-sig">— Frank, fellow caregiver · tendedhealthapps@gmail.com</div>
+      </div>
+      <button class="ci-primary" onclick="ciLogAndGo('okay')">Thank you. Continuing. ✓</button>
+      <button class="ci-secondary" onclick="ciGo('checkin')">← Back to menu</button>
+    </div>
+
+    <!-- STRUGGLING -->
+    <div class="ci-screen" id="ci-screen-struggling">
+      <div class="ci-presence">
+        <div class="ci-presence-text">
+          I hear you.<br><br>
+          A heavy day does not mean you are failing. It means you have been giving more than you have for longer than anyone should have to.<br><br>
+          <strong>That is not weakness. That is all of us.</strong>
+        </div>
+        <div class="ci-presence-sig">— Frank</div>
+      </div>
+      <div class="ci-one-label">One thing. Pick what you need most right now.</div>
+      <div class="ci-one" onclick="ciGo('breathe')"><span class="ci-one-ic">🌬️</span><div><div class="ci-one-t">Help me breathe for 60 seconds</div><div class="ci-one-s">No thinking. Just breathe with the circle.</div></div></div>
+      <div class="ci-one" onclick="ciGo('ground')"><span class="ci-one-ic">⚓</span><div><div class="ci-one-t">Get me out of my head</div><div class="ci-one-s">Three simple steps to come back to right now.</div></div></div>
+      <div class="ci-one" onclick="ciGo('truth')"><span class="ci-one-ic">💙</span><div><div class="ci-one-t">Tell me something true</div><div class="ci-one-s">Real words from people who have been exactly here.</div></div></div>
+      <button class="ci-secondary" style="margin-top:4px" onclick="ciGo('checkin')">← Back to menu</button>
+    </div>
+
+    <!-- BREATHE -->
+    <div class="ci-screen" id="ci-screen-breathe">
+      <div style="text-align:center;padding:6px 0 10px">
+        <div style="font-size:.84rem;color:var(--slate-mid);margin-bottom:18px;line-height:1.6">Just watch the circle.<br>Breathe in as it grows. Breathe out as it shrinks.</div>
+        <div class="ci-ring"><div class="ci-ring-inner"><div class="ci-ring-word" id="ci-breathe-word">Breathe<br>in</div></div></div>
+        <div style="font-size:.78rem;color:var(--slate-mid);margin-bottom:18px;line-height:1.6">In for 4 · Hold for 2 · Out for 6<br>Your nervous system is resetting right now.</div>
+      </div>
+      <div class="ci-presence"><div class="ci-presence-text">You do not have to fix anything right now. You just have to get through the next breath. <strong>That is the only thing.</strong></div><div class="ci-presence-sig">— Frank</div></div>
+      <button class="ci-primary" onclick="ciLogAndGo('struggling')">I feel a little steadier ✓</button>
+      <button class="ci-secondary" onclick="ciGo('struggling')">← Back to options</button>
+    </div>
+
+    <!-- GROUND -->
+    <div class="ci-screen" id="ci-screen-ground">
+      <div class="ci-ground">
+        <div style="font-size:.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px" id="ci-ground-num">Step 1 of 3</div>
+        <div style="font-size:.95rem;font-weight:700;color:var(--navy);line-height:1.4;margin-bottom:6px" id="ci-ground-text">Look around and find something blue.</div>
+        <div style="font-size:.78rem;color:var(--slate-mid);line-height:1.6" id="ci-ground-detail">Just look for it. Take your time. When you find it — tap the button below.</div>
+      </div>
+      <button class="ci-primary" id="ci-ground-btn" onclick="ciNextGround()">Found it ✓</button>
+      <button class="ci-secondary" onclick="ciGo('struggling')">← Back to options</button>
+    </div>
+
+    <!-- TRUTH -->
+    <div class="ci-screen" id="ci-screen-truth">
+      <div class="ci-presence" style="margin-bottom:18px"><div class="ci-presence-text">These are true. Right now. Even if you cannot feel them yet.</div><div class="ci-presence-sig">— Frank</div></div>
+      <div class="ci-truth">You did not have to show up today. You chose to. That choice matters more than you know.</div>
+      <div class="ci-truth">The fact that you feel this heavily means you love this deeply. That is not a burden. That is who you are.</div>
+      <div class="ci-truth">Done is enough today. You do not need to do this perfectly. You just need to get through it.</div>
+      <div class="ci-truth">This moment will pass. You have gotten through every hard moment before this one. You will get through this one too.</div>
+      <div class="ci-truth">You are not alone in this. There are people in this community awake right now carrying exactly what you are carrying.</div>
+      <button class="ci-primary" onclick="ciLogAndGo('struggling')">I needed that. Thank you. ✓</button>
+      <button class="ci-secondary" onclick="ciGo('struggling')">← Back to options</button>
+    </div>
+
+    <!-- CRISIS -->
+    <div class="ci-screen" id="ci-screen-crisis">
+      <div class="ci-presence"><div class="ci-presence-text">I see you.<br><br>Not okay is a real place to be. You are not being dramatic. You are not weak. You have been holding something enormous for a very long time and right now it is too heavy.<br><br><strong>Stay with this screen for a moment. You do not have to do anything yet.</strong></div></div>
+      <div class="ci-one-label" style="margin-top:16px">What would help most right now</div>
+      <div class="ci-crisis pri" onclick="ciGo('breathe')"><div class="cl">🌬️ Help me breathe right now</div><div class="cd">60 seconds. Just breathe with the circle. Nothing else.</div></div>
+      <div class="ci-crisis" onclick="ciGo('ground')"><div class="cl">⚓ Get me out of my head</div><div class="cd">Three simple steps to come back to right now.</div></div>
+      <div class="ci-crisis" onclick="ciShowInfo('Text someone right now','Send this to someone you trust:\n\n&quot;I am having a really hard time today. I just needed to tell someone.&quot;\n\nYou do not need to say anything else. Just send it.')"><div class="cl">📱 Text someone right now</div><div class="cd">One sentence is enough.</div></div>
+      <div class="ci-crisis" onclick="ciShowInfo('Cold water — 10 seconds','Go do this right now:\n\nSplash cold water on your face and wrists.\n\nIt physically resets your nervous system. Come back when you are done.')"><div class="cl">💧 Cold water on my face or wrists</div><div class="cd">It physically resets your nervous system. Takes 10 seconds.</div></div>
+      <div class="ci-crisis" onclick="ciGo('truth')"><div class="cl">💙 Tell me something true</div><div class="cd">Words from people who have been exactly here.</div></div>
+      <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:6px">
+        <div style="font-size:.74rem;color:var(--slate-mid);text-align:center;line-height:1.6;margin-bottom:12px">A real person is available right now. You do not have to explain everything. Just call.</div>
+        <div class="ci-crisis" style="background:#EFF6FF;border-color:#BFDBFE" onclick="dialPhone('18002723900')"><div class="cl" style="color:#1D4ED8">📞 Alzheimer's Association Helpline</div><div class="cd">1-800-272-3900 · 24 hours · 365 days · Free · 200+ languages</div></div>
+        <div class="ci-crisis" style="background:#F5F3FF;border-color:#DDD6FE" onclick="dialPhone('18662328484')"><div class="cl" style="color:#6D28D9">📞 Alzheimer's Foundation of America</div><div class="cd">1-866-232-8484 · Licensed social workers · Phone, text or chat · 7 days a week</div></div>
+        <div class="ci-crisis" style="background:var(--green-bg,#ECFDF5);border-color:var(--green-border,#A7F3D0)" onclick="dialPhone('18552273640')"><div class="cl" style="color:var(--given,#059669)">📞 Caregiver Action Network</div><div class="cd">1-855-227-3640 · Free support for family caregivers · Mon–Fri 8am–7pm ET</div></div>
+      </div>
+      <button class="ci-secondary" style="margin-top:12px" onclick="ciLogAndGo('crisis')">I am going to be okay. Thank you.</button>
+      <button class="ci-secondary" onclick="ciGo('checkin')">← Back to menu</button>
+    </div>
+
+    <!-- LOGGED -->
+    <div class="ci-screen" id="ci-screen-logged">
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:2.8rem;margin-bottom:12px">✅</div>
+        <div style="font-size:1.05rem;font-weight:800;color:var(--navy);margin-bottom:6px">Check-in recorded.</div>
+        <div style="font-size:.82rem;color:var(--slate-mid);line-height:1.55;margin-bottom:20px">How you are doing matters. This moment has been saved.</div>
+        <button class="ci-primary" style="max-width:280px;margin:0 auto" onclick="ciGo('checkin')">← New check-in</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Check-In info modal (replaces native alert popups) -->
+<div class="overlay" id="ci-info-modal">
+  <div class="modal">
+    <div class="modal-title" id="ci-info-title">Info</div>
+    <div id="ci-info-body" style="font-size:.9rem;color:var(--slate);line-height:1.7;white-space:pre-line;margin:6px 0 16px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-teal" onclick="closeModal('ci-info-modal')">Got it</button>
+    </div>
+  </div>
+</div>
+
 </main><!-- content -->
 </div><!-- body-area -->
 
@@ -2736,6 +2957,8 @@ body {
     <button class="bn-btn" onclick="mobileNavTo('billing')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">💳</span>Billing</button>
     <button class="bn-btn" onclick="mobileNavTo('report')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📄</span>Report</button>
     <button class="bn-btn" onclick="mobileNavTo('bbw')" style="color:rgba(255,200,50,.85)"><span class="bn-icon">⚠️</span>BBW</button>
+    <button class="bn-btn" onclick="mobileNavTo('emergency')" style="color:rgba(255,120,120,.95)"><span class="bn-icon">🚨</span>Emergency</button>
+    <button class="bn-btn" onclick="mobileNavTo('checkin')" style="color:rgba(150,230,200,.95)"><span class="bn-icon">💚</span>Check-In</button>
     <button class="bn-btn" onclick="mobileNavTo('settings')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">⚙️</span>Settings</button>
     <button class="bn-btn" onclick="toggleMobileMore()" style="color:rgba(255,255,255,.4)"><span class="bn-icon">✕</span>Close</button>
   </div>
@@ -3580,7 +3803,7 @@ function navTo(id, btn){
   });
 
   // Check trial/premium before navigating to gated sections
-  const FREE_SECTIONS = ['dashboard','patients','settings'];
+  const FREE_SECTIONS = ['dashboard','patients','settings','emergency','checkin'];
   if(!FREE_SECTIONS.includes(id) && !isPremium()){
     const trial = getTrialState();
     if(trial.expired){
@@ -3615,7 +3838,9 @@ function navTo(id, btn){
     pain:      initPain,
     sundowning: initSundowning,
     wandering:  initWandering,
-    memorycare: initMemoryCare
+    memorycare: initMemoryCare,
+    emergency:  renderEmergency,
+    checkin:    renderCheckin
   };
   if(renders[id]) renders[id]();
 }
@@ -4521,10 +4746,10 @@ function exportAgencySummary(){
         <td>${fmtTime(e.time||'')}</td>
         <td>${e.type}</td>
         <td>${e.pct!==''?e.pct+'% eaten':'—'}</td>
-        <td>${e.fluid?e.fluid+' ml':'—'}</td>
+        <td>${e.fluid?fmtFluid(e.fluid):'—'}</td>
         <td>${e.notes||'—'}</td>
       </tr>`).join('');
-      intakeHTML = `<h4>Diet &amp; Fluid Intake${avgPct!==null?' — Avg meal: '+avgPct+'%':''} | Total fluid: ${totalFluid} ml</h4>
+      intakeHTML = `<h4>Diet &amp; Fluid Intake${avgPct!==null?' — Avg meal: '+avgPct+'%':''} | Total fluid: ${fmtFluid(totalFluid)}</h4>
         <table><thead><tr><th>Time</th><th>Type</th><th>Meal %</th><th>Fluid</th><th>Notes</th></tr></thead>
         <tbody>${rows}</tbody></table>`;
     }
@@ -5227,8 +5452,15 @@ function printMAR(){
           <option value="0">0% — refused / did not eat</option>
         </select>
       </div>
-      <div class="fg"><label>Fluid Amount (ml)</label>
-        <input type="number" id="im-fluid" placeholder="e.g. 240" min="0" max="2000">
+      <div class="fg">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <label id="im-fluid-label" style="margin:0">Fluid Amount (ml)</label>
+          <div class="im-unit-toggle">
+            <button type="button" class="im-unit-btn active" data-unit="ml" onclick="imSetUnit('ml')">ml</button>
+            <button type="button" class="im-unit-btn" data-unit="oz" onclick="imSetUnit('oz')">oz</button>
+          </div>
+        </div>
+        <input type="number" id="im-fluid" placeholder="e.g. 240" min="0" max="2000" step="any">
       </div>
     </div>
     <div class="fg"><label>Notes</label>
@@ -6372,6 +6604,45 @@ function deleteWound(id){
 // ── 3. DIET & FLUID INTAKE ────────────────────────────────────
 let _editIntakeId = null;
 
+// ── Fluid unit preference — canonical storage is always ml; oz is display-only ──
+const ML_PER_OZ = 29.5735;
+function getFluidUnit(){ return localStorage.getItem('tendedPro_fluidUnit') === 'oz' ? 'oz' : 'ml'; }
+function setFluidUnit(u){ localStorage.setItem('tendedPro_fluidUnit', u === 'oz' ? 'oz' : 'ml'); }
+// ml (stored) -> number in the currently selected unit
+function mlToDisplay(ml){
+  ml = ml || 0;
+  return getFluidUnit() === 'oz' ? Math.round((ml / ML_PER_OZ) * 10) / 10 : Math.round(ml);
+}
+// value typed in the currently selected unit -> canonical ml (integer)
+function displayToMl(val){
+  const n = parseFloat(val) || 0;
+  return getFluidUnit() === 'oz' ? Math.round(n * ML_PER_OZ) : Math.round(n);
+}
+// pretty string, e.g. "240 ml" or "8.1 oz" — always fed the stored ml value
+function fmtFluid(ml){ return mlToDisplay(ml) + ' ' + getFluidUnit(); }
+
+// Sync the intake-modal fluid input label/placeholder/toggle to the current unit
+function imUpdateUnitUI(){
+  const u = getFluidUnit();
+  const lab = document.getElementById('im-fluid-label'); if(lab) lab.textContent = 'Fluid Amount (' + u + ')';
+  const inp = document.getElementById('im-fluid');       if(inp) inp.placeholder = u === 'oz' ? 'e.g. 8' : 'e.g. 240';
+  document.querySelectorAll('.im-unit-btn').forEach(b => b.classList.toggle('active', b.dataset.unit === u));
+}
+// Toggle button handler — converts whatever is already typed so the number stays truthful
+function imSetUnit(u){
+  const inp = document.getElementById('im-fluid');
+  const oldU = getFluidUnit();
+  if(inp && u !== oldU){
+    const cur = parseFloat(inp.value);
+    if(!isNaN(cur)){
+      const ml = oldU === 'oz' ? cur * ML_PER_OZ : cur;
+      inp.value = u === 'oz' ? Math.round((ml / ML_PER_OZ) * 10) / 10 : Math.round(ml);
+    }
+  }
+  setFluidUnit(u);
+  imUpdateUnitUI();
+}
+
 function initIntake(){
   populatePatientBars();
   const dateEl = document.getElementById('intake-date');
@@ -6394,7 +6665,7 @@ function openIntakeModal(editId){
     const set = (id, val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
     set('im-time',  e.time);
     set('im-pct',   e.pct);
-    set('im-fluid', e.fluid || '');
+    set('im-fluid', e.fluid ? mlToDisplay(e.fluid) : '');
     set('im-notes', e.notes);
     const typeEl = document.getElementById('im-type');
     if(typeEl) typeEl.value = e.type || '';
@@ -6403,6 +6674,7 @@ function openIntakeModal(editId){
     if(timeEl) timeEl.value = new Date().toTimeString().slice(0,5);
     ['im-pct','im-fluid','im-notes'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
   }
+  imUpdateUnitUI();
   openModal('intake-modal');
 }
 
@@ -6415,7 +6687,7 @@ function saveIntake(){
     time:      document.getElementById('im-time')?.value || new Date().toTimeString().slice(0,5),
     type,
     pct:       document.getElementById('im-pct')?.value || '',
-    fluid:     parseInt(document.getElementById('im-fluid')?.value || '0') || 0,
+    fluid:     displayToMl(document.getElementById('im-fluid')?.value),
     notes:     document.getElementById('im-notes')?.value.trim() || '',
   };
   if(!D.intake) D.intake = [];
@@ -6455,7 +6727,7 @@ function renderIntake(){
   const totFluid = document.getElementById('tot-fluid');
   const totAvg   = document.getElementById('tot-avg');
   if(totMeals) totMeals.textContent = meals.length;
-  if(totFluid) totFluid.textContent = totalFluid + ' ml';
+  if(totFluid) totFluid.textContent = fmtFluid(totalFluid);
   if(totAvg)   totAvg.textContent   = avgPct !== null ? avgPct + '%' : '—';
 
   // Log
@@ -6482,7 +6754,7 @@ function renderIntake(){
       </div>
       <div style="font-size:.82rem;color:var(--slate)">
         ${e.pct !== '' ? `<div>${e.pct}% eaten</div>` : ''}
-        ${e.fluid ? `<div style="color:var(--teal)">${e.fluid} ml</div>` : ''}
+        ${e.fluid ? `<div style="color:var(--teal)">${fmtFluid(e.fluid)}</div>` : ''}
       </div>
       <div style="display:flex;gap:4px">
         <button class="btn btn-secondary btn-xs btn-icon" onclick="openIntakeModal(${e.id})" title="Edit">✏️</button>
@@ -10445,6 +10717,212 @@ async function init(){
 }
 
 init().catch(e => console.error('init failed', e));
+</script>
+
+<!-- ═══ FEATURE JS: Emergency Mode + Caregiver Check-In ═══ -->
+<script>
+// Shared: open the native dialer (works in-browser; needs the tap-to-call wrapper build to work inside the installed app)
+function dialPhone(n){ try{ window.location.href = 'tel:' + n; } catch(e){} }
+
+// ── Emergency Mode ──────────────────────────────────────────────
+function emEsc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function emAge(dob){
+  if(!dob) return '';
+  const d = new Date(dob + 'T12:00:00'); if(isNaN(d.getTime())) return '';
+  const now = new Date(); let a = now.getFullYear() - d.getFullYear();
+  const m = now.getMonth() - d.getMonth(); if(m < 0 || (m === 0 && now.getDate() < d.getDate())) a--;
+  return (a >= 0 && a < 130) ? a : '';
+}
+function emPhones(text){
+  const re = /(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/g;
+  const out = [], seen = new Set();
+  (String(text||'').match(re) || []).forEach(m => {
+    const digits = m.replace(/\D/g, '');
+    if(digits.length >= 10 && !seen.has(digits)){
+      seen.add(digits);
+      out.push({ display: m.trim(), digits: digits.length === 10 ? '1' + digits : digits });
+    }
+  });
+  return out;
+}
+
+function emPatientChange(id){
+  if(typeof setGlobalPatient === 'function') setGlobalPatient(id);
+  else { _globalPatientId = String(id); }
+  renderEmergency();
+}
+
+function renderEmergency(){
+  const sel  = document.getElementById('em-patient');
+  const body = document.getElementById('em-body');
+  if(!body) return;
+  const patients = D.patients || [];
+
+  if(sel){
+    sel.innerHTML = patients.length
+      ? patients.map(p => `<option value="${p.id}"${String(p.id)===String(_globalPatientId)?' selected':''}>${emEsc(p.fname)} ${emEsc(p.lname)}${p.room?' · Rm '+emEsc(p.room):''}</option>`).join('')
+      : '<option>No patients</option>';
+  }
+
+  if(!patients.length){
+    body.innerHTML = '<div class="empty"><div class="empty-icon">🚨</div><div class="empty-text">Add a patient first to use Emergency Mode.<br><br>It pulls allergies, medications, conditions and emergency contacts straight from the patient\'s own record — never sample data.</div></div>';
+    return;
+  }
+
+  let p = _globalPatientId ? patients.find(x => String(x.id) === String(_globalPatientId)) : null;
+  if(!p){ p = patients[0]; if(typeof setGlobalPatient === 'function') setGlobalPatient(p.id); if(sel) sel.value = String(p.id); }
+  window._emCurrentPatientId = p.id;
+
+  const age = emAge(p.dob);
+  const idLine = [ p.dob ? 'DOB: ' + emEsc(p.dob) : '', age !== '' ? 'Age ' + age : '', p.blood ? 'Blood: ' + emEsc(p.blood) : '' ].filter(Boolean).join(' · ');
+  const meds = (D.meds || []).filter(m => String(m.patientId) === String(p.id));
+
+  const crit = [];
+  if(p.allergies) crit.push(`<div class="em-row"><span class="em-key">Allergies</span><span class="em-val red">${emEsc(p.allergies)}</span></div>`);
+  if(p.doctor)    crit.push(`<div class="em-row"><span class="em-key">Primary MD</span><span class="em-val">${emEsc(p.doctor)}</span></div>`);
+  if(p.fallRisk)  crit.push(`<div class="em-row"><span class="em-key">Fall Risk</span><span class="em-val">${emEsc(p.fallRisk)}</span></div>`);
+
+  const medsHtml = meds.length
+    ? meds.map(m => `<div class="em-med"><div class="em-med-n">${emEsc(m.name)} ${emEsc(m.dose||'')} ${bbwBadgeHtml(m.name, true)}</div><div class="em-med-d">${emEsc(m.freq||'')}${m.time?' · '+fmtTime(m.time):''}</div>${bbwBadgeHtml(m.name, false)}</div>`).join('')
+    : '<div style="font-size:.78rem;color:var(--slate-light)">No medications recorded.</div>';
+
+  const phones = emPhones(p.emergency || '');
+  let contactsHtml = '';
+  if(p.emergency) contactsHtml += `<div style="font-size:.8rem;color:var(--slate);line-height:1.6;margin-bottom:8px">${emEsc(p.emergency)}</div>`;
+  if(phones.length) contactsHtml += phones.map(ph => `<div class="em-contact"><div><div class="em-contact-n">📞 ${emEsc(ph.display)}</div></div><button class="em-call" onclick="dialPhone('${ph.digits}')">Call</button></div>`).join('');
+  if(!p.emergency && !phones.length) contactsHtml = '<div style="font-size:.78rem;color:var(--slate-light)">No emergency contact recorded.</div>';
+
+  body.innerHTML = `
+    <div class="em-head"><div>
+      <div class="em-badge">🚨 Emergency Mode</div>
+      <div class="em-name">${emEsc(p.fname)} ${emEsc(p.lname)}</div>
+      <div class="em-dob">${idLine || 'No demographic info on file'}${p.room?' · Rm '+emEsc(p.room):''}</div>
+    </div></div>
+    <div class="em-banner"><span style="font-size:1.3rem;flex-shrink:0">📱</span><div><div class="t">Show this screen to any EMT, nurse or doctor.</div><div class="s">Everything critical is on this screen — pulled from this patient's record.</div></div></div>
+    <div class="em-body">
+      ${crit.length ? `<div class="em-critical"><div class="lbl">⚠️ Critical — Read First</div>${crit.join('')}</div>` : ''}
+      <div class="em-sec"><div class="em-sec-h"><span>💊</span><span class="em-sec-t">Active Medications</span></div><div class="em-sec-b">${medsHtml}</div></div>
+      <div class="em-sec"><div class="em-sec-h"><span>⚠️</span><span class="em-sec-t">Known Allergies</span></div><div class="em-sec-b">${p.allergies ? `<div class="em-val red">${emEsc(p.allergies)}</div>` : '<div style="font-size:.78rem;color:var(--slate-light)">No known allergies recorded.</div>'}</div></div>
+      <div class="em-sec"><div class="em-sec-h"><span>🏥</span><span class="em-sec-t">Active Conditions</span></div><div class="em-sec-b">${p.conditions ? `<div class="em-val">${emEsc(p.conditions)}</div>` : '<div style="font-size:.78rem;color:var(--slate-light)">No conditions recorded.</div>'}</div></div>
+      <div class="em-sec"><div class="em-sec-h"><span>📞</span><span class="em-sec-t">Emergency Contacts</span></div><div class="em-sec-b">${contactsHtml}</div></div>
+      ${p.notes ? `<div class="em-sec"><div class="em-sec-h"><span>📝</span><span class="em-sec-t">Care Notes</span></div><div class="em-sec-b"><div class="em-val">${emEsc(p.notes)}</div></div></div>` : ''}
+      <button class="em-share" onclick="emShare()"><span>📤</span><span>Share Emergency Info</span></button>
+      <button class="em-911" onclick="dialPhone('911')"><span>📞</span><span>Call 911</span></button>
+      <div style="font-size:.7rem;color:var(--slate-light);text-align:center;margin-top:12px">Generated ${new Date().toLocaleDateString([], {weekday:'long', month:'long', day:'numeric'})} at ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+    </div>`;
+}
+
+function emGetText(p){
+  const age = emAge(p.dob);
+  const meds = (D.meds || []).filter(m => String(m.patientId) === String(p.id));
+  const L = [];
+  L.push('EMERGENCY MEDICAL INFORMATION');
+  L.push('==============================');
+  L.push('Patient: ' + (p.fname||'') + ' ' + (p.lname||''));
+  if(p.dob)   L.push('DOB: ' + p.dob + (age!==''?' (Age '+age+')':''));
+  if(p.blood) L.push('Blood Type: ' + p.blood);
+  if(p.room)  L.push('Room: ' + p.room);
+  L.push('');
+  L.push('ALLERGIES: ' + (p.allergies || 'None recorded'));
+  if(p.conditions){ L.push(''); L.push('CONDITIONS: ' + p.conditions); }
+  L.push('');
+  L.push('MEDICATIONS');
+  if(meds.length) meds.forEach(m => L.push('- ' + m.name + ' ' + (m.dose||'') + (m.freq?' · '+m.freq:'') + (m.time?' · '+fmtTime(m.time):'')));
+  else L.push('- None recorded');
+  if(p.doctor){ L.push(''); L.push('PRIMARY MD: ' + p.doctor); }
+  if(p.emergency){ L.push(''); L.push('EMERGENCY CONTACT: ' + p.emergency); }
+  if(p.notes){ L.push(''); L.push('CARE NOTES: ' + p.notes); }
+  L.push('');
+  L.push('Generated by Tended Health Pro — ' + new Date().toLocaleString());
+  return L.join('\n');
+}
+function emShare(){
+  const p = (D.patients || []).find(x => String(x.id) === String(window._emCurrentPatientId));
+  if(!p) return;
+  const text = emGetText(p);
+  if(navigator.share){
+    navigator.share({ title: 'Emergency Info — ' + p.fname + ' ' + p.lname, text }).catch(() => emCopy(text));
+  } else { emCopy(text); }
+}
+function emCopy(text){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(() => toast('Emergency info copied — paste into a text or email', 'var(--given)')).catch(() => _emFallbackCopy(text));
+  } else { _emFallbackCopy(text); }
+}
+function _emFallbackCopy(text){
+  try{
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    toast('Emergency info copied', 'var(--given)');
+  } catch(e){ toast('Could not copy — please screenshot this screen', 'var(--held)'); }
+}
+
+// ── Caregiver Check-In ──────────────────────────────────────────
+let _ciBreatheTimer = null, _ciGroundIdx = 0, _ciBreathePhase = 0;
+const _ciGroundSteps = [
+  { num:'Step 1 of 3', text:'Look around and find something blue.', detail:'Just look for it. Take your time. When you find it — tap the button below.', btn:'Found it ✓' },
+  { num:'Step 2 of 3', text:'Feel your feet on the floor.', detail:'Press them down a little. Feel the ground underneath you. You are here. You are real.', btn:'I feel it ✓' },
+  { num:'Step 3 of 3', text:'Say this out loud or in your head.', detail:'"I am here. I am safe right now. I can get through the next five minutes."', btn:'I said it ✓' }
+];
+const _ciBreatheWords = ['Breathe<br>in','Hold','Breathe<br>out','Hold'];
+const _ciBreatheTimes = [4000, 2000, 6000, 2000];
+
+function ciGo(screen){
+  document.querySelectorAll('#section-checkin .ci-screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('ci-screen-' + screen);
+  if(el) el.classList.add('active');
+  if(screen !== 'breathe') ciStopBreathe();
+  if(screen === 'breathe') ciStartBreathe();
+  if(screen === 'ground') ciResetGround();
+  try{ window.scrollTo({ top: 0 }); }catch(e){}
+}
+function ciResetGround(){ _ciGroundIdx = 0; ciApplyGround(); }
+function ciApplyGround(){
+  const s = _ciGroundSteps[_ciGroundIdx];
+  const set = (id, v) => { const e = document.getElementById(id); if(e) e.textContent = v; };
+  set('ci-ground-num', s.num); set('ci-ground-text', s.text); set('ci-ground-detail', s.detail); set('ci-ground-btn', s.btn);
+}
+function ciNextGround(){
+  _ciGroundIdx++;
+  if(_ciGroundIdx >= _ciGroundSteps.length){ ciLogAndGo('struggling'); _ciGroundIdx = 0; return; }
+  ciApplyGround();
+}
+function ciStartBreathe(){
+  ciStopBreathe();
+  _ciBreathePhase = 0;
+  const el = document.getElementById('ci-breathe-word');
+  if(!el) return;
+  el.innerHTML = 'Breathe<br>in';
+  function next(){
+    // Self-stop if the breathe screen is no longer showing (user navigated away)
+    const scr = document.getElementById('ci-screen-breathe');
+    if(!scr || !scr.classList.contains('active')){ ciStopBreathe(); return; }
+    _ciBreathePhase = (_ciBreathePhase + 1) % 4;
+    el.style.opacity = '0';
+    setTimeout(() => { el.innerHTML = _ciBreatheWords[_ciBreathePhase]; el.style.opacity = '1'; }, 300);
+    _ciBreatheTimer = setTimeout(next, _ciBreatheTimes[_ciBreathePhase]);
+  }
+  _ciBreatheTimer = setTimeout(next, _ciBreatheTimes[0]);
+}
+function ciStopBreathe(){ if(_ciBreatheTimer){ clearTimeout(_ciBreatheTimer); _ciBreatheTimer = null; } }
+function ciShowInfo(title, body){
+  const t = document.getElementById('ci-info-title'); if(t) t.textContent = title;
+  const b = document.getElementById('ci-info-body');  if(b) b.textContent = body;
+  openModal('ci-info-modal');
+}
+function ciLogAndGo(status){
+  ciStopBreathe();
+  try{
+    if(status !== 'skipped'){
+      D.checkins = D.checkins || [];
+      D.checkins.push({ id: Date.now(), ts: new Date().toISOString(), status });
+      if(typeof save === 'function') save();
+    }
+  } catch(e){}
+  ciGo('logged');
+}
+function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
 </script>
 </body>
 </html>
