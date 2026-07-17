@@ -10806,7 +10806,8 @@ function renderEmergency(){
       <div class="em-sec"><div class="em-sec-h"><span>🏥</span><span class="em-sec-t">Active Conditions</span></div><div class="em-sec-b">${p.conditions ? `<div class="em-val">${emEsc(p.conditions)}</div>` : '<div style="font-size:.78rem;color:var(--slate-light)">No conditions recorded.</div>'}</div></div>
       <div class="em-sec"><div class="em-sec-h"><span>📞</span><span class="em-sec-t">Emergency Contacts</span></div><div class="em-sec-b">${contactsHtml}</div></div>
       ${p.notes ? `<div class="em-sec"><div class="em-sec-h"><span>📝</span><span class="em-sec-t">Care Notes</span></div><div class="em-sec-b"><div class="em-val">${emEsc(p.notes)}</div></div></div>` : ''}
-      <button class="em-share" onclick="emShare()"><span>📤</span><span>Share Emergency Info</span></button>
+      <button class="em-share" onclick="emShare()"><span>📋</span><span>Copy Emergency Info</span></button>
+      <div style="font-size:.74rem;color:var(--slate-mid);text-align:center;line-height:1.5;margin:6px 4px 0">Tap to copy all of this info, then paste it into a text message or email to share with the ER, doctor, or family member.</div>
       <button class="em-911" onclick="dialPhone('911')"><span>📞</span><span>Call 911</span></button>
       <div style="font-size:.7rem;color:var(--slate-light);text-align:center;margin-top:12px">Generated ${new Date().toLocaleDateString([], {weekday:'long', month:'long', day:'numeric'})} at ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
     </div>`;
@@ -10837,12 +10838,12 @@ function emGetText(p){
   return L.join('\n');
 }
 function emShare(){
+  // Copy-to-clipboard is the reliable, consistent path inside the installed WebView app
+  // (the native share sheet isn't available there), so the button always copies — matching
+  // its "Copy Emergency Info" label and the caption beneath it.
   const p = (D.patients || []).find(x => String(x.id) === String(window._emCurrentPatientId));
   if(!p) return;
-  const text = emGetText(p);
-  if(navigator.share){
-    navigator.share({ title: 'Emergency Info — ' + p.fname + ' ' + p.lname, text }).catch(() => emCopy(text));
-  } else { emCopy(text); }
+  emCopy(emGetText(p));
 }
 function emCopy(text){
   if(navigator.clipboard && navigator.clipboard.writeText){
