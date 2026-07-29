@@ -1329,6 +1329,7 @@ body {
   </div>
   <div class="nav-group">
     <div class="nav-label">💜 Memory Care</div>
+    <button class="nav-btn" onclick="navTo('itm',this)" style="color:rgba(255,150,150,.95)"><span class="ni">🫂</span> In The Moment</button>
     <button class="nav-btn" onclick="navTo('sundowning',this)"><span class="ni">🌅</span> Sundowning</button>
     <button class="nav-btn" onclick="navTo('wandering',this)"><span class="ni">🚶</span> Wandering & Elopement</button>
     <button class="nav-btn" onclick="navTo('memorycare',this)"><span class="ni">💬</span> Memory Care Notes</button>
@@ -2922,6 +2923,11 @@ body {
   </div>
 </div>
 
+<!-- ═══ IN THE MOMENT ══════════════════════════════════════ -->
+<div id="section-itm" class="section">
+  <div id="itm-root"></div>
+</div>
+
 </main><!-- content -->
 </div><!-- body-area -->
 
@@ -2949,6 +2955,7 @@ body {
     <button class="bn-btn" onclick="mobileNavTo('toileting')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🚻</span>Toileting</button>
     <button class="bn-btn" onclick="mobileNavTo('trends')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📊</span>Trends</button>
     <button class="bn-btn" onclick="mobileNavTo('vitals')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🩺</span>Vitals</button>
+    <button class="bn-btn" onclick="mobileNavTo('itm')" style="color:rgba(255,150,150,.95)"><span class="bn-icon">🫂</span>In The Moment</button>
     <button class="bn-btn" onclick="mobileNavTo('sundowning')" style="color:rgba(180,140,255,.9)"><span class="bn-icon">🌅</span>Sundowning</button>
     <button class="bn-btn" onclick="mobileNavTo('wandering')" style="color:rgba(180,140,255,.9)"><span class="bn-icon">🚶</span>Wandering</button>
     <button class="bn-btn" onclick="mobileNavTo('memorycare')" style="color:rgba(180,140,255,.9)"><span class="bn-icon">💬</span>Mem Care</button>
@@ -3063,6 +3070,8 @@ body {
         <option>Elopement attempt</option>
         <option>Injury</option>
         <option>Vital sign concern</option>
+        <option>Medical Emergency</option>
+        <option>End of Life Change</option>
         <option>Other observation</option>
       </select>
     </div>
@@ -3312,6 +3321,7 @@ let D = {
   sundowning:[],
   wandering: [],
   memorycare:[],
+  itmProgress: {},
   settings:  { name:'', agency:'', role:'', initials:'', supervisor:'' },
   _schemaVersion: 0
 };
@@ -3440,7 +3450,7 @@ function load(){
       routines:{},
       triggers:[], behaviors:[], toileting:[], vitals:[],
       pain:[], shifts:[], sundowning:[], wandering:[], memorycare:[],
-      creds:[], billing:[],
+      creds:[], billing:[], itmProgress:{},
       settings:{ name:'', agency:'', role:'', initials:'', supervisor:'' },
       _schemaVersion: 0
     }, JSON.parse(s));
@@ -3803,7 +3813,7 @@ function navTo(id, btn){
   });
 
   // Check trial/premium before navigating to gated sections
-  const FREE_SECTIONS = ['dashboard','patients','settings','emergency','checkin'];
+  const FREE_SECTIONS = ['dashboard','patients','settings','emergency','checkin','itm'];
   if(!FREE_SECTIONS.includes(id) && !isPremium()){
     const trial = getTrialState();
     if(trial.expired){
@@ -3840,7 +3850,8 @@ function navTo(id, btn){
     wandering:  initWandering,
     memorycare: initMemoryCare,
     emergency:  renderEmergency,
-    checkin:    renderCheckin
+    checkin:    renderCheckin,
+    itm:        renderITM
   };
   if(renders[id]) renders[id]();
 }
@@ -5588,6 +5599,7 @@ function printMAR(){
         <option>Physical aggression</option>
         <option>Exit seeking / elopement</option>
         <option>Refusal of care</option>
+        <option>Refusal of food/fluids</option>
         <option>Agitation / restlessness</option>
         <option>Repetitive behaviors</option>
         <option>Confusion / disorientation</option>
@@ -5595,6 +5607,9 @@ function printMAR(){
         <option>Depression / withdrawal</option>
         <option>Hoarding</option>
         <option>Sleep disturbance</option>
+        <option>Asking to go home</option>
+        <option>Tearful / crying</option>
+        <option>Hallucinations</option>
         <option>Other</option>
       </select>
     </div>
@@ -10750,6 +10765,535 @@ function emPatientChange(id){
   if(typeof setGlobalPatient === 'function') setGlobalPatient(id);
   else { _globalPatientId = String(id); }
   renderEmergency();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// IN THE MOMENT — Crisis / Behavior Decision Support
+// Personalization reads from, and resolved episodes write back into,
+// the SAME collections used elsewhere in the app (D.behaviors,
+// D.sundowning, D.wandering, D.incidents) — not a separate log —
+// so every guided episode immediately strengthens future guidance
+// and existing Trends/prediction views for that same patient.
+// ═══════════════════════════════════════════════════════════════
+let _itmScreen = 'entry';       // 'entry' | 'guidance' | 'resolved'
+let _itmScenarioKey = null;
+let _itmLastResolved = null;
+
+const ITM_SCENARIOS = {
+  home: {
+    label:'Asking to go home', icon:'🏠', urgency:'normal', sub:'Repeated, distressed',
+    target:'behaviors', behaviorType:'Asking to go home',
+    translation:'Wanting to "go home" often reflects a search for safety, comfort, or an earlier point in life — not the literal current address. Correcting or arguing tends to increase distress; validating the feeling while gently redirecting tends to help.',
+    steps:[
+      {text:'Validate the feeling first', sub:'"It sounds like you want to feel settled right now — I\'m here."'},
+      {text:'Avoid correcting or arguing about "home"', sub:'Reality orientation often backfires in dementia care'},
+      {text:'Ask an open question about what home means right now', sub:'Often reveals the real need — a person, an era, a routine'},
+      {text:'Redirect to a comforting task, item, or activity', sub:'A familiar object, photo, or task can ease the urge to leave'},
+      {text:'Offer simple reassurance about the near future', sub:'Keep it short and concrete'},
+      {text:'Document what was tried and what helped', sub:'Improves guidance next time this happens'}
+    ]
+  },
+  agitated: {
+    label:'Agitated or pacing', icon:'🔄', urgency:'normal', sub:'Restless, won\'t settle',
+    target:'behaviors', behaviorType:'Agitation / restlessness',
+    translation:'Agitation is usually communication — pain, overstimulation, unmet needs, or fear expressed as restlessness. Look for a trigger before trying to calm the behavior directly.',
+    steps:[
+      {text:'Scan for an immediate cause', sub:'Pain, hunger, needing the bathroom, noise, temperature'},
+      {text:'Lower stimulation in the environment', sub:'Reduce noise, dim harsh light, clear a busy area'},
+      {text:'Approach calmly, at eye level, from the front', sub:'Sudden or from-behind approaches can escalate agitation'},
+      {text:'Offer a simple choice or task', sub:'Restores a sense of control'},
+      {text:'Try a known calming activity if one is documented', sub:'See patient-specific tips below if available'},
+      {text:'Document duration, likely trigger, and what helped', sub:'Builds a pattern over time'}
+    ]
+  },
+  crying: {
+    label:'Crying or distressed', icon:'😢', urgency:'normal', sub:'Tearful, calling family',
+    target:'behaviors', behaviorType:'Tearful / crying',
+    translation:'Tears in dementia care are often grief, loneliness, or confusion surfacing without words to explain it. Presence usually matters more than explanation.',
+    steps:[
+      {text:'Sit beside them — don\'t rush to stop the crying', sub:'Let the emotion move before redirecting'},
+      {text:'Offer physical presence — a hand, a calm voice', sub:'"I\'m right here with you."'},
+      {text:'Ask gently who or what is on their mind', sub:'Naming it can validate the grief or worry'},
+      {text:'Consider contacting family if it continues', sub:'A familiar voice is often the fastest comfort'},
+      {text:'Offer warmth — tea, a blanket, a familiar item', sub:'Physical comfort supports emotional comfort'},
+      {text:'Document what was tried and what helped', sub:''}
+    ]
+  },
+  refusing_care: {
+    label:'Refusing care', icon:'🚫', urgency:'warning', sub:'Meds, bathing, eating',
+    target:'behaviors', behaviorType:'Refusal of care',
+    translation:'Refusal is almost always about loss of control or fear of the specific task — not the caregiver. Offering a choice restores a sense of control and often reduces resistance.',
+    steps:[
+      {text:'Don\'t repeat the same request immediately', sub:'Repetition tends to increase resistance'},
+      {text:'Step back and give space for a few minutes', sub:'Removing pressure can reset the refusal'},
+      {text:'Return with a choice, not a yes/no question', sub:'"Now, or after we sit together for a bit?"'},
+      {text:'Frame the task as familiar routine', sub:'"This is what we do every morning."'},
+      {text:'If medication is refused, never force it', sub:'Document and notify your supervisor per protocol'},
+      {text:'Try again in 15–20 minutes with a different approach', sub:'Short-term memory means the refusal may not persist'}
+    ]
+  },
+  refusing_food: {
+    label:'Refusing to eat', icon:'🍽️', urgency:'warning', sub:'Won\'t take food or fluids',
+    target:'behaviors', behaviorType:'Refusal of food/fluids',
+    translation:'Food or fluid refusal can signal pain, nausea, swallowing difficulty, depression, or a clinically significant change — treat it as more than a single missed meal.',
+    steps:[
+      {text:'Check for signs of pain or discomfort first', sub:'Grimacing, guarding, or vocalizing may point to pain-driven refusal'},
+      {text:'Check positioning before offering food', sub:'Upright positioning reduces aspiration risk'},
+      {text:'Offer small portions of a preferred food', sub:'Familiarity increases acceptance'},
+      {text:'Try calm, simple reassurance', sub:'"Take your time — I\'m not in a rush."'},
+      {text:'Stop and notify your supervisor if swallowing difficulty is observed', sub:'Aspiration risk needs prompt clinical assessment'},
+      {text:'Document exactly what was offered, refused, and why', sub:'Two or more consecutive refusals should be flagged to your supervisor'}
+    ]
+  },
+  sundowning: {
+    label:'Sundowning episode', icon:'🌅', urgency:'warning', sub:'Late-day confusion',
+    target:'sundowning',
+    translation:'Sundowning is late-day confusion or agitation common in dementia. Lowering stimulation and increasing light often helps more than trying to reason through it.',
+    steps:[
+      {text:'Turn on all available lights', sub:'Extra lighting is one of the most consistently effective interventions'},
+      {text:'Reduce or mute background noise', sub:'Intercoms and TV are common triggers'},
+      {text:'Keep the routine calm and predictable', sub:'Avoid sudden changes during this window'},
+      {text:'Offer a small familiar snack', sub:'Can help during the peak risk window'},
+      {text:'Try a known calming activity — music, a familiar object', sub:'See patient-specific tips below if available'},
+      {text:'Notify your supervisor if it escalates beyond mild agitation', sub:''}
+    ]
+  },
+  wandering: {
+    label:'Trying to leave', icon:'🚪', urgency:'urgent', sub:'Exit-seeking',
+    target:'wandering',
+    translation:'Exit-seeking reflects a strong drive — fear, disorientation, or a role the person feels they must fulfill. Arguing about the destination rarely helps; redirection is safer than restraint.',
+    steps:[
+      {text:'Verify door alarms and exits are secured', sub:'Safety first, before anything else'},
+      {text:'Stay calm — do not block or physically restrain', sub:'Restraint tends to escalate; redirection is safer'},
+      {text:'Ask where they\'re going and validate the answer', sub:'"Of course, let me help you get ready."'},
+      {text:'Create a brief task that delays departure', sub:'"First, let me show you something."'},
+      {text:'Walk with them away from the exit toward a comfortable area', sub:'Moving together is safer than them moving alone'},
+      {text:'Notify your supervisor and document this now', sub:'Exit-seeking events require prompt supervisor notification'}
+    ]
+  },
+  combative: {
+    label:'Combative behavior', icon:'⚠️', urgency:'urgent', sub:'Hitting or aggressive',
+    target:'behaviors', behaviorType:'Physical aggression',
+    translation:'Combative behavior in dementia is almost always a fear response, not a personal attack. The person is frightened and cannot express it any other way.',
+    steps:[
+      {text:'Step back immediately — give several feet of space', sub:'Your own safety comes first'},
+      {text:'Do not restrain, grab, or raise your voice', sub:'Physical contact tends to escalate danger'},
+      {text:'Lower your body — crouch or sit if it\'s safe to do so', sub:'Standing over someone can feel threatening'},
+      {text:'Speak slowly and calmly', sub:'"I\'m not going to hurt you. You\'re safe."'},
+      {text:'Leave the room briefly if it\'s safe to do so', sub:'Removing yourself can remove the perceived threat'},
+      {text:'Notify your supervisor now and document the episode', sub:'Combative episodes require prompt notification per protocol'}
+    ]
+  },
+  fall: {
+    label:'Fall or injury', icon:'🩹', urgency:'urgent', sub:'Has fallen',
+    target:'incidents', incidentType:'Fall',
+    translation:'A fall needs a structured, unhurried response. Don\'t move the patient until injury has been assessed — your calm presence prevents a second fall from panic.',
+    steps:[
+      {text:'Stay with them — do not leave them alone', sub:'Confirm they are conscious and breathing first'},
+      {text:'Do not move them until injury is assessed', sub:'Spinal or hip injury may be present'},
+      {text:'Call for help immediately', sub:'You\'ll need a second person before helping them up'},
+      {text:'Keep them warm and calm while waiting', sub:'"I\'m right here. Help is coming. You\'re safe."'},
+      {text:'Notify your supervisor immediately — this is mandatory', sub:'All falls require notification and an incident report'},
+      {text:'Document exact time, location, and what you witnessed', sub:'Complete the incident report within your shift'}
+    ]
+  },
+  medical: {
+    label:'Medical emergency', icon:'🚨', urgency:'urgent', sub:'Chest pain, not breathing',
+    target:'incidents', incidentType:'Medical Emergency',
+    translation:'This is a medical emergency. Follow the sequence below immediately — document afterward, not during.',
+    steps:[
+      {text:'Call 911 immediately if life-threatening', sub:'Chest pain, difficulty breathing, unresponsive, seizure — call now'},
+      {text:'Notify your supervisor at the same time, not after', sub:'Both need to know immediately — don\'t wait'},
+      {text:'Do not leave them alone', sub:'Stay present and keep talking to them calmly'},
+      {text:'Check DNR status in the care plan before beginning CPR', sub:'Confirm status — don\'t assume'},
+      {text:'Note exactly when symptoms began and what you observed', sub:'Critical information for emergency responders'},
+      {text:'Contact the emergency contact on file', sub:'Family notification is required for medical emergencies'}
+    ]
+  },
+  hallucinating: {
+    label:'Hallucinating', icon:'👁️', urgency:'normal', sub:'Seeing or hearing things',
+    target:'behaviors', behaviorType:'Hallucinations',
+    translation:'Hallucinations in dementia are real experiences to the person having them. Arguing that it isn\'t real usually increases fear — enter their reality gently and help them feel safe within it.',
+    steps:[
+      {text:'Stay calm — don\'t show alarm or disbelief', sub:'Your reaction signals whether to be afraid'},
+      {text:'Don\'t argue that it isn\'t real', sub:'"I understand you can see that. That must be frightening."'},
+      {text:'Turn on all lights in the room', sub:'Lighting changes often reduce visual hallucinations'},
+      {text:'Gently redirect to something familiar', sub:'A photo, a familiar object, or a familiar song'},
+      {text:'Check for pain, fever, or signs of infection', sub:'New or worsening hallucinations can indicate a UTI or other illness'},
+      {text:'Document exactly what they described seeing or hearing', sub:'Pattern documentation helps identify triggers over time'}
+    ]
+  },
+  eol: {
+    label:'End of life signs', icon:'🕊️', urgency:'urgent', sub:'Breathing changes, unresponsive',
+    target:'incidents', incidentType:'End of Life Change',
+    translation:'Changes in breathing, mottling, unresponsiveness, or withdrawal from food and fluids may indicate the final stage of life. Calm, compassionate presence is the most important thing you can offer right now.',
+    steps:[
+      {text:'Stay with them — do not leave them alone', sub:'Your presence is the most important thing you can give right now'},
+      {text:'Notify your supervisor immediately', sub:'End-of-life changes require prompt clinical and family notification'},
+      {text:'Contact the emergency/family contact on file', sub:'Family has the right to be present — notify promptly'},
+      {text:'Ensure they\'re comfortable — reposition if needed', sub:'Assess for pain even if they can\'t communicate'},
+      {text:'Speak gently even if they seem unresponsive', sub:'Hearing is often the last sense to fade'},
+      {text:'Document all observations with exact times', sub:'Breathing pattern, skin color, responsiveness — time-stamped'}
+    ]
+  }
+};
+
+function itmProgressKey(patId, key){ return String(patId) + '::' + key; }
+function itmGetProgress(patId, key){
+  const k = itmProgressKey(patId,key);
+  return (D.itmProgress && D.itmProgress[k]) || [];
+}
+function itmSetProgress(patId, key, arr){
+  if(!D.itmProgress) D.itmProgress = {};
+  D.itmProgress[itmProgressKey(patId,key)] = arr;
+  save();
+}
+function itmClearProgress(patId, key){
+  if(!D.itmProgress) return;
+  delete D.itmProgress[itmProgressKey(patId,key)];
+  save();
+}
+
+// Shared helper — every itm lookup filters a D collection down to one patient
+// (and optionally an extra predicate, e.g. matching type). Consolidates what
+// was previously six separate inline String(x.patientId)===String(patId) checks.
+function itmForPatient(arr, patId, extra){
+  return (arr||[]).filter(e => String(e.patientId) === String(patId) && (!extra || extra(e)));
+}
+
+// One handler per personalization target — replaces an if/else chain with a
+// lookup table, so adding a new target later means adding one entry here.
+const ITM_PERSONALIZE_HANDLERS = {
+  sundowning(patId, cfg){
+    const entries = itmForPatient(D.sundowning, patId);
+    return { kind:'sundowning', entries, pred: computeSundowningPrediction(entries) };
+  },
+  wandering(patId, cfg){
+    const entries = itmForPatient(D.wandering, patId);
+    return { kind:'wandering', entries, pred: computeWanderingPrediction(entries) };
+  },
+  incidents(patId, cfg){
+    const entries = itmForPatient(D.incidents, patId, e => e.type === cfg.incidentType);
+    return { kind:'incidents', entries };
+  },
+  behaviors(patId, cfg){
+    const entries = itmForPatient(D.behaviors, patId, e => e.type === cfg.behaviorType);
+    const allTriggers = itmForPatient(D.triggers, patId);
+    return { kind:'behaviors', entries, allTriggers };
+  }
+};
+
+function itmPersonalize(key){
+  const cfg = ITM_SCENARIOS[key];
+  const patId = _globalPatientId;
+  if(!patId || !cfg) return null;
+  const handler = ITM_PERSONALIZE_HANDLERS[cfg.target] || ITM_PERSONALIZE_HANDLERS.behaviors;
+  return handler(patId, cfg);
+}
+
+function itmBuildTips(key, data){
+  const tips = [];
+  if(!data) return tips;
+  const envLabels = {'low-light':'Low/dim lighting','noise':'Loud noise','routine-change':'Routine disruption','new-staff':'Unfamiliar staff','late-meal':'Late meal','visitors':'Visitors/activity','overstimulation':'Overstimulation'};
+
+  if(data.kind === 'sundowning' && data.pred){
+    const p = data.pred;
+    tips.push('Peak risk window: ' + p.windowStartFmt + '–' + p.windowEndFmt + ', based on ' + p.episodeCount + ' logged episode' + (p.episodeCount!==1?'s':''));
+    if(p.inWindowNow) tips.push('⚠️ Currently inside the peak risk window — increase observation now');
+    if(p.topEnv.length) tips.push('Common trigger: ' + (envLabels[p.topEnv[0]] || p.topEnv[0]));
+    if(p.whatWorked.length) tips.push('What has worked before: ' + p.whatWorked[p.whatWorked.length-1]);
+  } else if(data.kind === 'wandering' && data.pred){
+    const p = data.pred;
+    if(p.elopements > 0) tips.push('⚠️ ' + p.elopements + ' prior elopement' + (p.elopements!==1?'s':'') + ' on record — treat as high priority');
+    tips.push('Peak risk window: ' + p.windowStartFmt + '–' + p.windowEndFmt + ', based on ' + p.episodeCount + ' logged episode' + (p.episodeCount!==1?'s':''));
+    if(p.isNightRisk) tips.push('Most episodes for this patient occur at night');
+    if(p.topTriggers.length) tips.push('Common trigger: ' + p.topTriggers[0]);
+    if(p.whatWorked.length) tips.push('What has worked before: ' + p.whatWorked[p.whatWorked.length-1]);
+  } else if(data.kind === 'incidents' && data.entries.length){
+    tips.push(data.entries.length + ' prior documented episode' + (data.entries.length!==1?'s':'') + ' of this type for this patient');
+    const last = data.entries[0];
+    if(last && last.action) tips.push('Last time, this action was taken: ' + last.action);
+  } else if(data.kind === 'behaviors' && data.entries.length){
+    tips.push(data.entries.length + ' prior documented episode' + (data.entries.length!==1?'s':'') + ' of this type for this patient');
+    const trigCounts = {};
+    data.entries.forEach(e => { if(e.triggerId) trigCounts[e.triggerId] = (trigCounts[e.triggerId]||0)+1; });
+    const topTrigId = Object.entries(trigCounts).sort((a,b)=>b[1]-a[1])[0];
+    if(topTrigId){
+      const trig = (data.allTriggers||[]).find(t => String(t.id) === String(topTrigId[0]));
+      if(trig){
+        tips.push('Common trigger: ' + trig.trigger);
+        if(trig.deescalation) tips.push('Documented de-escalation approach: ' + trig.deescalation);
+      }
+    }
+    const recentWithConsequence = data.entries.find(e => e.consequence);
+    if(recentWithConsequence) tips.push('Last time, what followed: ' + recentWithConsequence.consequence);
+    const sevCounts = { mild:0, moderate:0, severe:0 };
+    data.entries.forEach(e => { if(sevCounts[e.severity] !== undefined) sevCounts[e.severity]++; });
+    const dominant = Object.entries(sevCounts).sort((a,b)=>b[1]-a[1])[0];
+    if(dominant && dominant[1] > 0) tips.push('Most common severity: ' + dominant[0]);
+  }
+  return tips;
+}
+
+function itmEntrySummary(patId){
+  const triggers = itmForPatient(D.triggers, patId).slice(0,6);
+  const worked = [];
+  itmForPatient(D.sundowning, patId, e => e.whatWorked).forEach(e => worked.push(e.whatWorked));
+  itmForPatient(D.wandering, patId, e => e.whatWorked).forEach(e => worked.push(e.whatWorked));
+  itmForPatient(D.memorycare, patId, e => e.worked).forEach(e => worked.push(e.worked));
+  return { triggers, worked: worked.slice(-4).reverse() };
+}
+
+function itmPatientExists(patId){
+  return (D.patients||[]).some(p => String(p.id) === String(patId));
+}
+
+function itmCommitEpisode(key, stepsCompletedCount, totalSteps, escalated){
+  const cfg = ITM_SCENARIOS[key];
+  const patId = _globalPatientId;
+  if(!patId || !cfg) return false;
+  // Guard: never write an episode for a patient record that no longer exists
+  // (e.g. deleted mid-episode, or from another device/tab).
+  if(!itmPatientExists(patId)) return false;
+  const now = new Date();
+  const dateStr = now.toISOString().split('T')[0];
+  const timeStr = now.toTimeString().slice(0,5);
+  const stepsNote = 'Guided via In The Moment — ' + stepsCompletedCount + '/' + totalSteps + ' steps completed';
+  const escalationNote = escalated ? 'Marked as escalated via In The Moment — confirm supervisor was contacted directly' : '';
+
+  if(cfg.target === 'sundowning'){
+    if(!D.sundowning) D.sundowning = [];
+    D.sundowning.push({
+      id: Date.now(), patientId: patId, date: dateStr, time: timeStr,
+      duration:'', severity: escalated?'severe':'moderate', behaviors: cfg.label,
+      triggers:'', interventions: stepsNote,
+      effectiveness:'', notified: escalationNote, envFactors:[], whatWorked:'',
+      source:'itm'
+    });
+  } else if(cfg.target === 'wandering'){
+    if(!D.wandering) D.wandering = [];
+    D.wandering.push({
+      id: Date.now(), patientId: patId, date: dateStr, time: timeStr,
+      type:'Wandering — within facility', isElopement:false,
+      location:'', duration:'', condition:'',
+      action: stepsNote,
+      notified: escalationNote || 'Not yet confirmed — follow up with supervisor',
+      prevention:'', triggers:[], whatWorked:'',
+      source:'itm'
+    });
+  } else if(cfg.target === 'incidents'){
+    if(!D.incidents) D.incidents = [];
+    D.incidents.push({
+      id: Date.now(), patientId: patId, dt: now.toISOString(),
+      severity: escalated?'severe':'moderate', type: cfg.incidentType,
+      desc: cfg.label, action: stepsNote,
+      reported: escalationNote, source:'itm'
+    });
+  } else {
+    if(!D.behaviors) D.behaviors = [];
+    D.behaviors.push({
+      id: Date.now(), patientId: patId, dt: now.toISOString(),
+      severity: escalated?'severe':'moderate', type: cfg.behaviorType, triggerId:'',
+      antecedent:'', behavior: cfg.label,
+      consequence: escalated ? (stepsNote + ' — ' + escalationNote) : stepsNote,
+      duration:'< 5 minutes', source:'itm'
+    });
+  }
+  save();
+  return true;
+}
+
+function renderITM(){
+  const root = document.getElementById('itm-root');
+  if(!root) return;
+  if(_itmScreen === 'guidance' && _itmScenarioKey) itmRenderGuidance(root);
+  else if(_itmScreen === 'resolved') itmRenderResolved(root);
+  else itmRenderEntry(root);
+}
+
+function itmRenderEntry(root){
+  _itmScreen = 'entry'; _itmScenarioKey = null;
+  const patients = D.patients || [];
+
+  if(!patients.length){
+    root.innerHTML = '<div class="ph"><div><div class="ph-title">🫂 In The Moment</div><div class="ph-sub">In-the-moment guidance for behavior and crisis situations</div></div></div>' +
+      '<div class="empty"><div class="empty-icon">🫂</div><div class="empty-text">Add a patient first to use In The Moment.<br><br>Guidance is built from that patient\'s documented history — triggers, behaviors, and what has worked before.</div></div>';
+    return;
+  }
+
+  let p = _globalPatientId ? patients.find(x => String(x.id) === String(_globalPatientId)) : null;
+  if(!p){ p = patients[0]; setGlobalPatient(p.id); }
+
+  const summary = itmEntrySummary(p.id);
+  const riskBadge = p.fallRisk === 'high' ? '<span style="background:var(--refused);color:white;font-size:.65rem;font-weight:700;padding:3px 10px;border-radius:20px">⚠ HIGH FALL RISK</span>' : '';
+
+  root.innerHTML = `
+    <div class="ph">
+      <div><div class="ph-title">🫂 In The Moment</div><div class="ph-sub">Tap the situation closest to what you're seeing right now</div></div>
+    </div>
+    <div id="itm-patient-bar" style="margin-bottom:12px"></div>
+    <div style="background:linear-gradient(135deg,var(--teal) 0%,var(--navy) 100%);border-radius:var(--r-lg);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <div style="color:white">
+        <div style="font-size:1rem;font-weight:800">${emEsc(p.fname)} ${emEsc(p.lname)}${p.room?' · Rm '+emEsc(p.room):''}</div>
+        <div style="font-size:.76rem;color:rgba(255,255,255,.8);margin-top:2px">${p.allergies?'⚠️ '+emEsc(p.allergies):'No known allergies on file'}</div>
+      </div>
+      ${riskBadge}
+    </div>
+    ${summary.triggers.length ? `<div style="background:var(--held-bg);border:1.5px solid var(--held);border-radius:var(--r-lg);padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:.7rem;font-weight:700;color:var(--held);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">⚡ Known Triggers</div>
+      ${summary.triggers.map(t => `<span style="display:inline-block;background:white;border:1px solid var(--held);border-radius:20px;padding:3px 10px;font-size:.72rem;color:var(--slate);margin:3px 4px 0 0">${emEsc(t.trigger)}</span>`).join('')}
+    </div>` : ''}
+    ${summary.worked.length ? `<div style="background:var(--given-bg);border:1.5px solid var(--given);border-radius:var(--r-lg);padding:12px 14px;margin-bottom:16px">
+      <div style="font-size:.7rem;font-weight:700;color:var(--given);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">✓ What Works For This Patient</div>
+      ${summary.worked.map(w => `<div style="font-size:.76rem;color:var(--slate);padding:2px 0">• ${emEsc(w)}</div>`).join('')}
+    </div>` : ''}
+    <div style="font-size:.72rem;font-weight:700;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Select what you are seeing</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      ${Object.entries(ITM_SCENARIOS).map(([key,s]) => {
+        const urgColors = { normal:{bd:'var(--border)', bg:'white'}, warning:{bd:'var(--held)', bg:'var(--held-bg)'}, urgent:{bd:'var(--refused)', bg:'var(--refused-bg)'} };
+        const c = urgColors[s.urgency] || urgColors.normal;
+        const labelColor = s.urgency === 'urgent' ? 'var(--refused)' : s.urgency === 'warning' ? 'var(--held)' : 'var(--navy)';
+        return `<button onclick="itmOpenScenario('${key}')" style="background:${c.bg};border:1.5px solid ${c.bd};border-radius:var(--r-lg);padding:14px 10px;text-align:center;cursor:pointer;font-family:var(--font-body);display:flex;flex-direction:column;align-items:center;gap:5px">
+          <span style="font-size:1.5rem">${s.icon}</span>
+          <span style="font-size:.76rem;font-weight:700;color:${labelColor};line-height:1.3">${s.label}</span>
+          <span style="font-size:.65rem;color:var(--slate-light)">${s.sub||''}</span>
+        </button>`;
+      }).join('')}
+    </div>
+    <div style="font-size:.72rem;color:var(--slate-light);text-align:center;line-height:1.5">General caregiving guidance, not medical advice. Always follow your facility's protocols and your supervisor's direction.</div>
+  `;
+
+  const bar = document.getElementById('itm-patient-bar');
+  if(bar) bar.innerHTML = buildPatientSelector('itm-patient-select','renderITM');
+}
+
+function itmOpenScenario(key){
+  if(!_globalPatientId){ toast('Select a patient first', 'var(--held)'); return; }
+  _itmScenarioKey = key;
+  _itmScreen = 'guidance';
+  renderITM();
+}
+
+function itmStepsHtml(key, progress){
+  const cfg = ITM_SCENARIOS[key];
+  return cfg.steps.map((step,i) => {
+    const done = progress.includes(i);
+    return `<div style="background:white;border:1.5px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:8px">
+      <div onclick="itmToggleStep(${i})" style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;cursor:pointer;${done?'background:var(--given-bg)':''}">
+        <div style="width:28px;height:28px;border-radius:50%;background:${done?'var(--given)':'var(--off-white)'};border:2px solid ${done?'var(--given)':'var(--border)'};color:${done?'white':'var(--slate-mid)'};display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:1px">${done?'✓':(i+1)}</div>
+        <div style="flex:1">
+          <div style="font-size:.82rem;font-weight:600;color:${done?'var(--given)':'var(--navy)'};line-height:1.4;margin-bottom:2px">${emEsc(step.text)}</div>
+          <div style="font-size:.74rem;color:var(--slate-mid);line-height:1.4">${emEsc(step.sub||'')}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function itmToggleStep(i){
+  const key = _itmScenarioKey, patId = _globalPatientId;
+  if(!key || !patId) return;
+  let progress = itmGetProgress(patId, key);
+  progress = progress.includes(i) ? progress.filter(x => x !== i) : [...progress, i];
+  itmSetProgress(patId, key, progress);
+  const stepsEl = document.getElementById('itm-steps');
+  if(stepsEl) stepsEl.innerHTML = itmStepsHtml(key, progress);
+}
+
+function itmDnrBannerHtml(patId){
+  const cp = typeof getCarePlanForPatient === 'function' ? getCarePlanForPatient(patId) : {};
+  const dnr = cp && cp.dnr ? cp.dnr : '';
+  return `<div style="background:${dnr?'var(--refused-bg)':'var(--off-white)'};border:1.5px solid ${dnr?'var(--refused)':'var(--border-mid)'};border-radius:var(--r-lg);padding:12px 14px;margin-bottom:14px">
+    <div style="font-size:.68rem;font-weight:700;color:${dnr?'var(--refused)':'var(--slate-mid)'};text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">🩺 Code Status / Advance Directive</div>
+    <div style="font-size:.85rem;color:${dnr?'var(--refused)':'var(--slate-light)'};font-weight:${dnr?'700':'400'};line-height:1.5">${dnr ? emEsc(dnr) : 'Not specified in this patient\u2019s care plan — confirm status before beginning CPR.'}</div>
+  </div>`;
+}
+
+function itmRenderGuidance(root){
+  const key = _itmScenarioKey;
+  const cfg = ITM_SCENARIOS[key];
+  const patId = _globalPatientId;
+  if(!cfg || !patId){ _itmScreen='entry'; renderITM(); return; }
+
+  const data = itmPersonalize(key);
+  const tips = itmBuildTips(key, data);
+  const progress = itmGetProgress(patId, key);
+
+  const urgLabels = { normal:'', warning:'⚡ ', urgent:'🚨 ' };
+  const urgColors = { normal:{bg:'var(--teal-pale)',fg:'var(--teal)'}, warning:{bg:'var(--held-bg)',fg:'var(--held)'}, urgent:{bg:'var(--refused-bg)',fg:'var(--refused)'} };
+  const uc = urgColors[cfg.urgency] || urgColors.normal;
+
+  root.innerHTML = `
+    <div class="ph">
+      <div><div class="ph-title">${cfg.icon} ${emEsc(cfg.label)}</div><div class="ph-sub">Step-by-step guidance for this patient</div></div>
+      <button class="btn btn-secondary" onclick="itmBackToEntry()">← Different scenario</button>
+    </div>
+    <span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:700;margin-bottom:12px;background:${uc.bg};color:${uc.fg}">${urgLabels[cfg.urgency]}${emEsc(cfg.label)}</span>
+    ${(key === 'medical' || key === 'eol') ? itmDnrBannerHtml(patId) : ''}
+    <div style="background:var(--off-white);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:14px;margin-bottom:14px">
+      <div style="font-size:.68rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">💡 What this may mean</div>
+      <div style="font-size:.85rem;color:var(--navy);line-height:1.6">${emEsc(cfg.translation)}</div>
+    </div>
+    ${tips.length ? `<div style="background:#F5F3FF;border:1.5px solid #DDD6FE;border-radius:var(--r-lg);padding:12px 14px;margin-bottom:16px">
+      <div style="font-size:.68rem;font-weight:700;color:#7C3AED;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">★ What we know for this patient</div>
+      ${tips.map(t => `<div style="font-size:.78rem;color:var(--slate);padding:3px 0;display:flex;gap:6px"><span style="color:#7C3AED;flex-shrink:0">★</span><span>${emEsc(t)}</span></div>`).join('')}
+    </div>` : `<div style="background:var(--off-white);border:1px dashed var(--border-mid);border-radius:var(--r-lg);padding:12px 14px;margin-bottom:16px;font-size:.78rem;color:var(--slate-light)">No documented history for this patient with this scenario yet — showing general guidance only. This will improve as episodes are logged.</div>`}
+    <div style="font-size:.72rem;font-weight:700;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Step by step — tap each as you complete it</div>
+    <div id="itm-steps">${itmStepsHtml(key, progress)}</div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+      <button class="btn btn-teal" style="width:100%;margin-bottom:8px" onclick="itmResolve(false)">✅ Episode resolved</button>
+      <button class="btn btn-danger" style="width:100%;margin-bottom:8px" onclick="itmResolve(true)">📞 Mark as escalated</button>
+      <div style="font-size:.7rem;color:var(--slate-light);text-align:center;margin-bottom:12px">Marking as escalated documents this step — it does not notify anyone. You must still contact your supervisor directly.</div>
+      <button class="btn btn-secondary" style="width:100%" onclick="itmBackToEntry()">← Different scenario</button>
+    </div>
+    <div style="font-size:.7rem;color:var(--slate-light);text-align:center;line-height:1.5;margin-top:14px">General caregiving guidance, not medical advice. Always follow your facility's protocols and your supervisor's direction.</div>
+  `;
+}
+
+function itmBackToEntry(){
+  _itmScreen = 'entry'; _itmScenarioKey = null;
+  renderITM();
+}
+
+function itmResolve(escalated){
+  const key = _itmScenarioKey, patId = _globalPatientId;
+  const cfg = ITM_SCENARIOS[key];
+  if(!key || !patId || !cfg) return;
+  const progress = itmGetProgress(patId, key);
+  const total = cfg.steps.length;
+  const committed = itmCommitEpisode(key, progress.length, total, escalated);
+  itmClearProgress(patId, key); // clear stale progress either way — it's no longer actionable
+  if(!committed){
+    toast('This patient record no longer exists — episode was not logged. Select a current patient.', 'var(--refused)');
+    _itmScreen = 'entry'; _itmScenarioKey = null;
+    renderITM();
+    return;
+  }
+  _itmLastResolved = { key, cfg, stepsCompleted: progress.length, total, escalated, time: new Date() };
+  _itmScreen = 'resolved';
+  renderITM();
+  toast(escalated ? 'Marked as escalated — contact your supervisor directly' : '✅ Episode logged', escalated ? 'var(--refused)' : 'var(--given)');
+}
+
+function itmRenderResolved(root){
+  const r = _itmLastResolved;
+  if(!r){ _itmScreen = 'entry'; renderITM(); return; }
+  const timeStr = r.time.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  root.innerHTML = `
+    <div style="padding:20px 0;text-align:center">
+      <div style="font-size:2.8rem;margin-bottom:10px">${r.escalated ? '📞' : '✅'}</div>
+      <div style="font-size:1.1rem;font-weight:800;color:var(--navy);margin-bottom:6px">${r.escalated ? 'Marked as escalated' : 'Episode logged'}</div>
+      <div style="font-size:.82rem;color:var(--slate-mid);margin-bottom:20px">${r.escalated ? 'Remember to contact your supervisor directly — this only documents the step.' : 'This has been added to this patient\u2019s history and will inform future guidance.'}</div>
+      <div style="background:var(--given-bg);border:1.5px solid var(--given);border-radius:var(--r-lg);padding:14px;margin-bottom:16px;text-align:left">
+        <div style="font-size:.68rem;font-weight:700;color:var(--given);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Summary</div>
+        <div style="font-size:.8rem;color:var(--slate);padding:2px 0"><strong>Time:</strong> ${timeStr}</div>
+        <div style="font-size:.8rem;color:var(--slate);padding:2px 0"><strong>Scenario:</strong> ${emEsc(r.cfg.label)}</div>
+        <div style="font-size:.8rem;color:var(--slate);padding:2px 0"><strong>Steps completed:</strong> ${r.stepsCompleted} of ${r.total}</div>
+      </div>
+      <button class="btn btn-teal" style="width:100%;margin-bottom:8px" onclick="itmBackToEntry()">🫂 New scenario</button>
+      <button class="btn btn-secondary" style="width:100%" onclick="navTo('dashboard')">← Back to dashboard</button>
+    </div>
+  `;
 }
 
 function renderEmergency(){
