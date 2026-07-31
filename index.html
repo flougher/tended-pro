@@ -2250,6 +2250,14 @@ body {
     </div>
   </div>
 
+  <!-- Hydration reminder card -->
+  <div class="card" id="hydration-card" style="margin-bottom:16px;border-color:var(--teal);border-width:1.5px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="card-title" style="margin:0">💧 Hydration Status &amp; Reminders</div>
+    </div>
+    <div style="text-align:center;color:#94A3B8;font-size:.84rem;padding:8px">Loading…</div>
+  </div>
+
   <!-- Daily totals summary -->
   <div id="intake-totals" class="card" style="margin-bottom:16px">
     <div class="card-title">📊 Daily Summary</div>
@@ -2259,7 +2267,7 @@ body {
         <div style="font-size:.72rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.05em">Meals Logged</div>
       </div>
       <div style="text-align:center">
-        <div style="font-family:var(--font-mono);font-size:1.5rem;font-weight:600;color:var(--teal)" id="tot-fluid">0 ml</div>
+        <div style="font-family:var(--font-mono);font-size:1.5rem;font-weight:600;color:var(--teal)" id="tot-fluid">0 oz</div>
         <div style="font-size:.72rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.05em">Total Fluids</div>
       </div>
       <div style="text-align:center">
@@ -3308,6 +3316,7 @@ let D = {
   careplan:  {},
   wounds:    [],
   intake:    [],
+  hydrationSettings: {},
   comms:     [],
   routines:  {},
   triggers:  [],
@@ -6068,6 +6077,19 @@ function generateHandoff(){
   });
   const painSummary = painLines.length ? painLines.join('\n') : 'No pain assessments today';
 
+  // Hydration summary for handoff
+  const hydrLines = (D.patients||[]).filter(p=>p.active!==false).map(p=>{
+    const td=new Date().toISOString().split('T')[0];
+    const all=(D.intake||[]).filter(e=>e.date===td&&String(e.patientId)===String(p.id));
+    const offers   =all.filter(e=>e.type==='Fluid Offer'||['Water','Juice','Milk','Coffee / Tea','Supplement drink','Other fluid','IV fluids'].includes(e.type));
+    const declined =all.filter(e=>e.type==='Fluid Offer — Declined');
+    const totalOz  =Math.round(all.reduce((s,e)=>s+(e.fluid||0),0)/29.5735*10)/10;
+    const st=getHydrSettings(p.id);
+    const minAgo=minutesSinceFluid(p.id);
+    const overdue=(minAgo===Infinity||minAgo>st.intervalHours*60);
+    return p.fname+' '+p.lname+': '+totalOz+' oz total, '+offers.length+' offer'+(offers.length!==1?'s':'')+(declined.length?' ('+declined.length+' declined)':'')+(overdue?' ⚠️ OVERDUE':'')+' — Goal: '+st.goalOz+' oz';
+  }).filter(Boolean);
+
   // Fall risk summary
   const highRiskPts = D.patients.filter(p => p.fallRisk === 'high');
   const medRiskPts  = D.patients.filter(p => p.fallRisk === 'medium');
@@ -6113,6 +6135,11 @@ function generateHandoff(){
         <div class="ho-block-title">😣 Pain Assessments Today (${todayPain.length})</div>
         <div class="ho-pre">${painSummary}</div>
       </div>
+
+      ${hydrLines.length ? `<div class="ho-block">
+        <div class="ho-block-title">💧 Hydration Summary${hydrLines.some(l=>l.includes('OVERDUE'))?' — ⚠️ OVERDUE':''}</div>
+        <div class="ho-pre">${hydrLines.join('\n')}</div>
+      </div>` : ''}
 
       ${(highRiskPts.length || medRiskPts.length) ? `<div class="ho-block" style="background:#FFF5F5;border:1.5px solid var(--refused);border-radius:var(--r)">
         <div class="ho-block-title" style="color:var(--refused)">🚨 Fall Risk Patients</div>
@@ -6621,7 +6648,7 @@ let _editIntakeId = null;
 
 // ── Fluid unit preference — canonical storage is always ml; oz is display-only ──
 const ML_PER_OZ = 29.5735;
-function getFluidUnit(){ return localStorage.getItem('tendedPro_fluidUnit') === 'oz' ? 'oz' : 'ml'; }
+function getFluidUnit(){ return 'oz'; } // always oz per design
 function setFluidUnit(u){ localStorage.setItem('tendedPro_fluidUnit', u === 'oz' ? 'oz' : 'ml'); }
 // ml (stored) -> number in the currently selected unit
 function mlToDisplay(ml){
@@ -6634,14 +6661,14 @@ function displayToMl(val){
   return getFluidUnit() === 'oz' ? Math.round(n * ML_PER_OZ) : Math.round(n);
 }
 // pretty string, e.g. "240 ml" or "8.1 oz" — always fed the stored ml value
-function fmtFluid(ml){ return mlToDisplay(ml) + ' ' + getFluidUnit(); }
+function fmtFluid(ml){ return mlToDisplay(ml) + ' oz'; }
 
 // Sync the intake-modal fluid input label/placeholder/toggle to the current unit
 function imUpdateUnitUI(){
-  const u = getFluidUnit();
-  const lab = document.getElementById('im-fluid-label'); if(lab) lab.textContent = 'Fluid Amount (' + u + ')';
-  const inp = document.getElementById('im-fluid');       if(inp) inp.placeholder = u === 'oz' ? 'e.g. 8' : 'e.g. 240';
-  document.querySelectorAll('.im-unit-btn').forEach(b => b.classList.toggle('active', b.dataset.unit === u));
+  const lab = document.getElementById('im-fluid-label');
+  if(lab) lab.textContent = 'Fluid Amount (oz)';
+  const inp = document.getElementById('im-fluid');
+  if(inp) inp.placeholder = 'e.g. 8';
 }
 // Toggle button handler — converts whatever is already typed so the number stays truthful
 function imSetUnit(u){
@@ -6658,6 +6685,211 @@ function imSetUnit(u){
   imUpdateUnitUI();
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// HYDRATION REMINDER SYSTEM
+// ═══════════════════════════════════════════════════════════════
+
+var _hydrTimerInterval = null;  // setInterval handle for reminder loop
+var _notifPermission   = false; // Web Notifications granted?
+
+// ── Settings helpers ─────────────────────────────────────────
+function getHydrSettings(patientId){
+  const all = D.hydrationSettings || {};
+  return Object.assign({ enabled: true, intervalHours: 2, goalOz: 48 },
+                        all[patientId] || {});
+}
+function saveHydrSettings(patientId, patch){
+  if(!D.hydrationSettings) D.hydrationSettings = {};
+  D.hydrationSettings[patientId] = Object.assign(getHydrSettings(patientId), patch);
+  save();
+}
+
+// ── Last fluid offer time for a patient ──────────────────────
+function lastFluidTime(patientId){
+  const today = new Date().toISOString().split('T')[0];
+  const offers = (D.intake||[]).filter(e =>
+    e.date === today && String(e.patientId) === String(patientId) &&
+    (e.type === 'Fluid Offer' || e.type === 'Fluid Offer — Declined' ||
+     ['Water','Juice','Milk','Coffee / Tea','Supplement drink','Other fluid'].includes(e.type))
+  );
+  if(!offers.length) return null;
+  const last = offers[offers.length - 1];
+  return last.time; // HH:MM string
+}
+
+function minutesSinceFluid(patientId){
+  const t = lastFluidTime(patientId);
+  if(!t) return Infinity;
+  const now  = new Date();
+  const [h,m]= t.split(':').map(Number);
+  const then = new Date(now); then.setHours(h, m, 0, 0);
+  if(then > now) then.setDate(then.getDate() - 1);
+  return Math.floor((now - then) / 60000);
+}
+
+// ── Hydration status color ────────────────────────────────────
+function hydrStatusColor(minAgo, intervalHours){
+  const limit = intervalHours * 60;
+  if(minAgo === Infinity || minAgo > limit) return '#C0392B';    // red — overdue
+  if(minAgo > limit * 0.75)               return '#B45309';    // amber — approaching
+  return '#16A34A';                                             // green — on track
+}
+
+// ── Hydration status card ─────────────────────────────────────
+function renderHydrationCard(){
+  const el = document.getElementById('hydration-card');
+  if(!el) return;
+  const active = (D.patients||[]).filter(p => p.active !== false);
+  if(!active.length){
+    el.style.display = 'none'; return;
+  }
+  el.style.display = '';
+  const today = new Date().toISOString().split('T')[0];
+
+  const rows = active.map(p => {
+    const st    = getHydrSettings(p.id);
+    const minAgo= minutesSinceFluid(p.id);
+    const clr   = hydrStatusColor(minAgo, st.intervalHours);
+    const label = minAgo === Infinity ? 'No fluid logged today'
+                : minAgo < 60        ? `${minAgo} min ago`
+                : `${(minAgo/60).toFixed(1)} hr ago`;
+    const overdue = minAgo === Infinity || minAgo > st.intervalHours * 60;
+
+    // Today's fluid total for this patient
+    const todayFluid = (D.intake||[]).filter(e =>
+      e.date===today && String(e.patientId)===String(p.id) &&
+      ['Water','Juice','Milk','Coffee / Tea','Supplement drink',
+       'Other fluid','Fluid Offer','IV fluids'].includes(e.type)
+    ).reduce((s,e)=>s+(e.fluid||0),0);
+    const goalMl  = Math.round(st.goalOz * 29.5735);
+    const pct     = Math.min(100, Math.round(todayFluid / goalMl * 100));
+    const totOz   = Math.round(todayFluid / 29.5735 * 10) / 10;
+
+    return `<div style="padding:12px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap">
+        <span style="font-weight:700;font-size:.88rem;flex:1">${p.fname} ${p.lname}</span>
+        <span style="font-size:.78rem;font-weight:600;color:${clr};padding:3px 10px;background:${clr}18;border-radius:20px;border:1.5px solid ${clr}">${label}</span>
+        ${overdue ? `<button onclick="openQuickFluid('${p.id}')" style="padding:5px 12px;border-radius:8px;background:#0B7A6E;color:white;border:none;cursor:pointer;font-size:.8rem;font-weight:600">💧 Offer Fluids</button>` : `<button onclick="openQuickFluid('${p.id}')" style="padding:5px 12px;border-radius:8px;background:none;color:#0B7A6E;border:1.5px solid #0B7A6E;cursor:pointer;font-size:.8rem">💧 Offer Fluids</button>`}
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="flex:1;height:8px;background:#E2E8F0;border-radius:4px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${pct>=80?'#16A34A':pct>=50?'#B45309':'#C0392B'};border-radius:4px;transition:width .4s"></div>
+        </div>
+        <span style="font-size:.75rem;color:var(--slate-light);white-space:nowrap">${totOz} / ${st.goalOz} oz</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+        <span style="font-size:.74rem;color:var(--slate-light)">Remind every:</span>
+        ${[1,2,3].map(h=>`<button onclick="saveHydrSettings('${p.id}',{intervalHours:${h}});renderHydrationCard()" style="padding:3px 10px;border-radius:6px;font-size:.75rem;cursor:pointer;border:1.5px solid ${st.intervalHours===h?'#0B7A6E':'#E2E8F0'};background:${st.intervalHours===h?'#0B7A6E':'white'};color:${st.intervalHours===h?'white':'#475569'};font-weight:${st.intervalHours===h?'700':'400'}">${h}hr</button>`).join('')}
+        <button onclick="saveHydrSettings('${p.id}',{enabled:${!st.enabled}});startHydrationReminders();renderHydrationCard()" style="padding:3px 10px;border-radius:6px;font-size:.74rem;cursor:pointer;border:1.5px solid #E2E8F0;background:${st.enabled?'#16A34A18':'#FFF0F0'};color:${st.enabled?'#16A34A':'#C0392B'}">${st.enabled?'🔔 Reminders on':'🔕 Reminders off'}</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = rows;
+}
+
+// ── Quick fluid offer (with or without decline) ───────────────
+function openQuickFluid(patientId){
+  const p = (D.patients||[]).find(x => x.id == patientId);
+  const nm = p ? p.fname + ' ' + p.lname : 'Patient';
+  const qf = document.getElementById('quick-fluid-modal');
+  if(!qf) return;
+  const nmel = qf.querySelector('.qf-patient-name');
+  if(nmel) nmel.textContent = nm;
+  qf.dataset.patientId = patientId;
+  // Clear inputs
+  const amt = document.getElementById('qf-amount');
+  if(amt) amt.value = '';
+  const typ = document.getElementById('qf-type');
+  if(typ) typ.value = 'Water';
+  // Notes
+  const n = document.getElementById('qf-notes');
+  if(n) n.value = '';
+  openModal('quick-fluid-modal');
+}
+
+function logFluidOffer(accepted){
+  const qf = document.getElementById('quick-fluid-modal');
+  if(!qf) return;
+  const patientId = qf.dataset.patientId || _globalPatientId || '';
+  const amt  = parseFloat(document.getElementById('qf-amount')?.value) || 0;
+  const typ  = document.getElementById('qf-type')?.value || 'Water';
+  const note = document.getElementById('qf-notes')?.value.trim() || '';
+  const now  = new Date();
+  const pad  = n => String(n).padStart(2,'0');
+  const time = pad(now.getHours())+':'+pad(now.getMinutes());
+  const date = now.toISOString().split('T')[0];
+  const fluidMl = Math.round(amt * 29.5735);
+  if(!D.intake) D.intake = [];
+  D.intake.push({
+    id:        Date.now(),
+    patientId: patientId,
+    date:      date,
+    time:      time,
+    type:      accepted ? 'Fluid Offer' : 'Fluid Offer — Declined',
+    fluid:     accepted ? fluidMl : 0,
+    pct:       '',
+    notes:     note || (accepted ? '' : 'Patient declined fluids')
+  });
+  D.intake.sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
+  save();
+  closeModal('quick-fluid-modal');
+  renderIntake();
+  renderHydrationCard();
+  if(accepted && amt > 0)
+    toast(`✅ ${amt} oz logged for ${(D.patients||[]).find(p=>p.id==patientId)?.fname||'patient'}`, 'var(--teal)');
+  else if(!accepted)
+    toast('📋 Declined — offer documented', 'var(--held)');
+}
+
+// ── Reminder loop ─────────────────────────────────────────────
+function startHydrationReminders(){
+  if(_hydrTimerInterval) clearInterval(_hydrTimerInterval);
+
+  // Request notification permission once
+  if('Notification' in window && Notification.permission === 'default'){
+    Notification.requestPermission();
+  }
+
+  // Check every 60 seconds
+  _hydrTimerInterval = setInterval(function(){
+    checkHydrationAlerts();
+    // Refresh card if currently visible
+    if(document.getElementById('hydration-card')?.offsetParent !== null){
+      renderHydrationCard();
+    }
+  }, 60000);
+}
+
+function checkHydrationAlerts(){
+  const active = (D.patients||[]).filter(p => p.active !== false);
+  active.forEach(p => {
+    const st = getHydrSettings(p.id);
+    if(!st.enabled) return;
+    const minAgo = minutesSinceFluid(p.id);
+    const limitMin = st.intervalHours * 60;
+    // Alert exactly at the limit (within 1-minute window)
+    if(minAgo >= limitMin && minAgo < limitMin + 1){
+      const msg = `💧 Time to offer fluids — ${p.fname} ${p.lname} (${st.intervalHours}hr interval)`;
+      // In-app toast
+      toast(msg, '#0B7A6E');
+      // Browser notification
+      if('Notification' in window && Notification.permission === 'granted'){
+        new Notification('💧 Hydration Reminder — Tended Pro', {
+          body: `${p.fname} ${p.lname}: ${st.intervalHours} hours since last fluid offer.`,
+          icon: '/favicon.ico',
+          tag:  'hydration-' + p.id
+        });
+      }
+    }
+  });
+}
+
+function stopHydrationReminders(){
+  if(_hydrTimerInterval){ clearInterval(_hydrTimerInterval); _hydrTimerInterval = null; }
+}
+
 function initIntake(){
   populatePatientBars();
   const dateEl = document.getElementById('intake-date');
@@ -6665,6 +6897,8 @@ function initIntake(){
   const timeEl = document.getElementById('im-time');
   if(timeEl && !timeEl.value) timeEl.value = new Date().toTimeString().slice(0,5);
   renderIntake();
+  renderHydrationCard();
+  startHydrationReminders();
 }
 
 function openIntakeModal(editId){
@@ -6776,6 +7010,8 @@ function renderIntake(){
         <button class="btn btn-danger btn-xs btn-icon" onclick="deleteIntake(${e.id})">✕</button>
       </div>
     </div>`).join('');
+
+  if(typeof renderHydrationCard==='function') renderHydrationCard();
 }
 
 function deleteIntake(id){
@@ -8288,13 +8524,22 @@ function renderReport(){
   // Diet & Intake
   if(check('rpt-intake')){
     const intakeMonth = (D.intake||[]).filter(e => inMonth(e.date));
-    const totalFluid  = intakeMonth.reduce((s,e)=>s+(e.fluid||0),0);
-    const meals       = intakeMonth.filter(e=>['Breakfast','Lunch','Dinner','Snack'].includes(e.type));
-    const avgPct      = meals.length ? Math.round(meals.reduce((s,e)=>s+parseInt(e.pct||0),0)/meals.length) : null;
-    sections += `<div class="report-section"><div class="report-section-title">🍽️ Diet & Fluid Intake</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center">
+    const totalFluid   = intakeMonth.reduce((s,e)=>s+(e.fluid||0),0);
+    const totalFluidOz = Math.round(totalFluid / 29.5735);
+    const meals        = intakeMonth.filter(e=>['Breakfast','Lunch','Dinner','Snack'].includes(e.type));
+    const avgPct       = meals.length ? Math.round(meals.reduce((s,e)=>s+parseInt(e.pct||0),0)/meals.length) : null;
+    const fluidOffers  = intakeMonth.filter(e=>e.type==='Fluid Offer'||['Water','Juice','Milk','Coffee / Tea','Supplement drink','Other fluid','IV fluids'].includes(e.type)).length;
+    const declined     = intakeMonth.filter(e=>e.type==='Fluid Offer — Declined').length;
+    const days         = Math.max(1, new Set(intakeMonth.map(e=>e.date)).size);
+    const avgOzPerDay  = Math.round(totalFluidOz / days);
+    sections += `<div class="report-section"><div class="report-section-title">🍽️ Diet &amp; Fluid Intake</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;margin-bottom:12px">
+        <div style="background:#F0F4F8;border-radius:8px;padding:10px"><div style="font-size:1.2rem;font-weight:700;color:#0B7A6E;font-family:monospace">${avgOzPerDay} oz</div><div style="font-size:.7rem;color:#8097B3">Avg Daily Fluid</div></div>
+        <div style="background:#F0F4F8;border-radius:8px;padding:10px"><div style="font-size:1.2rem;font-weight:700;color:#0C1B33;font-family:monospace">${fluidOffers}</div><div style="font-size:.7rem;color:#8097B3">Fluid Offers</div></div>
+        <div style="background:${declined>0?'#FFF0F0':'#F0F4F8'};border-radius:8px;padding:10px"><div style="font-size:1.2rem;font-weight:700;color:${declined>0?'#C0392B':'#0C1B33'};font-family:monospace">${declined}</div><div style="font-size:.7rem;color:#8097B3">Declined</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:center">
         <div style="background:#F0F4F8;border-radius:8px;padding:10px"><div style="font-size:1.2rem;font-weight:700;color:#0C1B33;font-family:monospace">${intakeMonth.length}</div><div style="font-size:.7rem;color:#8097B3">Entries Logged</div></div>
-        <div style="background:#F0F4F8;border-radius:8px;padding:10px"><div style="font-size:1.2rem;font-weight:700;color:#0B7A6E;font-family:monospace">${(totalFluid/1000).toFixed(1)}L</div><div style="font-size:.7rem;color:#8097B3">Avg Daily Fluid</div></div>
         <div style="background:#F0F4F8;border-radius:8px;padding:10px"><div style="font-size:1.2rem;font-weight:700;color:#0C1B33;font-family:monospace">${avgPct!==null?avgPct+'%':'—'}</div><div style="font-size:.7rem;color:#8097B3">Avg % Eaten</div></div>
       </div>
     </div>`;
@@ -11469,5 +11714,45 @@ function ciLogAndGo(status){
 }
 function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
 </script>
+<!-- ══ QUICK FLUID OFFER MODAL ══════════════════════════════ -->
+<div class="overlay" id="quick-fluid-modal">
+  <div class="modal">
+    <div class="modal-title">💧 Offer Fluids</div>
+    <div style="font-size:.88rem;color:var(--slate-mid);margin-bottom:14px;font-weight:600" class="qf-patient-name">Patient</div>
+    <div class="form-row">
+      <div class="fg">
+        <label>Fluid type</label>
+        <select id="qf-type" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+          <option>Water</option>
+          <option>Juice</option>
+          <option>Milk</option>
+          <option>Coffee / Tea</option>
+          <option>Supplement drink</option>
+          <option>Other fluid</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Amount (oz) — if accepted</label>
+        <input type="number" id="qf-amount" placeholder="e.g. 6" min="0" max="64" step="0.5"
+          style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;width:100%">
+      </div>
+    </div>
+    <div class="fg" style="margin-bottom:16px">
+      <label>Notes (optional)</label>
+      <input id="qf-notes" placeholder="e.g. Needed encouragement, sipped slowly…"
+        style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;width:100%">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <button class="btn btn-teal" style="padding:12px;font-size:.95rem;font-weight:700" onclick="logFluidOffer(true)">
+        ✅ Accepted
+      </button>
+      <button class="btn" style="padding:12px;font-size:.95rem;font-weight:700;background:#FFF0F0;color:#C0392B;border:1.5px solid #C0392B;border-radius:var(--r);cursor:pointer" onclick="logFluidOffer(false)">
+        ❌ Declined
+      </button>
+    </div>
+    <button class="btn btn-secondary" style="width:100%" onclick="closeModal('quick-fluid-modal')">Cancel</button>
+  </div>
+</div>
+
 </body>
 </html>
