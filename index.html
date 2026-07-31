@@ -6740,7 +6740,10 @@ function hydrStatusColor(minAgo, intervalHours){
 function renderHydrationCard(){
   const el = document.getElementById('hydration-card');
   if(!el) return;
-  const active = (D.patients||[]).filter(p => p.active !== false);
+  // Respect the same patient filter as renderIntake
+  const _selPat = _globalPatientId || document.getElementById('global-patient-intake')?.value || '';
+  const active = (D.patients||[]).filter(p =>
+    p.active !== false && (!_selPat || String(p.id) === String(_selPat)));
   if(!active.length){
     el.style.display = 'none'; return;
   }
