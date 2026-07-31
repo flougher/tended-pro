@@ -8859,7 +8859,47 @@ function buildSampleData(){
   const routinesKeyed = { [String(pid)]: routines };
   // Convert careplan to keyed format
   const careplanKeyed = { [String(pid)]: careplan };
-  return { patients, meds, mar, marNotes, incidents, careplan: careplanKeyed, wounds, intake, comms, routines: routinesKeyed, triggers, behaviors, toileting, vitals, pain, creds, billing, settings,
+  // PAINAD sample entries
+  const painad = [
+    { id:18001, patientId:pid, date:todayISO, time:'08:30',
+      breathing:0, vocalization:1, facial:1, body:1, consolability:0, total:3,
+      notes:'Morning stiffness. Slight moaning during position change. Settled after repositioning.',
+      caregiver:'CNA-JR' },
+    { id:18002, patientId:pid, date:todayISO, time:'14:00',
+      breathing:0, vocalization:0, facial:0, body:0, consolability:0, total:0,
+      notes:'Resting comfortably. No pain indicators during afternoon assessment.',
+      caregiver:'CNA-JR' },
+    { id:18003, patientId:pid, date:dStr(-1), time:'10:15',
+      breathing:1, vocalization:2, facial:2, body:2, consolability:1, total:8,
+      notes:'Loud groaning during wound dressing change. Rigid posture. Very difficult to console. Supervisor notified.',
+      caregiver:'CNA-JR' },
+    { id:18004, patientId:pid, date:dStr(-1), time:'15:30',
+      breathing:0, vocalization:1, facial:1, body:0, consolability:0, total:2,
+      notes:'Post-nap assessment. Mild residual discomfort. Much improved from morning.',
+      caregiver:'CNA-JR' },
+    { id:18005, patientId:pid, date:dStr(-2), time:'09:00',
+      breathing:0, vocalization:0, facial:1, body:1, consolability:0, total:2,
+      notes:'Mild frowning during morning care. Relaxed after warm blanket applied.',
+      caregiver:'CNA-JR' }
+  ];
+  // Hydration settings for Margaret
+  const hydrationSettings = {
+    [String(pid)]: { enabled: true, intervalHours: 2, goalOz: 48 }
+  };
+  // Fluid offer entries (in ml internally, displayed as oz)
+  const hydrIntake = [
+    { id:5101, patientId:pid, date:todayISO, time:'08:00', type:'Fluid Offer',           fluid:Math.round(6*29.5735),  pct:'', notes:'Water with breakfast. Accepted well.' },
+    { id:5102, patientId:pid, date:todayISO, time:'10:00', type:'Fluid Offer',           fluid:Math.round(4*29.5735),  pct:'', notes:'Juice offered mid-morning.' },
+    { id:5103, patientId:pid, date:todayISO, time:'12:00', type:'Fluid Offer',           fluid:Math.round(5*29.5735),  pct:'', notes:'Thickened water with lunch.' },
+    { id:5104, patientId:pid, date:todayISO, time:'14:00', type:'Fluid Offer — Declined',fluid:0,                       pct:'', notes:'Patient declined — said not thirsty.' },
+    { id:5105, patientId:pid, date:dStr(-1), time:'10:30', type:'Fluid Offer',           fluid:Math.round(8*29.5735),  pct:'', notes:'Good intake. Cranberry juice.' },
+    { id:5106, patientId:pid, date:dStr(-1), time:'14:00', type:'Fluid Offer — Declined',fluid:0,                       pct:'', notes:'Sundowning — refused fluids. Documented.' }
+  ];
+
+  // Merge hydrIntake into intake array
+  const allIntake = intake.concat(hydrIntake).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  return { patients, meds, mar, marNotes, incidents, careplan: careplanKeyed, wounds, intake: allIntake, comms, routines: routinesKeyed, triggers, behaviors, toileting, vitals, pain, painad,
+    hydrationSettings, creds, billing, settings,
     sundowning: [
       { id:15001, patientId:pid, date:todayISO, time:'16:45', duration:'30–60 minutes', severity:'moderate',
         behaviors:'Pacing hallway. Asking to go home repeatedly. Refused dinner. Tearful.',
@@ -8965,6 +9005,16 @@ function loadSamplePatient(){
   // Ensure routines and careplan are keyed objects
   if(!D.routines || Array.isArray(D.routines.morning)) D.routines = sample.routines;
   if(!D.careplan || D.careplan.goals) D.careplan = sample.careplan;
+  // Merge painad
+  if(sample.painad){
+    if(!D.painad) D.painad = [];
+    const existPAIds = new Set(D.painad.map(x=>x.id));
+    sample.painad.forEach(e=>{ if(!existPAIds.has(e.id)) D.painad.push(e); });
+  }
+  // Merge hydrationSettings
+  if(sample.hydrationSettings){
+    D.hydrationSettings = Object.assign({}, sample.hydrationSettings, D.hydrationSettings||{});
+  }
   _sdShowAll = true;
   // Auto-select Margaret
   setGlobalPatient(1700000001);
@@ -9076,7 +9126,10 @@ function confirmClearDemo(){
 function checkFirstLaunch(){
   const welcomed = localStorage.getItem('tendedPro_welcomed');
   if(!welcomed && !D.patients.length){
-    document.getElementById('welcome-overlay').style.display = 'flex';
+    // Auto-seed Margaret on any fresh device — phone, tablet, desktop
+    loadSamplePatient();
+    // Ensure flag is always set even if welcome overlay is hidden
+    try{ localStorage.setItem('tendedPro_welcomed','1'); }catch(e){}
   }
 }
 // ═══════════════════════════════════════════════════════════════
