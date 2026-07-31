@@ -6740,10 +6740,19 @@ function hydrStatusColor(minAgo, intervalHours){
 function renderHydrationCard(){
   const el = document.getElementById('hydration-card');
   if(!el) return;
-  // Respect the same patient filter as renderIntake
-  const _selPat = _globalPatientId || document.getElementById('global-patient-intake')?.value || '';
+  // Only render for the explicitly selected patient — never show all patients
+  const _selPat = _globalPatientId ||
+    document.getElementById('global-patient-intake')?.value ||
+    document.querySelector('#intake-patient-bar select')?.value || '';
+  if(!_selPat){
+    // No patient selected — show a prompt, never show all patients
+    el.style.display = '';
+    el.innerHTML = '<div style="text-align:center;padding:16px;color:#94A3B8;font-size:.84rem">'
+      + '💧 Select a patient above to see hydration status</div>';
+    return;
+  }
   const active = (D.patients||[]).filter(p =>
-    p.active !== false && (!_selPat || String(p.id) === String(_selPat)));
+    p.active !== false && String(p.id) === String(_selPat));
   if(!active.length){
     el.style.display = 'none'; return;
   }
@@ -6899,8 +6908,12 @@ function initIntake(){
   if(dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
   const timeEl = document.getElementById('im-time');
   if(timeEl && !timeEl.value) timeEl.value = new Date().toTimeString().slice(0,5);
+  // Auto-select the sole patient so the hydration card shows immediately
+  if(!_globalPatientId){
+    const activePats = (D.patients||[]).filter(p=>p.active!==false);
+    if(activePats.length===1) setGlobalPatient(activePats[0].id);
+  }
   renderIntake();
-  renderHydrationCard();
   startHydrationReminders();
 }
 
@@ -6985,6 +6998,9 @@ function renderIntake(){
   // Log
   const log = document.getElementById('intake-log');
   if(!log) return;
+  // Always refresh hydration card (even when log is empty)
+  if(typeof renderHydrationCard==='function') renderHydrationCard();
+
   if(!entries.length){
     log.innerHTML = '<div class="empty" style="padding:24px"><div class="empty-icon" style="font-size:1.6rem">🍽️</div><div class="empty-text" style="font-size:.83rem">No entries for this date. Tap + Log Entry.</div></div>';
     return;
@@ -7014,7 +7030,6 @@ function renderIntake(){
       </div>
     </div>`).join('');
 
-  if(typeof renderHydrationCard==='function') renderHydrationCard();
 }
 
 function deleteIntake(id){
