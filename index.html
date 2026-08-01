@@ -3996,10 +3996,10 @@ function renderDashboard(){
   const nbBBW = document.getElementById('nb-bbw');
   if(nbBBW){ nbBBW.textContent = flaggedMeds.length; nbBBW.classList.toggle('show', flaggedMeds.length > 0); }
   renderResidentRows();
-  renderCriticalAlerts();
-  renderBBWDashboardAlert();
+  renderBBWDashboardAlert();     // inserts after banner first
   renderTriggerReminderCard();
   renderVitalsDashboardAlert();
+  renderCriticalAlerts();        // inserts after banner last → appears on top
   loadShiftNotes();
 
   // ── Shift Checklist ────────────────────────────────────────
