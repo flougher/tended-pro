@@ -3983,6 +3983,7 @@ function renderDashboard(){
   const flaggedMeds = (D.meds||[]).filter(m => getBBW(m.name));
   const nbBBW = document.getElementById('nb-bbw');
   if(nbBBW){ nbBBW.textContent = flaggedMeds.length; nbBBW.classList.toggle('show', flaggedMeds.length > 0); }
+  renderCriticalAlerts();
   renderBBWDashboardAlert();
   renderTriggerReminderCard();
   renderVitalsDashboardAlert();
@@ -9414,6 +9415,160 @@ function renderBBWSection(){
     These warnings are for <strong>informational reference only and do not constitute medical advice.</strong>
     Never adjust, withhold, or administer medication outside of a physician's order. Always follow your agency's medication administration policies.
   </div>`;
+}
+
+
+// ═══════════════════════════════════════════════════════════════
+// ITEM 2 — Critical Exception Highlighting
+// ═══════════════════════════════════════════════════════════════
+function renderCriticalAlerts(){
+  const existing = document.getElementById('dash-critical-alerts');
+  if(existing) existing.remove();
+
+  const todayISO = new Date().toISOString().split('T')[0];
+  const nowMin   = new Date().getHours() * 60 + new Date().getMinutes();
+  const GRACE    = 30; // minutes grace period before marking overdue
+
+  const alerts = []; // { level: 'red'|'amber', icon, text, nav }
+
+  // ── 1. Overdue medications ──────────────────────────────────
+  // A med is overdue if: it has a scheduled time, that time + grace has
+  // passed today, and its MAR status is still 'pending'.
+  const activePats = (D.patients||[]).filter(p => p.active !== false);
+  activePats.forEach(p => {
+    const ptMeds = (D.meds||[]).filter(m =>
+      !m.patientId || String(m.patientId) === String(p.id));
+    const overdueMeds = ptMeds.filter(m => {
+      if(!m.time) return false; // no scheduled time — can't determine
+      const [h, min] = m.time.split(':').map(Number);
+      const schedMin = h * 60 + min;
+      if(nowMin < schedMin + GRACE) return false; // not past grace window yet
+      const key = todayISO + '|' + p.id + '|' + m.id;
+      const status = (D.mar[key]?.status) || 'pending';
+      return status === 'pending';
+    });
+    if(overdueMeds.length){
+      const names = overdueMeds.map(m => m.name).join(', ');
+      alerts.push({
+        level: 'red',
+        icon:  '💊',
+        title: `${p.fname} ${p.lname} — ${overdueMeds.length} medication${overdueMeds.length>1?'s':''} overdue`,
+        detail: names,
+        nav:   'mar'
+      });
+    }
+  });
+
+  // ── 2. High fall risk patients ──────────────────────────────
+  const highRisk = activePats.filter(p =>
+    (p.fallRisk||'').toLowerCase() === 'high');
+  highRisk.forEach(p => {
+    alerts.push({
+      level: 'amber',
+      icon:  '⚠️',
+      title: `${p.fname} ${p.lname} — High fall risk`,
+      detail: 'Review fall prevention safeguards before care',
+      nav:   'patients'
+    });
+  });
+
+  // ── 3. Critical incidents today ─────────────────────────────
+  const critInc = (D.incidents||[]).filter(i =>
+    (i.dt||'').startsWith(todayISO) && i.severity === 'critical');
+  if(critInc.length){
+    alerts.push({
+      level: 'red',
+      icon:  '🚨',
+      title: `${critInc.length} critical incident${critInc.length>1?'s':''} logged today`,
+      detail: critInc.map(i => i.type).join(', '),
+      nav:   'incidents'
+    });
+  }
+
+  // ── 4. Severe PAINAD today (score ≥ 7) ─────────────────────
+  const severePAINAD = (D.painad||[]).filter(e =>
+    e.date === todayISO && e.total >= 7);
+  severePAINAD.forEach(e => {
+    const pt = activePats.find(p => String(p.id) === String(e.patientId));
+    const nm = pt ? `${pt.fname} ${pt.lname}` : 'A patient';
+    alerts.push({
+      level: 'amber',
+      icon:  '🧠',
+      title: `${nm} — PAINAD ${e.total}/10 (Severe pain)`,
+      detail: 'Supervisor notification recommended · Tap to review',
+      nav:   'pain'
+    });
+  });
+
+  // ── 5. Wounds not assessed today ───────────────────────────
+  const unwoundToday = (D.wounds||[]).filter(w =>
+    !w.updatedAt || !w.updatedAt.startsWith(todayISO));
+  if(unwoundToday.length){
+    alerts.push({
+      level: 'yellow',
+      icon:  '🩹',
+      title: `${unwoundToday.length} wound${unwoundToday.length>1?'s':''} need${unwoundToday.length===1?'s':''} assessment today`,
+      detail: unwoundToday.map(w => w.location||'Unknown location').join(', '),
+      nav:   'wounds'
+    });
+  }
+
+  // ── No alerts — nothing to show ────────────────────────────
+  if(!alerts.length) return;
+
+  // ── Color map ───────────────────────────────────────────────
+  const clrMap = {
+    red:    { bg:'#FFF0F0', border:'#C0392B', title:'#C0392B', detail:'#922B21' },
+    amber:  { bg:'#FFFBEB', border:'#B45309', title:'#92400E', detail:'#B45309' },
+    yellow: { bg:'#FFFDE7', border:'#C47A00', title:'#7A4A00', detail:'#C47A00' }
+  };
+
+  // ── Build banner ────────────────────────────────────────────
+  const redCount   = alerts.filter(a => a.level==='red').length;
+  const totalCount = alerts.length;
+  const headerBg   = redCount > 0 ? '#C0392B' : '#B45309';
+
+  const rows = alerts.map(a => {
+    const c = clrMap[a.level] || clrMap.amber;
+    return `<div onclick="navTo('${a.nav}')"
+      style="display:flex;align-items:flex-start;gap:12px;padding:11px 16px;
+             border-bottom:1px solid ${c.border}33;cursor:pointer;
+             background:${c.bg};transition:opacity .15s"
+      onmouseenter="this.style.opacity='.85'" onmouseleave="this.style.opacity='1'">
+      <div style="font-size:1.2rem;flex-shrink:0;margin-top:1px">${a.icon}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.86rem;color:${c.title};
+                    line-height:1.3">${a.title}</div>
+        <div style="font-size:.74rem;color:${c.detail};margin-top:2px;
+                    line-height:1.4">${a.detail}</div>
+      </div>
+      <div style="font-size:.75rem;font-weight:700;color:${c.title};
+                  white-space:nowrap;align-self:center">→</div>
+    </div>`;
+  }).join('');
+
+  const banner = document.createElement('div');
+  banner.id = 'dash-critical-alerts';
+  banner.style.cssText = 'border-radius:var(--r-lg);overflow:hidden;margin-bottom:16px;'
+    + 'box-shadow:0 2px 12px rgba(192,57,43,.18)';
+  banner.innerHTML =
+    `<div style="background:${headerBg};padding:10px 16px;
+                 display:flex;align-items:center;justify-content:space-between">
+       <div style="display:flex;align-items:center;gap:8px">
+         <span style="font-size:1rem">🔴</span>
+         <span style="font-weight:700;font-size:.88rem;color:white;letter-spacing:.02em">
+           ${totalCount} Critical Item${totalCount>1?'s':''} Need${totalCount===1?'s':''} Attention
+         </span>
+       </div>
+       <span style="font-size:.72rem;color:rgba(255,255,255,.7)">Tap any item →</span>
+     </div>
+     ${rows}`;
+
+  // Insert immediately after the shift banner (before BBW/other alerts)
+  const shiftBanner = document.getElementById('dash-shift-banner');
+  if(shiftBanner){
+    shiftBanner.insertAdjacentElement('afterend', banner);
+  }
 }
 
 function renderBBWDashboardAlert(){
