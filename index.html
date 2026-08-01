@@ -3018,6 +3018,9 @@ body {
     </div>
     <div class="form-row">
       <div class="fg"><label>Primary Doctor</label><input id="pm-doctor" placeholder="Dr. Chen"></div>
+      <div class="fg"><label>Doctor's Direct Phone</label><input id="pm-doctor-phone" type="tel" placeholder="(775) 555-0100"></div>
+    </div>
+    <div class="form-row">
       <div class="fg"><label>Blood Type</label>
         <select id="pm-blood" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
           <option value="">Unknown</option>
@@ -3028,7 +3031,14 @@ body {
     </div>
     <div class="fg"><label>⚠️ Allergies</label><input id="pm-allergies" placeholder="Penicillin, Sulfa drugs, Latex…"></div>
     <div class="fg"><label>Medical Conditions</label><textarea id="pm-conditions" rows="2" placeholder="Type 2 Diabetes, Hypertension, Dementia…"></textarea></div>
-    <div class="fg"><label>Emergency Contact</label><input id="pm-emergency" placeholder="Name — Phone number — Relationship"></div>
+    <div class="fg">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <label style="margin:0">Emergency Contacts</label>
+        <button type="button" class="btn btn-secondary btn-xs" onclick="pmAddContact()" style="font-size:.72rem;padding:3px 10px">+ Add Contact</button>
+      </div>
+      <div id="pm-contacts-list"></div>
+      <input id="pm-emergency" type="hidden">
+    </div>
     <div class="form-row">
       <div class="fg"><label>🚨 Fall Risk</label>
         <select id="pm-fall-risk" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
@@ -4295,9 +4305,86 @@ function openPatientModal(editId){
   document.getElementById('pm-conditions').value = p?.conditions || '';
   document.getElementById('pm-emergency').value  = p?.emergency  || '';
   document.getElementById('pm-notes').value      = p?.notes      || '';
+  const dpEl = document.getElementById('pm-doctor-phone');
+  if(dpEl) dpEl.value = p?.doctorPhone || '';
+  // Load contacts — migrate legacy emergency string if needed
+  _pmContacts = JSON.parse(JSON.stringify(p?.contacts || []));
+  if(!_pmContacts.length && p?.emergency) {
+    _pmContacts = [{name: p.emergency, type: CONTACT_TYPES[1], phone: ''}];
+  }
+  pmRenderContacts(_pmContacts);
   const frEl = document.getElementById('pm-fall-risk');  if(frEl) frEl.value = p?.fallRisk  || '';
   const plEl = document.getElementById('pm-pain-level'); if(plEl) plEl.value = p?.painLevel || '';
   openModal('patient-modal');
+}
+
+
+// ═══════════════════════════════════════════════════════════════
+// CONTACT BUILDER — patient modal
+// ═══════════════════════════════════════════════════════════════
+const CONTACT_TYPES = [
+  '👪 Family',
+  '🚨 Emergency Contact',
+  '👨‍⚕️ Primary Doctor',
+  '🏥 Specialist',
+  '🩺 Home Health Agency',
+  '☎️ Hospice',
+  '📋 Power of Attorney',
+  '📞 Case Manager',
+  '🏛️ Agency Supervisor',
+  '📝 Other'
+];
+
+function pmRenderContacts(contacts){
+  const el = document.getElementById('pm-contacts-list');
+  if(!el) return;
+  if(!contacts || !contacts.length){
+    el.innerHTML = '<div style="font-size:.78rem;color:var(--slate-light);padding:6px 0">No contacts added yet — tap + Add Contact above.</div>';
+    return;
+  }
+  el.innerHTML = contacts.map((c, i) => `
+    <div style="display:flex;gap:6px;align-items:center;margin-bottom:8px;flex-wrap:wrap"
+         id="pm-contact-row-${i}">
+      <input value="${(c.name||'').replace(/"/g,'&quot;')}"
+        placeholder="Full name"
+        oninput="pmUpdateContact(${i},'name',this.value)"
+        style="flex:1.2;min-width:100px;border:1.5px solid var(--border);border-radius:var(--r);
+               padding:7px 10px;font-family:var(--font-body);font-size:.82rem">
+      <select onchange="pmUpdateContact(${i},'type',this.value)"
+        style="flex:1.4;min-width:120px;border:1.5px solid var(--border);border-radius:var(--r);
+               padding:7px 8px;font-family:var(--font-body);font-size:.78rem;background:white">
+        ${CONTACT_TYPES.map(t=>`<option${t===c.type?' selected':''}>${t}</option>`).join('')}
+      </select>
+      <input value="${(c.phone||'').replace(/"/g,'&quot;')}"
+        placeholder="Phone"
+        type="tel"
+        oninput="pmUpdateContact(${i},'phone',this.value)"
+        style="flex:1;min-width:90px;border:1.5px solid var(--border);border-radius:var(--r);
+               padding:7px 10px;font-family:var(--font-body);font-size:.82rem">
+      <button type="button" onclick="pmRemoveContact(${i})"
+        style="padding:5px 9px;border:1.5px solid var(--refused);border-radius:var(--r);
+               background:none;color:var(--refused);cursor:pointer;font-size:.8rem;flex-shrink:0">✕</button>
+    </div>`).join('');
+}
+
+// In-memory contacts array while modal is open
+var _pmContacts = [];
+
+function pmAddContact(){
+  _pmContacts.push({name:'', type:CONTACT_TYPES[0], phone:''});
+  pmRenderContacts(_pmContacts);
+  // Focus the new name field
+  const rows = document.querySelectorAll('[id^="pm-contact-row-"]');
+  if(rows.length) rows[rows.length-1].querySelector('input')?.focus();
+}
+
+function pmUpdateContact(i, field, val){
+  if(_pmContacts[i]) _pmContacts[i][field] = val;
+}
+
+function pmRemoveContact(i){
+  _pmContacts.splice(i, 1);
+  pmRenderContacts(_pmContacts);
 }
 
 function savePatient(){
@@ -4310,10 +4397,12 @@ function savePatient(){
     dob:        document.getElementById('pm-dob').value,
     room:       document.getElementById('pm-room').value.trim(),
     doctor:     document.getElementById('pm-doctor').value.trim(),
+    doctorPhone:document.getElementById('pm-doctor-phone')?.value.trim() || '',
     blood:      document.getElementById('pm-blood').value,
     allergies:  document.getElementById('pm-allergies').value.trim(),
     conditions: document.getElementById('pm-conditions').value.trim(),
     emergency:  document.getElementById('pm-emergency').value.trim(),
+    contacts:   _pmContacts.filter(c => c.name || c.phone),
     notes:      document.getElementById('pm-notes').value.trim(),
     fallRisk:   document.getElementById('pm-fall-risk')?.value  || '',
     painLevel:  document.getElementById('pm-pain-level')?.value || ''
@@ -12116,18 +12205,43 @@ function renderEmergency(){
 
   const crit = [];
   if(p.allergies) crit.push(`<div class="em-row"><span class="em-key">Allergies</span><span class="em-val red">${emEsc(p.allergies)}</span></div>`);
-  if(p.doctor)    crit.push(`<div class="em-row"><span class="em-key">Primary MD</span><span class="em-val">${emEsc(p.doctor)}</span></div>`);
+  if(p.doctor){
+    const drPhone = p.doctorPhone ? p.doctorPhone.replace(/\D/g,'') : '';
+    const drCallBtn = drPhone
+      ? `<button class="em-call" style="margin-left:auto" onclick="dialPhone('${drPhone}')">📞 Call</button>`
+      : (p.doctorPhone ? `<span style="font-size:.74rem;color:var(--slate-light)">${emEsc(p.doctorPhone)}</span>` : '');
+    crit.push(`<div class="em-row" style="align-items:center"><span class="em-key">Primary MD</span><span class="em-val" style="flex:1">${emEsc(p.doctor)}</span>${drCallBtn}</div>`);
+  }
   if(p.fallRisk)  crit.push(`<div class="em-row"><span class="em-key">Fall Risk</span><span class="em-val">${emEsc(p.fallRisk)}</span></div>`);
 
   const medsHtml = meds.length
     ? meds.map(m => `<div class="em-med"><div class="em-med-n">${emEsc(m.name)} ${emEsc(m.dose||'')} ${bbwBadgeHtml(m.name, true)}</div><div class="em-med-d">${emEsc(m.freq||'')}${m.time?' · '+fmtTime(m.time):''}</div>${bbwBadgeHtml(m.name, false)}</div>`).join('')
     : '<div style="font-size:.78rem;color:var(--slate-light)">No medications recorded.</div>';
 
+  // Structured contacts (new) — fallback to legacy emergency string
+  const structuredContacts = p.contacts && p.contacts.length ? p.contacts : null;
   const phones = emPhones(p.emergency || '');
   let contactsHtml = '';
-  if(p.emergency) contactsHtml += `<div style="font-size:.8rem;color:var(--slate);line-height:1.6;margin-bottom:8px">${emEsc(p.emergency)}</div>`;
-  if(phones.length) contactsHtml += phones.map(ph => `<div class="em-contact"><div><div class="em-contact-n">📞 ${emEsc(ph.display)}</div></div><button class="em-call" onclick="dialPhone('${ph.digits}')">Call</button></div>`).join('');
-  if(!p.emergency && !phones.length) contactsHtml = '<div style="font-size:.78rem;color:var(--slate-light)">No emergency contact recorded.</div>';
+  if(structuredContacts){
+    contactsHtml = structuredContacts.map(c => {
+      const digits = (c.phone||'').replace(/\D/g,'');
+      const callBtn = digits
+        ? `<button class="em-call" onclick="dialPhone('${digits}')">Call</button>`
+        : '';
+      return `<div class="em-contact">
+        <div>
+          <div class="em-contact-n" style="font-weight:700">${emEsc(c.name||'—')}</div>
+          <div style="font-size:.72rem;color:var(--slate-light);margin-top:1px">${emEsc(c.type||'')}${c.phone?' · '+emEsc(c.phone):''}</div>
+        </div>
+        ${callBtn}
+      </div>`;
+    }).join('');
+  } else if(p.emergency){
+    contactsHtml = `<div style="font-size:.8rem;color:var(--slate);line-height:1.6;margin-bottom:8px">${emEsc(p.emergency)}</div>`;
+    if(phones.length) contactsHtml += phones.map(ph => `<div class="em-contact"><div><div class="em-contact-n">📞 ${emEsc(ph.display)}</div></div><button class="em-call" onclick="dialPhone('${ph.digits}')">Call</button></div>`).join('');
+  } else {
+    contactsHtml = '<div style="font-size:.78rem;color:var(--slate-light)">No emergency contacts recorded.</div>';
+  }
 
   body.innerHTML = `
     <div class="em-head"><div>
