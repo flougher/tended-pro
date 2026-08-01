@@ -1661,6 +1661,15 @@ body {
     </div>
     <button class="btn btn-teal btn-sm" onclick="saveMARNotes()">Save Notes</button>
   </div>
+
+  <!-- Medication List — edit & delete -->
+  <div class="card" style="margin-top:16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="card-title" style="margin:0" id="med-list-title">💊 Medications on File</div>
+      <button class="btn btn-teal btn-sm" onclick="openMedModal()">+ Add Medication</button>
+    </div>
+    <div id="med-list"></div>
+  </div>
 </div>
 
 <!-- ═══ INCIDENTS ══════════════════════════════════════════ -->
@@ -4128,13 +4137,22 @@ function renderDashboard(){
   const shiftIcon  = document.getElementById('dash-shift-icon');
   if(shiftLabel && shiftSub && shiftIcon){
     if(pct === 100){
+      shiftIcon.textContent  = '🎉';
+      shiftLabel.textContent = 'Shift Complete — Outstanding Care!';
+      shiftSub.textContent   = 'Every task documented. Your residents are well cared for today.';
+    } else if(pct >= 80){
       shiftIcon.textContent  = '🌟';
-      shiftLabel.textContent = 'Shift Complete — Great Work!';
-      shiftSub.textContent   = 'All documentation done. Ready to generate your handoff report.';
+      shiftLabel.textContent = 'Almost Done — Great Work!';
+      const rem = checkItems.length - doneCount;
+      shiftSub.textContent   = `Just ${rem} item${rem>1?'s':''} left — you're nearly there.`;
     } else if(pct >= 60){
       shiftIcon.textContent  = h < 17 ? '☀️' : '🌆';
       shiftLabel.textContent = 'Good Progress — Keep Going';
       shiftSub.textContent   = `${checkItems.length - doneCount} item${checkItems.length-doneCount>1?'s':''} remaining for a complete shift record`;
+    } else if(pct >= 40){
+      shiftIcon.textContent  = h < 12 ? '🌅' : h < 17 ? '⏰' : '🌙';
+      shiftLabel.textContent = h < 12 ? 'Starting Your Shift' : 'Mid-Shift Check-In';
+      shiftSub.textContent   = `${doneCount} of ${checkItems.length} complete — you're making great progress.`;
     } else {
       shiftIcon.textContent  = h < 12 ? '🌅' : h < 17 ? '⏰' : '🌙';
       shiftLabel.textContent = h < 12 ? 'Starting Your Shift' : h < 17 ? 'Mid-Shift Check-In' : 'Evening Shift';
@@ -4144,27 +4162,68 @@ function renderDashboard(){
     }
   }
 
-  // Render checklist
+  // Render checklist — Item 3: celebrate progress
   const clEl = document.getElementById('dash-checklist');
   if(clEl){
-    clEl.innerHTML = checkItems.map(item => {
-      const status = item.done ? 'done' : item.partial ? 'partial' : 'todo';
-      const iconBg  = item.done    ? 'var(--given-bg)'   :
-                      item.partial ? 'var(--held-bg)'    : 'var(--off-white)';
-      const iconCol = item.done    ? 'var(--given)'      :
-                      item.partial ? 'var(--held)'       : 'var(--slate-light)';
-      const check   = item.done    ? '✓' : item.partial  ? '◑' : '○';
-      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="navTo('${item.nav}')">
-        <div style="width:28px;height:28px;border-radius:50%;background:${iconBg};color:${iconCol};display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0">${check}</div>
+    // Celebration strip — positive achievements highlighted
+    const doneItems    = checkItems.filter(i => i.done);
+    const partialItems = checkItems.filter(i => i.partial && !i.done);
+    const todoItems    = checkItems.filter(i => !i.done && !i.partial);
+
+    const renderItem = item => {
+      const iconBg  = item.done    ? '#F0FDF4'
+                    : item.partial ? 'var(--held-bg)'
+                    : 'var(--off-white)';
+      const iconCol = item.done    ? '#16A34A'
+                    : item.partial ? 'var(--held)'
+                    : 'var(--slate-light)';
+      const check   = item.done    ? '✅'
+                    : item.partial ? '◑' : '○';
+      // Done items: positive, green, no strikethrough
+      const labelStyle = item.done
+        ? 'font-size:.85rem;font-weight:600;color:#16A34A'
+        : item.partial
+        ? 'font-size:.85rem;font-weight:600;color:var(--navy)'
+        : 'font-size:.85rem;font-weight:600;color:var(--navy)';
+      const subCol  = item.done    ? '#16A34A'
+                    : item.partial ? 'var(--held)' : 'var(--slate-light)';
+      const rowBg   = item.done    ? 'background:linear-gradient(90deg,#F0FDF4 0%,transparent 100%)' : '';
+      return `<div style="display:flex;align-items:center;gap:10px;padding:9px 6px;border-bottom:1px solid var(--border);cursor:pointer;${rowBg};border-radius:6px;margin-bottom:1px" onclick="navTo('${item.nav}')">
+        <div style="font-size:${item.done?'1.1':'0.75'}rem;width:28px;text-align:center;flex-shrink:0">${check}</div>
         <div style="flex:1;min-width:0">
-          <div style="font-size:.85rem;font-weight:${item.done?'500':'600'};color:${item.done?'var(--slate-mid)':'var(--navy)'};${item.done?'text-decoration:line-through;opacity:.7':''}">${item.icon} ${item.label}</div>
-          <div style="font-size:.72rem;color:${item.done?'var(--given)':item.partial?'var(--held)':'var(--slate-light)'};margin-top:1px">${item.sub}</div>
+          <div style="${labelStyle}">${item.done?'':item.icon+' '}${item.label}</div>
+          <div style="font-size:.72rem;color:${subCol};margin-top:1px">${item.sub}</div>
         </div>
         <div style="font-size:.7rem;color:var(--slate-light)">→</div>
       </div>`;
-    }).join('') +
+    };
+
+    // Section headers for progress grouping
+    let sections = '';
+    if(doneItems.length > 0){
+      sections += doneItems.map(renderItem).join('');
+    }
+    if(partialItems.length > 0){
+      sections += (doneItems.length > 0
+        ? `<div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--held);padding:10px 0 4px">In Progress</div>`
+        : '') + partialItems.map(renderItem).join('');
+    }
+    if(todoItems.length > 0){
+      sections += ((doneItems.length+partialItems.length) > 0
+        ? `<div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate-light);padding:10px 0 4px">Still To Do</div>`
+        : '') + todoItems.map(renderItem).join('');
+    }
+
+    // Footer — pct-aware celebration line
+    const footerMsg = pct === 100
+      ? `<span style="font-size:.8rem;font-weight:700;color:#16A34A">🎉 All ${checkItems.length} tasks complete!</span>`
+      : pct >= 80
+      ? `<span style="font-size:.74rem;font-weight:600;color:#16A34A">🌟 ${doneCount}/${checkItems.length} done — almost there!</span>`
+      : `<span style="font-size:.74rem;color:var(--slate-light)">${doneCount} of ${checkItems.length} complete</span>`;
+
+    clEl.innerHTML = sections +
     `<div style="padding-top:10px;display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:.74rem;color:var(--slate-light)">${doneCount} of ${checkItems.length} complete</span>
+      ${footerMsg}
       <button class="btn btn-teal btn-sm" onclick="navTo('handoff')" style="font-size:.74rem;padding:4px 10px;min-height:28px">Generate Handoff →</button>
     </div>`;
   }
@@ -4494,27 +4553,53 @@ function saveMed(){
 function renderMedList(){
   const el = document.getElementById('med-list');
   if(!el) return;
-  const _listMeds = _globalPatientId
-    ? (D.meds||[]).filter(m => String(m.patientId) === String(_globalPatientId))
+  // In MAR context, use the MAR patient selector; fall back to _globalPatientId
+  const _marPat = document.getElementById('mar-patient')?.value || _globalPatientId || '';
+  const _listMeds = _marPat
+    ? (D.meds||[]).filter(m => String(m.patientId) === String(_marPat))
     : (D.meds||[]);
+  // Update title with count
+  const titleEl = document.getElementById('med-list-title');
+  if(titleEl) titleEl.textContent = '💊 Medications on File'
+    + (_listMeds.length ? ' ('+_listMeds.length+')' : '');
   if(!_listMeds.length){
-    el.innerHTML = '<div style="color:var(--slate-light);font-size:.82rem">' +
-      (_globalPatientId ? 'No medications added for this patient yet.' : 'Select a patient to view medications.') +
-      '</div>';
+    el.innerHTML = '<div style="color:var(--slate-light);font-size:.82rem;padding:12px 0">'
+      + (_globalPatientId ? 'No medications added yet — tap + Add Medication above.'
+                          : 'Select a patient above to view their medications.')
+      + '</div>';
     return;
   }
-  el.innerHTML = _listMeds.map(m => `
-    <div style="padding:8px 0;border-bottom:1px solid var(--border)">
-      <div style="display:flex;align-items:center;gap:8px">
-        <div style="flex:1;min-width:0">
-          <div style="font-weight:600;font-size:.86rem">${m.name} ${m.dose||''} ${bbwBadgeHtml(m.name, true)}</div>
-          <div style="font-size:.74rem;color:var(--slate-light)">${m.freq}${m.time?' · '+fmtTime(m.time):''}${m.patientId ? ' · <span style=\"color:var(--teal)\">' + ((D.patients||[]).find(p=>p.id==m.patientId)?.fname||'') + '</span>' : ' · <span style=\"color:var(--slate-light)\">All patients</span>'}</div>
+  // Sort by scheduled time
+  const sorted = [..._listMeds].sort((a,b) => {
+    const t = s => { if(!s) return 9999; const p=s.split(':'); return parseInt(p[0])*60+(parseInt(p[1])||0); };
+    return t(a.time) - t(b.time);
+  });
+  el.innerHTML = sorted.map(m => {
+    const ptName = m.patientId
+      ? ((D.patients||[]).find(p=>p.id==m.patientId)?.fname || '')
+      : 'All patients';
+    const bbw = bbwBadgeHtml(m.name, false);
+    return `<div style="padding:11px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px">
+          <span style="font-weight:700;font-size:.88rem;color:var(--navy)">${m.name}</span>
+          ${m.dose ? `<span style="font-size:.78rem;color:var(--slate-mid);font-family:var(--font-mono)">${m.dose}</span>` : ''}
+          ${bbwBadgeHtml(m.name, true)}
         </div>
-        <button class="btn btn-secondary btn-xs btn-icon" onclick="openMedModal(${m.id})">✏️</button>
+        <div style="font-size:.74rem;color:var(--slate-light);display:flex;gap:10px;flex-wrap:wrap">
+          <span>${m.freq||'—'}</span>
+          ${m.time ? `<span>⏰ ${fmtTime(m.time)}</span>` : ''}
+          ${m.doctor ? `<span>Dr. ${m.doctor}</span>` : ''}
+        </div>
+        ${bbw}
+      </div>
+      <div style="display:flex;gap:5px;flex-shrink:0">
+        <button class="btn btn-secondary btn-xs" style="padding:4px 10px;font-size:.75rem;font-weight:600"
+          onclick="openMedModal(${m.id})">✏️ Edit</button>
         <button class="btn btn-danger btn-xs btn-icon" onclick="deleteMed(${m.id})">✕</button>
       </div>
-      ${bbwBadgeHtml(m.name, false)}
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function deleteMed(id){
@@ -4546,6 +4631,7 @@ function initMAR(){
   const sel = document.getElementById('mar-patient');
   if(sel && !sel.value && D.patients.length === 1) sel.value = D.patients[0].id;
   renderMAR();
+  renderMedList();
 }
 
 function populateMARPatients(){
@@ -5056,6 +5142,9 @@ function renderMAR(){
         </div>`;
       }).join('')}
     </div>`;
+
+  // Keep med list in sync with patient selection
+  renderMedList();
 }
 
 function cycleMAR(key, newStatus){
