@@ -1480,6 +1480,9 @@ body {
     </div>
   </div>
 
+  <!-- Resident-Centered Status Rows (Item 1) -->
+  <div id="dash-resident-rows" style="margin-bottom:20px"></div>
+
   <!-- Patient Roster + Incidents -->
   <div class="grid-2" style="margin-bottom:20px">
     <div class="card">
@@ -3983,6 +3986,7 @@ function renderDashboard(){
   const flaggedMeds = (D.meds||[]).filter(m => getBBW(m.name));
   const nbBBW = document.getElementById('nb-bbw');
   if(nbBBW){ nbBBW.textContent = flaggedMeds.length; nbBBW.classList.toggle('show', flaggedMeds.length > 0); }
+  renderResidentRows();
   renderCriticalAlerts();
   renderBBWDashboardAlert();
   renderTriggerReminderCard();
@@ -6589,7 +6593,15 @@ function renderWounds(){
   populatePatientBars();
   const el = document.getElementById('wound-list');
   if(!el) return;
-  const _patFilter = _globalPatientId;
+  const _patFilter = _globalPatientId ||
+    document.querySelector('#wounds-patient-bar select')?.value || '';
+  const _multiPat = (D.patients||[]).filter(p => p.active !== false).length > 1;
+  // When multiple patients exist and none selected, show prompt instead of all wounds
+  if(!_patFilter && _multiPat){
+    el.innerHTML = '<div class="empty"><div class="empty-icon">🩹</div>'
+      + '<div class="empty-text">Select a patient above to view their wounds.</div></div>';
+    return;
+  }
   let _woundsFiltered = D.wounds||[];
   if(_patFilter) _woundsFiltered = _woundsFiltered.filter(w => String(w.patientId) === String(_patFilter));
   if(!_woundsFiltered.length){
@@ -6598,7 +6610,7 @@ function renderWounds(){
   }
   // Sort: active first, healed last
   const order = { 'Worsening':0,'New':1,'Unchanged':2,'Improving':3,'Healed':4 };
-  const sorted = [...(D.wounds||[])].sort((a,b) => (order[a.status]||2) - (order[b.status]||2));
+  const sorted = [..._woundsFiltered].sort((a,b) => (order[a.status]||2) - (order[b.status]||2));
 
   const stClass = { 'New':'new','Improving':'improving','Unchanged':'unchanged','Worsening':'worsening','Healed':'healed' };
   const stBadge = { 'New':'ws-new','Improving':'ws-improving','Unchanged':'ws-unchanged','Worsening':'ws-worsening','Healed':'ws-healed' };
@@ -9417,6 +9429,227 @@ function renderBBWSection(){
   </div>`;
 }
 
+
+
+// ═══════════════════════════════════════════════════════════════
+// ITEM 1 — Resident-Centered Status Rows
+// ═══════════════════════════════════════════════════════════════
+function _residentStatusItems(p, todayISO, nowMin, GRACE){
+  // Returns array of {dot, label, sub, nav} for this patient,
+  // in priority order. Max 4 returned; caller truncates as needed.
+  const pid    = String(p.id);
+  const items  = [];
+
+  // ── 🔴 Overdue medications ────────────────────────────────
+  const ptMeds = (D.meds||[]).filter(m =>
+    !m.patientId || String(m.patientId) === pid);
+  const overdueMeds = ptMeds.filter(m => {
+    if(!m.time) return false;
+    const [h, mn] = m.time.split(':').map(Number);
+    if(nowMin < h*60+mn+GRACE) return false;
+    const key    = todayISO+'|'+p.id+'|'+m.id;
+    const status = (D.mar[key]?.status)||'pending';
+    return status === 'pending';
+  });
+  if(overdueMeds.length){
+    items.push({
+      dot:'#C0392B', label:`${overdueMeds.length} medication${overdueMeds.length>1?'s':''} overdue`,
+      sub: overdueMeds.map(m=>m.name).join(', '), nav:'mar', priority:0
+    });
+  }
+
+  // ── 🔴 Severe PAINAD today (≥ 7) ─────────────────────────
+  const severePAINAD = (D.painad||[]).find(e =>
+    e.date === todayISO && String(e.patientId) === pid && e.total >= 7);
+  if(severePAINAD){
+    items.push({
+      dot:'#C0392B', label:`Severe pain — PAINAD ${severePAINAD.total}/10`,
+      sub:'Supervisor notification recommended', nav:'pain', priority:1
+    });
+  }
+
+  // ── 🔴 Critical incident today ────────────────────────────
+  const critInc = (D.incidents||[]).filter(i =>
+    (i.dt||'').startsWith(todayISO) &&
+    i.severity === 'critical' &&
+    (!i.patientId || String(i.patientId) === pid));
+  if(critInc.length){
+    items.push({
+      dot:'#C0392B', label:`${critInc.length} critical incident${critInc.length>1?'s':''} today`,
+      sub: critInc.map(i=>i.type).join(', '), nav:'incidents', priority:2
+    });
+  }
+
+  // ── 🟠 High fall risk ─────────────────────────────────────
+  if((p.fallRisk||'').toLowerCase() === 'high'){
+    items.push({
+      dot:'#B45309', label:'High fall risk',
+      sub:'Review safeguards before care', nav:'patients', priority:3
+    });
+  }
+
+  // ── 🟠 Wound worsening ───────────────────────────────────
+  const worseningWound = (D.wounds||[]).find(w =>
+    String(w.patientId) === pid && w.status === 'Worsening');
+  if(worseningWound){
+    items.push({
+      dot:'#C0392B', label:`Wound worsening — ${worseningWound.location}`,
+      sub:'Requires assessment and documentation', nav:'wounds', priority:4
+    });
+  }
+
+  // ── 🟠 Hydration overdue ─────────────────────────────────
+  if(typeof minutesSinceFluid === 'function' && typeof getHydrSettings === 'function'){
+    const hs  = getHydrSettings(p.id);
+    if(hs.enabled){
+      const ago = minutesSinceFluid(p.id);
+      if(ago === Infinity || ago > hs.intervalHours * 60){
+        const label = ago === Infinity ? 'No fluids offered today'
+          : `Fluid offer overdue — ${Math.floor(ago/60)}h ${ago%60}m ago`;
+        items.push({
+          dot:'#B45309', label, sub:`Goal: every ${hs.intervalHours}hr`, nav:'intake', priority:5
+        });
+      }
+    }
+  }
+
+  // ── 🟠 Wound needs assessment ─────────────────────────────
+  const unassessedWound = (D.wounds||[]).find(w =>
+    String(w.patientId) === pid &&
+    w.status !== 'Healed' &&
+    (!w.updatedAt || !w.updatedAt.startsWith(todayISO)));
+  if(unassessedWound && !worseningWound){
+    items.push({
+      dot:'#C47A00', label:`Wound needs assessment — ${unassessedWound.location}`,
+      sub:'Not yet checked today', nav:'wounds', priority:6
+    });
+  }
+
+  // ── 🟡 Pending medications ────────────────────────────────
+  const pendingMeds = ptMeds.filter(m => {
+    if(overdueMeds.find(o=>o.id===m.id)) return false; // already in overdue
+    const key    = todayISO+'|'+p.id+'|'+m.id;
+    const status = (D.mar[key]?.status)||'pending';
+    return status === 'pending';
+  });
+  if(pendingMeds.length && !overdueMeds.length){
+    items.push({
+      dot:'#C47A00', label:`${pendingMeds.length} medication${pendingMeds.length>1?'s':''} pending`,
+      sub: pendingMeds.map(m=>m.name).join(', '), nav:'mar', priority:7
+    });
+  }
+
+  // ── 🟢 All medications given ──────────────────────────────
+  const allGiven = ptMeds.length > 0 &&
+    ptMeds.every(m => {
+      const key = todayISO+'|'+p.id+'|'+m.id;
+      return ['given','held','refused'].includes(D.mar[key]?.status||'');
+    });
+  if(allGiven){
+    items.push({
+      dot:'#16A34A', label:`All ${ptMeds.length} medication${ptMeds.length>1?'s':''} documented`,
+      sub:'MAR complete for today', nav:'mar', priority:8
+    });
+  }
+
+  // ── 🟢 Morning routines complete ─────────────────────────
+  const rt    = getRoutinesForPatient(p.id);
+  const morn  = (rt?.morning||[]);
+  const mDone = morn.filter(r => isRoutineDoneToday(r)).length;
+  if(morn.length > 0 && mDone === morn.length){
+    items.push({
+      dot:'#16A34A', label:'Morning routine complete',
+      sub:`All ${mDone} task${mDone>1?'s':''} done`, nav:'routines', priority:9
+    });
+  } else if(morn.length > 0 && mDone > 0){
+    items.push({
+      dot:'#C47A00', label:`Morning routine ${mDone}/${morn.length} complete`,
+      sub:`${morn.length-mDone} task${morn.length-mDone>1?'s':''} remaining`, nav:'routines', priority:7
+    });
+  }
+
+  // Sort by priority, return top 3
+  return items.sort((a,b)=>a.priority-b.priority).slice(0,3);
+}
+
+function renderResidentRows(){
+  const el = document.getElementById('dash-resident-rows');
+  if(!el) return;
+
+  const active   = (D.patients||[]).filter(p => p.active !== false);
+  if(!active.length){ el.innerHTML = ''; return; }
+
+  const todayISO = new Date().toISOString().split('T')[0];
+  const nowMin   = new Date().getHours()*60 + new Date().getMinutes();
+  const GRACE    = 30;
+
+  // Determine worst-case dot color for a set of items
+  function worstColor(items){
+    if(items.some(i=>i.dot==='#C0392B')) return '#C0392B';
+    if(items.some(i=>i.dot==='#B45309')) return '#B45309';
+    if(items.some(i=>i.dot==='#C47A00')) return '#C47A00';
+    if(items.some(i=>i.dot==='#16A34A')) return '#16A34A';
+    return '#94A3B8';
+  }
+
+  const cards = active.map(p => {
+    const init  = (p.fname?.[0]||'')+(p.lname?.[0]||'');
+    const color = p.color || '#0C7A6E';
+    const items = _residentStatusItems(p, todayISO, nowMin, GRACE);
+    const worst = worstColor(items);
+
+    const statusRows = items.length
+      ? items.map(it =>
+          `<div onclick="navTo('${it.nav}')" style="display:flex;align-items:flex-start;gap:8px;
+            padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity .12s"
+            onmouseenter="this.style.opacity='.8'" onmouseleave="this.style.opacity='1'">
+            <div style="width:9px;height:9px;border-radius:50%;background:${it.dot};
+              flex-shrink:0;margin-top:4px"></div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:.82rem;font-weight:600;color:var(--navy);line-height:1.3">
+                ${it.label}</div>
+              <div style="font-size:.72rem;color:var(--slate-light);margin-top:1px;
+                line-height:1.3">${it.sub}</div>
+            </div>
+            <div style="font-size:.68rem;color:var(--slate-light);align-self:center">→</div>
+          </div>`
+        ).join('')
+      : `<div style="font-size:.8rem;color:#16A34A;padding:8px 0;font-weight:600">
+           ✅ All caught up — no alerts
+         </div>`;
+
+    return `<div style="background:white;border:1.5px solid ${worst};border-radius:var(--r-lg);
+              padding:14px 16px;flex:1;min-width:0;box-shadow:0 1px 4px rgba(0,0,0,.06)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;
+                  padding-bottom:10px;border-bottom:2px solid var(--border)">
+        <div style="width:38px;height:38px;border-radius:50%;background:${color};color:white;
+          display:flex;align-items:center;justify-content:center;
+          font-family:var(--font-head);font-size:.88rem;font-weight:700;flex-shrink:0">
+          ${init}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:.95rem;color:var(--navy);line-height:1.2">
+            ${p.fname} ${p.lname}</div>
+          ${p.room ? `<div style="font-size:.72rem;color:var(--slate-light);margin-top:1px">
+            Room ${p.room}</div>` : ''}
+        </div>
+        <div style="width:10px;height:10px;border-radius:50%;background:${worst};flex-shrink:0"></div>
+      </div>
+      ${statusRows}
+    </div>`;
+  });
+
+  // 1 patient: full width. 2 patients: side by side.
+  const layout = active.length >= 2
+    ? `<div style="display:flex;gap:12px;flex-wrap:wrap">${cards.map(c=>`<div style="flex:1;min-width:240px">${c}</div>`).join('')}</div>`
+    : cards[0];
+
+  el.innerHTML =
+    `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+       <div style="font-weight:700;font-size:.84rem;color:var(--slate);text-transform:uppercase;
+                   letter-spacing:.07em">👤 Resident Status</div>
+     </div>` + layout;
+}
 
 // ═══════════════════════════════════════════════════════════════
 // ITEM 2 — Critical Exception Highlighting
