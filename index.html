@@ -4454,7 +4454,14 @@ function renderPatients(){
           ${p.fallRisk ? ' ' + fallRiskBadge(p.fallRisk, false) : ''}
           ${p.painLevel !== undefined && p.painLevel !== '' ? ' ' + painFaceHtml(p.painLevel) : ''}
         </div>
-        <div class="patient-meta">${[p.room && '📍 '+p.room, p.doctor && '👨‍⚕️ '+p.doctor, p.dob && 'DOB: '+p.dob].filter(Boolean).join(' · ') || 'No additional info'}</div>
+        <div class="patient-meta">${[p.room && '📍 '+p.room, p.dob && 'DOB: '+p.dob].filter(Boolean).join(' · ') || 'No additional info'}</div>
+        ${p.doctor ? `<div style="margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-weight:700;font-size:.86rem;color:var(--navy)">👨‍⚕️ ${p.doctor}</span>
+          ${p.doctorPhone ? `<span style="font-weight:700;font-size:.84rem;color:var(--teal)">${p.doctorPhone}</span>
+            <button onclick="event.stopPropagation();dialPhone('${p.doctorPhone.replace(/\\D/g,'')}')" 
+              style="padding:2px 10px;border-radius:20px;background:var(--teal);color:white;
+                     border:none;cursor:pointer;font-size:.72rem;font-weight:700">📞 Call</button>` : ''}
+        </div>` : ''}
         ${p.allergies ? `<div class="patient-allergy">⚠️ ${p.allergies}</div>` : ''}
       </div>
       <div style="display:flex;gap:6px;flex-shrink:0">
@@ -12210,7 +12217,7 @@ function renderEmergency(){
     const drCallBtn = drPhone
       ? `<button class="em-call" style="margin-left:auto" onclick="dialPhone('${drPhone}')">📞 Call</button>`
       : (p.doctorPhone ? `<span style="font-size:.74rem;color:var(--slate-light)">${emEsc(p.doctorPhone)}</span>` : '');
-    crit.push(`<div class="em-row" style="align-items:center"><span class="em-key">Primary MD</span><span class="em-val" style="flex:1">${emEsc(p.doctor)}</span>${drCallBtn}</div>`);
+    crit.push(`<div class="em-row" style="align-items:center;padding:10px 0"><span class="em-key" style="font-weight:700">Primary MD</span><span class="em-val" style="flex:1;font-weight:700;font-size:.95rem;color:var(--navy)">${emEsc(p.doctor)}</span>${drCallBtn}</div>`);
   }
   if(p.fallRisk)  crit.push(`<div class="em-row"><span class="em-key">Fall Risk</span><span class="em-val">${emEsc(p.fallRisk)}</span></div>`);
 
@@ -12231,14 +12238,15 @@ function renderEmergency(){
   let contactsHtml = '';
   if(structuredContacts){
     contactsHtml = structuredContacts.map(c => {
-      const digits = (c.phone||'').replace(/\D/g,'');
+      const digits  = (c.phone||'').replace(/\D/g,'');
+      const isDoc   = (c.type||'').includes('Doctor');
       const callBtn = digits
-        ? `<button class="em-call" onclick="dialPhone('${digits}')">Call</button>`
+        ? `<button class="em-call" onclick="dialPhone('${digits}')" style="${isDoc?'background:var(--refused);color:white;font-weight:700;font-size:.85rem;padding:8px 16px;':''}">📞 Call</button>`
         : '';
-      return `<div class="em-contact">
-        <div>
-          <div class="em-contact-n" style="font-weight:700">${emEsc(c.name||'—')}</div>
-          <div style="font-size:.72rem;color:var(--slate-light);margin-top:1px">${emEsc(c.type||'')}${c.phone?' · '+emEsc(c.phone):''}</div>
+      return `<div class="em-contact" style="${isDoc?'background:#FFF8F8;border:1.5px solid var(--refused);border-radius:var(--r);padding:12px;margin-bottom:8px;':''}"> 
+        <div style="flex:1">
+          <div class="em-contact-n" style="font-weight:${isDoc?'800':'700'};font-size:${isDoc?'1rem':'.88rem'};${isDoc?'color:var(--navy);':''}">${emEsc(c.name||'—')}</div>
+          <div style="font-size:${isDoc?'.82':'.72'}rem;color:var(--slate-light);margin-top:2px;font-weight:${isDoc?'600':'400'}">${emEsc(c.type||'')}${c.phone?` · <strong style="color:var(--navy);font-size:${isDoc?'.88':'.72'}rem">${emEsc(c.phone)}</strong>`:''}</div>
         </div>
         ${callBtn}
       </div>`;
