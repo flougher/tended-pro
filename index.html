@@ -12219,7 +12219,14 @@ function renderEmergency(){
     : '<div style="font-size:.78rem;color:var(--slate-light)">No medications recorded.</div>';
 
   // Structured contacts (new) — fallback to legacy emergency string
-  const structuredContacts = p.contacts && p.contacts.length ? p.contacts : null;
+  // Always prepend primary doctor if phone is on file
+  const doctorContact = (p.doctor && p.doctorPhone)
+    ? [{name: p.doctor, type: '👨‍⚕️ Primary Doctor', phone: p.doctorPhone}]
+    : [];
+  const rawContacts = p.contacts && p.contacts.length ? p.contacts : null;
+  const structuredContacts = (doctorContact.length || rawContacts)
+    ? [...doctorContact, ...(rawContacts || [])]
+    : null;
   const phones = emPhones(p.emergency || '');
   let contactsHtml = '';
   if(structuredContacts){
