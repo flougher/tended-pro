@@ -1587,7 +1587,7 @@ body {
   <!-- Patient photo privacy note -->
   <div style="display:flex;align-items:flex-start;gap:10px;background:#F0F4F8;border-radius:var(--r);padding:10px 14px;margin-bottom:14px;font-size:.76rem;color:var(--slate-mid);line-height:1.6">
     <span style="font-size:1rem;flex-shrink:0">🔒</span>
-    <span><strong style="color:var(--navy)">Patient photos are not stored.</strong> To protect patient dignity and maintain HIPAA compliance, Tended Health Pro identifies patients by name, room number, and a color-coded initial avatar — never by photo. This keeps all personally identifiable biometric data off your device and eliminates any risk of accidental photo exposure. Follow your agency's policy for any photo identification requirements.</span>
+    <span><strong style="color:var(--navy)">Patient photos are not stored.</strong> Tended Pro is a personal caregiving tool, not a HIPAA-covered service. To protect privacy, patients are identified by name and a color-coded initial avatar — never by photo. All information you enter stays on your device and is never transmitted to any server.</span>
   </div>
 
   <div id="patient-list"></div>
@@ -2109,11 +2109,17 @@ body {
     </div>
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
       <a href="https://flougher.github.io/tended-pro/privacy-policy.html"
-         target="_blank"
-         rel="noopener noreferrer"
+         target="_blank" rel="noopener noreferrer"
          style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--off-white);border:1.5px solid var(--border);border-radius:var(--r);text-decoration:none;color:var(--navy);font-size:.86rem;font-weight:600">
         <span style="font-size:1.1rem">🔒</span>
         <span style="flex:1">Privacy Policy</span>
+        <span style="font-size:.7rem;color:var(--slate-light)">Opens in browser →</span>
+      </a>
+      <a href="https://flougher.github.io/tended-pro/terms-of-service.html"
+         target="_blank" rel="noopener noreferrer"
+         style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--off-white);border:1.5px solid var(--border);border-radius:var(--r);text-decoration:none;color:var(--navy);font-size:.86rem;font-weight:600">
+        <span style="font-size:1.1rem">📋</span>
+        <span style="flex:1">Terms of Service</span>
         <span style="font-size:.7rem;color:var(--slate-light)">Opens in browser →</span>
       </a>
       <a href="https://flougher.github.io/tended-pro/privacy-policy.html"
@@ -3164,7 +3170,8 @@ body {
 </div>
 
 <!-- MAR Status Modal (cycle through statuses) -->
-
+>
+          <label id="im-fluid-label">Fluid Amount (oz)</label>
 <script>
 "use strict";
 // ═══════════════════════════════════════════════════════════════
@@ -5675,10 +5682,7 @@ function printMAR(){
       </div>
       <div class="fg">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-          <label id="im-fluid-label" style="margin:0">Fluid Amount (ml)</label>
-          <div class="im-unit-toggle">
-            <button type="button" class="im-unit-btn active" data-unit="ml" onclick="imSetUnit('ml')">ml</button>
-            <button type="button" class="im-unit-btn" data-unit="oz" onclick="imSetUnit('oz')">oz</button>
+          <label id="im-fluid-label">Fluid Amount (oz)</label>
           </div>
         </div>
         <input type="number" id="im-fluid" placeholder="e.g. 240" min="0" max="2000" step="any">
@@ -6861,13 +6865,12 @@ function getFluidUnit(){ return 'oz'; } // always oz per design
 function setFluidUnit(u){ localStorage.setItem('tendedPro_fluidUnit', u === 'oz' ? 'oz' : 'ml'); }
 // ml (stored) -> number in the currently selected unit
 function mlToDisplay(ml){
-  ml = ml || 0;
-  return getFluidUnit() === 'oz' ? Math.round((ml / ML_PER_OZ) * 10) / 10 : Math.round(ml);
+  return Math.round((parseFloat(ml)||0) / 29.5735 * 10) / 10; // always oz
 }
 // value typed in the currently selected unit -> canonical ml (integer)
-function displayToMl(val){
-  const n = parseFloat(val) || 0;
-  return getFluidUnit() === 'oz' ? Math.round(n * ML_PER_OZ) : Math.round(n);
+function displayToMl(v){
+  const n = parseFloat(v) || 0;
+  return Math.round(n * 29.5735); // always oz → ml
 }
 // pretty string, e.g. "240 ml" or "8.1 oz" — always fed the stored ml value
 function fmtFluid(ml){ return mlToDisplay(ml) + ' oz'; }
@@ -9350,6 +9353,41 @@ function confirmClearDemo(){
   save(); updateTopbar(); updateTopbarUser(); renderDashboard();
   toast('✅ Demo data cleared — ready for your real patients', 'var(--given)');
 }
+
+// ═══════════════════════════════════════════════════════════════
+// LEGAL ACCEPTANCE — first-launch ToS/Privacy notice
+// ═══════════════════════════════════════════════════════════════
+function checkLegalAcceptance(){
+  const accepted = localStorage.getItem('tendedPro_legalAccepted');
+  if(!accepted){
+    const overlay = document.getElementById('legal-overlay');
+    if(overlay) overlay.style.display = 'flex';
+    return false; // do not proceed with normal init yet
+  }
+  return true;
+}
+
+function acceptLegalTerms(){
+  try{
+    localStorage.setItem('tendedPro_legalAccepted', JSON.stringify({
+      accepted: true,
+      date: new Date().toISOString(),
+      version: '1.0'
+    }));
+  }catch(e){}
+  const overlay = document.getElementById('legal-overlay');
+  if(overlay) overlay.style.display = 'none';
+  // Now run normal first-launch logic
+  if(!checkLegalAcceptance()) return; // wait for user to accept ToS
+  checkFirstLaunch();
+  renderDashboard();
+}
+
+function showLegalInfo(){
+  // Opens both documents in new tabs
+  window.open('https://flougher.github.io/tended-pro/terms-of-service.html','_blank');
+}
+
 function checkFirstLaunch(){
   const welcomed = localStorage.getItem('tendedPro_welcomed');
   if(!welcomed && !D.patients.length){
@@ -12414,6 +12452,78 @@ function ciLogAndGo(status){
 }
 function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
 </script>
+<!-- ══ LEGAL ACCEPTANCE OVERLAY ══════════════════════════════ -->
+<div id="legal-overlay" style="display:none;position:fixed;inset:0;background:rgba(12,27,51,.95);
+     z-index:99999;align-items:center;justify-content:center;padding:20px;
+     padding-bottom:max(20px,env(safe-area-inset-bottom));overflow-y:auto;
+     -webkit-overflow-scrolling:touch;backdrop-filter:blur(8px)">
+  <div style="background:white;border-radius:20px;padding:36px 32px;max-width:520px;
+       width:100%;box-shadow:0 24px 64px rgba(12,27,51,.5);text-align:center;margin:auto">
+
+    <div style="font-size:3rem;margin-bottom:12px">🏡</div>
+    <div style="font-family:var(--font-head);font-size:1.5rem;font-weight:700;
+         color:var(--navy);margin-bottom:6px">Welcome to Tended Pro</div>
+    <div style="font-size:.88rem;color:var(--slate-light);margin-bottom:24px">
+      Personal Caregiving Companion</div>
+
+    <div style="background:#F0F9FF;border:1.5px solid #0EA5E9;border-radius:12px;
+         padding:18px 20px;margin-bottom:20px;text-align:left">
+      <div style="font-weight:700;font-size:.88rem;color:#0369A1;margin-bottom:10px">
+        ℹ️ Important — Please Read</div>
+      <p style="font-size:.84rem;color:#0C4A6E;line-height:1.65;margin:0">
+        <strong>Tended Pro is a personal caregiving tool, not a HIPAA-covered service.</strong>
+        It is designed for family caregivers, private individuals, and self-pay
+        personal caregivers — not for use by healthcare covered entities or
+        business associates under HIPAA.
+      </p>
+    </div>
+
+    <div style="background:#FFF8F0;border:1.5px solid #F59E0B;border-radius:12px;
+         padding:16px 20px;margin-bottom:24px;text-align:left">
+      <div style="font-weight:700;font-size:.84rem;color:#92400E;margin-bottom:8px">
+        ⚠️ Not Medical Advice</div>
+      <p style="font-size:.82rem;color:#78350F;line-height:1.6;margin:0">
+        Tended Pro does not provide medical advice, diagnosis, or treatment.
+        Information recorded in this app does not replace the guidance of a
+        licensed healthcare provider. Always consult a qualified professional
+        for medical decisions.
+      </p>
+    </div>
+
+    <p style="font-size:.82rem;color:var(--slate-light);line-height:1.6;margin-bottom:24px">
+      By tapping <strong>Accept &amp; Continue</strong> you confirm you have read this notice
+      and agree to our
+      <a href="https://flougher.github.io/tended-pro/terms-of-service.html"
+         target="_blank" rel="noopener"
+         style="color:var(--teal);font-weight:600">Terms of Service</a>
+      and
+      <a href="https://flougher.github.io/tended-pro/privacy-policy.html"
+         target="_blank" rel="noopener"
+         style="color:var(--teal);font-weight:600">Privacy Policy</a>.
+    </p>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button onclick="acceptLegalTerms()"
+        style="width:100%;padding:14px;background:var(--teal);color:white;border:none;
+               border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;
+               font-family:var(--font-body)">
+        ✓ Accept &amp; Continue
+      </button>
+      <button onclick="showLegalInfo()"
+        style="width:100%;padding:12px;background:none;color:var(--teal);
+               border:1.5px solid var(--teal);border-radius:12px;font-size:.9rem;
+               font-weight:600;cursor:pointer;font-family:var(--font-body)">
+        Learn More
+      </button>
+    </div>
+
+    <p style="font-size:.72rem;color:var(--slate-light);margin-top:16px;line-height:1.5">
+      Acceptance is recorded locally on your device.<br>
+      No account or email required.
+    </p>
+  </div>
+</div>
+
 <!-- ══ QUICK FLUID OFFER MODAL ══════════════════════════════ -->
 <div class="overlay" id="quick-fluid-modal">
   <div class="modal">
