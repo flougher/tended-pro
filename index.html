@@ -1206,10 +1206,10 @@ body {
     <div style="width:64px;height:64px;background:linear-gradient(135deg,var(--teal-mid),var(--teal-bright));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 20px">🏥</div>
     <div style="font-family:var(--font-head);font-size:1.6rem;font-weight:700;color:var(--navy);margin-bottom:8px">Welcome to Tended Health Pro</div>
     <div style="font-size:.92rem;color:var(--slate-mid);line-height:1.7;margin-bottom:6px">Professional shift documentation for <strong style="color:var(--navy)">CNAs, HHAs, and direct care workers.</strong></div>
-    <div style="font-size:.84rem;color:var(--slate-light);line-height:1.6;margin-bottom:24px">MAR · Incidents · Vitals · Wound Tracker · Behavior Log · <strong style="color:#7C3AED">Memory Care</strong> · Billing · Monthly Report — all in one secure offline app.</div>
+    <div style="font-size:.84rem;color:var(--slate-light);line-height:1.6;margin-bottom:24px">Medication Log · Incidents · Vitals · Wound Tracker · Behavior Log · <strong style="color:#7C3AED">Memory Care</strong> · Billing · Monthly Report — all in one secure offline app.</div>
     <!-- UX-001 — capture caregiver name/initials up front -->
     <div style="background:var(--off-white);border-radius:14px;padding:18px;margin-bottom:18px;text-align:left">
-      <div style="font-size:.8rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Your details (used on MAR and reports):</div>
+      <div style="font-size:.8rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Your details (used on Medication Log and reports):</div>
       <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px">
         <div>
           <label style="display:block;font-size:.74rem;color:var(--slate-light);margin-bottom:3px">Your full name</label>
@@ -1225,10 +1225,10 @@ body {
     <div style="background:var(--off-white);border-radius:14px;padding:18px;margin-bottom:24px;text-align:left">
       <div style="font-size:.8rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Load sample patient to explore all sections:</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;font-size:.82rem;color:var(--navy)">
-        <div>✅ Patient profile</div><div>✅ MAR with 4 meds</div>
+        <div>✅ Patient profile</div><div>✅ Medication Log with 4 meds</div>
         <div>✅ 3 incidents</div><div>✅ Care plan</div>
         <div>✅ 2 active wounds</div><div>✅ Today's intake</div>
-        <div>✅ Family comms</div><div>✅ Morning routines</div>
+        <div>✅ Family log</div><div>✅ Morning routines</div>
         <div>✅ 3 triggers</div><div>✅ ABC behaviors</div>
         <div>✅ Toileting log</div><div>✅ Credentials</div>
         <div>✅ Billing entries</div><div>✅ Vital signs</div>
@@ -1256,7 +1256,7 @@ body {
     <div class="paywall-title">Unlock Tended Health Pro</div>
     <div class="paywall-sub" id="paywall-sub">Your 10-day free trial has ended. Unlock complete professional documentation — <strong>one-time purchase, no subscription, no recurring fees.</strong></div>
     <div class="paywall-features">
-      <div>✅ Full MAR logging</div><div>✅ FDA BBW alerts</div>
+      <div>✅ Full Medication Log</div><div>✅ FDA BBW alerts</div>
       <div>✅ Wound tracker</div><div>✅ Incident log</div>
       <div>✅ Vital signs & alerts</div><div>✅ PDF daily summary</div>
       <div>✅ Monthly report</div><div>✅ Billing & hours</div>
@@ -1313,7 +1313,7 @@ body {
   <div class="nav-group">
     <div class="nav-label">Patient Care</div>
     <button class="nav-btn" onclick="navTo('patients',this)"><span class="ni">👤</span> Patients <span class="nav-badge" id="nb-patients"></span></button>
-    <button class="nav-btn" onclick="navTo('mar',this)"><span class="ni">💊</span> MAR</button>
+    <button class="nav-btn" onclick="navTo('mar',this)"><span class="ni">💊</span> Medication Log</button>
     <button class="nav-btn" onclick="navTo('incidents',this)"><span class="ni">📋</span> Incidents <span class="nav-badge" id="nb-incidents"></span></button>
     <button class="nav-btn" onclick="navTo('handoff',this)"><span class="ni">🔄</span> Shift Handoff</button>
   </div>
@@ -1322,7 +1322,7 @@ body {
     <button class="nav-btn" onclick="navTo('careplan',this)"><span class="ni">📌</span> Care Plan</button>
     <button class="nav-btn" onclick="navTo('wounds',this)"><span class="ni">🩹</span> Wound Tracker</button>
     <button class="nav-btn" onclick="navTo('intake',this)"><span class="ni">🍽️</span> Diet & Fluids</button>
-    <button class="nav-btn" onclick="navTo('comms',this)"><span class="ni">📞</span> Family Comms</button>
+    <button class="nav-btn" onclick="navTo('comms',this)"><span class="ni">📞</span> Family Log</button>
     <button class="nav-btn" onclick="navTo('pain',this)"><span class="ni">😣</span> Pain Scale <span class="nav-badge" id="nb-pain"></span></button>
   </div>
   <div class="nav-group">
@@ -1461,7 +1461,7 @@ body {
       <div style="display:flex;flex-direction:column;gap:8px">
         <button class="btn btn-teal btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('mar')">
           <span style="font-size:1rem">💊</span>
-          <div style="text-align:left"><div style="font-weight:700">Administer Medications</div><div style="font-size:.72rem;opacity:.8;font-weight:400">Log today's MAR entries</div></div>
+          <div style="text-align:left"><div style="font-weight:700">Administer Medications</div><div style="font-size:.72rem;opacity:.8;font-weight:400">Log today's medications</div></div>
         </button>
         <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="openIncidentModal()">
           <span style="font-size:1rem">📋</span>
@@ -1560,7 +1560,7 @@ body {
       <div style="text-align:center;padding:12px 8px;background:var(--off-white);border-radius:var(--r);cursor:pointer" onclick="navTo('mar')">
         <div style="font-size:1.5rem;margin-bottom:6px">💊</div>
         <div style="font-size:.75rem;font-weight:700;color:var(--navy);margin-bottom:3px">2. Log Every Shift</div>
-        <div style="font-size:.68rem;color:var(--slate-light);line-height:1.5">MAR, meals, toileting, behaviors & incidents</div>
+        <div style="font-size:.68rem;color:var(--slate-light);line-height:1.5">Medication Log, meals, toileting, behaviors & incidents</div>
       </div>
       <div style="text-align:center;padding:12px 8px;background:var(--off-white);border-radius:var(--r);cursor:pointer" onclick="navTo('handoff')">
         <div style="font-size:1.5rem;margin-bottom:6px">🔄</div>
@@ -1612,13 +1612,13 @@ body {
   <div id="mar-patient-bar" style="margin-bottom:0"></div>
   <div class="ph">
     <div>
-      <div class="ph-title">💊 Medication Administration</div>
+      <div class="ph-title">💊 Medication Log</div>
       <div class="ph-sub" id="mar-date-sub">Today's medication record</div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <input type="date" id="mar-date" onchange="renderMAR()" style="border:1.5px solid var(--border);border-radius:var(--r);padding:7px 11px;font-family:var(--font-body);font-size:.84rem;background:white;color:var(--text)">
       <button class="btn btn-teal btn-sm" onclick="openModal('med-modal')">+ Add Medication</button>
-      <button class="btn btn-secondary btn-sm" onclick="printMAR()">🖨️ Print MAR</button>
+      <button class="btn btn-secondary btn-sm" onclick="printMAR()">🖨️ Print Log</button>
     </div>
   </div>
 
@@ -1699,7 +1699,7 @@ body {
   <div class="ph">
     <div>
       <div class="ph-title">🔄 Shift Handoff Report</div>
-      <div class="ph-sub">Auto-generates from today's MAR, incidents, and vitals</div>
+      <div class="ph-sub">Auto-generates from today's medication log, incidents, and vitals</div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-secondary" onclick="generateHandoff()">🔄 Generate</button>
@@ -1756,7 +1756,7 @@ body {
       <div style="font-size:2.4rem;margin-bottom:12px">✅</div>
       <div style="font-family:var(--font-head);font-size:1.1rem;color:var(--navy);margin-bottom:8px">No Black Box Warnings Detected</div>
       <div style="font-size:.86rem;color:var(--slate-light);line-height:1.6">None of the medications in your current list carry FDA black box warnings — or none have been added yet.</div>
-      <button class="btn btn-secondary btn-sm" style="margin-top:16px" onclick="navTo('mar')">➕ Add Medications in MAR</button>
+      <button class="btn btn-secondary btn-sm" style="margin-top:16px" onclick="navTo('mar')">➕ Add Medications to Medication Log</button>
     </div>
   </div>
   <div class="card" style="margin-top:4px">
@@ -1993,7 +1993,7 @@ body {
       <div class="fg">
         <label>Full Name <span style="color:var(--refused);font-size:.78rem">*</span></label>
         <input id="set-name" placeholder="Your full name" oninput="markSettingsDirty()">
-        <div id="set-name-err" style="display:none;font-size:.72rem;color:var(--refused);margin-top:3px">⚠ Name is required — it appears on your MAR and handoff reports</div>
+        <div id="set-name-err" style="display:none;font-size:.72rem;color:var(--refused);margin-top:3px">⚠ Name is required — it appears on your Medication Log and handoff reports</div>
       </div>
       <div class="fg">
         <label>Agency / Facility</label>
@@ -2006,7 +2006,7 @@ body {
       <div class="fg">
         <label>Default Initials <span style="color:var(--refused);font-size:.78rem">*</span></label>
         <input id="set-initials" placeholder="e.g. JD or RN-JS" maxlength="10" oninput="markSettingsDirty()">
-        <div id="set-initials-err" style="display:none;font-size:.72rem;color:var(--refused);margin-top:3px">⚠ Initials are required — they appear on every MAR entry</div>
+        <div id="set-initials-err" style="display:none;font-size:.72rem;color:var(--refused);margin-top:3px">⚠ Initials are required — they appear on every medication log entry</div>
       </div>
       <div class="fg" style="margin-bottom:16px">
         <label>Supervisor</label>
@@ -2036,7 +2036,7 @@ body {
           </div>
           <p style="font-size:.8rem;color:var(--navy);line-height:1.7;margin-bottom:8px">
             Tapping <strong>Export All Data</strong> saves a complete backup of everything in the app —
-            all patients, medications, MAR records, incidents, care plans, wounds, behaviors,
+            all patients, medications, medication log records, incidents, care plans, wounds, behaviors,
             billing, vitals, pain logs, and credentials — as a single <strong>.json file</strong> on your device.
           </p>
           <div style="font-size:.78rem;color:var(--teal);font-weight:600;margin-bottom:4px">What to do with the file:</div>
@@ -2099,8 +2099,8 @@ body {
       <div><strong style="color:var(--navy)">Version:</strong> 4.1.0</div>
       <div><strong style="color:var(--navy)">Sections:</strong> 22 clinical documentation sections</div>
       <div style="font-size:.84rem;color:var(--slate-mid);line-height:1.9">
-        <div>👤 <strong style="color:var(--navy)">Patient Care:</strong> Patient Roster · MAR · Incidents · Shift Handoff</div>
-        <div>📋 <strong style="color:var(--navy)">Documentation:</strong> Care Plan · Wound Tracker · Diet &amp; Fluids · Family Comms · Pain Scale</div>
+        <div>👤 <strong style="color:var(--navy)">Patient Care:</strong> Patient Roster · Medication Log · Incidents · Shift Handoff</div>
+        <div>📋 <strong style="color:var(--navy)">Documentation:</strong> Care Plan · Wound Tracker · Diet &amp; Fluids · Family Log · Pain Scale</div>
         <div>🧠 <strong style="color:var(--navy)">Behavioral &amp; Clinical:</strong> Routines · Triggers · ABC Behavior · Toileting · Vital Signs · Weekly Trends</div>
         <div>🎓 <strong style="color:var(--navy)">Professional Tools:</strong> Voice to Text · Credentials · Billing · Monthly Report</div>
         <div>💜 <strong style="color:var(--navy)">Memory Care:</strong> Sundowning Tracker · Wandering &amp; Elopement Log · Memory Care Notes</div>
@@ -2315,14 +2315,14 @@ body {
 <div id="section-comms" class="section">
   <div class="ph">
     <div>
-      <div class="ph-title">📞 Family Communications Log</div>
+      <div class="ph-title">📞 Family Log</div>
       <div class="ph-sub">Document all contacts with family members, guardians, and care coordinators</div>
     </div>
     <button class="btn btn-teal" onclick="openCommModal()">+ Log Contact</button>
   </div>
   <div id="comms-patient-bar" style="margin-bottom:14px"></div>
   <div id="comm-list">
-    <div class="empty"><div class="empty-icon">📞</div><div class="empty-text">No communications logged yet.<br>Tap + Log Contact to document family contact.</div></div>
+    <div class="empty"><div class="empty-icon">📞</div><div class="empty-text">No family log entries yet.<br>Tap + Log Contact to document family contact.</div></div>
   </div>
 </div>
 
@@ -2705,7 +2705,7 @@ body {
       <div style="padding:8px;background:var(--off-white);border-radius:var(--r)">🔄 Shift handoff notes</div>
       <div style="padding:8px;background:var(--off-white);border-radius:var(--r)">📌 Care plan instructions</div>
       <div style="padding:8px;background:var(--off-white);border-radius:var(--r)">🩹 Wound treatment notes</div>
-      <div style="padding:8px;background:var(--off-white);border-radius:var(--r)">📞 Communications summary</div>
+      <div style="padding:8px;background:var(--off-white);border-radius:var(--r)">📞 Family log summary</div>
       <div style="padding:8px;background:var(--off-white);border-radius:var(--r)">🍽️ Intake notes</div>
       <div style="padding:8px;background:var(--off-white);border-radius:var(--r)">⚡ Trigger descriptions</div>
     </div>
@@ -2802,7 +2802,7 @@ body {
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-intake" checked> 🍽️ Diet & Fluids</label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-behaviors" checked> 🧠 Behaviors</label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-toileting" checked> 🚻 Toileting</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-comms" checked> 📞 Comms</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-comms" checked> 📞 Family Log</label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-careplan" checked> 📌 Care Plan</label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-billing" checked> 💳 Billing</label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-shiftnotes" checked> 📝 Shift Notes</label>
@@ -2968,7 +2968,7 @@ body {
 <div class="bnav" id="bnav">
   <button class="bn-btn active" onclick="navTo('dashboard')"><span class="bn-icon">🏠</span>Home</button>
   <button class="bn-btn" onclick="navTo('patients')"><span class="bn-icon">👤</span>Patients</button>
-  <button class="bn-btn" onclick="navTo('mar')"><span class="bn-icon">💊</span>MAR</button>
+  <button class="bn-btn" onclick="navTo('mar')"><span class="bn-icon">💊</span>Meds</button>
   <button class="bn-btn" onclick="navTo('incidents')"><span class="bn-icon">📋</span>Incidents</button>
   <button class="bn-btn" onclick="toggleMobileMore()"><span class="bn-icon">⋯</span>More</button>
 </div>
@@ -2980,7 +2980,7 @@ body {
     <button class="bn-btn" onclick="mobileNavTo('careplan')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📌</span>Care Plan</button>
     <button class="bn-btn" onclick="mobileNavTo('wounds')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🩹</span>Wounds</button>
     <button class="bn-btn" onclick="mobileNavTo('intake')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🍽️</span>Diet & Fluids</button>
-    <button class="bn-btn" onclick="mobileNavTo('comms')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📞</span>Comms</button>
+    <button class="bn-btn" onclick="mobileNavTo('comms')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📞</span>Family Log</button>
     <button class="bn-btn" onclick="mobileNavTo('pain')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">😣</span>Pain</button>
     <button class="bn-btn" onclick="mobileNavTo('routines')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📅</span>Routines</button>
     <button class="bn-btn" onclick="mobileNavTo('triggers')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">⚡</span>Triggers</button>
@@ -3985,7 +3985,7 @@ function renderDashboard(){
             ${step1Label}
           </button>
           <button onclick="navTo('mar')" class="btn btn-secondary" style="justify-content:center;font-size:.88rem">
-            💊 Step 2 — Set Up Medications (MAR)
+            💊 Step 2 — Set Up Medications
           </button>
           <button onclick="navTo('settings')" class="btn btn-secondary" style="justify-content:center;font-size:.88rem">
             ⚙️ Step 3 — Complete Caregiver Profile
@@ -4045,7 +4045,7 @@ function renderDashboard(){
       nav:   'patients', icon: '👤'
     },
     {
-      label: 'Medications logged (MAR)',
+      label: 'Medications logged',
       done:  givenCount > 0 && pendingCount === 0,
       partial: givenCount > 0 && pendingCount > 0,
       sub:   totalMeds === 0 ? 'Add medications in Settings first'
@@ -4567,7 +4567,7 @@ function showDeletePatientModal(id, name, meds, incidents, wounds){
     <div style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy);text-align:center;margin-bottom:8px">Remove ${name}?</div>
     <div style="font-size:.84rem;color:var(--slate-mid);line-height:1.7;margin-bottom:16px;text-align:center">This will permanently remove this patient and all their associated records. This cannot be undone.</div>
     <div style="background:var(--refused-bg);border-radius:var(--r);padding:10px 14px;font-size:.78rem;color:var(--refused);margin-bottom:20px">
-      ⚠️ All MAR records, incidents, wounds, and other data linked to this patient will be deleted.
+      ⚠️ All medication records, incidents, wounds, and other data linked to this patient will be deleted.
     </div>
     <div style="display:flex;gap:10px">
       <button onclick="document.getElementById('delete-patient-modal').remove()" style="flex:1;padding:11px;background:var(--off-white);border:1.5px solid var(--border);border-radius:var(--r);font-family:var(--font-body);font-size:.9rem;cursor:pointer;font-weight:600">Cancel</button>
@@ -4721,7 +4721,7 @@ function deleteMed(id){
     return parts.length >= 3 && parts[2] === String(id);
   }).length;
   const warning = marRecordCount > 0
-    ? `Delete ${name}?\n\n${marRecordCount} MAR record${marRecordCount>1?'s':''} reference this medication. The records will remain but show as orphaned.`
+    ? `Delete ${name}?\n\n${marRecordCount} medication log record${marRecordCount>1?'s':''} reference this medication. The records will remain but show as orphaned.`
     : `Delete ${name}?`;
   if(!confirm(warning)) return;
   D.meds = D.meds.filter(x => x.id !== id);
@@ -5174,7 +5174,7 @@ function renderMAR(){
     table.innerHTML = `<div class="card" style="text-align:center;padding:28px 20px">
       <div style="font-size:2rem;margin-bottom:12px">💊</div>
       <div style="font-weight:700;font-size:.95rem;color:var(--navy);margin-bottom:6px">No medications added yet</div>
-      <div style="font-size:.84rem;color:var(--slate-light);margin-bottom:6px">Add medications to start logging the MAR for your patients.</div>
+      <div style="font-size:.84rem;color:var(--slate-light);margin-bottom:6px">Add medications to start your Medication Log.</div>
       <div style="font-size:.78rem;color:var(--slate-light);margin-bottom:18px">Each medication can be assigned to a specific patient or shared across all patients.</div>
       <button class="btn btn-teal" onclick="openModal('med-modal')" style="margin:0 auto">+ Add First Medication</button>
     </div>`;
@@ -5367,7 +5367,7 @@ function printMAR(){
 
   const w = window.open('','_blank');
   if(!w){ _showPopupBlockedHelp('this report'); return; }
-  w.document.write(`<!DOCTYPE html><html><head><title>MAR — ${dateDisp}</title>
+  w.document.write(`<!DOCTYPE html><html><head><title>Medication Log — ${dateDisp}</title>
 <style>
   body{font-family:'IBM Plex Sans',system-ui,sans-serif;max-width:760px;margin:30px auto;font-size:13px;color:#1C2B42}
   h1{font-family:'Playfair Display',Georgia,serif;font-size:1.5rem;color:#0C1B33;margin-bottom:4px}
@@ -5500,7 +5500,7 @@ function printMAR(){
       <select id="pain-action" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
         <option value="">— Select —</option>
         <option>Repositioned patient</option>
-        <option>Medication administered (per MAR)</option>
+        <option>Medication administered (per log)</option>
         <option>Applied heat/cold pack</option>
         <option>Notified nurse / supervisor</option>
         <option>Distraction / comfort measures</option>
@@ -5720,7 +5720,7 @@ function printMAR(){
       <div class="fg"><label>Contact Name *</label><input id="cm-contact" placeholder="Family member or guardian name"></div>
       <div class="fg"><label>Relationship</label><input id="cm-relation" placeholder="e.g. Son, daughter, POA, care coordinator"></div>
     </div>
-    <div class="fg"><label>Summary of Communication *</label>
+    <div class="fg"><label>Summary *</label>
       <textarea id="cm-summary" rows="3" placeholder="What was discussed, any concerns raised, decisions made, information shared about patient's condition…"></textarea>
     </div>
     <div class="fg"><label>Follow-Up Required</label>
@@ -7260,7 +7260,7 @@ function openCommModal(editId){
   const isEdit = _editCommId !== null;
   const comm = isEdit ? (D.comms||[]).find(x => x.id === _editCommId) : null;
   const title = document.querySelector('#comm-modal .modal-title');
-  if(title) title.textContent = isEdit ? 'Edit Communication' : 'Log Family Contact';
+  if(title) title.textContent = isEdit ? 'Edit Entry' : 'Log Family Contact';
   const btn = document.getElementById('cm-save-btn');
   if(btn) btn.textContent = isEdit ? 'Update Record' : 'Save Record';
   if(comm){
@@ -7320,7 +7320,7 @@ function renderComms(){
   let _commsFiltered = D.comms||[];
   if(_patFilter) _commsFiltered = _commsFiltered.filter(x => String(x.patientId) === String(_patFilter));
   if(!_commsFiltered.length){
-    el.innerHTML = '<div class="empty"><div class="empty-icon">📞</div><div class="empty-text">No communications logged yet.<br>Tap + Log Contact to document family contact.</div></div>';
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📞</div><div class="empty-text">No family log entries yet.<br>Tap + Log Contact to document family contact.</div></div>';
     return;
   }
   el.innerHTML = _commsFiltered.map(c => {
@@ -8794,7 +8794,7 @@ function renderReport(){
   // Comms
   if(check('rpt-comms')){
     const commsMonth = (D.comms||[]).filter(c=>inMonth(c.dt?.split('T')[0]));
-    sections += `<div class="report-section"><div class="report-section-title">📞 Family Communications (${commsMonth.length})</div>
+    sections += `<div class="report-section"><div class="report-section-title">📞 Family Log (${commsMonth.length})</div>
       ${commsMonth.length ? commsMonth.map(cm=>`
         <div style="padding:8px 0;border-bottom:1px solid #D8E2EE">
           <div style="font-size:.82rem;font-weight:700;color:#0C1B33">${cm.contact}${cm.relation?' ('+cm.relation+')':''} — ${cm.method}</div>
@@ -9082,7 +9082,7 @@ function buildSampleData(){
     { id:14002, date:todayISO,    time:'12:00', patientId:pid, score:2, location:'Bilateral knees', quality:'Aching',         action:'No action — monitoring',                  notes:'Post-morning activity. Improved after movement.' },
     { id:14003, date:dStr2(-1),   time:'08:15', patientId:pid, score:6, location:'Lower back',      quality:'Sharp / stabbing',action:'Notified nurse / supervisor',             notes:'Patient complained of sharp pain when turning in bed. Nurse called.' },
     { id:14004, date:dStr2(-1),   time:'14:30', patientId:pid, score:3, location:'Lower back',      quality:'Aching',         action:'Applied heat/cold pack',                  notes:'Warm pack applied. Patient reports improvement.' },
-    { id:14005, date:dStr2(-2),   time:'09:00', patientId:pid, score:3, location:'Bilateral knees', quality:'Aching',         action:'Medication administered (per MAR)',        notes:'Acetaminophen given per PRN order.' },
+    { id:14005, date:dStr2(-2),   time:'09:00', patientId:pid, score:3, location:'Bilateral knees', quality:'Aching',         action:'Medication administered (per log)',        notes:'Acetaminophen given per PRN order.' },
   ];
   D.shifts = D.shifts || [];
   // Convert flat routines to keyed format
