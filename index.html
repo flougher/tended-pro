@@ -1487,6 +1487,9 @@ body {
     </div>
   </div>
 
+  <!-- ── QUICK LOG CARD ────────────────────────────────────── -->
+  <div id="quick-log-card" style="margin-bottom:20px"></div>
+
   <!-- Resident-Centered Status Rows (Item 1) -->
   <div id="dash-resident-rows" style="margin-bottom:20px"></div>
 
@@ -1548,32 +1551,7 @@ body {
     </div>
   </div>
 
-  <!-- How the app works -->
-  <div class="card">
-    <div class="card-title">📖 How Tended Health Pro Works</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
-      <div style="text-align:center;padding:12px 8px;background:var(--off-white);border-radius:var(--r);cursor:pointer" onclick="navTo('patients')">
-        <div style="font-size:1.5rem;margin-bottom:6px">👤</div>
-        <div style="font-size:.75rem;font-weight:700;color:var(--navy);margin-bottom:3px">1. Add Patients</div>
-        <div style="font-size:.68rem;color:var(--slate-light);line-height:1.5">Set up profiles, allergies & emergency contacts</div>
-      </div>
-      <div style="text-align:center;padding:12px 8px;background:var(--off-white);border-radius:var(--r);cursor:pointer" onclick="navTo('mar')">
-        <div style="font-size:1.5rem;margin-bottom:6px">💊</div>
-        <div style="font-size:.75rem;font-weight:700;color:var(--navy);margin-bottom:3px">2. Log Every Shift</div>
-        <div style="font-size:.68rem;color:var(--slate-light);line-height:1.5">Medication Log, meals, toileting, behaviors & incidents</div>
-      </div>
-      <div style="text-align:center;padding:12px 8px;background:var(--off-white);border-radius:var(--r);cursor:pointer" onclick="navTo('handoff')">
-        <div style="font-size:1.5rem;margin-bottom:6px">🔄</div>
-        <div style="font-size:.75rem;font-weight:700;color:var(--navy);margin-bottom:3px">3. End-of-Shift</div>
-        <div style="font-size:.68rem;color:var(--slate-light);line-height:1.5">Generate handoff report for incoming caregiver</div>
-      </div>
-      <div style="text-align:center;padding:12px 8px;background:var(--off-white);border-radius:var(--r);cursor:pointer" onclick="navTo('report')">
-        <div style="font-size:1.5rem;margin-bottom:6px">📊</div>
-        <div style="font-size:.75rem;font-weight:700;color:var(--navy);margin-bottom:3px">4. Monthly Report</div>
-        <div style="font-size:.68rem;color:var(--slate-light);line-height:1.5">Print full care summary for agency or family</div>
-      </div>
-    </div>
-  </div>
+
 </div>
 <div id="section-patients" class="section">
   <div class="ph">
@@ -3727,7 +3705,11 @@ function _pushHistory(state){
   try { history.pushState(state, '', ''); } catch(e){}
 }
 
+var _qlReturning = false; // set by Quick Log to intercept history.back()
+
 window.addEventListener('popstate', e => {
+  // Quick Log return — redirect popstate navigation to dashboard
+  if(_qlReturning){ _qlReturning = false; navTo('dashboard'); return; }
   const state = e.state || {};
   // Close any open modals first
   const openModalEl = document.querySelector('.modal.open');
@@ -3812,7 +3794,7 @@ function closeModal(id){
   };
   if(resetMap[id]) resetMap[id]();
   // Pop history entry if we pushed one on openModal — but skip if popstate triggered this call
-  if(wasOpen && !_suppressHistoryPush){
+  if(wasOpen && !_suppressHistoryPush && !_qlActive){
     const st = history.state || {};
     if(st.modal === id){
       _suppressHistoryPush = true;
@@ -3963,8 +3945,8 @@ function renderDashboard(){
       ? "Now add your own real patient"
       : "Welcome — let's get you set up";
     const subCopy = hasOnlyDemo
-      ? "Margaret Thompson is loaded as a sample so you can explore. When you're ready, these 3 steps will get you logging your first real shift."
-      : "Start by adding a patient to your roster. Once added, you can log medications, vitals, incidents, and more for each shift.";
+      ? "Margaret Thompson is loaded as a sample. When you're ready, complete these 3 steps to set up your real patient. You can add more details to any section later."
+      : "These 3 steps get you started. You can add more details to any section later — just come back when you have the information.";
     const step1Label = hasOnlyDemo
       ? "👤 Step 1 — Add Your Real Patient"
       : "👤 Step 1 — Add Your First Patient";
@@ -4020,6 +4002,7 @@ function renderDashboard(){
   const nbBBW = document.getElementById('nb-bbw');
   if(nbBBW){ nbBBW.textContent = flaggedMeds.length; nbBBW.classList.toggle('show', flaggedMeds.length > 0); }
   renderResidentRows();
+  renderQuickLogCard();
   renderBBWDashboardAlert();     // inserts after banner first
   renderTriggerReminderCard();
   renderVitalsDashboardAlert();
@@ -6180,6 +6163,7 @@ function saveIncident(){
   document.getElementById('inc-sev').value      = 'minor';
   document.getElementById('inc-dt').value       = '';
   _editIncidentId = null;
+  if(_qlReturnIfQuickLog('Incident logged')) return;
   renderIncidents();
 }
 
@@ -7182,6 +7166,7 @@ function saveIntake(){
   document.getElementById('im-pct').value   = '';
   document.getElementById('im-fluid').value = '';
   document.getElementById('im-notes').value = '';
+  if(_qlReturnIfQuickLog('Meal logged')) return;
   renderIntake();
 }
 
@@ -7645,6 +7630,7 @@ function saveBehavior(){
   const tl = document.getElementById('bm-trigger-link'); if(tl) tl.value = '';
   const title = document.querySelector('#behavior-modal .modal-title');
   if(title) title.textContent = 'Log Behavior';
+  if(_qlReturnIfQuickLog('Behavior logged')) return;
   renderBehaviorLog();
 }
 
@@ -7851,6 +7837,7 @@ function saveToileting(){
   document.getElementById('tl-time').value  = '';
   const title = document.querySelector('#toilet-modal .modal-title');
   if(title) title.textContent = 'Log Toileting';
+  if(_qlReturnIfQuickLog('Bathroom logged')) return;
   renderToileting();
 }
 
@@ -9664,6 +9651,286 @@ function renderBBWSection(){
 }
 
 
+// ═══════════════════════════════════════════════════════════════
+// QUICK LOG — two-tap care documentation
+// ═══════════════════════════════════════════════════════════════
+var _fromQuickLog = false;
+var _quickLogPatient = null;
+var _qlActive = false; // patient used for this quick log entry
+
+// ── Render the Quick Log card on the dashboard ────────────────
+function renderQuickLogCard(){
+  const el = document.getElementById('quick-log-card');
+  if(!el) return;
+
+  const active = (D.patients||[]).filter(p => p.active !== false);
+  if(!active.length){
+    el.innerHTML = '';
+    return;
+  }
+
+  const buttons = [
+    { icon:'🍽️', label:'Refused Meal',       action:'refused-meal',  col:'#C0392B' },
+    { icon:'💊',  label:'Refused Medication', action:'refused-med',   col:'#C0392B' },
+    { icon:'🚶',  label:'Wandering',           action:'wandering',     col:'#B45309' },
+    { icon:'😡',  label:'Agitated',            action:'agitated',      col:'#B45309' },
+    { icon:'😊',  label:'Happy',               action:'happy',         col:'#16A34A' },
+    { icon:'😴',  label:'Sleeping',            action:'sleeping',      col:'#0C7A6E' },
+    { icon:'🚽',  label:'Bathroom',            action:'bathroom',      col:'#0C3B6E' },
+    { icon:'🩹',  label:'Injury',              action:'injury',        col:'#C0392B' },
+  ];
+
+  const btns = buttons.map(b => `
+    <button onclick="quickLog('${b.action}')"
+      style="display:flex;flex-direction:column;align-items:center;justify-content:center;
+             gap:6px;padding:14px 8px;border:2px solid ${b.col}18;border-radius:14px;
+             background:${b.col}0D;cursor:pointer;font-family:var(--font-body);
+             min-height:80px;transition:all .15s;-webkit-tap-highlight-color:transparent"
+      onmouseenter="this.style.background='${b.col}22';this.style.transform='scale(1.04)'"
+      onmouseleave="this.style.background='${b.col}0D';this.style.transform='scale(1)'">
+      <span style="font-size:1.8rem;line-height:1">${b.icon}</span>
+      <span style="font-size:.72rem;font-weight:700;color:${b.col};text-align:center;
+                   line-height:1.2">${b.label}</span>
+    </button>`).join('');
+
+  el.innerHTML = `
+    <div class="card" style="border-color:var(--teal);border-width:1.5px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div>
+          <div class="card-title" style="margin:0">⚡ Quick Log</div>
+          <div style="font-size:.74rem;color:var(--slate-light);margin-top:2px">
+            Tap any button to go directly to that section and log it. Returns you here when done.
+          </div>
+        </div>
+        <div style="font-size:.7rem;color:var(--slate-light);font-weight:600">2 taps</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        ${btns}
+      </div>
+    </div>`;
+}
+
+// ── Main dispatcher ───────────────────────────────────────────
+function quickLog(action){
+  const active = (D.patients||[]).filter(p => p.active !== false);
+
+  // Guard: no patients
+  if(!active.length){
+    toast('Add a patient first to use Quick Log', 'var(--held)'); return;
+  }
+
+  // Patient selection: single patient → auto-select; two → picker
+  if(active.length === 1){
+    setGlobalPatient(active[0].id);
+    _quickLogPatient = active[0];
+    _quickLogDispatch(action);
+  } else {
+    // Show patient picker overlay
+    _quickLogShowPicker(action, active);
+  }
+}
+
+function _quickLogShowPicker(action, patients){
+  const existing = document.getElementById('ql-picker-overlay');
+  if(existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'ql-picker-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(12,27,51,.7);'
+    + 'z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px';
+  overlay.innerHTML = `
+    <div style="background:white;border-radius:20px;padding:28px 24px;
+                max-width:360px;width:100%;text-align:center;
+                box-shadow:0 20px 60px rgba(12,27,51,.4)">
+      <div style="font-size:1.8rem;margin-bottom:8px">⚡</div>
+      <div style="font-weight:700;font-size:1rem;color:var(--navy);margin-bottom:4px">
+        Which resident?</div>
+      <div style="font-size:.8rem;color:var(--slate-light);margin-bottom:20px">
+        Select the resident for this entry</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        ${patients.map(p => `
+          <button onclick="_quickLogSelectPatient('${p.id}','${action}')"
+            style="padding:16px;border:2px solid var(--teal);border-radius:12px;
+                   background:var(--teal-pale);cursor:pointer;font-family:var(--font-body);
+                   font-size:.95rem;font-weight:700;color:var(--navy);
+                   display:flex;align-items:center;gap:12px">
+            <div style="width:38px;height:38px;border-radius:50%;background:${p.color||'#0C7A6E'};
+              color:white;display:flex;align-items:center;justify-content:center;
+              font-weight:700;font-size:.88rem;flex-shrink:0">
+              ${(p.fname?.[0]||'')+(p.lname?.[0]||'')}
+            </div>
+            <div style="text-align:left">
+              <div>${p.fname} ${p.lname}</div>
+              ${p.room?`<div style="font-size:.74rem;font-weight:400;color:var(--slate-light)">Room ${p.room}</div>`:''}
+            </div>
+          </button>`).join('')}
+        <button onclick="document.getElementById('ql-picker-overlay').remove()"
+          style="padding:10px;border:1.5px solid var(--border);border-radius:12px;
+                 background:none;cursor:pointer;font-size:.84rem;color:var(--slate-light);
+                 font-family:var(--font-body)">Cancel</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+function _quickLogSelectPatient(patId, action){
+  const overlay = document.getElementById('ql-picker-overlay');
+  if(overlay) overlay.remove();
+  setGlobalPatient(patId);
+  _quickLogPatient = (D.patients||[]).find(p => String(p.id) === String(patId)) || null;
+  _quickLogDispatch(action);
+}
+
+// ── Dispatch to section ───────────────────────────────────────
+function _quickLogDispatch(action){
+  _fromQuickLog = true;
+  _qlActive = true; // prevent closeModal from interfering with Quick Log return
+
+  const map = {
+    'refused-meal': { section:'intake',     delay:250, fn:'_qlOpenRefusedMeal'    },
+    'refused-med':  { section:'mar',        delay:200, fn:'_qlOpenRefusedMed'     },
+    'wandering':    { section:'wandering',  delay:250, fn:'_qlOpenWandering'      },
+    'agitated':     { section:'behaviors', delay:250, fn:'_qlOpenAgitated'       },
+    'happy':        { section:'behaviors', delay:250, fn:'_qlOpenHappy'           },
+    'sleeping':     { section:'routines',  delay:150, fn:null                     },
+    'bathroom':     { section:'toileting', delay:250, fn:'_qlOpenBathroom'        },
+    'injury':       { section:'incidents', delay:250, fn:'_qlOpenInjury'          },
+  };
+  const cfg = map[action];
+  if(!cfg){ _fromQuickLog=false; return; }
+
+  navTo(cfg.section);
+  _showQLBackButton(cfg.section);
+  if(cfg.fn){
+    setTimeout(() => { window[cfg.fn] && window[cfg.fn](); }, cfg.delay);
+  }
+}
+
+// ── Back button ───────────────────────────────────────────────
+function _showQLBackButton(section){
+  setTimeout(() => {
+    const existing = document.getElementById('ql-back-btn');
+    if(existing) existing.remove();
+    const sec = document.getElementById('section-'+section);
+    if(!sec) return;
+    const btn = document.createElement('div');
+    btn.id = 'ql-back-btn';
+    btn.style.cssText = 'margin-bottom:12px';
+    btn.innerHTML = `<button onclick="_qlCancel()"
+      style="display:flex;align-items:center;gap:8px;padding:8px 14px;
+             background:var(--off-white);border:1.5px solid var(--border);
+             border-radius:20px;cursor:pointer;font-family:var(--font-body);
+             font-size:.82rem;font-weight:600;color:var(--slate-mid)">
+      ← Back to Quick Log
+    </button>`;
+    sec.insertBefore(btn, sec.firstChild);
+  }, 50);
+}
+
+function _qlCancel(){
+  _fromQuickLog = false;
+  _qlActive = false;
+  _quickLogPatient = null;
+  const btn = document.getElementById('ql-back-btn');
+  if(btn) btn.remove();
+  // Close any open modal
+  document.querySelectorAll('.overlay.open').forEach(m => {
+    m.classList.remove('open'); m.style.display='none';
+  });
+  navTo('dashboard');
+}
+
+// ── Quick Log return after save ───────────────────────────────
+function _qlReturnIfQuickLog(label){
+  if(!_fromQuickLog) return false;
+  _fromQuickLog = false;
+  const btn = document.getElementById('ql-back-btn');
+  if(btn) btn.remove();
+  const name = _quickLogPatient
+    ? _quickLogPatient.fname + ' ' + _quickLogPatient.lname
+    : '';
+  const now = new Date();
+  const t = now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  _quickLogPatient = null;
+  toast(`✓ ${label}${name ? ' — '+name : ''} · ${t}`, 'var(--given)', 3000);
+  // Signal popstate handler to redirect to dashboard when history.back() fires
+  _qlReturning = true;
+  _qlActive = false; // allow normal modal close now
+  _suppressHistoryPush = true;
+  navTo('dashboard');
+  setTimeout(() => { _suppressHistoryPush = false; }, 300);
+  return true;
+}
+
+// ── Section-specific openers ──────────────────────────────────
+function _qlOpenRefusedMeal(){
+  openIntakeModal();
+  // Pre-fill AFTER openIntakeModal completes (synchronous)
+  const sel = document.getElementById('im-type');
+  if(sel){
+    // Try to select existing option or add one
+    let found = Array.from(sel.options).find(o => o.value==='Refused Meal');
+    if(!found){ const opt=document.createElement('option'); opt.value=opt.textContent='Refused Meal'; sel.appendChild(opt); }
+    sel.value = 'Refused Meal';
+  }
+  const pct = document.getElementById('im-pct');
+  if(pct) pct.value = '0';
+}
+
+function _qlOpenRefusedMed(){
+  const pid = String(_globalPatientId || '');
+  const hasMeds = (D.meds||[]).some(m => !m.patientId || String(m.patientId)===pid);
+  if(!hasMeds){
+    _fromQuickLog = false;
+    const btn = document.getElementById('ql-back-btn'); if(btn) btn.remove();
+    toast('No medications on file — add medications first', 'var(--held)');
+    return;
+  }
+  // MAR table is the interface — caregiver taps the specific med status button
+}
+
+function _qlOpenWandering(){
+  openModal('wandering-modal');
+}
+
+function _qlOpenAgitated(){
+  openModal('behavior-modal');
+  const sel = document.getElementById('bm-type');
+  if(sel) sel.value = 'Agitation / restlessness';
+  const beh = document.getElementById('bm-behavior');
+  if(beh) beh.value = 'Patient observed agitated';
+  const sev = document.getElementById('bm-severity');
+  if(sev) sev.value = 'moderate';
+}
+
+function _qlOpenHappy(){
+  openModal('behavior-modal');
+  const sel = document.getElementById('bm-type');
+  if(sel) sel.value = 'Positive / calm behavior';
+  const beh = document.getElementById('bm-behavior');
+  if(beh) beh.value = 'Patient observed happy and content';
+  const sev = document.getElementById('bm-severity');
+  if(sev) sev.value = 'mild';
+}
+
+function _qlOpenBathroom(){
+  openModal('toilet-modal');
+  // Pre-fill date, time, and default type so caregiver can save in one tap
+  const d = document.getElementById('toilet-date');
+  if(d && !d.value) d.value = new Date().toISOString().split('T')[0];
+  const t = document.getElementById('tl-time');
+  if(t && !t.value) t.value = new Date().toTimeString().slice(0,5);
+  const tp = document.getElementById('tl-type');
+  if(tp && !tp.value) tp.value = 'void';
+}
+
+function _qlOpenInjury(){
+  openIncidentModal();
+  // Set AFTER openIncidentModal (synchronous) — it resets sev to 'minor'
+  const type=document.getElementById('inc-type'); if(type) type.value='Fall';
+  const sev=document.getElementById('inc-sev'); if(sev) sev.value='moderate';
+  setTimeout(()=>{ const d=document.getElementById('inc-desc'); if(d&&!d.value) d.focus(); },50);
+}
 
 // ═══════════════════════════════════════════════════════════════
 // ITEM 1 — Resident-Centered Status Rows
@@ -10985,6 +11252,7 @@ function saveWandering(){
     const el = document.getElementById(id); if(el) el.value = '';
   });
   document.querySelectorAll('#wd-trigger-factors input[type="checkbox"]').forEach(cb => cb.checked = false);
+  if(_qlReturnIfQuickLog('Wandering logged')) return;
   renderWandering();
 }
 
