@@ -1641,6 +1641,9 @@ body {
 
   <div class="card">
     <div class="card-title">📝 MAR Notes — <span id="mar-notes-date"></span></div>
+    <div style="background:#F0F9FF;border:1.5px solid #0EA5E9;border-radius:var(--r);padding:10px 14px;margin-bottom:10px;font-size:.74rem;color:#0C4A6E;line-height:1.65">
+      <strong>⚕️ Side Effect Guidance:</strong> Include the medication name, specific symptom, when it started, and duration. Side effects from Donepezil, Memantine, Seroquel, and Depakote can overlap with dementia symptoms and may be expected and temporary. Always report to the supervising nurse or physician. <strong>Never adjust or discontinue any medication without physician guidance.</strong>
+    </div>
     <div class="fg" style="margin-bottom:10px">
       <textarea id="mar-notes" rows="2" placeholder="Medication refusals, side effects observed, notable reactions…"></textarea>
     </div>
@@ -1754,8 +1757,12 @@ body {
     <button class="btn btn-teal" onclick="openModal('sundowning-modal')">+ Log Episode</button>
   </div>
   <div id="sd-prediction-alert"></div>
-  <div style="background:#FFF8EC;border:1.5px solid #C9963A;border-radius:var(--r-lg);padding:12px 16px;margin-bottom:16px;font-size:.78rem;color:#92400E;line-height:1.6">
-    🌅 <strong>About Sundowning:</strong> Sundowning (late-day confusion) typically occurs in the late afternoon or evening in patients with dementia or Alzheimer's. Document episodes to identify patterns and improve care planning. Always notify your supervisor of severe episodes.
+  <div style="background:#FFF8EC;border:1.5px solid #C9963A;border-radius:var(--r-lg);padding:14px 16px;margin-bottom:16px;font-size:.78rem;color:#92400E;line-height:1.7">
+    <div style="font-weight:700;margin-bottom:6px">🌅 About Sundowning — Important Guidance</div>
+    <p style="margin-bottom:8px">Late-day confusion and agitation in dementia patients is often called "sundowning." Document every episode — patterns across multiple entries reveal far more than a single log.</p>
+    <p style="margin-bottom:8px"><strong>⚠️ Sundowning can mask other causes.</strong> Before attributing behavioral changes to sundowning, consider whether the patient may have an undiagnosed UTI, untreated pain, constipation, dehydration, a medication timing issue, or overstimulation. These causes are treatable — sundowning progression is not.</p>
+    <p style="margin-bottom:8px"><strong>Document:</strong> exact time, behaviors observed, possible triggers, what helped, and how long the episode lasted.</p>
+    <p style="margin-bottom:0"><strong>Call the physician if:</strong> the episode is significantly worse than usual, the patient has a fever, shows signs of pain, has not urinated in 8+ hours, or the behavior change is sudden rather than gradual. Sudden change is a medical signal, not a dementia symptom.</p>
   </div>
   <div id="sundowning-patient-bar" style="margin-bottom:10px"></div>
   <div id="sundowning-date-nav" style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
@@ -1839,8 +1846,12 @@ body {
   </div>
   <div id="wandering-patient-bar" style="margin-bottom:10px"></div>
   <div id="wd-prediction-alert"></div>
-  <div style="background:var(--refused-bg);border:1.5px solid var(--refused);border-radius:var(--r-lg);padding:12px 16px;margin-bottom:16px;font-size:.78rem;color:var(--refused);line-height:1.6">
-    ⚠️ <strong>Safety Notice:</strong> Wandering and elopement are serious safety events. Document every incident immediately and notify your supervisor per your agency's protocol. Elopement attempts must always be reported.
+  <div style="background:var(--refused-bg);border:1.5px solid var(--refused);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:16px;font-size:.78rem;color:#7A2020;line-height:1.7">
+    <div style="font-weight:700;margin-bottom:6px;color:var(--refused)">⚠️ Wandering & Elopement — Safety Guidance</div>
+    <p style="margin-bottom:8px"><strong>Document every incident immediately.</strong> A wandering log is only clinically useful when entries are consistent and complete. Time of incident, duration, location found, and what the patient was doing are all essential.</p>
+    <p style="margin-bottom:8px"><strong>Wandering vs. Elopement:</strong> Wandering is movement within a supervised space. Elopement is leaving or attempting to leave a secured area. Elopement is a medical emergency. If a patient leaves or attempts to leave, <strong>call 911 immediately</strong>, then notify the family and supervisor.</p>
+    <p style="margin-bottom:8px"><strong>Before logging, verify safeguards are in place:</strong> door alarms active, bed sensor functioning, ID bracelet on patient, family notified of risk level.</p>
+    <p style="margin-bottom:0"><strong>Call the physician if:</strong> wandering episodes are new or suddenly increasing in frequency, the patient appears in pain or distressed during episodes, or the patient is found in an unsafe location. A sudden increase in wandering behavior can signal a UTI, pain, medication reaction, or disease progression.</p>
   </div>
   <div id="wandering-list"></div>
 </div>
@@ -2413,6 +2424,15 @@ body {
       <div class="ph-sub">Structured pain assessment — 0 to 10 with face scale</div>
     </div>
     <button class="btn btn-teal btn-sm" onclick="openModal('pain-modal')">+ Log Pain</button>
+  </div>
+
+  <!-- PAINAD guidance card -->
+  <div style="background:#F0F9FF;border:1.5px solid #0EA5E9;border-radius:var(--r-lg);padding:14px 16px;margin-bottom:16px;font-size:.78rem;color:#0C4A6E;line-height:1.7">
+    <div style="font-weight:700;margin-bottom:6px">😣 About This Pain Scale — Important Guidance</div>
+    <p style="margin-bottom:8px">The 0–10 face scale is for patients who can communicate their pain verbally or by pointing. <strong>For patients with moderate to advanced dementia who cannot self-report, this scale alone is not reliable.</strong> A patient who scores 0 may still be in significant pain — they simply cannot express it.</p>
+    <p style="margin-bottom:8px"><strong>For non-verbal dementia patients, observe behavior instead of asking.</strong> Signs of unrecognized pain include: facial grimacing, bracing or guarding a body part, moaning or calling out during movement, resisting care, increased agitation or confusion, changes in breathing, or refusing to bear weight.</p>
+    <p style="margin-bottom:8px"><strong>When documenting pain:</strong> Record what you observed, not what you assumed. "Patient grimaced and pulled arm away during dressing change" is more useful than "pain score 4." Specificity helps the physician make better decisions.</p>
+    <p style="margin-bottom:0"><strong>Call the physician if:</strong> pain appears sudden or severe, the patient shows signs of pain at rest (not only during care), pain seems to come from a new location, or behavioral changes are unexplained. Pain in dementia patients is consistently underdiagnosed and undertreated.</p>
   </div>
 
   <!-- Patient + date filter -->
@@ -5434,6 +5454,9 @@ function printMAR(){
         <option>Left message — awaiting callback</option>
       </select>
     </div>
+    <div style="background:#FFF8F0;border:1.5px solid #F59E0B;border-radius:var(--r);padding:8px 12px;margin-bottom:10px;font-size:.72rem;color:#78350F;line-height:1.6">
+      ⚠️ If the patient reports or shows side effects: document the specific symptom, the medication, and notify the supervising nurse or physician. Do not encourage the patient to stop taking the medication without physician instruction.
+    </div>
     <div class="fg" style="margin-bottom:0"><label>Additional Notes</label>
       <input id="refusal-notes" placeholder="Patient's exact words, specific circumstances…">
     </div>
@@ -5448,6 +5471,9 @@ function printMAR(){
 <div class="overlay" id="pain-modal">
   <div class="modal">
     <div class="modal-title">Log Pain Assessment</div>
+    <div style="background:#FFF8EC;border:1.5px solid #C9963A;border-radius:var(--r);padding:8px 12px;margin-bottom:10px;font-size:.73rem;color:#92400E;line-height:1.6">
+      <strong>📋 Using this scale:</strong> Ask the patient to point to the face that shows how they feel. For patients who cannot respond, document what you observe — grimacing, guarding, moaning — rather than guessing a number. Score at the time of observation. Consistency across entries matters more than any single score.
+    </div>
     <div class="form-row">
       <div class="fg"><label>Date *</label><input type="date" id="pain-date"></div>
       <div class="fg"><label>Time *</label><input type="time" id="pain-time"></div>
@@ -5461,6 +5487,11 @@ function printMAR(){
       <div style="display:grid;grid-template-columns:repeat(11,1fr);gap:4px;margin-top:6px" id="pain-score-picker">
       </div>
       <input type="hidden" id="pain-score-val" value="">
+      <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--slate-light);margin-top:4px;font-weight:600">
+        <span style="color:#16A34A">0–2 Minimal</span>
+        <span style="color:#C47A00">3–5 Moderate</span>
+        <span style="color:#C0392B">7–10 Severe — notify physician</span>
+      </div>
     </div>
     <div class="fg"><label>Pain Location</label>
       <input id="pain-location" placeholder="e.g. Lower back, right hip, abdomen, head…">
