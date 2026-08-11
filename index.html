@@ -12056,9 +12056,9 @@ function buildPainPicker(){
   if(!el) return;
   el.innerHTML = Array.from({length:11},(_,i) =>
     `<button type="button" onclick="selectPainScore(${i})" id="pain-btn-${i}"
-      style="display:flex;flex-direction:column;align-items:center;padding:6px 2px;border:2px solid var(--border);border-radius:8px;background:white;cursor:pointer;font-size:.9rem;gap:2px;transition:.15s">
-      <span>${PAIN_FACE[i]}</span>
-      <span style="font-size:.65rem;font-weight:700;color:var(--slate-mid)">${i}</span>
+      style="display:flex;flex-direction:column;align-items:center;padding:5px 1px;border:2px solid var(--border);border-radius:8px;background:white;cursor:pointer;width:100%;min-width:0;box-sizing:border-box;overflow:hidden;font-size:.9rem;gap:2px;transition:.15s">
+      <span style="font-size:.85rem;line-height:1">${PAIN_FACE[i]}</span>
+      <span style="font-size:.58rem;font-weight:700;color:var(--slate-mid)">${i}</span>
     </button>`).join('');
 }
 
