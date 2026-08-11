@@ -10321,9 +10321,26 @@ function renderCriticalAlerts(){
     });
   });
 
-  // ── 5. Wounds not assessed today ───────────────────────────
+  // ── 5a. Worsening wounds — always alert regardless of assessment ─
+  const worseningWounds = (D.wounds||[]).filter(w =>
+    w.status === 'Worsening' && activePats.some(p => String(p.id)===String(w.patientId)));
+  worseningWounds.forEach(w => {
+    const pt = activePats.find(p => String(p.id)===String(w.patientId));
+    const nm = pt ? pt.fname+' '+pt.lname : 'Patient';
+    alerts.push({
+      level: 'red',
+      icon:  '🩹',
+      title: `${nm} — Wound worsening: ${w.location||'Unknown location'}`,
+      detail: `${w.stage||''} — Requires immediate assessment and documentation`,
+      nav:   'wounds'
+    });
+  });
+
+  // ── 5b. Wounds not assessed today (excludes healed + already covered by worsening) ─
   const unwoundToday = (D.wounds||[]).filter(w =>
-    !w.updatedAt || !w.updatedAt.startsWith(todayISO));
+    w.status !== 'Healed' &&
+    w.status !== 'Worsening' &&
+    (!w.updatedAt || !w.updatedAt.startsWith(todayISO)));
   if(unwoundToday.length){
     alerts.push({
       level: 'yellow',
