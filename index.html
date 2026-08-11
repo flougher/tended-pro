@@ -2423,7 +2423,10 @@ body {
       <div class="ph-title">😣 Pain Scale Log</div>
       <div class="ph-sub">Structured pain assessment — 0 to 10 with face scale</div>
     </div>
-    <button class="btn btn-teal btn-sm" onclick="openModal('pain-modal')">+ Log Pain</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-teal btn-sm" onclick="openModal('pain-modal')">+ Log Pain</button>
+      <button class="btn btn-secondary btn-sm" onclick="openPainADModal()">🧠 + Log PAINAD</button>
+    </div>
   </div>
 
   <!-- PAINAD guidance card -->
@@ -2470,6 +2473,9 @@ body {
   <div class="card">
     <div class="card-title" id="pain-log-title">📋 Pain Log</div>
     <div id="pain-list"></div>
+
+  <!-- PAINAD entries -->
+  <div id="painad-log-card" style="margin-top:20px"></div>
   </div>
 </div>
 
@@ -2799,6 +2805,7 @@ body {
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-wounds" checked> 🩹 Wounds</label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-intake" checked> 🍽️ Diet & Fluids</label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-behaviors" checked> 🧠 Behaviors</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-painad" checked> 🧠 PAINAD Assessments</label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-toileting" checked> 🚻 Toileting</label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-comms" checked> 📞 Family Log</label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-careplan" checked> 📌 Care Plan</label>
@@ -4262,7 +4269,7 @@ function renderDashboard(){
       dpEl.innerHTML = '<div class="empty" style="padding:20px"><div class="empty-icon" style="font-size:1.6rem">👤</div><div class="empty-text" style="font-size:.82rem">No patients added yet.<br>Tap <strong>View All Patients</strong> to add your first.</div></div>';
     } else {
       dpEl.innerHTML = D.patients.slice(0,4).map(p => {
-        const init = (p.fname[0]||'') + (p.lname[0]||'');
+        const init = ((p.fname||'')[0]||'') + ((p.lname||'')[0]||'');
         const isHighRisk = p.fallRisk === 'high';
         return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer${isHighRisk?';border-left:3px solid var(--refused);padding-left:8px;margin-left:-8px':''}" onclick="navTo('patients')">
           <div style="width:34px;height:34px;border-radius:50%;background:${p.color};color:white;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:.85rem;font-weight:700;flex-shrink:0">${init}</div>
@@ -6296,6 +6303,17 @@ function generateHandoff(){
   });
   const painSummary = painLines.length ? painLines.join('\n') : 'No pain assessments today';
 
+  // PAINAD summary for handoff
+  const todayPAINAD = (D.painad||[]).filter(e => e.date === todayISO);
+  const painadLines = todayPAINAD.sort((a,b)=>b.time.localeCompare(a.time)).map(e => {
+    const pt = (D.patients||[]).find(p => String(p.id)===String(e.patientId));
+    const nm = pt ? `${pt.fname} ${pt.lname}` : 'Unknown patient';
+    const sev = e.total<=2?'Minimal':e.total<=6?'Moderate':'🔴 SEVERE';
+    return `${fmtTime(e.time)} · ${nm} · ${e.total}/10 (${sev}) | B:${e.breathing} V:${e.vocalization} F:${e.facial} BL:${e.body} C:${e.consolability}${e.notes?' | '+e.notes:''}`;
+  });
+  const painadSummary = painadLines.length ? painadLines.join('\n') : null;
+  const severePAINAD_ho = todayPAINAD.filter(e => e.total >= 7);
+
   // Hydration summary for handoff
   const hydrLines = (D.patients||[]).filter(p=>p.active!==false).map(p=>{
     const td=new Date().toISOString().split('T')[0];
@@ -6354,6 +6372,7 @@ function generateHandoff(){
         <div class="ho-block-title">😣 Pain Assessments Today (${todayPain.length})</div>
         <div class="ho-pre">${painSummary}</div>
       </div>
+      ${painadSummary ? '<div class="ho-block"><div class="ho-block-title">🧠 PAINAD Today ('+(todayPAINAD.length)+')'+(severePAINAD_ho.length?' — ⚠️ '+severePAINAD_ho.length+' SEVERE':'')+'</div><div class="ho-pre">'+painadSummary+'</div></div>' : ""}
 
       ${hydrLines.length ? `<div class="ho-block">
         <div class="ho-block-title">💧 Hydration Summary${hydrLines.some(l=>l.includes('OVERDUE'))?' — ⚠️ OVERDUE':''}</div>
@@ -8751,6 +8770,43 @@ function renderReport(){
         <div style="background:#FFE4E4;border-radius:8px;padding:8px"><div style="font-size:1.2rem;font-weight:700;color:#C0392B;font-family:monospace">${bySev.severe}</div><div style="font-size:.7rem;color:#8097B3">Severe</div></div>
       </div>
       ${beh.length?'<div style="font-size:.84rem;color:#526280">Most common: ' + (()=>{const t={};beh.forEach(b=>t[b.type]=(t[b.type]||0)+1);return Object.entries(t).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,v])=>k+' ('+v+')').join(', ')})() + '</div>':'<div style="font-size:.84rem;color:#8097B3">No behavioral events this month.</div>'}
+    </div>`;
+  }
+
+  // PAINAD Pain Assessments
+  const rptPAINAD = (D.painad||[]).filter(e => inMonth(e.date));
+  if(check('rpt-painad') && rptPAINAD.length){
+    const paByPat = {};
+    rptPAINAD.forEach(e => {
+      const k = String(e.patientId);
+      if(!paByPat[k]) paByPat[k] = {entries:[], severe:0, totalSum:0};
+      paByPat[k].entries.push(e);
+      paByPat[k].totalSum += e.total;
+      if(e.total >= 7) paByPat[k].severe++;
+    });
+    sections += `<div class="report-section"><div class="report-section-title">🧠 PAINAD Pain Assessments (${rptPAINAD.length})</div>
+      ${Object.entries(paByPat).map(([pid, data]) => {
+        const pt = (D.patients||[]).find(p => String(p.id)===pid);
+        const nm = pt ? pt.fname+' '+pt.lname : 'Unknown';
+        const avg = Math.round(data.totalSum / data.entries.length * 10)/10;
+        return `<div style="padding:8px 0;border-bottom:1px solid #D8E2EE">
+          <div style="font-size:.82rem;font-weight:700;color:#0C1B33">${nm}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px;text-align:center">
+            <div style="background:#F0F4F8;border-radius:8px;padding:8px">
+              <div style="font-size:1.1rem;font-weight:700;color:#0C1B33;font-family:monospace">${data.entries.length}</div>
+              <div style="font-size:.68rem;color:#8097B3">Assessments</div>
+            </div>
+            <div style="background:#F0F4F8;border-radius:8px;padding:8px">
+              <div style="font-size:1.1rem;font-weight:700;color:#C47A00;font-family:monospace">${avg}</div>
+              <div style="font-size:.68rem;color:#8097B3">Avg Score</div>
+            </div>
+            <div style="background:${data.severe>0?'#FFE4E4':'#F0F4F8'};border-radius:8px;padding:8px">
+              <div style="font-size:1.1rem;font-weight:700;color:${data.severe>0?'#C0392B':'#0A7A4A'};font-family:monospace">${data.severe}</div>
+              <div style="font-size:.68rem;color:#8097B3">Severe (≥7)</div>
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
     </div>`;
   }
 
@@ -11631,6 +11687,332 @@ function initShiftClock(){
 const PAIN_FACE  = ['😊','😊','😊','🙂','🙂','😐','😐','😟','😟','😭','😭'];
 const PAIN_COLOR = ['var(--given)','var(--given)','var(--given)','var(--given)','var(--given)','var(--held)','var(--held)','var(--refused)','var(--refused)','var(--refused)','var(--refused)'];
 
+
+// ═══════════════════════════════════════════════════════════════
+// PAINAD — Behavioral Pain Assessment Scale
+// ═══════════════════════════════════════════════════════════════
+
+// Exact validated clinical descriptors — do not paraphrase
+const PAINAD_DOMAINS = [
+  { key: 'breathing', label: 'Breathing', sub: 'Independent of vocalization',
+    scores: [
+      { v:0, label:'Normal' },
+      { v:1, label:'Occasional labored breathing. Short period of hyperventilation.' },
+      { v:2, label:'Noisy labored breathing. Long period of hyperventilation. Cheyne-Stokes respirations.' }
+    ]},
+  { key: 'vocalization', label: 'Negative Vocalization', sub: 'Sounds that suggest discomfort',
+    scores: [
+      { v:0, label:'None' },
+      { v:1, label:'Occasional moan or groan. Low-level speech with a negative or disapproving quality.' },
+      { v:2, label:'Repeated troubled calling out. Loud moaning or groaning. Crying.' }
+    ]},
+  { key: 'facial', label: 'Facial Expression', sub: 'Observe the face carefully',
+    scores: [
+      { v:0, label:'Smiling or inexpressive.' },
+      { v:1, label:'Sad. Frightened. Frown.' },
+      { v:2, label:'Facial grimacing.' }
+    ]},
+  { key: 'body', label: 'Body Language', sub: 'Observe posture and movement',
+    scores: [
+      { v:0, label:'Relaxed.' },
+      { v:1, label:'Tense. Distressed pacing. Fidgeting.' },
+      { v:2, label:'Rigid. Fists clenched. Knees pulled up. Pulling or pushing away. Striking out.' }
+    ]},
+  { key: 'consolability', label: 'Consolability', sub: 'Response to comforting',
+    scores: [
+      { v:0, label:'No need to console.' },
+      { v:1, label:'Distracted or reassured by voice or touch.' },
+      { v:2, label:'Unable to console, distract, or reassure.' }
+    ]}
+];
+
+// Current domain selections — null = not yet scored
+let _paScores = { breathing:null, vocalization:null, facial:null, body:null, consolability:null };
+let _editPAId  = null;
+
+function openPainADModal(editId){
+  if(!D.patients || !D.patients.length){ toast('Please add a patient first','var(--held)'); return; }
+  if(!checkUnlock()) return;
+  _editPAId = editId !== undefined ? editId : null;
+  const isEdit = _editPAId !== null;
+  const entry  = isEdit ? (D.painad||[]).find(x => x.id === _editPAId) : null;
+
+  // Reset scores
+  _paScores = { breathing:null, vocalization:null, facial:null, body:null, consolability:null };
+  if(isEdit && entry){
+    _paScores.breathing    = entry.breathing;
+    _paScores.vocalization = entry.vocalization;
+    _paScores.facial       = entry.facial;
+    _paScores.body         = entry.body;
+    _paScores.consolability= entry.consolability;
+  }
+
+  // Set date/time
+  const now = new Date();
+  const dateEl = document.getElementById('pa-date');
+  const timeEl = document.getElementById('pa-time');
+  if(dateEl) dateEl.value = isEdit ? entry.date : now.toISOString().split('T')[0];
+  if(timeEl) timeEl.value = isEdit ? entry.time : now.toTimeString().slice(0,5);
+
+  // Populate patient dropdown
+  const sel = document.getElementById('pa-patient');
+  if(sel){
+    sel.innerHTML = '<option value="">— Select patient —</option>'
+      + (D.patients||[]).filter(p=>p.active!==false).map(p=>
+          `<option value="${p.id}">${p.fname} ${p.lname}</option>`).join('');
+    sel.value = isEdit ? entry.patientId
+      : (_globalPatientId || (D.patients.filter(p=>p.active!==false)[0]?.id || ''));
+  }
+
+  // Build domain scoring UI
+  _buildPADomains();
+
+  // Update save button title
+  const title = document.querySelector('#painad-modal .modal-title');
+  if(title) title.textContent = isEdit ? '🧠 Edit PAINAD Assessment' : '🧠 PAINAD Pain Assessment';
+
+  // Refresh total display
+  _calcPAINADTotal();
+  openModal('painad-modal');
+}
+
+function _buildPADomains(){
+  const el = document.getElementById('pa-domains');
+  if(!el) return;
+
+  el.innerHTML = PAINAD_DOMAINS.map((domain, di) => {
+    const color = ['#4A90D9','#7B68EE','#50C878','#FF8C42','#E8727A'][di];
+    return `
+    <div style="border:1.5px solid var(--border);border-radius:var(--r);
+         margin-bottom:10px;overflow:hidden">
+      <div style="background:${color}18;padding:8px 12px;border-bottom:1px solid var(--border)">
+        <span style="font-weight:700;font-size:.82rem;color:var(--navy)">${di+1}. ${domain.label}</span>
+        <span style="font-size:.7rem;color:var(--slate-light);margin-left:6px">${domain.sub}</span>
+      </div>
+      <div style="padding:6px 8px;display:flex;flex-direction:column;gap:4px">
+        ${domain.scores.map(s => {
+          const selected = _paScores[domain.key] === s.v;
+          return `<button type="button"
+            onclick="selectPAScore('${domain.key}',${s.v})"
+            id="pa-btn-${domain.key}-${s.v}"
+            style="display:flex;align-items:flex-start;gap:8px;padding:7px 10px;
+                   border:1.5px solid ${selected ? color : 'var(--border)'};
+                   border-radius:8px;background:${selected ? color+'22' : 'white'};
+                   cursor:pointer;font-family:var(--font-body);text-align:left;
+                   transition:.12s;width:100%">
+            <span style="font-weight:800;font-size:.9rem;color:${selected ? color : 'var(--slate-light)'};
+                   min-width:16px;margin-top:1px">${s.v}</span>
+            <span style="font-size:.72rem;color:${selected ? 'var(--navy)' : 'var(--slate-mid)'};
+                   line-height:1.5;font-weight:${selected ? '600' : '400'}">${s.label}</span>
+          </button>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectPAScore(domainKey, value){
+  _paScores[domainKey] = value;
+  // Refresh just the buttons for this domain to show selection
+  const domain = PAINAD_DOMAINS.find(d => d.key === domainKey);
+  if(!domain) return;
+  domain.scores.forEach(s => {
+    const btn = document.getElementById(`pa-btn-${domainKey}-${s.v}`);
+    if(!btn) return;
+    const color = ['#4A90D9','#7B68EE','#50C878','#FF8C42','#E8727A'][PAINAD_DOMAINS.indexOf(domain)];
+    const selected = s.v === value;
+    btn.style.border = `1.5px solid ${selected ? color : 'var(--border)'}`;
+    btn.style.background = selected ? color+'22' : 'white';
+    const scoreSpan = btn.querySelector('span:first-child');
+    const labelSpan = btn.querySelector('span:last-child');
+    if(scoreSpan) scoreSpan.style.color = selected ? color : 'var(--slate-light)';
+    if(labelSpan){
+      labelSpan.style.color = selected ? 'var(--navy)' : 'var(--slate-mid)';
+      labelSpan.style.fontWeight = selected ? '600' : '400';
+    }
+  });
+  _calcPAINADTotal();
+}
+
+function _calcPAINADTotal(){
+  const vals = Object.values(_paScores);
+  const allScored = vals.every(v => v !== null);
+  const total = allScored ? vals.reduce((a,b) => a+b, 0) : null;
+
+  // Show/hide total row
+  const totalRow = document.getElementById('pa-total-row');
+  if(totalRow) totalRow.style.display = allScored ? 'block' : 'none';
+
+  if(allScored && total !== null){
+    const disp = document.getElementById('pa-total-display');
+    const sev  = document.getElementById('pa-severity-label');
+    const alert = document.getElementById('pa-alert-msg');
+    if(disp) disp.textContent = `${total}/10`;
+    if(disp){
+      disp.style.color = total <= 2 ? '#16A34A' : total <= 6 ? '#C47A00' : '#C0392B';
+    }
+    if(sev){
+      sev.textContent = total <= 2 ? '✓ No / minimal pain'
+                      : total <= 6 ? '⚠ Moderate pain'
+                      : '🔴 Severe pain';
+      sev.style.color = total <= 2 ? '#16A34A' : total <= 6 ? '#C47A00' : '#C0392B';
+    }
+    if(alert) alert.style.display = total >= 7 ? 'block' : 'none';
+  }
+
+  // Enable/disable save button
+  const saveBtn = document.getElementById('pa-save-btn');
+  if(saveBtn){
+    saveBtn.disabled = !allScored;
+    saveBtn.style.opacity = allScored ? '1' : '.5';
+    saveBtn.style.cursor  = allScored ? 'pointer' : 'not-allowed';
+  }
+}
+
+function savePainAD(){
+  const patient = document.getElementById('pa-patient')?.value;
+  const date    = document.getElementById('pa-date')?.value;
+  const time    = document.getElementById('pa-time')?.value;
+  const notes   = document.getElementById('pa-notes')?.value.trim() || '';
+
+  if(!patient){ toast('Please select a patient','var(--held)'); return; }
+  if(!date)   { toast('Please enter a date','var(--held)');    return; }
+  if(!time)   { toast('Please enter a time','var(--held)');    return; }
+
+  const allScored = Object.values(_paScores).every(v => v !== null);
+  if(!allScored){ toast('Please score all 5 domains','var(--held)'); return; }
+
+  const total = Object.values(_paScores).reduce((a,b) => a+b, 0);
+  const initials = D.settings?.initials || '';
+
+  if(!D.painad) D.painad = [];
+
+  if(_editPAId !== null){
+    // Edit existing
+    const idx = D.painad.findIndex(x => x.id === _editPAId);
+    if(idx >= 0){
+      D.painad[idx] = { ...D.painad[idx],
+        date, time, patientId: patient,
+        breathing:    _paScores.breathing,
+        vocalization: _paScores.vocalization,
+        facial:       _paScores.facial,
+        body:         _paScores.body,
+        consolability:_paScores.consolability,
+        total, notes, caregiver: initials
+      };
+    }
+  } else {
+    // New entry
+    const newId = Date.now();
+    D.painad.push({
+      id: newId, date, time, patientId: patient,
+      breathing:    _paScores.breathing,
+      vocalization: _paScores.vocalization,
+      facial:       _paScores.facial,
+      body:         _paScores.body,
+      consolability:_paScores.consolability,
+      total, notes, caregiver: initials
+    });
+  }
+
+  save();
+  closeModal('painad-modal');
+  document.getElementById('pa-notes').value = '';
+  _editPAId = null;
+
+  // Supervisor alert for severe pain
+  if(total >= 7){
+    toast(`🔴 PAINAD ${total}/10 — Notify supervising physician or nurse immediately`, 'var(--refused)', 6000);
+  } else {
+    toast('PAINAD assessment saved', 'var(--given)', 2500);
+  }
+
+  // Refresh dashboard alerts + pain log
+  renderCriticalAlerts && renderCriticalAlerts();
+  renderPAINADLog();
+  if(_qlReturnIfQuickLog) _qlReturnIfQuickLog('PAINAD logged');
+}
+
+function renderPAINADLog(){
+  const el = document.getElementById('painad-log-card');
+  if(!el) return;
+
+  const patientId = document.getElementById('pain-patient')?.value || '';
+  const today     = new Date().toISOString().split('T')[0];
+  let entries = (D.painad||[]).filter(e => e.date === today);
+  if(patientId) entries = entries.filter(e => String(e.patientId) === String(patientId));
+  entries = entries.sort((a,b) => b.time.localeCompare(a.time));
+
+  if(!entries.length){
+    el.innerHTML = '';
+    return;
+  }
+
+  const rows = entries.map(e => {
+    const pt = (D.patients||[]).find(p => String(p.id) === String(e.patientId));
+    const name = pt ? `${pt.fname} ${pt.lname}` : 'Unknown';
+    const sev = e.total <= 2 ? { label:'Minimal', color:'#16A34A', bg:'#F0FFF4' }
+              : e.total <= 6 ? { label:'Moderate', color:'#C47A00', bg:'#FFF8EC' }
+              : { label:'Severe', color:'#C0392B', bg:'#FFF0F0' };
+    const domainIcons = [
+      { key:'breathing',    icon:'🫁', label:'Breathing' },
+      { key:'vocalization', icon:'🔊', label:'Vocaliz.' },
+      { key:'facial',       icon:'😐', label:'Facial' },
+      { key:'body',         icon:'🤲', label:'Body' },
+      { key:'consolability',icon:'🤝', label:'Console' }
+    ];
+    return `
+    <div style="border:1.5px solid ${sev.color}44;border-radius:var(--r);
+         background:${sev.bg};padding:12px 14px;margin-bottom:10px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;
+           margin-bottom:8px;gap:8px">
+        <div>
+          <div style="font-weight:700;font-size:.88rem;color:var(--navy)">${name}</div>
+          <div style="font-size:.72rem;color:var(--slate-light)">${fmtTime(e.time)} · ${e.caregiver||''}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-weight:800;font-size:1.3rem;color:${sev.color};line-height:1">${e.total}/10</div>
+          <div style="font-size:.65rem;font-weight:700;color:${sev.color}">${sev.label}</div>
+          ${e.total >= 7 ? `<div style="font-size:.64rem;color:var(--refused);font-weight:700">⚠ Notify MD</div>` : ''}
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:${e.notes?'8px':'0'}">
+        ${domainIcons.map(d => `
+          <div style="text-align:center;background:white;border-radius:6px;padding:4px 2px;
+               border:1px solid var(--border)">
+            <div style="font-size:.9rem">${d.icon}</div>
+            <div style="font-size:.58rem;color:var(--slate-light);margin:1px 0">${d.label}</div>
+            <div style="font-weight:800;font-size:.82rem;color:${e[d.key]===0?'#16A34A':e[d.key]===1?'#C47A00':'#C0392B'}">${e[d.key]}</div>
+          </div>`).join('')}
+      </div>
+      ${e.notes ? `<div style="font-size:.72rem;color:var(--slate-mid);line-height:1.5;
+           padding-top:6px;border-top:1px solid ${sev.color}33">${(e.notes||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>` : ''}
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button onclick="openPainADModal(${e.id})"
+          style="font-size:.68rem;padding:3px 10px;border:1px solid var(--border);
+                 border-radius:6px;background:white;cursor:pointer;color:var(--slate-mid)">✏️ Edit</button>
+        <button onclick="deletePAINAD(${e.id})"
+          style="font-size:.68rem;padding:3px 10px;border:1px solid var(--refused);
+                 border-radius:6px;background:white;cursor:pointer;color:var(--refused)">✕ Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-title">🧠 PAINAD Assessments Today (${entries.length})</div>
+      ${rows}
+    </div>`;
+}
+
+function deletePAINAD(id){
+  if(!confirm('Delete this PAINAD assessment?')) return;
+  D.painad = (D.painad||[]).filter(e => e.id !== id);
+  save();
+  renderPAINADLog();
+  toast('PAINAD assessment deleted','var(--slate-mid)',2000);
+}
+
 function initPain(){
   populatePatientBars();
   const dateEl = document.getElementById('pain-date');
@@ -11638,6 +12020,7 @@ function initPain(){
   populatePainPatients();
   buildPainPicker();
   renderPainLog();
+  renderPAINADLog();
 }
 
 function populatePainPatients(){
@@ -12751,6 +13134,62 @@ function ciLogAndGo(status){
 }
 function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
 </script>
+<!-- ══ PAINAD BEHAVIORAL PAIN ASSESSMENT MODAL ══════════════ -->
+<div class="overlay" id="painad-modal">
+  <div class="modal">
+    <div class="modal-title">🧠 PAINAD Pain Assessment</div>
+
+    <!-- Guidance -->
+    <div style="background:#F0F9FF;border:1.5px solid #0EA5E9;border-radius:var(--r);
+         padding:9px 13px;margin-bottom:12px;font-size:.72rem;color:#0C4A6E;line-height:1.6">
+      <strong>Who this is for:</strong> Patients who cannot self-report pain verbally.
+      Score what you observe <em>right now</em> — do not reconstruct from memory.
+      Consistency across entries matters more than any single score.
+    </div>
+
+    <!-- Date / Time / Patient -->
+    <div class="form-row">
+      <div class="fg"><label>Date *</label><input type="date" id="pa-date"></div>
+      <div class="fg"><label>Time *</label><input type="time" id="pa-time"></div>
+    </div>
+    <div class="fg">
+      <label>Patient *</label>
+      <select id="pa-patient" style="border:1.5px solid var(--border);border-radius:var(--r);
+        padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+        <option value="">— Select patient —</option>
+      </select>
+    </div>
+
+    <!-- Domain helper -->
+    <div id="pa-domains" style="margin-top:8px"></div>
+
+    <!-- Total score -->
+    <div id="pa-total-row" style="display:none;background:var(--off-white);border:1.5px solid var(--border);
+         border-radius:var(--r);padding:12px 14px;margin:12px 0;text-align:center">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+           color:var(--slate-light);margin-bottom:4px">PAINAD Total Score</div>
+      <div id="pa-total-display" style="font-size:2rem;font-weight:800;color:var(--navy)">0/10</div>
+      <div id="pa-severity-label" style="font-size:.78rem;font-weight:700;margin-top:4px"></div>
+      <div id="pa-alert-msg" style="display:none;background:#FFF0F0;border:1.5px solid var(--refused);
+           border-radius:8px;padding:8px 12px;margin-top:8px;font-size:.74rem;color:var(--refused);
+           font-weight:700">⚠️ Supervisor notification required — score ≥ 7</div>
+    </div>
+
+    <!-- Notes -->
+    <div class="fg">
+      <label>Observation Notes</label>
+      <textarea id="pa-notes" rows="2"
+        placeholder="What triggered the assessment, what helped, context…"></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('painad-modal')">Cancel</button>
+      <button class="btn btn-teal" id="pa-save-btn" onclick="savePainAD()" disabled
+        style="opacity:.5;cursor:not-allowed">Save Assessment</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ LEGAL ACCEPTANCE OVERLAY ══════════════════════════════ -->
 <div id="legal-overlay" style="display:none;position:fixed;inset:0;background:rgba(12,27,51,.95);
      z-index:99999;align-items:center;justify-content:center;padding:20px;
