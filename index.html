@@ -1384,6 +1384,9 @@ body {
     </div>
   </div>
 
+  <!-- Alert anchor — critical/BBW/vitals alerts insert here -->
+  <div id="dash-alerts-anchor" style="margin:0"></div>
+
   <!-- Active Shift Timer -->
   <div id="dash-shift-clock" style="display:none;background:linear-gradient(135deg,#0B4A3E,#0C7A6E);border-radius:var(--r-lg);padding:12px 20px;margin-bottom:12px;display:none;align-items:center;justify-content:space-between;gap:12px">
     <div style="display:flex;align-items:center;gap:10px">
@@ -1404,6 +1407,32 @@ body {
     <span style="flex:1;font-size:.84rem;line-height:1.5">🎉 <strong>Welcome — you have a 10-day free trial.</strong> After your trial ends, unlock forever for a one-time $14.99. No subscription. Thanks for being an early user.</span>
     <button onclick="dismissLaunchBanner()" aria-label="Dismiss" style="background:rgba(255,255,255,.25);border:none;color:white;font-size:.78rem;cursor:pointer;padding:4px 10px;border-radius:6px;flex-shrink:0;font-weight:700;white-space:nowrap">✕ Dismiss</button>
   </div>
+
+  <!-- Stat cards -->
+  <div class="grid-4" style="margin-bottom:20px">
+    <div class="stat-card" onclick="navTo('patients')">
+      <div class="stat-icon" style="background:rgba(11,122,110,.1)">👤</div>
+      <div><div class="stat-val" id="ds-patients">0</div><div class="stat-lbl">Patients</div></div>
+    </div>
+    <div class="stat-card" onclick="navTo('mar')">
+      <div class="stat-icon" style="background:rgba(11,122,110,.1)">💊</div>
+      <div><div class="stat-val" id="ds-meds">0/0</div><div class="stat-lbl">Meds Given</div></div>
+    </div>
+    <div class="stat-card" onclick="navTo('incidents')">
+      <div class="stat-icon" style="background:rgba(192,57,43,.08)">📋</div>
+      <div><div class="stat-val" id="ds-incidents">0</div><div class="stat-lbl">Incidents Today</div></div>
+    </div>
+    <div class="stat-card" onclick="navTo('mar')">
+      <div class="stat-icon" style="background:rgba(196,122,0,.08)">⚠️</div>
+      <div><div class="stat-val" id="ds-pending">0</div><div class="stat-lbl">Meds Pending</div></div>
+    </div>
+  </div>
+
+  <!-- ── QUICK LOG CARD ────────────────────────────────────── -->
+  <div id="quick-log-card" style="margin-bottom:20px"></div>
+
+  <!-- Resident-Centered Status Rows (Item 1) -->
+  <div id="dash-resident-rows" style="margin-bottom:20px"></div>
 
   <!-- Shift Progress Banner -->
   <div id="dash-shift-banner" style="background:linear-gradient(135deg,var(--navy),var(--navy-mid));border-radius:var(--r-lg);padding:18px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
@@ -1427,26 +1456,6 @@ body {
             stroke-dashoffset="138.2" stroke-linecap="round" style="transition:stroke-dashoffset .6s ease"/>
         </svg>
       </div>
-    </div>
-  </div>
-
-  <!-- Stat cards -->
-  <div class="grid-4" style="margin-bottom:20px">
-    <div class="stat-card" onclick="navTo('patients')">
-      <div class="stat-icon" style="background:rgba(11,122,110,.1)">👤</div>
-      <div><div class="stat-val" id="ds-patients">0</div><div class="stat-lbl">Patients</div></div>
-    </div>
-    <div class="stat-card" onclick="navTo('mar')">
-      <div class="stat-icon" style="background:rgba(11,122,110,.1)">💊</div>
-      <div><div class="stat-val" id="ds-meds">0/0</div><div class="stat-lbl">Meds Given</div></div>
-    </div>
-    <div class="stat-card" onclick="navTo('incidents')">
-      <div class="stat-icon" style="background:rgba(192,57,43,.08)">📋</div>
-      <div><div class="stat-val" id="ds-incidents">0</div><div class="stat-lbl">Incidents Today</div></div>
-    </div>
-    <div class="stat-card" onclick="navTo('mar')">
-      <div class="stat-icon" style="background:rgba(196,122,0,.08)">⚠️</div>
-      <div><div class="stat-val" id="ds-pending">0</div><div class="stat-lbl">Meds Pending</div></div>
     </div>
   </div>
 
@@ -1487,11 +1496,6 @@ body {
     </div>
   </div>
 
-  <!-- ── QUICK LOG CARD ────────────────────────────────────── -->
-  <div id="quick-log-card" style="margin-bottom:20px"></div>
-
-  <!-- Resident-Centered Status Rows (Item 1) -->
-  <div id="dash-resident-rows" style="margin-bottom:20px"></div>
 
   <!-- Patient Roster + Incidents -->
   <div class="grid-2" style="margin-bottom:20px">
@@ -10404,10 +10408,8 @@ function renderCriticalAlerts(){
      ${rows}`;
 
   // Insert immediately after the shift banner (before BBW/other alerts)
-  const shiftBanner = document.getElementById('dash-shift-banner');
-  if(shiftBanner){
-    shiftBanner.insertAdjacentElement('afterend', banner);
-  }
+  const anchor = document.getElementById('dash-alerts-anchor');
+  if(anchor) anchor.insertAdjacentElement('afterend', banner);
 }
 
 function renderBBWDashboardAlert(){
@@ -10417,8 +10419,9 @@ function renderBBWDashboardAlert(){
     ? (D.meds||[]).filter(m => String(m.patientId) === String(_globalPatientId))
     : (D.meds||[]);
   const flagged  = _dashMeds.filter(m => getBBW(m.name));
-  const banner   = document.getElementById('dash-shift-banner');
-  if(!banner) return;
+  const bbwAnchor = document.getElementById('dash-critical-alerts')
+                 || document.getElementById('dash-alerts-anchor');
+  if(!bbwAnchor) return;
 
   if(existing) existing.remove();
   if(!flagged.length) return;
@@ -10440,8 +10443,8 @@ function renderBBWDashboardAlert(){
       ⚕️ <strong>Disclaimer:</strong> Medication warnings are sourced from FDA drug label data and are for <strong>informational reference only</strong>. They do not constitute medical advice. Tended Health Pro is a documentation tool — not a medical device. Always follow your agency's protocols and physician orders.
     </div>`;
 
-  // Insert after shift banner
-  banner.insertAdjacentElement('afterend', alert);
+  // Insert after critical alerts → anchor chain
+  bbwAnchor.insertAdjacentElement('afterend', alert);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -10778,8 +10781,10 @@ function renderVitalsDashboardAlert(){
     <div style="font-size:.8rem;font-weight:700;color:var(--refused);white-space:nowrap">View →</div>
   </div>`;
   const bbwAlert = document.getElementById('dash-bbw-alert');
-  const insertAfter = bbwAlert || banner;
-  insertAfter.insertAdjacentElement('afterend', alert);
+  const caAlert  = document.getElementById('dash-critical-alerts');
+  const vAnch    = document.getElementById('dash-alerts-anchor');
+  const insertAfter = bbwAlert || caAlert || vAnch;
+  if(insertAfter) insertAfter.insertAdjacentElement('afterend', alert);
 }
 
 
