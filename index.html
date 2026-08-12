@@ -1355,7 +1355,6 @@ body {
   </div>
   <div class="nav-group">
     <div class="nav-label">💚 Caregiver Wellness</div>
-    <button class="nav-btn" onclick="navTo('checkin',this)"><span class="ni">💚</span> Caregiver Check-In</button>
   </div>
   <div class="nav-group">
     <div class="nav-label">Account</div>
@@ -1428,36 +1427,9 @@ body {
     </div>
   </div>
 
-  <!-- ── QUICK LOG CARD ────────────────────────────────────── -->
-  <div id="quick-log-card" style="margin-bottom:20px"></div>
-
   <!-- Resident-Centered Status Rows (Item 1) -->
   <div id="dash-resident-rows" style="margin-bottom:20px"></div>
 
-  <!-- Shift Progress Banner -->
-  <div id="dash-shift-banner" style="background:linear-gradient(135deg,var(--navy),var(--navy-mid));border-radius:var(--r-lg);padding:18px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
-    <div style="display:flex;align-items:center;gap:14px">
-      <div style="font-size:2rem" id="dash-shift-icon">🌅</div>
-      <div>
-        <div style="font-family:var(--font-head);font-size:1rem;color:white;margin-bottom:2px" id="dash-shift-label">Starting Your Shift</div>
-        <div style="font-size:.78rem;color:rgba(255,255,255,.5)" id="dash-shift-sub">Here's what needs attention today</div>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <div style="text-align:center">
-        <div style="font-family:var(--font-mono);font-size:1.4rem;font-weight:600;color:var(--teal-bright)" id="dash-shift-pct">0%</div>
-        <div style="font-size:.62rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em">Shift Complete</div>
-      </div>
-      <div style="width:52px;height:52px;position:relative;flex-shrink:0">
-        <svg viewBox="0 0 52 52" style="transform:rotate(-90deg)">
-          <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="5"/>
-          <circle cx="26" cy="26" r="22" fill="none" stroke="#14C4B2" stroke-width="5"
-            stroke-dasharray="138.2" id="dash-progress-ring"
-            stroke-dashoffset="138.2" stroke-linecap="round" style="transition:stroke-dashoffset .6s ease"/>
-        </svg>
-      </div>
-    </div>
-  </div>
 
   <!-- Shift Checklist + Quick Actions -->
   <div class="grid-2" style="margin-bottom:20px">
@@ -1496,6 +1468,9 @@ body {
     </div>
   </div>
 
+
+  <!-- ── QUICK LOG CARD ────────────────────────────────────── -->
+  <div id="quick-log-card" style="margin-bottom:20px"></div>
 
   <!-- Patient Roster + Incidents -->
   <div class="grid-2" style="margin-bottom:20px">
@@ -4167,39 +4142,8 @@ function renderDashboard(){
   // Progress ring
   const ring = document.getElementById('dash-progress-ring');
   if(ring) ring.style.strokeDashoffset = 138.2 - (138.2 * pct / 100);
-  const pctEl = document.getElementById('dash-shift-pct');
-  if(pctEl) pctEl.textContent = pct + '%';
 
-  // Shift banner label
-  const shiftLabel = document.getElementById('dash-shift-label');
-  const shiftSub   = document.getElementById('dash-shift-sub');
-  const shiftIcon  = document.getElementById('dash-shift-icon');
-  if(shiftLabel && shiftSub && shiftIcon){
-    if(pct === 100){
-      shiftIcon.textContent  = '🎉';
-      shiftLabel.textContent = 'Shift Complete — Outstanding Care!';
-      shiftSub.textContent   = 'Every task documented. Your residents are well cared for today.';
-    } else if(pct >= 80){
-      shiftIcon.textContent  = '🌟';
-      shiftLabel.textContent = 'Almost Done — Great Work!';
-      const rem = checkItems.length - doneCount;
-      shiftSub.textContent   = `Just ${rem} item${rem>1?'s':''} left — you're nearly there.`;
-    } else if(pct >= 60){
-      shiftIcon.textContent  = h < 17 ? '☀️' : '🌆';
-      shiftLabel.textContent = 'Good Progress — Keep Going';
-      shiftSub.textContent   = `${checkItems.length - doneCount} item${checkItems.length-doneCount>1?'s':''} remaining for a complete shift record`;
-    } else if(pct >= 40){
-      shiftIcon.textContent  = h < 12 ? '🌅' : h < 17 ? '⏰' : '🌙';
-      shiftLabel.textContent = h < 12 ? 'Starting Your Shift' : 'Mid-Shift Check-In';
-      shiftSub.textContent   = `${doneCount} of ${checkItems.length} complete — you're making great progress.`;
-    } else {
-      shiftIcon.textContent  = h < 12 ? '🌅' : h < 17 ? '⏰' : '🌙';
-      shiftLabel.textContent = h < 12 ? 'Starting Your Shift' : h < 17 ? 'Mid-Shift Check-In' : 'Evening Shift';
-      shiftSub.textContent   = D.patients.length === 0
-        ? 'Add a patient to get started with documentation'
-        : "Here's what needs attention today";
-    }
-  }
+
 
   // Render checklist — Item 3: celebrate progress
   const clEl = document.getElementById('dash-checklist');
@@ -10413,13 +10357,13 @@ function renderCriticalAlerts(){
 }
 
 function renderBBWDashboardAlert(){
-  // Called from renderDashboard — injects or removes alert banner
   const existing = document.getElementById('dash-bbw-alert');
   const _dashMeds = _globalPatientId
     ? (D.meds||[]).filter(m => String(m.patientId) === String(_globalPatientId))
     : (D.meds||[]);
   const flagged  = _dashMeds.filter(m => getBBW(m.name));
-  const bbwAnchor = document.getElementById('dash-critical-alerts')
+  const bbwAnchor = document.getElementById('dash-vitals-alert')
+                 || document.getElementById('dash-critical-alerts')
                  || document.getElementById('dash-alerts-anchor');
   if(!bbwAnchor) return;
 
@@ -10428,24 +10372,48 @@ function renderBBWDashboardAlert(){
 
   const alert = document.createElement('div');
   alert.id = 'dash-bbw-alert';
-  alert.style.cssText = 'background:#FFF8ED;border:2px solid #C9963A;border-radius:var(--r-lg);padding:14px 18px;margin-bottom:16px;cursor:pointer';
-  alert.onclick = () => navTo('bbw');
+  alert.style.cssText = 'background:#FFF8ED;border:2px solid #C9963A;border-radius:var(--r-lg);margin-bottom:16px;overflow:hidden;cursor:pointer';
+
+  const medNames = flagged.map(m => m.name).join(', ');
+
+  // Collapsed single-line header (default)
   alert.innerHTML = `
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px">
-      <div style="width:40px;height:40px;background:#FFF3CD;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0">⚠️</div>
+    <div id="bbw-collapsed" onclick="toggleBBW()"
+      style="display:flex;align-items:center;gap:10px;padding:11px 16px">
+      <span style="font-size:1rem;flex-shrink:0">⚠️</span>
       <div style="flex:1;min-width:0">
-        <div style="font-weight:700;font-size:.9rem;color:#7A4A00">Black Box Warning${flagged.length>1?'s':''} Active — ${flagged.length} Medication${flagged.length>1?'s':''}</div>
-        <div style="font-size:.76rem;color:#A06020;margin-top:2px">${flagged.map(m=>m.name).join(', ')} · Tap to review warnings</div>
+        <span style="font-weight:700;font-size:.82rem;color:#7A4A00">Black Box Warning</span>
+        <span style="font-size:.78rem;color:#A06020;margin-left:6px">${medNames}</span>
       </div>
-      <div style="font-size:.8rem;font-weight:700;color:#C9963A;white-space:nowrap">View →</div>
+      <span id="bbw-chevron" style="font-size:.75rem;color:#C9963A;flex-shrink:0;
+        transition:transform .2s">▼</span>
     </div>
-    <div style="background:#FFFDF5;border-top:1px solid #E8C97A;padding-top:8px;font-size:.72rem;color:#92400E;line-height:1.6">
-      ⚕️ <strong>Disclaimer:</strong> Medication warnings are sourced from FDA drug label data and are for <strong>informational reference only</strong>. They do not constitute medical advice. Tended Health Pro is a documentation tool — not a medical device. Always follow your agency's protocols and physician orders.
+    <div id="bbw-expanded" style="display:none;border-top:1px solid #E8C97A;
+      background:#FFF8ED;padding:12px 16px">
+      <div style="font-size:.78rem;color:#7A4A00;line-height:1.6;margin-bottom:8px">
+        ${flagged.map(m => {
+          const b = getBBW(m.name);
+          return b ? `<div style="margin-bottom:6px"><strong>${m.name}:</strong> ${b.short}</div>` : '';
+        }).join('')}
+      </div>
+      <div style="background:#FFFDF5;border-top:1px solid #E8C97A;padding-top:8px;
+        font-size:.72rem;color:#92400E;line-height:1.6">
+        ⚕️ <strong>Reference only.</strong> Always follow physician orders and agency protocols.
+      </div>
     </div>`;
 
-  // Insert after critical alerts → anchor chain
   bbwAnchor.insertAdjacentElement('afterend', alert);
 }
+
+function toggleBBW(){
+  const exp = document.getElementById('bbw-expanded');
+  const chev = document.getElementById('bbw-chevron');
+  if(!exp) return;
+  const open = exp.style.display !== 'none';
+  exp.style.display  = open ? 'none' : 'block';
+  if(chev) chev.style.transform = open ? '' : 'rotate(180deg)';
+}
+
 
 // ═══════════════════════════════════════════════════════════════
 // VITAL SIGNS
@@ -10761,9 +10729,6 @@ function renderVitalsDashboardAlert(){
   const criticals   = todayAlerts.filter(a => a.level === 'critical');
   if(!todayAlerts.length) return;
 
-  const banner = document.getElementById('dash-shift-banner');
-  if(!banner) return;
-
   const firstEntry  = alertEntries[0];
   const ptPrefix    = firstEntry?.ptName ? `<strong>${firstEntry.ptName}:</strong> ` : '';
   const extraCount  = todayAlerts.length - 1;
@@ -10780,10 +10745,10 @@ function renderVitalsDashboardAlert(){
     </div>
     <div style="font-size:.8rem;font-weight:700;color:var(--refused);white-space:nowrap">View →</div>
   </div>`;
-  const bbwAlert = document.getElementById('dash-bbw-alert');
+  // Vitals is urgent — insert directly after critical alerts, before BBW
   const caAlert  = document.getElementById('dash-critical-alerts');
   const vAnch    = document.getElementById('dash-alerts-anchor');
-  const insertAfter = bbwAlert || caAlert || vAnch;
+  const insertAfter = caAlert || vAnch;
   if(insertAfter) insertAfter.insertAdjacentElement('afterend', alert);
 }
 
