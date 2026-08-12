@@ -4043,8 +4043,9 @@ function renderDashboard(){
   const _dashR = getRoutinesForPatient(_globalPatientId);
   const morningDone    = (_dashR?.morning||[]).filter(r => isRoutineDoneToday(r)).length;
   const morningTotal   = (_dashR?.morning||[]).length;
-  const hasWounds      = (D.wounds||[]).length > 0;
-  const woundChecked   = (D.wounds||[]).some(w => w.updatedAt && w.updatedAt.startsWith(todayISO));
+  const activeWounds   = (D.wounds||[]).filter(w => w.status !== 'Healed');
+  const hasWounds      = activeWounds.length > 0;
+  const woundChecked   = activeWounds.some(w => w.updatedAt && w.updatedAt.startsWith(todayISO));
   const billedToday    = (D.billing||[]).filter(b => b.date === todayISO).length > 0;
 
   const checkItems = [
@@ -4093,7 +4094,7 @@ function renderDashboard(){
       partial: hasWounds && !woundChecked,
       sub:   !hasWounds ? 'No wounds on file — tap to check skin'
            : woundChecked ? 'Wound assessed today ✓'
-           : `${D.wounds.length} wound${D.wounds.length>1?'s':''} need assessment`,
+           : `${activeWounds.filter(w=>!w.updatedAt||!w.updatedAt.startsWith(todayISO)).length} wound${activeWounds.filter(w=>!w.updatedAt||!w.updatedAt.startsWith(todayISO)).length>1?'s':''} need assessment`,
       nav:   'wounds', icon: '🩹'
     },
     {
