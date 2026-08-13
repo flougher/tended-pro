@@ -1329,7 +1329,7 @@ body {
     <div class="nav-label">Behavioral & Clinical</div>
     <button class="nav-btn" onclick="navTo('routines',this)"><span class="ni">📅</span> Routines</button>
     <button class="nav-btn" onclick="navTo('triggers',this)"><span class="ni">⚡</span> Triggers</button>
-    <button class="nav-btn" onclick="navTo('behaviors',this)"><span class="ni">🧠</span> ABC Behavior</button>
+    <button class="nav-btn" onclick="navTo('behaviors',this)"><span class="ni">🧠</span> Behavior Patterns (ABC)</button>
     <button class="nav-btn" onclick="navTo('toileting',this)"><span class="ni">🚻</span> Toileting</button>
     <button class="nav-btn" onclick="navTo('trends',this)"><span class="ni">📊</span> Weekly Trends</button>
     <button class="nav-btn" onclick="navTo('vitals',this)"><span class="ni">🩺</span> Vital Signs <span class="nav-badge" id="nb-vitals"></span></button>
@@ -1643,10 +1643,17 @@ body {
 <div id="section-incidents" class="section">
   <div class="ph">
     <div>
-      <div class="ph-title">📋 Incident Log</div>
-      <div class="ph-sub">Document falls, observations, and clinical events</div>
+      <div class="ph-title">📋 Incident Report</div>
+      <div class="ph-sub">Falls, injuries, medication errors, and events requiring formal documentation</div>
     </div>
     <button class="btn btn-teal" onclick="openIncidentModal()">+ Log Incident</button>
+  </div>
+
+  <!-- Incident guidance -->
+  <div style="background:#FFF8EC;border:1.5px solid #C9963A;border-radius:var(--r-lg);padding:14px 16px;margin-bottom:16px;font-size:.78rem;color:#92400E;line-height:1.7">
+    <div style="font-weight:700;margin-bottom:6px">📋 What to log here</div>
+    <p style="margin-bottom:8px">Use this section for <strong>specific events that need to be formally reported</strong> — a fall, a near-fall, an injury, a medication error, a choking episode, or any behavioral crisis that required calling a physician or family member. These are events where something happened that someone else needs to know about officially.</p>
+    <p style="margin-bottom:0"><strong>Examples:</strong> Found on floor · Refused all medications · Struck caregiver · Elopement attempt · Injury during personal care · Sudden change in condition. <strong>For repeated behaviors and mood patterns</strong> — agitation, restlessness, refusal of care — use the Behavior Patterns (ABC) section instead.</p>
   </div>
   <div id="incidents-patient-bar" style="margin-bottom:14px"></div>
   <div id="incident-list">
@@ -2374,9 +2381,16 @@ body {
 <!-- ═══ ABC BEHAVIOR ══════════════════════════════════════════ -->
 <div id="section-behaviors" class="section">
   <div class="ph">
-    <div><div class="ph-title">🧠 ABC Behavior Tracking</div>
-    <div class="ph-sub">Antecedent · Behavior · Consequence — clinical gold standard</div></div>
+    <div><div class="ph-title">🧠 Behavior Patterns (ABC)</div>
+    <div class="ph-sub">Track what triggers behaviors and what helps — builds patterns over time</div></div>
     <button class="btn btn-teal" onclick="openModal('behavior-modal')">+ Log Behavior</button>
+  </div>
+
+  <!-- Behavior guidance -->
+  <div style="background:#F0F9FF;border:1.5px solid #0EA5E9;border-radius:var(--r-lg);padding:14px 16px;margin-bottom:16px;font-size:.78rem;color:#0C4A6E;line-height:1.7">
+    <div style="font-weight:700;margin-bottom:6px">🧠 What to log here</div>
+    <p style="margin-bottom:8px">Use this section to document <strong>repeated or pattern-based behaviors</strong> — agitation, restlessness, refusal of care, verbal outbursts, mood changes, or sundowning episodes. The ABC format captures three things: what happened <em>before</em> the behavior (the trigger), what the behavior looked like, and what helped resolve it.</p>
+    <p style="margin-bottom:0"><strong>Why it matters:</strong> A single behavior entry tells you little. Ten entries showing agitation occurs every afternoon when visitors arrive tells you everything. The pattern is where the clinical value lives. <strong>Use the Incident Report section instead</strong> for one-time events like falls, injuries, or medication errors that need to be formally reported.</p>
   </div>
   <div id="behaviors-patient-bar" style="margin-bottom:10px"></div>
   <div class="p3-tabs">
