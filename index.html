@@ -1229,7 +1229,7 @@ body {
         <div>✅ 3 incidents</div><div>✅ Care plan</div>
         <div>✅ 2 active wounds</div><div>✅ Today's intake</div>
         <div>✅ Family log</div><div>✅ Morning routines</div>
-        <div>✅ 3 triggers</div><div>✅ ABC behaviors</div>
+        <div>✅ 3 triggers</div><div>✅ Behavior patterns</div>
         <div>✅ Toileting log</div><div>✅ Credentials</div>
         <div>✅ Billing entries</div><div>✅ Vital signs</div>
         <div style="color:#7C3AED">💜 Sundowning tracker</div><div style="color:#7C3AED">💜 Wandering log</div>
@@ -1461,7 +1461,7 @@ body {
         </button>
         <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('behaviors')">
           <span style="font-size:1rem">🧠</span>
-          <div style="text-align:left"><div style="font-weight:700">Log Behavior (ABC)</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Antecedent, behavior, consequence</div></div>
+          <div style="text-align:left"><div style="font-weight:700">Behavior Patterns (ABC)</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Track triggers, behaviors, and what helps</div></div>
         </button>
         <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('wounds')">
           <span style="font-size:1rem">🩹</span>
@@ -2076,7 +2076,7 @@ body {
       <div style="font-size:.84rem;color:var(--slate-mid);line-height:1.9">
         <div>👤 <strong style="color:var(--navy)">Patient Care:</strong> Patient Roster · Medication Log · Incidents · Shift Handoff</div>
         <div>📋 <strong style="color:var(--navy)">Documentation:</strong> Care Plan · Wound Tracker · Diet &amp; Fluids · Family Log · Pain Scale</div>
-        <div>🧠 <strong style="color:var(--navy)">Behavioral &amp; Clinical:</strong> Routines · Triggers · ABC Behavior · Toileting · Vital Signs · Weekly Trends</div>
+        <div>🧠 <strong style="color:var(--navy)">Behavioral &amp; Clinical:</strong> Routines · Triggers · Behavior Patterns (ABC) · Toileting · Vital Signs · Weekly Trends</div>
         <div>🎓 <strong style="color:var(--navy)">Professional Tools:</strong> Voice to Text · Credentials · Billing · Monthly Report</div>
         <div>💜 <strong style="color:var(--navy)">Memory Care:</strong> Sundowning Tracker · Wandering &amp; Exit Log · Memory Care Notes</div>
         <div>⚠️ <strong style="color:var(--navy)">Safety:</strong> FDA Black Box Warnings for 90+ medications</div>
@@ -2515,7 +2515,7 @@ body {
   </div>
 
   <div class="p3-tabs">
-    <button class="p3-tab active" onclick="p3Tab('trends','behaviors')">🧠 Behaviors</button>
+    <button class="p3-tab active" onclick="p3Tab('trends','behaviors')">🧠 Behavior Patterns</button>
     <button class="p3-tab" onclick="p3Tab('trends','incidents')">📋 Incidents</button>
     <button class="p3-tab" onclick="p3Tab('trends','toileting')">🚻 Toileting</button>
     <button class="p3-tab" onclick="p3Tab('trends','intake')">🍽️ Intake</button>
@@ -4432,7 +4432,7 @@ function renderPatients(){
   }
 
   list.innerHTML = D.patients.map(p => {
-    const init = (p.fname[0]||'') + (p.lname[0]||'');
+    const init = ((p.fname||'')[0]||'') + ((p.lname||'')[0]||'');
     const isHighRisk = p.fallRisk === 'high';
     return `<div class="patient-card" onclick="openPatientDetail(${p.id})" style="${isHighRisk?'border-left:3px solid var(--refused);':''}">
       <div class="patient-avatar" style="background:${p.color}">${init}</div>
