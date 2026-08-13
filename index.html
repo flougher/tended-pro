@@ -1338,7 +1338,7 @@ body {
     <div class="nav-label">💜 Memory Care</div>
     <button class="nav-btn" onclick="navTo('itm',this)" style="color:rgba(255,150,150,.95)"><span class="ni">🫂</span> In The Moment</button>
     <button class="nav-btn" onclick="navTo('sundowning',this)"><span class="ni">🌅</span> Sundowning</button>
-    <button class="nav-btn" onclick="navTo('wandering',this)"><span class="ni">🚶</span> Wandering & Elopement</button>
+    <button class="nav-btn" onclick="navTo('wandering',this)"><span class="ni">🚶</span> Wandering & Exits</button>
     <button class="nav-btn" onclick="navTo('memorycare',this)"><span class="ni">💬</span> Memory Care Notes</button>
   </div>
   <div class="nav-group">
@@ -1818,17 +1818,17 @@ body {
 <div id="section-wandering" class="section">
   <div class="ph">
     <div>
-      <div class="ph-title">🚶 Wandering & Elopement</div>
-      <div class="ph-sub">Document wandering incidents and elopement attempts</div>
+      <div class="ph-title">🚶 Wandering & Unsupervised Exits</div>
+      <div class="ph-sub">Document wandering incidents and unsupervised exit attempts</div>
     </div>
     <button class="btn btn-teal" onclick="openModal('wandering-modal')">+ Log Incident</button>
   </div>
   <div id="wandering-patient-bar" style="margin-bottom:10px"></div>
   <div id="wd-prediction-alert"></div>
   <div style="background:var(--refused-bg);border:1.5px solid var(--refused);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:16px;font-size:.78rem;color:#7A2020;line-height:1.7">
-    <div style="font-weight:700;margin-bottom:6px;color:var(--refused)">⚠️ Wandering & Elopement — Safety Guidance</div>
+    <div style="font-weight:700;margin-bottom:6px;color:var(--refused)">⚠️ Wandering & Unsupervised Exits — Safety Guidance</div>
     <p style="margin-bottom:8px"><strong>Document every incident immediately.</strong> A wandering log is only clinically useful when entries are consistent and complete. Time of incident, duration, location found, and what the patient was doing are all essential.</p>
-    <p style="margin-bottom:8px"><strong>Wandering vs. Elopement:</strong> Wandering is movement within a supervised space. Elopement is leaving or attempting to leave a secured area. Elopement is a medical emergency. If a patient leaves or attempts to leave, <strong>call 911 immediately</strong>, then notify the family and supervisor.</p>
+    <p style="margin-bottom:8px"><strong>Wandering vs. Leaving Unsupervised:</strong> Wandering is movement within a supervised space. Leaving unsupervised — clinically called elopement — means the patient has left or attempted to leave without authorization. This is a medical emergency. If a patient leaves or attempts to leave, <strong>call 911 immediately</strong>, then notify the family and supervisor.</p>
     <p style="margin-bottom:8px"><strong>Before logging, verify safeguards are in place:</strong> door alarms active, bed sensor functioning, ID bracelet on patient, family notified of risk level.</p>
     <p style="margin-bottom:0"><strong>Call the physician if:</strong> wandering episodes are new or suddenly increasing in frequency, the patient appears in pain or distressed during episodes, or the patient is found in an unsafe location. A sudden increase in wandering behavior can signal a UTI, pain, medication reaction, or disease progression.</p>
   </div>
@@ -1838,7 +1838,7 @@ body {
 <!-- Wandering Modal -->
 <div class="overlay" id="wandering-modal">
   <div class="modal">
-    <div class="modal-title">🚶 Log Wandering / Elopement Incident</div>
+    <div class="modal-title">🚶 Log Wandering / Exit Incident</div>
     <div class="form-row">
       <div class="fg"><label>Date *</label><input type="date" id="wd-date"></div>
       <div class="fg"><label>Time Discovered *</label><input type="time" id="wd-time"></div>
@@ -1847,8 +1847,8 @@ body {
       <select id="wd-type" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
         <option>Wandering — within facility</option>
         <option>Wandering — entered restricted area</option>
-        <option>Elopement attempt — intercepted</option>
-        <option>Elopement — left facility unaccompanied</option>
+        <option>Unsupervised exit attempt (elopement) — intercepted</option>
+        <option>Left home unaccompanied (elopement)</option>
         <option>Night-time wandering</option>
         <option>Wandering — entered another resident's room</option>
       </select>
@@ -2071,7 +2071,7 @@ body {
         <div>📋 <strong style="color:var(--navy)">Documentation:</strong> Care Plan · Wound Tracker · Diet &amp; Fluids · Family Log · Pain Scale</div>
         <div>🧠 <strong style="color:var(--navy)">Behavioral &amp; Clinical:</strong> Routines · Triggers · ABC Behavior · Toileting · Vital Signs · Weekly Trends</div>
         <div>🎓 <strong style="color:var(--navy)">Professional Tools:</strong> Voice to Text · Credentials · Billing · Monthly Report</div>
-        <div>💜 <strong style="color:var(--navy)">Memory Care:</strong> Sundowning Tracker · Wandering &amp; Elopement Log · Memory Care Notes</div>
+        <div>💜 <strong style="color:var(--navy)">Memory Care:</strong> Sundowning Tracker · Wandering &amp; Exit Log · Memory Care Notes</div>
         <div>⚠️ <strong style="color:var(--navy)">Safety:</strong> FDA Black Box Warnings for 90+ medications</div>
       </div>
     </div>
@@ -3094,7 +3094,7 @@ body {
         <option>Confusion / disorientation</option>
         <option>Breathing difficulty</option>
         <option>Meal refusal</option>
-        <option>Elopement attempt</option>
+        <option>Unsupervised exit attempt (elopement)</option>
         <option>Injury</option>
         <option>Vital sign concern</option>
         <option>Medical Emergency</option>
@@ -3795,7 +3795,7 @@ function closeModal(id){
     'toilet-modal':     () => { _editToiletId      = null; const t=document.querySelector('#toilet-modal .modal-title');     if(t) t.textContent='Log Toileting'; },
     'vitals-modal':     () => { _editVitalsId      = null; const t=document.querySelector('#vitals-modal .modal-title');     if(t) t.textContent='Log Vital Signs'; const b=document.getElementById('vm-save-btn'); if(b) b.textContent='Save Vitals'; },
     'sundowning-modal': () => { _editSundownId     = null; const t=document.querySelector('#sundowning-modal .modal-title'); if(t) t.textContent='🌅 Log Sundowning Episode'; const b=document.querySelector('#sundowning-modal .btn-teal'); if(b) b.textContent='Save Episode'; },
-    'wandering-modal':  () => { _editWanderingId   = null; const t=document.querySelector('#wandering-modal .modal-title');  if(t) t.textContent='🚶 Log Wandering / Elopement Incident'; const b=document.querySelector('#wandering-modal .btn-teal'); if(b) b.textContent='Save Incident'; },
+    'wandering-modal':  () => { _editWanderingId   = null; const t=document.querySelector('#wandering-modal .modal-title');  if(t) t.textContent='🚶 Log Wandering / Exit Incident'; const b=document.querySelector('#wandering-modal .btn-teal'); if(b) b.textContent='Save Incident'; },
     'memorycare-modal': () => { _editMemoryCareId  = null; const t=document.querySelector('#memorycare-modal .modal-title'); if(t) t.textContent='💬 Add Memory Care Note'; const b=document.querySelector('#memorycare-modal .btn-teal'); if(b) b.textContent='Save Note'; },
   };
   if(resetMap[id]) resetMap[id]();
@@ -9203,7 +9203,7 @@ function buildSampleData(){
         action:'Escorted back to common area. Offered afternoon snack. Door to break room secured.',
         notified:'Charge Nurse Martinez',
         prevention:'Break room door secured with keypad. Resident room moved further from staff corridor.' },
-      { id:16003, patientId:pid, date:dStr(-7), time:'03:45', type:'Elopement attempt — intercepted', isElopement:true,
+      { id:16003, patientId:pid, date:dStr(-7), time:'03:45', type:'Unsupervised exit attempt (elopement) — intercepted', isElopement:true,
         location:'Main entrance — front door alarm activated',
         duration:'Approximately 12 minutes unobserved',
         condition:'Distressed. Dressed in coat over nightgown. Carrying purse. Stated "I need to get home to my children."',
@@ -11313,7 +11313,7 @@ function saveWandering(){
     if(idx !== -1) D.wandering[idx] = { ...D.wandering[idx], ...wdFields };
     _editWanderingId = null;
     const title = document.querySelector('#wandering-modal .modal-title');
-    if(title) title.textContent = '🚶 Log Wandering / Elopement Incident';
+    if(title) title.textContent = '🚶 Log Wandering / Exit Incident';
     const btn = document.querySelector('#wandering-modal .btn-teal');
     if(btn) btn.textContent = 'Save Incident';
     toast('✅ Wandering incident updated', 'var(--given)');
@@ -11415,7 +11415,7 @@ function renderWanderingPredictionAlert(entries){
     medium:'#FFF3D0',   low:'#EDF7EE'
   };
   const riskLabel = {
-    critical:'🚨 CRITICAL — ELOPEMENT HISTORY',
+    critical:'🚨 CRITICAL — UNSUPERVISED EXIT HISTORY',
     high:'⚠️ HIGH RISK',
     medium:'⚡ MODERATE RISK',
     low:'✅ LOW RISK'
@@ -11440,7 +11440,7 @@ function renderWanderingPredictionAlert(entries){
 
   const elopBadge = pred.elopements > 0
     ? `<div style="background:#7C0000;color:white;border-radius:var(--r);padding:6px 12px;font-size:.78rem;font-weight:700;margin-top:8px">
-        🚨 ${pred.elopements} elopement attempt${pred.elopements>1?'s':''} on record — maximum vigilance required
+        🚨 ${pred.elopements} unsupervised exit attempt${pred.elopements>1?'s':''} on record — maximum vigilance required
       </div>` : '';
 
   el.innerHTML = `
@@ -11498,7 +11498,7 @@ function renderWandering(){
         <div>
           <span style="font-weight:700;font-size:.9rem;color:var(--navy)">${new Date(e.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
           <span style="font-size:.76rem;color:var(--slate-light);margin-left:6px">${fmtTime(e.time)}</span>
-          ${e.isElopement?'<span style="background:var(--refused-bg);color:var(--refused);font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px">⚠️ ELOPEMENT</span>':''}
+          ${e.isElopement?'<span style="background:var(--refused-bg);color:var(--refused);font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px">⚠️ UNSUPERVISED EXIT</span>':''}
         </div>
         <button class="btn btn-secondary btn-xs" style="font-size:.68rem;padding:2px 7px" onclick="editWandering(${e.id})">✏️</button>
         <button class="btn btn-danger btn-xs btn-icon" onclick="deleteWandering(${e.id})">✕</button>
