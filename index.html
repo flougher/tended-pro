@@ -2793,17 +2793,17 @@ body {
     </div>
     <div class="fg" style="margin-bottom:0"><label>Include Sections</label>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px;font-size:.86rem">
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-meds" checked> 💊 Medications</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-incidents" checked> 📋 Incidents</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-wounds" checked> 🩹 Wounds</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-intake" checked> 🍽️ Diet & Fluids</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-behaviors" checked> 🧠 Behaviors</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-painad" checked> 🧠 PAINAD Assessments</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-toileting" checked> 🚻 Toileting</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-comms" checked> 📞 Family Log</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-careplan" checked> 📌 Care Plan</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-billing"> 💳 Billing</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-shiftnotes" checked> 📝 Shift Notes</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-meds" checked onchange="renderReport()"> 💊 Medications</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-incidents" checked onchange="renderReport()"> 📋 Incidents</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-wounds" checked onchange="renderReport()"> 🩹 Wounds</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-intake" checked onchange="renderReport()"> 🍽️ Diet & Fluids</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-behaviors" checked onchange="renderReport()"> 🧠 Behaviors</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-painad" checked onchange="renderReport()"> 🧠 PAINAD Assessments</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-toileting" checked onchange="renderReport()"> 🚻 Toileting</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-comms" checked onchange="renderReport()"> 📞 Family Log</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-careplan" checked onchange="renderReport()"> 📌 Care Plan</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-billing" onchange="renderReport()"> 💳 Billing</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-shiftnotes" checked onchange="renderReport()"> 📝 Shift Notes</label>
       </div>
     </div>
   </div>
@@ -2972,7 +2972,7 @@ body {
 </div>
 
 <!-- Mobile More Menu -->
-<div id="mobile-more" style="display:none;position:fixed;bottom:calc(58px + env(safe-area-inset-bottom,12px));left:0;right:0;background:var(--navy-mid);border-top:1px solid rgba(255,255,255,.1);z-index:2999;padding:8px 0;box-shadow:0 -4px 20px rgba(12,27,51,.3)">
+<div id="mobile-more" style="display:none;position:fixed;bottom:calc(58px + env(safe-area-inset-bottom,12px));left:0;right:0;background:var(--navy-mid);border-top:1px solid rgba(255,255,255,.1);z-index:2999;padding:8px 0;box-shadow:0 -4px 20px rgba(12,27,51,.3);max-height:calc(100vh - 120px);overflow-y:auto;-webkit-overflow-scrolling:touch">
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0">
     <button class="bn-btn" onclick="mobileNavTo('handoff')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🔄</span>Handoff</button>
     <button class="bn-btn" onclick="mobileNavTo('careplan')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📌</span>Care Plan</button>
@@ -8689,11 +8689,11 @@ function renderReport(){
     const total    = marKeys.length;
     const pct      = total ? Math.round(given/total*100) : 0;
     sections += `<div class="report-section"><div class="report-section-title">💊 Medications</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:12px;text-align:center">
-        <div style="background:#F0F4F8;border-radius:8px;padding:10px"><div style="font-size:1.3rem;font-weight:700;color:#0C1B33;font-family:monospace">${given}</div><div style="font-size:.72rem;color:#8097B3;text-transform:uppercase">Given</div></div>
-        <div style="background:#F0F4F8;border-radius:8px;padding:10px"><div style="font-size:1.3rem;font-weight:700;color:#C0392B;font-family:monospace">${refused}</div><div style="font-size:.72rem;color:#8097B3;text-transform:uppercase">Refused</div></div>
-        <div style="background:#F0F4F8;border-radius:8px;padding:10px"><div style="font-size:1.3rem;font-weight:700;color:#C47A00;font-family:monospace">${held}</div><div style="font-size:.72rem;color:#8097B3;text-transform:uppercase">Held</div></div>
-        <div style="background:#F0F4F8;border-radius:8px;padding:10px"><div style="font-size:1.3rem;font-weight:700;color:#0A7A4A;font-family:monospace">${pct}%</div><div style="font-size:.72rem;color:#8097B3;text-transform:uppercase">Compliance</div></div>
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:12px;text-align:center">
+        <div style="background:#F0F4F8;border-radius:8px;padding:8px;min-width:0;overflow:hidden"><div style="font-size:1.2rem;font-weight:700;color:#0C1B33;font-family:monospace">${given}</div><div style="font-size:.68rem;color:#8097B3;text-transform:uppercase">Given</div></div>
+        <div style="background:#F0F4F8;border-radius:8px;padding:8px;min-width:0;overflow:hidden"><div style="font-size:1.2rem;font-weight:700;color:#C0392B;font-family:monospace">${refused}</div><div style="font-size:.6rem;color:#8097B3;text-transform:uppercase">Refused</div></div>
+        <div style="background:#F0F4F8;border-radius:8px;padding:8px;min-width:0;overflow:hidden"><div style="font-size:1.2rem;font-weight:700;color:#C47A00;font-family:monospace">${held}</div><div style="font-size:.6rem;color:#8097B3;text-transform:uppercase">Held</div></div>
+        <div style="background:#F0F4F8;border-radius:8px;padding:8px;min-width:0;overflow:hidden"><div style="font-size:1.2rem;font-weight:700;color:#0A7A4A;font-family:monospace">${pct}%</div><div style="font-size:.6rem;color:#8097B3;text-transform:uppercase">Comply</div></div>
       </div>
       <div style="font-size:.84rem;color:#526280"><strong>Current medications:</strong> ${rptMeds.map(m=>m.name+' '+m.dose).join(', ')||'None'}</div>
     </div>`;
