@@ -3431,7 +3431,7 @@ function setGlobalPatient(id){
 }
 
 function buildPatientSelector(selId, onchangeFn, style=''){
-  const patients = D.patients||[];
+  const patients = (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged');
   if(!patients.length) return '<div style="font-size:.8rem;color:var(--slate-light);padding:4px 0">No patients added yet — go to Patient Roster to add one.</div>';
   const opts = ['<option value="">— Select a patient —</option>',
     ...patients.map(p => `<option value="${p.id}"${String(p.id)===String(_globalPatientId)?' selected':''}>${p.fname} ${p.lname}${p.room?' · Rm '+p.room:''}${p.dob?' · DOB '+p.dob:''}</option>`)
@@ -4845,7 +4845,7 @@ function populateMARPatients(){
   if(!sel) return;
   const cur = sel.value;
   sel.innerHTML = '<option value="">— Select patient —</option>' +
-    D.patients.map(p => `<option value="${p.id}"${p.id == cur?' selected':''}>${p.fname} ${p.lname}${p.room?' ('+p.room+')':''}</option>`).join('');
+    (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged').map(p => `<option value="${p.id}"${p.id == cur?' selected':''}>${p.fname} ${p.lname}${p.room?' ('+p.room+')':''}</option>`).join('');
 }
 
 function saveInitials(){
@@ -6401,7 +6401,7 @@ function generateHandoff(){
   const severePAINAD_ho = todayPAINAD.filter(e => e.total >= 7);
 
   // Hydration summary for handoff
-  const hydrLines = (D.patients||[]).filter(p=>p.active!==false).map(p=>{
+  const hydrLines = (D.patients||[]).filter(p=>p.active!==false&&p.status!=='deceased'&&p.status!=='discharged').map(p=>{
     const td=new Date().toISOString().split('T')[0];
     const all=(D.intake||[]).filter(e=>e.date===td&&String(e.patientId)===String(p.id));
     const offers   =all.filter(e=>e.type==='Fluid Offer'||['Water','Juice','Milk','Coffee / Tea','Supplement drink','Other fluid','IV fluids'].includes(e.type));
@@ -10570,7 +10570,7 @@ function populateVitalsPatients(){
     if(!sel) return;
     const cur = sel.value;
     sel.innerHTML = '<option value="">— Select patient —</option>' +
-      (D.patients||[]).map(p => `<option value="${p.id}"${p.id==cur?' selected':''}>${p.fname} ${p.lname}${p.room?' ('+p.room+')':''}</option>`).join('');
+      (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged').map(p => `<option value="${p.id}"${p.id==cur?' selected':''}>${p.fname} ${p.lname}${p.room?' ('+p.room+')':''}</option>`).join('');
   });
 }
 
@@ -12154,7 +12154,7 @@ function populatePainPatients(){
     if(!sel) return;
     const cur    = sel.value;
     const allOpt = selId === 'pain-patient' ? '<option value="">All patients</option>' : '<option value="">— Select patient —</option>';
-    sel.innerHTML = allOpt + (D.patients||[]).map(p =>
+    sel.innerHTML = allOpt + (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged').map(p =>
       `<option value="${p.id}"${p.id==cur?' selected':''}>${p.fname} ${p.lname}</option>`).join('');
   });
 }
