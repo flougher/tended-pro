@@ -1559,7 +1559,8 @@ body {
       <div class="card"><div class="card-title">👤 Patient Information</div><div id="detail-info"></div></div>
       <div class="card"><div class="card-title">⚠️ Allergies & Conditions</div><div id="detail-medical"></div></div>
       <div class="card"><div class="card-title">💊 Medications on File</div><div id="detail-meds"></div></div>
-      <div class="card"><div class="card-title">📞 Emergency Contact</div><div id="detail-emergency"></div></div>
+      <div class="card"><div class="card-title">📞 Emergency Contact</div><div id="detail-emergency"></div>
+    <div id="detail-status-section"></div></div>
     </div>
   </div>
 </div>
@@ -3076,6 +3077,38 @@ body {
       </div>
     </div>
     <div class="fg"><label>Care Notes</label><textarea id="pm-notes" rows="2" placeholder="Preferences, mobility restrictions, special instructions…"></textarea></div>
+
+    <div style="border-top:1.5px solid var(--border);margin-top:12px;padding-top:12px">
+      <button type="button" onclick="toggleEOL()" id="eol-toggle-btn" style="width:100%;text-align:left;background:none;border:none;padding:0;font-size:.85rem;font-weight:600;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:space-between"><span>🕊️ End of Life Preferences</span><span id="eol-chevron" style="transition:transform .2s;font-size:.75rem">▼</span></button>
+      <div id="eol-section" style="display:none;margin-top:12px">
+        <div style="background:#FFF8EC;border:1.5px solid #C9963A;border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:.73rem;color:#92400E;line-height:1.6"><strong>Reference only.</strong> In any medical emergency call 911 immediately. Not a legal document.</div>
+        <p style="font-size:.72rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.04em;margin:0 0 8px">Resuscitation &amp; emergency</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <div class="fg" style="margin:0"><label style="font-size:.75rem">DNR on file</label><select id="pm-dnr" style="border:1.5px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:.85rem;background:white;width:100%"><option value="">Unknown</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+          <div class="fg" style="margin:0"><label style="font-size:.75rem">Advance directive</label><select id="pm-adv-dir" style="border:1.5px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:.85rem;background:white;width:100%"><option value="">Unknown</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+          <div class="fg" style="margin:0"><label style="font-size:.75rem">POLST on file</label><select id="pm-polst" style="border:1.5px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:.85rem;background:white;width:100%"><option value="">Unknown</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+          <div class="fg" style="margin:0"><label style="font-size:.75rem">Organ donation</label><select id="pm-organ" style="border:1.5px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:.85rem;background:white;width:100%"><option value="">Unknown</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+        </div>
+        <div class="fg"><label style="font-size:.75rem">Advance directive location</label><input id="pm-adv-loc" placeholder="e.g. Bedside table — blue folder"></div>
+        <div class="fg"><label style="font-size:.75rem">POLST / physician orders location</label><input id="pm-polst-loc" placeholder="e.g. Posted on refrigerator"></div>
+        <p style="font-size:.72rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 8px">Healthcare proxy</p>
+        <div class="form-row"><div class="fg"><label style="font-size:.75rem">Proxy name</label><input id="pm-proxy-name" placeholder="Jane Thompson"></div><div class="fg"><label style="font-size:.75rem">Proxy phone</label><input id="pm-proxy-phone" type="tel" placeholder="(775) 555-0100"></div></div>
+        <div class="fg"><label style="font-size:.75rem">Relationship to patient</label><input id="pm-proxy-rel" placeholder="Daughter"></div>
+        <p style="font-size:.72rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 8px">Hospice</p>
+        <div class="fg" style="margin-bottom:8px"><label style="font-size:.75rem">Enrolled in hospice</label><select id="pm-hospice" onchange="toggleHospiceFields()" style="border:1.5px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:.85rem;background:white;width:100%"><option value="no">No</option><option value="yes">Yes</option></select></div>
+        <div id="pm-hospice-fields" style="display:none">
+          <div style="background:#E1F5EE;border:1px solid #0F6E56;border-radius:8px;padding:8px 10px;font-size:.72rem;color:#085041;margin-bottom:8px;line-height:1.5">⚠️ Patient is on hospice. Contact hospice directly when condition changes. Do not call 911 unless instructed by hospice.</div>
+          <div class="form-row"><div class="fg"><label style="font-size:.75rem">Hospice contact name</label><input id="pm-hospice-name" placeholder="Nurse on call"></div><div class="fg"><label style="font-size:.75rem">Hospice phone</label><input id="pm-hospice-phone" type="tel" placeholder="(775) 555-0200"></div></div>
+        </div>
+        <p style="font-size:.72rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 8px">Comfort care preferences</p>
+        <div class="fg"><label style="font-size:.75rem">Hospitalization wishes</label><input id="pm-hosp-wish" placeholder="e.g. Comfort care only — no hospitalization"></div>
+        <div class="fg"><label style="font-size:.75rem">Feeding tube</label><select id="pm-feeding" style="border:1.5px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:.85rem;background:white;width:100%"><option value="">Not specified</option><option value="yes">Accepted</option><option value="no">Declined</option><option value="trial">Time-limited trial only</option></select></div>
+        <div class="fg"><label style="font-size:.75rem">Religious / cultural preferences</label><textarea id="pm-religious" rows="2" placeholder="e.g. Catholic — last rites requested."></textarea></div>
+        <p style="font-size:.72rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 8px">Final arrangements (optional)</p>
+        <div class="form-row"><div class="fg"><label style="font-size:.75rem">Funeral home name</label><input id="pm-funeral-name" placeholder="Chapel of Peace"></div><div class="fg"><label style="font-size:.75rem">Funeral home phone</label><input id="pm-funeral-phone" type="tel" placeholder="(775) 555-0300"></div></div>
+        <div class="fg"><label style="font-size:.75rem">Personal wishes and notes</label><textarea id="pm-personal-wishes" rows="3" placeholder="e.g. Favorite hymn: Amazing Grace. Notify sister Ruth first."></textarea></div>
+      </div>
+    </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('patient-modal')">Cancel</button>
       <button class="btn btn-teal" id="pm-save" onclick="savePatient()">Add Patient</button>
@@ -3798,6 +3831,80 @@ function openModal(id){
   }
 }
 
+
+function toggleEOL(){
+  const s=document.getElementById('eol-section'),c=document.getElementById('eol-chevron');
+  if(!s) return;
+  const open=s.style.display!=='none';
+  s.style.display=open?'none':'block';
+  if(c) c.style.transform=open?'':'rotate(180deg)';
+}
+function toggleHospiceFields(){
+  const val=document.getElementById('pm-hospice')?.value;
+  const f=document.getElementById('pm-hospice-fields');
+  if(f) f.style.display=val==='yes'?'block':'none';
+  if(val!=='yes'){
+    ['pm-hospice-name','pm-hospice-phone'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  }
+}
+function gv(id){return document.getElementById(id)?.value||'';}
+function getEOLFields(){
+  return{eol_dnr:gv('pm-dnr'),eol_advDir:gv('pm-adv-dir'),eol_polst:gv('pm-polst'),
+    eol_organ:gv('pm-organ'),eol_advLoc:gv('pm-adv-loc'),eol_polstLoc:gv('pm-polst-loc'),
+    eol_proxyName:gv('pm-proxy-name'),eol_proxyPhone:gv('pm-proxy-phone'),eol_proxyRel:gv('pm-proxy-rel'),
+    eol_hospice:gv('pm-hospice'),eol_hospiceName:gv('pm-hospice-name'),eol_hospicePhone:gv('pm-hospice-phone'),
+    eol_hospWish:gv('pm-hosp-wish'),eol_feeding:gv('pm-feeding'),eol_religious:gv('pm-religious'),
+    eol_funeralName:gv('pm-funeral-name'),eol_funeralPhone:gv('pm-funeral-phone'),eol_wishes:gv('pm-personal-wishes')};
+}
+function loadEOLFields(p){
+  resetEOLFields();
+  if(!p) return;
+  const sv=(id,val)=>{const e=document.getElementById(id);if(e)e.value=val||'';};
+  sv('pm-dnr',p.eol_dnr);sv('pm-adv-dir',p.eol_advDir);sv('pm-polst',p.eol_polst);
+  sv('pm-organ',p.eol_organ);sv('pm-adv-loc',p.eol_advLoc);sv('pm-polst-loc',p.eol_polstLoc);
+  sv('pm-proxy-name',p.eol_proxyName);sv('pm-proxy-phone',p.eol_proxyPhone);sv('pm-proxy-rel',p.eol_proxyRel);
+  const h=document.getElementById('pm-hospice');if(h)h.value=p.eol_hospice||'no';
+  sv('pm-hospice-name',p.eol_hospiceName);sv('pm-hospice-phone',p.eol_hospicePhone);
+  sv('pm-hosp-wish',p.eol_hospWish);sv('pm-feeding',p.eol_feeding);sv('pm-religious',p.eol_religious);
+  sv('pm-funeral-name',p.eol_funeralName);sv('pm-funeral-phone',p.eol_funeralPhone);sv('pm-personal-wishes',p.eol_wishes);
+  toggleHospiceFields();
+}
+function resetEOLFields(){
+  ['pm-dnr','pm-adv-dir','pm-polst','pm-organ','pm-feeding'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  const h=document.getElementById('pm-hospice');if(h)h.value='no';
+  ['pm-adv-loc','pm-polst-loc','pm-proxy-name','pm-proxy-phone','pm-proxy-rel',
+   'pm-hospice-name','pm-hospice-phone','pm-hosp-wish','pm-religious',
+   'pm-funeral-name','pm-funeral-phone','pm-personal-wishes'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  toggleHospiceFields();
+  const s=document.getElementById('eol-section');if(s)s.style.display='none';
+  const c=document.getElementById('eol-chevron');if(c)c.style.transform='';
+}
+function recordPatientStatus(status){
+  const msg=status==='deceased'
+    ?'This will mark the patient as passed away. All records will be preserved. Continue?'
+    :'This will mark the patient as discharged. All records will be preserved. Continue?';
+  if(!confirm(msg)) return;
+  const idx=D.patients.findIndex(p=>String(p.id)===String(_globalPatientId));
+  if(idx<0){toast('Patient not found','var(--held)');return;}
+  D.patients[idx].status=status;
+  D.patients[idx].statusDate=new Date().toISOString().split('T')[0];
+  save();renderPatients();renderDashboard();
+  if(status==='deceased') openModal('wtdn-modal');
+  else toast('Patient marked as discharged. Records preserved.','var(--given)');
+}
+function reactivatePatient(patId){
+  if(!confirm('Reactivate this patient and return them to active care?')) return;
+  const idx=D.patients.findIndex(p=>String(p.id)===String(patId));
+  if(idx<0) return;
+  D.patients[idx].status='active';
+  delete D.patients[idx].statusDate;
+  save();renderPatients();renderDashboard();
+  toast('Patient reactivated','var(--given)');
+}
+function activePats(){
+  return (D.patients||[]).filter(p=>p.active && p.status!=='deceased' && p.status!=='discharged');
+}
+
 function closeModal(id){
   const el = document.getElementById(id);
   const wasOpen = el && el.classList.contains('open');
@@ -4227,10 +4334,10 @@ function renderDashboard(){
   // ── Patient preview ────────────────────────────────────────
   const dpEl = document.getElementById('dash-patients');
   if(dpEl){
-    if(!D.patients.length){
+    if(!activePats().length){
       dpEl.innerHTML = '<div class="empty" style="padding:20px"><div class="empty-icon" style="font-size:1.6rem">👤</div><div class="empty-text" style="font-size:.82rem">No patients added yet.<br>Tap <strong>View All Patients</strong> to add your first.</div></div>';
     } else {
-      dpEl.innerHTML = D.patients.slice(0,4).map(p => {
+      dpEl.innerHTML = activePats().slice(0,4).map(p => {
         const init = ((p.fname||'')[0]||'') + ((p.lname||'')[0]||'');
         const isHighRisk = p.fallRisk === 'high';
         return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer${isHighRisk?';border-left:3px solid var(--refused);padding-left:8px;margin-left:-8px':''}" onclick="navTo('patients')">
@@ -4245,7 +4352,7 @@ function renderDashboard(){
           </div>
           ${p.allergies ? `<span class="pill pill-alert" style="font-size:.64rem">⚠️ Allergies</span>` : ''}
         </div>`;
-      }).join('') + (D.patients.length > 4 ? `<div style="font-size:.76rem;color:var(--slate-light);padding-top:6px">+ ${D.patients.length-4} more patients</div>` : '');
+      }).join('') + (activePats().length > 4 ? `<div style="font-size:.76rem;color:var(--slate-light);padding-top:6px">+ ${activePats().length-4} more patients</div>` : '');
     }
   }
 
@@ -4291,6 +4398,7 @@ function openPatientModal(editId){
   document.getElementById('pm-conditions').value = p?.conditions || '';
   document.getElementById('pm-emergency').value  = p?.emergency  || '';
   document.getElementById('pm-notes').value      = p?.notes      || '';
+  loadEOLFields(p);
   const dpEl = document.getElementById('pm-doctor-phone');
   if(dpEl) dpEl.value = p?.doctorPhone || '';
   // Load contacts — migrate legacy emergency string if needed
@@ -4391,7 +4499,8 @@ function savePatient(){
     contacts:   _pmContacts.filter(c => c.name || c.phone),
     notes:      document.getElementById('pm-notes').value.trim(),
     fallRisk:   document.getElementById('pm-fall-risk')?.value  || '',
-    painLevel:  document.getElementById('pm-pain-level')?.value || ''
+    painLevel:  document.getElementById('pm-pain-level')?.value || '',
+    ...getEOLFields()
   };
 
   if(_editPatientId !== null){
@@ -4433,11 +4542,15 @@ function renderPatients(){
   list.innerHTML = D.patients.map(p => {
     const init = ((p.fname||'')[0]||'') + ((p.lname||'')[0]||'');
     const isHighRisk = p.fallRisk === 'high';
-    return `<div class="patient-card" onclick="openPatientDetail(${p.id})" style="${isHighRisk?'border-left:3px solid var(--refused);':''}">
+    const isDeceased = p.status === 'deceased';
+    const isDischarged = p.status === 'discharged';
+    const isInactive = isDeceased || isDischarged;
+    return `<div class="patient-card" onclick="openPatientDetail(${p.id})" style="${isHighRisk&&!isInactive?'border-left:3px solid var(--refused);':''}${isInactive?'opacity:0.55;':''}">
       <div class="patient-avatar" style="background:${p.color}">${init}</div>
       <div style="flex:1;min-width:0">
         <div class="patient-name">${p.fname} ${p.lname}
-          ${p.fallRisk ? ' ' + fallRiskBadge(p.fallRisk, false) : ''}
+          ${isDeceased?'<span style="font-size:.65rem;background:#E5E7EB;color:#6B7280;padding:2px 7px;border-radius:8px;margin-left:6px">Passed away</span>':isDischarged?'<span style="font-size:.65rem;background:#E5E7EB;color:#6B7280;padding:2px 7px;border-radius:8px;margin-left:6px">Discharged</span>':''}
+          ${!isInactive && p.fallRisk ? ' ' + fallRiskBadge(p.fallRisk, false) : ''}
           ${p.painLevel !== undefined && p.painLevel !== '' ? ' ' + painFaceHtml(p.painLevel) : ''}
         </div>
         <div class="patient-meta">${[p.room && '📍 '+p.room, p.dob && 'DOB: '+p.dob].filter(Boolean).join(' · ') || 'No additional info'}</div>
@@ -4451,8 +4564,7 @@ function renderPatients(){
         ${p.allergies ? `<div class="patient-allergy">⚠️ ${p.allergies}</div>` : ''}
       </div>
       <div style="display:flex;gap:6px;flex-shrink:0">
-        <button class="btn btn-secondary btn-xs btn-icon" onclick="event.stopPropagation();openPatientModal(${p.id})" title="Edit">✏️</button>
-        <button class="btn btn-danger btn-xs btn-icon" onclick="event.stopPropagation();deletePatient(${p.id})" title="Delete">✕</button>
+        ${isInactive?`<button class="btn btn-secondary btn-xs" onclick="event.stopPropagation();reactivatePatient(${p.id})" style="font-size:.68rem;padding:4px 8px">Reactivate</button>`:`<button class="btn btn-secondary btn-xs btn-icon" onclick="event.stopPropagation();openPatientModal(${p.id})" title="Edit">✏️</button><button class="btn btn-danger btn-xs btn-icon" onclick="event.stopPropagation();deletePatient(${p.id})" title="Delete">✕</button>`}
       </div>
     </div>`;
   }).join('');
@@ -4510,6 +4622,18 @@ function openPatientDetail(id){
         return `<div style="font-size:.88rem;color:var(--navy);line-height:1.8">${linked}</div>${callButtons}`;
       })()
     : '<div style="color:var(--slate-light);font-size:.84rem">No emergency contact recorded</div>';
+
+  // Status section
+  const statusDiv = document.getElementById('detail-status-section');
+  if(statusDiv){
+    if(p.status==='deceased'){
+      statusDiv.innerHTML=`<div style="background:#F3F4F6;border-radius:10px;padding:12px 14px;margin-top:16px;font-size:.78rem;color:#6B7280;text-align:center">🕊️ Passed away — ${p.statusDate||'date not recorded'}<br><button onclick="reactivatePatient(${p.id})" style="margin-top:8px;font-size:.72rem;background:none;border:1px solid #D1D5DB;border-radius:8px;padding:4px 12px;cursor:pointer;color:#6B7280">Reactivate patient</button></div>`;
+    } else if(p.status==='discharged'){
+      statusDiv.innerHTML=`<div style="background:#F3F4F6;border-radius:10px;padding:12px 14px;margin-top:16px;font-size:.78rem;color:#6B7280;text-align:center">🏠 Discharged — ${p.statusDate||'date not recorded'}<br><button onclick="reactivatePatient(${p.id})" style="margin-top:8px;font-size:.72rem;background:none;border:1px solid #D1D5DB;border-radius:8px;padding:4px 12px;cursor:pointer;color:#6B7280">Reactivate patient</button></div>`;
+    } else {
+      statusDiv.innerHTML=`<div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px"><div style="font-size:.72rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">Patient status</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button onclick="recordPatientStatus('deceased')" style="background:#F9FAFB;border:1px solid #D1D5DB;border-radius:10px;padding:10px;cursor:pointer;font-size:.76rem;color:#374151;line-height:1.6">🕊️<br><strong>Record passing</strong><br><span style='font-size:.68rem;color:#9CA3AF'>All records preserved</span></button><button onclick="recordPatientStatus('discharged')" style="background:#F9FAFB;border:1px solid #D1D5DB;border-radius:10px;padding:10px;cursor:pointer;font-size:.76rem;color:#374151;line-height:1.6">🏠<br><strong>Discharge</strong><br><span style='font-size:.68rem;color:#9CA3AF'>All records preserved</span></button></div></div>`;
+    }
+  }
 }
 
 function closePatientDetail(){
@@ -10126,7 +10250,7 @@ function renderResidentRows(){
   const el = document.getElementById('dash-resident-rows');
   if(!el) return;
 
-  const active   = (D.patients||[]).filter(p => p.active !== false);
+  const active   = (D.patients||[]).filter(p => p.active !== false && p.status !== 'deceased' && p.status !== 'discharged');
   if(!active.length){ el.innerHTML = ''; return; }
 
   const todayISO = new Date().toISOString().split('T')[0];
@@ -10217,7 +10341,7 @@ function renderCriticalAlerts(){
   // ── 1. Overdue medications ──────────────────────────────────
   // A med is overdue if: it has a scheduled time, that time + grace has
   // passed today, and its MAR status is still 'pending'.
-  const activePats = (D.patients||[]).filter(p => p.active !== false);
+  const activePats = (D.patients||[]).filter(p => p.active !== false && p.status !== 'deceased' && p.status !== 'discharged');
   activePats.forEach(p => {
     const ptMeds = (D.meds||[]).filter(m =>
       !m.patientId || String(m.patientId) === String(p.id));
@@ -13134,7 +13258,29 @@ function ciLogAndGo(status){
   ciGo('logged');
 }
 function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
-</script>
+</script><div class="modal-overlay" id="wtdn-modal">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-title" style="color:var(--slate-mid)">🕊️ Records preserved</div>
+    <div style="font-size:.82rem;color:var(--slate-mid);line-height:1.7;margin-bottom:14px">All documentation for this patient has been preserved and remains available for printing or export from the Monthly Report section.</div>
+    <div style="background:#F0F9FF;border:1px solid #0EA5E9;border-radius:10px;padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:.75rem;font-weight:600;color:#0C4A6E;margin-bottom:8px">What to do now — in order</div>
+      <ol style="margin:0;padding-left:18px;font-size:.76rem;color:#0C4A6E;line-height:2.2">
+        <li>If hospice enrolled — call your hospice nurse first</li>
+        <li>If no hospice — call the healthcare proxy</li>
+        <li>Call the primary physician to report the death</li>
+        <li>Contact the funeral home if arrangements are pre-made</li>
+        <li>Notify other family members</li>
+        <li>Contact your care agency or employer if applicable</li>
+      </ol>
+    </div>
+    <div style="font-size:.72rem;color:var(--slate-light);line-height:1.6;margin-bottom:16px">Your documented records are caregiver-entered observations stored on your device. They are not official medical records.</div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('wtdn-modal')">Close</button>
+      <button class="btn btn-teal" onclick="navTo('report'); closeModal('wtdn-modal')">View records</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ PAINAD BEHAVIORAL PAIN ASSESSMENT MODAL ══════════════ -->
 <div class="overlay" id="painad-modal">
   <div class="modal">
