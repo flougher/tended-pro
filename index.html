@@ -1560,7 +1560,8 @@ body {
       <div class="card"><div class="card-title">⚠️ Allergies & Conditions</div><div id="detail-medical"></div></div>
       <div class="card"><div class="card-title">💊 Medications on File</div><div id="detail-meds"></div></div>
       <div class="card"><div class="card-title">📞 Emergency Contact</div><div id="detail-emergency"></div>
-    <div id="detail-status-section"></div></div>
+    <div id="detail-status-section"></div>
+    <div id="detail-eol-section"></div></div>
     </div>
   </div>
 </div>
@@ -4634,6 +4635,87 @@ function openPatientDetail(id){
       statusDiv.innerHTML=`<div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px"><div style="font-size:.72rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">Patient status</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button onclick="recordPatientStatus('deceased')" style="background:#F9FAFB;border:1px solid #D1D5DB;border-radius:10px;padding:10px;cursor:pointer;font-size:.76rem;color:#374151;line-height:1.6">🕊️<br><strong>Record passing</strong><br><span style='font-size:.68rem;color:#9CA3AF'>All records preserved</span></button><button onclick="recordPatientStatus('discharged')" style="background:#F9FAFB;border:1px solid #D1D5DB;border-radius:10px;padding:10px;cursor:pointer;font-size:.76rem;color:#374151;line-height:1.6">🏠<br><strong>Discharge</strong><br><span style='font-size:.68rem;color:#9CA3AF'>All records preserved</span></button></div></div>`;
     }
   }
+  renderDetailEOL(p);
+}
+
+
+function renderDetailEOL(p){
+  const el = document.getElementById('detail-eol-section');
+  if(!el) return;
+  if(!p){ el.innerHTML=''; return; }
+
+  const yn = v => v==='yes'?'<span style="color:#16A34A;font-weight:600">Yes</span>':
+                  v==='no' ?'<span style="color:#C0392B;font-weight:600">No</span>':
+                  '<span style="color:var(--slate-light);font-style:italic">—</span>';
+
+  const hasAny = p.eol_dnr||p.eol_advDir||p.eol_polst||p.eol_proxyName||
+                 p.eol_hospice==='yes'||p.eol_hospWish||p.eol_wishes;
+
+  const editBtn = `<button onclick="openPatientModal(${p.id}); setTimeout(()=>{
+    const s=document.getElementById('eol-section');
+    const c=document.getElementById('eol-chevron');
+    if(s&&s.style.display==='none'){s.style.display='block';if(c)c.style.transform='rotate(180deg)';}
+  },400)"
+  style="font-size:.72rem;background:var(--teal);color:white;border:none;border-radius:8px;
+         padding:5px 12px;cursor:pointer;font-weight:600">
+    ${hasAny?'Edit preferences':'+ Add preferences'}
+  </button>`;
+
+  el.innerHTML = `<div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div style="font-size:.78rem;font-weight:600;color:var(--navy)">🕊️ End of Life Preferences</div>
+      ${editBtn}
+    </div>
+    ${!hasAny?`<div style="background:#F9FAFB;border:1px dashed #D1D5DB;border-radius:10px;
+      padding:14px;text-align:center;font-size:.78rem;color:#9CA3AF;line-height:1.7">
+      No preferences recorded yet.<br>
+      <span style="font-size:.72rem">Tap <strong>+ Add preferences</strong> to document DNR status,
+      proxy, hospice, and final wishes.</span></div>`:`
+    <div style="background:#FFFBF5;border:1px solid #E8C97A;border-radius:8px;
+                padding:8px 12px;margin-bottom:10px;font-size:.71rem;color:#92400E">
+      <strong>Reference only.</strong> In any emergency call 911 immediately.
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+      <div style="background:var(--off-white);border-radius:8px;padding:8px 10px">
+        <div style="font-size:.62rem;color:var(--slate-light);text-transform:uppercase;margin-bottom:2px">DNR</div>
+        ${yn(p.eol_dnr)}
+      </div>
+      <div style="background:var(--off-white);border-radius:8px;padding:8px 10px">
+        <div style="font-size:.62rem;color:var(--slate-light);text-transform:uppercase;margin-bottom:2px">Advance directive</div>
+        ${yn(p.eol_advDir)}
+      </div>
+      <div style="background:var(--off-white);border-radius:8px;padding:8px 10px">
+        <div style="font-size:.62rem;color:var(--slate-light);text-transform:uppercase;margin-bottom:2px">POLST</div>
+        ${yn(p.eol_polst)}
+      </div>
+      <div style="background:var(--off-white);border-radius:8px;padding:8px 10px">
+        <div style="font-size:.62rem;color:var(--slate-light);text-transform:uppercase;margin-bottom:2px">Organ donation</div>
+        ${yn(p.eol_organ)}
+      </div>
+    </div>
+    ${p.eol_proxyName?`<div style="background:var(--off-white);border-radius:8px;padding:8px 10px;margin-bottom:6px">
+      <div style="font-size:.62rem;color:var(--slate-light);text-transform:uppercase;margin-bottom:2px">Healthcare proxy</div>
+      <div style="font-size:.82rem;font-weight:600;color:var(--navy)">${p.eol_proxyName}</div>
+      ${p.eol_proxyPhone?`<div style="font-size:.76rem;color:var(--teal)">${p.eol_proxyPhone}</div>`:''}
+      ${p.eol_proxyRel?`<div style="font-size:.72rem;color:var(--slate-light)">${p.eol_proxyRel}</div>`:''}
+    </div>`:''}
+    ${p.eol_hospice==='yes'?`<div style="background:#E1F5EE;border:1px solid #0F6E56;border-radius:8px;
+      padding:8px 10px;margin-bottom:6px;font-size:.73rem;color:#085041;line-height:1.5">
+      ⚠️ <strong>Hospice enrolled</strong>
+      ${p.eol_hospiceName?' — '+p.eol_hospiceName:''}
+      ${p.eol_hospicePhone?' · '+p.eol_hospicePhone:''}<br>
+      Do not call 911 unless instructed by hospice.
+    </div>`:''}
+    ${p.eol_hospWish?`<div style="background:var(--off-white);border-radius:8px;padding:8px 10px;margin-bottom:6px">
+      <div style="font-size:.62rem;color:var(--slate-light);text-transform:uppercase;margin-bottom:2px">Hospitalization wishes</div>
+      <div style="font-size:.78rem;color:var(--navy)">${p.eol_hospWish}</div>
+    </div>`:''}
+    ${p.eol_wishes?`<div style="background:var(--off-white);border-radius:8px;padding:8px 10px">
+      <div style="font-size:.62rem;color:var(--slate-light);text-transform:uppercase;margin-bottom:2px">Personal wishes</div>
+      <div style="font-size:.78rem;color:var(--navy);line-height:1.5">${p.eol_wishes}</div>
+    </div>`:''}
+    `}
+  </div>`;
 }
 
 function closePatientDetail(){
