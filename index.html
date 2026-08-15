@@ -3891,8 +3891,14 @@ function recordPatientStatus(status, explicitId){
   D.patients[idx].status=status;
   D.patients[idx].statusDate=new Date().toISOString().split('T')[0];
   save();renderPatients();renderDashboard();
-  if(status==='deceased') openModal('wtdn-modal');
-  else toast('Patient marked as discharged. Records preserved.','var(--given)');
+  if(status==='deceased'){
+    _wtdnPatientId = D.patients[idx].id;
+    _wtdnPatientName = (D.patients[idx].fname||'') + ' ' + (D.patients[idx].lname||'');
+    populateWTDNModal();
+    openModal('wtdn-modal');
+  } else {
+    toast('Patient marked as discharged. All records are preserved.','var(--given)');
+  }
 }
 function reactivatePatient(patId){
   if(!confirm('Reactivate this patient and return them to active care?')) return;
@@ -4718,6 +4724,44 @@ function renderDetailEOL(p){
     </div>`:''}
     `}
   </div>`;
+}
+
+
+let _wtdnPatientId   = null;
+let _wtdnPatientName = '';
+
+function populateWTDNModal(){
+  const nameEl = document.getElementById('wtdn-patient-name');
+  if(nameEl) nameEl.textContent = _wtdnPatientName || 'This patient';
+}
+
+function wtdnViewRecords(){
+  closeModal('wtdn-modal');
+  // Delay navTo so history.back() from closeModal settles first
+  setTimeout(()=>{
+    navTo('report');
+    setTimeout(()=>{
+      const sel = document.getElementById('report-patient');
+      if(sel && _wtdnPatientId){
+        sel.value = String(_wtdnPatientId);
+        renderReport();
+      }
+      toast('Viewing preserved records for ' + (_wtdnPatientName||'patient') + ' — tap your phone share button to print or save as PDF.', 'var(--given)');
+    }, 200);
+  }, 150);
+}
+
+function wtdnPrintRecords(){
+  navTo('report');
+  setTimeout(()=>{
+    const sel = document.getElementById('report-patient');
+    if(sel && _wtdnPatientId){
+      sel.value = String(_wtdnPatientId);
+      renderReport();
+    }
+    setTimeout(()=>{ window.print(); }, 600);
+  }, 300);
+  closeModal('wtdn-modal');
 }
 
 function closePatientDetail(){
@@ -13343,11 +13387,28 @@ function ciLogAndGo(status){
 }
 function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
 </script><div class="overlay" id="wtdn-modal">
-  <div class="modal" style="max-width:380px">
-    <div class="modal-title" style="color:var(--slate-mid)">🕊️ Records preserved</div>
-    <div style="font-size:.82rem;color:var(--slate-mid);line-height:1.7;margin-bottom:14px">All documentation for this patient has been preserved and remains available for printing or export from the Monthly Report section.</div>
-    <div style="background:#F0F9FF;border:1px solid #0EA5E9;border-radius:10px;padding:12px 14px;margin-bottom:14px">
-      <div style="font-size:.75rem;font-weight:600;color:#0C4A6E;margin-bottom:8px">What to do now — in order</div>
+  <div class="modal" style="max-width:390px">
+    <div class="modal-title" style="color:var(--slate-mid)">🕊️ Passing recorded</div>
+
+    <!-- Completion notice -->
+    <div style="background:#F0FDF4;border:1.5px solid #16A34A;border-radius:10px;
+                padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:.78rem;font-weight:600;color:#15803D;margin-bottom:4px">
+        ✓ Care relationship closed
+      </div>
+      <div style="font-size:.76rem;color:#166534;line-height:1.6">
+        <span id="wtdn-patient-name">This patient</span> has been recorded as passed away.
+        All documentation is preserved. <strong>No additional steps are required in this app —
+        you do not need to also tap Discharge.</strong>
+      </div>
+    </div>
+
+    <!-- What to do outside the app -->
+    <div style="background:#F0F9FF;border:1px solid #0EA5E9;border-radius:10px;
+                padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:.75rem;font-weight:600;color:#0C4A6E;margin-bottom:8px">
+        What to do now — outside the app
+      </div>
       <ol style="margin:0;padding-left:18px;font-size:.76rem;color:#0C4A6E;line-height:2.2">
         <li>If hospice enrolled — call your hospice nurse first</li>
         <li>If no hospice — call the healthcare proxy</li>
@@ -13357,10 +13418,26 @@ function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
         <li>Contact your care agency or employer if applicable</li>
       </ol>
     </div>
-    <div style="font-size:.72rem;color:var(--slate-light);line-height:1.6;margin-bottom:16px">Your documented records are caregiver-entered observations stored on your device. They are not official medical records.</div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeModal('wtdn-modal')">Close</button>
-      <button class="btn btn-teal" onclick="navTo('report'); closeModal('wtdn-modal')">View records</button>
+
+    <!-- Records access -->
+    <div style="background:#FFFBF5;border:1px solid #E8C97A;border-radius:8px;
+                padding:10px 12px;margin-bottom:16px;font-size:.73rem;color:#92400E;line-height:1.6">
+      📋 <strong>Accessing records:</strong> Tap <em>View &amp; Print Records</em> below to open
+      the Monthly Report for this patient. From there you can scroll through all documented care
+      and use your phone's share button to print or save as a PDF.
+    </div>
+
+    <div style="font-size:.7rem;color:var(--slate-light);line-height:1.5;margin-bottom:16px">
+      Records are caregiver-entered observations. They are not official medical records.
+    </div>
+
+    <div class="modal-actions" style="flex-direction:column;gap:8px">
+      <button class="btn btn-teal" style="width:100%" onclick="wtdnViewRecords()">
+        📋 View &amp; Print Records
+      </button>
+      <button class="btn btn-secondary" style="width:100%" onclick="closeModal('wtdn-modal')">
+        Close — I will view records later
+      </button>
     </div>
   </div>
 </div>
