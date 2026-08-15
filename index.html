@@ -3907,6 +3907,22 @@ function recordPatientStatus(status, explicitId){
   })();
   D.patients[idx].status=status;
   D.patients[idx].statusDate=new Date().toISOString().split('T')[0];
+  // DIAG 3 — show actual D.patients state after marking
+  (function(){
+    var dp=document.getElementById('debug-panel');
+    var dc=document.getElementById('debug-content');
+    if(dp&&dc){
+      var lines = ['DIAG 3 — D.patients AFTER marking:'];
+      D.patients.forEach(function(pt,i){
+        lines.push('  ['+i+'] id:'+pt.id+' name:'+pt.fname+' '+pt.lname+' status:'+(pt.status||'active'));
+      });
+      lines.push('Marked index: '+idx);
+      lines.push('Marked patient: '+D.patients[idx].fname+' '+D.patients[idx].lname);
+      lines.push('Marked status: '+D.patients[idx].status);
+      dc.textContent=lines.join('\n');
+      dp.style.display='block';
+    }
+  })();
   save();renderPatients();renderDashboard();
   if(status==='deceased'){
     _wtdnPatientId = D.patients[idx].id;
