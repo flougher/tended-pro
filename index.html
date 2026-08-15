@@ -3407,8 +3407,11 @@ let D = {
 // GLOBAL PATIENT SELECTOR
 // ═══════════════════════════════════════════════════════════════
 let _globalPatientId = '';
+let _diagLog = [];
 
 function setGlobalPatient(id){
+  const _sgpName = (D.patients||[]).find(x=>String(x.id)===String(id));
+  _diagLog.push('setGlobalPatient called: '+(id||'empty')+' = '+(_sgpName?_sgpName.fname+' '+_sgpName.lname:'NOT FOUND')+' | stack:'+new Error().stack.split('\n')[2]);
   _globalPatientId = String(id);
   localStorage.setItem('tendedPro_globalPatient', _globalPatientId);
   // Sync named selectors
@@ -4599,12 +4602,17 @@ function openPatientDetail(id){
     if(p2&&c2){c2.textContent='ERROR: patient not found\nid passed: '+id;p2.style.display='block';}
     return; 
   }
+  _diagLog = [];
+  _diagLog.push('openPatientDetail called for: '+p.fname+' '+p.lname+' (id:'+p.id+')');
   setGlobalPatient(p.id);
+  _diagLog.push('After setGlobalPatient — _globalPatientId is now: '+_globalPatientId);
+  const _finalPatient = (D.patients||[]).find(x=>String(x.id)===String(_globalPatientId));
+  _diagLog.push('Final global patient name: '+(_finalPatient?_finalPatient.fname+' '+_finalPatient.lname:'NOT FOUND'));
   (function(){
     var dp=document.getElementById('debug-panel');
     var dc=document.getElementById('debug-content');
     if(dp&&dc){
-      dc.textContent='DIAG 1 — Detail opened\n'+'Patient: '+p.fname+' '+p.lname+'\n'+'Patient ID: '+p.id+'\n'+'Global ID after: '+_globalPatientId;
+      dc.textContent=_diagLog.join('\n---\n');
       dp.style.display='block';
     }
   })();
