@@ -13400,12 +13400,47 @@ function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
       </div>
       <div style="font-size:.76rem;color:#166534;line-height:1.6">
         <span id="wtdn-patient-name">This patient</span> has been recorded as passed away.
-        All documentation is preserved. <strong>No additional steps are required in this app —
-        you do not need to also tap Discharge.</strong>
+        All documentation is preserved.
       </div>
     </div>
 
-    <!-- What to do outside the app -->
+    <!-- In-app steps -->
+    <div style="background:#F8FAFC;border:1px solid #CBD5E1;border-radius:10px;
+                padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:.75rem;font-weight:600;color:#1E293B;margin-bottom:10px">
+        Steps to complete in this app
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <div style="background:#16A34A;color:white;border-radius:50%;width:20px;height:20px;
+                      display:flex;align-items:center;justify-content:center;font-size:.65rem;
+                      font-weight:700;flex-shrink:0;margin-top:1px">✓</div>
+          <div style="font-size:.76rem;color:#1E293B;line-height:1.5">
+            <strong>Passing recorded</strong> — done automatically when you confirmed
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <div style="background:#0C7A6E;color:white;border-radius:50%;width:20px;height:20px;
+                      display:flex;align-items:center;justify-content:center;font-size:.65rem;
+                      font-weight:700;flex-shrink:0;margin-top:1px">2</div>
+          <div style="font-size:.76rem;color:#1E293B;line-height:1.5">
+            <strong>Print or save records</strong> — tap View &amp; Print Records below.
+            Use your phone's share button to print or save as PDF
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <div style="background:#64748B;color:white;border-radius:50%;width:20px;height:20px;
+                      display:flex;align-items:center;justify-content:center;font-size:.65rem;
+                      font-weight:700;flex-shrink:0;margin-top:1px">3</div>
+          <div style="font-size:.76rem;color:#475569;line-height:1.5">
+            <strong>No Discharge step needed</strong> — Record Passing fully closes
+            this patient's care record
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Outside the app steps -->
     <div style="background:#F0F9FF;border:1px solid #0EA5E9;border-radius:10px;
                 padding:12px 14px;margin-bottom:14px">
       <div style="font-size:.75rem;font-weight:600;color:#0C4A6E;margin-bottom:8px">
@@ -13419,14 +13454,6 @@ function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
         <li>Notify other family members</li>
         <li>Contact your care agency or employer if applicable</li>
       </ol>
-    </div>
-
-    <!-- Records access -->
-    <div style="background:#FFFBF5;border:1px solid #E8C97A;border-radius:8px;
-                padding:10px 12px;margin-bottom:16px;font-size:.73rem;color:#92400E;line-height:1.6">
-      📋 <strong>Accessing records:</strong> Tap <em>View &amp; Print Records</em> below to open
-      the Monthly Report for this patient. From there you can scroll through all documented care
-      and use your phone's share button to print or save as a PDF.
     </div>
 
     <div style="font-size:.7rem;color:var(--slate-light);line-height:1.5;margin-bottom:16px">
