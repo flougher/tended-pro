@@ -3888,7 +3888,9 @@ function recordPatientStatus(status, explicitId){
     :'This will mark the patient as discharged. All records will be preserved. Continue?';
   if(!confirm(msg)) return;
   const idx=D.patients.findIndex(p=>String(p.id)===targetId);
-  if(idx<0){toast('Patient not found','var(--held)');return;}
+  if(idx<0){toast('DEBUG: no patient for targetId='+targetId,'var(--held)');return;}
+  const foundName = D.patients[idx].fname+' '+D.patients[idx].lname;
+  toast('Recording '+status+' for: '+foundName+' (targetId:'+targetId+')', 'var(--given)');
   D.patients[idx].status=status;
   D.patients[idx].statusDate=new Date().toISOString().split('T')[0];
   save();renderPatients();renderDashboard();
@@ -4581,8 +4583,9 @@ function renderPatients(){
 
 function openPatientDetail(id){
   const p = D.patients.find(x => String(x.id) === String(id));
-  if(!p) return;
+  if(!p){ toast('DEBUG: patient not found for id='+id, 'var(--held)'); return; }
   setGlobalPatient(p.id);
+  toast('Opening: '+p.fname+' '+p.lname+' (ID:'+p.id+')', 'var(--given)');
   document.getElementById('patient-list').style.display   = 'none';
   document.getElementById('patient-detail').style.display = 'block';
   document.getElementById('detail-name').textContent = p.fname + ' ' + p.lname;
