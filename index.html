@@ -3407,11 +3407,8 @@ let D = {
 // GLOBAL PATIENT SELECTOR
 // ═══════════════════════════════════════════════════════════════
 let _globalPatientId = '';
-let _diagLog = [];
 
 function setGlobalPatient(id){
-  const _sgpName = (D.patients||[]).find(x=>String(x.id)===String(id));
-  _diagLog.push('setGlobalPatient called: '+(id||'empty')+' = '+(_sgpName?_sgpName.fname+' '+_sgpName.lname:'NOT FOUND')+' | stack:'+new Error().stack.split('\n')[2]);
   _globalPatientId = String(id);
   localStorage.setItem('tendedPro_globalPatient', _globalPatientId);
   // Sync named selectors
@@ -3891,38 +3888,9 @@ function recordPatientStatus(status, explicitId){
     :'This will mark the patient as discharged. All records will be preserved. Continue?';
   if(!confirm(msg)) return;
   const idx=D.patients.findIndex(p=>String(p.id)===targetId);
-  if(idx<0){
-    var dp3=document.getElementById('debug-panel'),dc3=document.getElementById('debug-content');
-    if(dp3&&dc3){dc3.textContent='ERROR: no patient found\ntargetId: '+targetId;dp3.style.display='block';}
-    return;
-  }
-  const foundName = D.patients[idx].fname+' '+D.patients[idx].lname;
-  (function(){
-    var dp=document.getElementById('debug-panel');
-    var dc=document.getElementById('debug-content');
-    if(dp&&dc){
-      dc.textContent='DIAG 2 — Record Passing tapped\n'+'Targeting: '+foundName+'\n'+'Target ID: '+targetId+'\n'+'explicitId param: '+explicitId+'\n'+'_globalPatientId: '+_globalPatientId;
-      dp.style.display='block';
-    }
-  })();
+  if(idx<0){toast('Patient not found','var(--held)');return;}
   D.patients[idx].status=status;
   D.patients[idx].statusDate=new Date().toISOString().split('T')[0];
-  // DIAG 3 — show actual D.patients state after marking
-  (function(){
-    var dp=document.getElementById('debug-panel');
-    var dc=document.getElementById('debug-content');
-    if(dp&&dc){
-      var lines = ['DIAG 3 — D.patients AFTER marking:'];
-      D.patients.forEach(function(pt,i){
-        lines.push('  ['+i+'] id:'+pt.id+' name:'+pt.fname+' '+pt.lname+' status:'+(pt.status||'active'));
-      });
-      lines.push('Marked index: '+idx);
-      lines.push('Marked patient: '+D.patients[idx].fname+' '+D.patients[idx].lname);
-      lines.push('Marked status: '+D.patients[idx].status);
-      dc.textContent=lines.join('\n');
-      dp.style.display='block';
-    }
-  })();
   save();renderPatients();renderDashboard();
   if(status==='deceased'){
     _wtdnPatientId = D.patients[idx].id;
@@ -4613,25 +4581,8 @@ function renderPatients(){
 
 function openPatientDetail(id){
   const p = D.patients.find(x => String(x.id) === String(id));
-  if(!p){ 
-    var p2=document.getElementById('debug-panel'),c2=document.getElementById('debug-content');
-    if(p2&&c2){c2.textContent='ERROR: patient not found\nid passed: '+id;p2.style.display='block';}
-    return; 
-  }
-  _diagLog = [];
-  _diagLog.push('openPatientDetail called for: '+p.fname+' '+p.lname+' (id:'+p.id+')');
+  if(!p) return;
   setGlobalPatient(p.id);
-  _diagLog.push('After setGlobalPatient — _globalPatientId is now: '+_globalPatientId);
-  const _finalPatient = (D.patients||[]).find(x=>String(x.id)===String(_globalPatientId));
-  _diagLog.push('Final global patient name: '+(_finalPatient?_finalPatient.fname+' '+_finalPatient.lname:'NOT FOUND'));
-  (function(){
-    var dp=document.getElementById('debug-panel');
-    var dc=document.getElementById('debug-content');
-    if(dp&&dc){
-      dc.textContent=_diagLog.join('\n---\n');
-      dp.style.display='block';
-    }
-  })();
   document.getElementById('patient-list').style.display   = 'none';
   document.getElementById('patient-detail').style.display = 'block';
   document.getElementById('detail-name').textContent = p.fname + ' ' + p.lname;
@@ -13437,22 +13388,6 @@ function ciLogAndGo(status){
 }
 function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
 </script>
-<!-- DEBUG PANEL — remove after diagnosis -->
-<div id="debug-panel" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;
-  background:rgba(0,0,0,.85);z-index:99999;padding:24px 20px;overflow-y:auto">
-  <div style="background:white;border-radius:12px;padding:20px;font-family:monospace;
-              font-size:.85rem;line-height:1.8;word-break:break-all">
-    <div style="font-weight:700;font-size:1rem;margin-bottom:12px;color:#0C1B33">
-      🔍 Diagnostic Info
-    </div>
-    <div id="debug-content" style="color:#1a1a1a;white-space:pre-wrap"></div>
-    <button onclick="document.getElementById('debug-panel').style.display='none'"
-      style="margin-top:16px;width:100%;padding:12px;background:#0C7A6E;color:white;
-             border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer">
-      ✓ OK — I have read this
-    </button>
-  </div>
-</div>
 <div class="overlay" id="wtdn-modal">
   <div class="modal" style="max-width:390px">
     <div class="modal-title" style="color:var(--slate-mid)">🕊️ Passing recorded</div>
