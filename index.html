@@ -1229,7 +1229,7 @@ body {
         <div>✅ 3 incidents</div><div>✅ Care plan</div>
         <div>✅ 2 active wounds</div><div>✅ Today's intake</div>
         <div>✅ Family log</div><div>✅ Morning routines</div>
-        <div>✅ 3 triggers</div><div>✅ ABC behaviors</div>
+        <div>✅ 3 triggers</div><div>✅ Behavior patterns</div>
         <div>✅ Toileting log</div><div>✅ Credentials</div>
         <div>✅ Billing entries</div><div>✅ Vital signs</div>
         <div style="color:#7C3AED">💜 Sundowning tracker</div><div style="color:#7C3AED">💜 Wandering log</div>
@@ -1329,7 +1329,7 @@ body {
     <div class="nav-label">Behavioral & Clinical</div>
     <button class="nav-btn" onclick="navTo('routines',this)"><span class="ni">📅</span> Routines</button>
     <button class="nav-btn" onclick="navTo('triggers',this)"><span class="ni">⚡</span> Triggers</button>
-    <button class="nav-btn" onclick="navTo('behaviors',this)"><span class="ni">🧠</span> ABC Behavior</button>
+    <button class="nav-btn" onclick="navTo('behaviors',this)"><span class="ni">🧠</span> Behavior Patterns (ABC)</button>
     <button class="nav-btn" onclick="navTo('toileting',this)"><span class="ni">🚻</span> Toileting</button>
     <button class="nav-btn" onclick="navTo('trends',this)"><span class="ni">📊</span> Weekly Trends</button>
     <button class="nav-btn" onclick="navTo('vitals',this)"><span class="ni">🩺</span> Vital Signs <span class="nav-badge" id="nb-vitals"></span></button>
@@ -1338,7 +1338,7 @@ body {
     <div class="nav-label">💜 Memory Care</div>
     <button class="nav-btn" onclick="navTo('itm',this)" style="color:rgba(255,150,150,.95)"><span class="ni">🫂</span> In The Moment</button>
     <button class="nav-btn" onclick="navTo('sundowning',this)"><span class="ni">🌅</span> Sundowning</button>
-    <button class="nav-btn" onclick="navTo('wandering',this)"><span class="ni">🚶</span> Wandering & Elopement</button>
+    <button class="nav-btn" onclick="navTo('wandering',this)"><span class="ni">🚶</span> Wandering & Exits</button>
     <button class="nav-btn" onclick="navTo('memorycare',this)"><span class="ni">💬</span> Memory Care Notes</button>
   </div>
   <div class="nav-group">
@@ -1355,7 +1355,6 @@ body {
   </div>
   <div class="nav-group">
     <div class="nav-label">💚 Caregiver Wellness</div>
-    <button class="nav-btn" onclick="navTo('checkin',this)"><span class="ni">💚</span> Caregiver Check-In</button>
   </div>
   <div class="nav-group">
     <div class="nav-label">Account</div>
@@ -1384,6 +1383,9 @@ body {
     </div>
   </div>
 
+  <!-- Alert anchor — critical/BBW/vitals alerts insert here -->
+  <div id="dash-alerts-anchor" style="margin:0"></div>
+
   <!-- Active Shift Timer -->
   <div id="dash-shift-clock" style="display:none;background:linear-gradient(135deg,#0B4A3E,#0C7A6E);border-radius:var(--r-lg);padding:12px 20px;margin-bottom:12px;display:none;align-items:center;justify-content:space-between;gap:12px">
     <div style="display:flex;align-items:center;gap:10px">
@@ -1405,31 +1407,6 @@ body {
     <button onclick="dismissLaunchBanner()" aria-label="Dismiss" style="background:rgba(255,255,255,.25);border:none;color:white;font-size:.78rem;cursor:pointer;padding:4px 10px;border-radius:6px;flex-shrink:0;font-weight:700;white-space:nowrap">✕ Dismiss</button>
   </div>
 
-  <!-- Shift Progress Banner -->
-  <div id="dash-shift-banner" style="background:linear-gradient(135deg,var(--navy),var(--navy-mid));border-radius:var(--r-lg);padding:18px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
-    <div style="display:flex;align-items:center;gap:14px">
-      <div style="font-size:2rem" id="dash-shift-icon">🌅</div>
-      <div>
-        <div style="font-family:var(--font-head);font-size:1rem;color:white;margin-bottom:2px" id="dash-shift-label">Starting Your Shift</div>
-        <div style="font-size:.78rem;color:rgba(255,255,255,.5)" id="dash-shift-sub">Here's what needs attention today</div>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <div style="text-align:center">
-        <div style="font-family:var(--font-mono);font-size:1.4rem;font-weight:600;color:var(--teal-bright)" id="dash-shift-pct">0%</div>
-        <div style="font-size:.62rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em">Shift Complete</div>
-      </div>
-      <div style="width:52px;height:52px;position:relative;flex-shrink:0">
-        <svg viewBox="0 0 52 52" style="transform:rotate(-90deg)">
-          <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="5"/>
-          <circle cx="26" cy="26" r="22" fill="none" stroke="#14C4B2" stroke-width="5"
-            stroke-dasharray="138.2" id="dash-progress-ring"
-            stroke-dashoffset="138.2" stroke-linecap="round" style="transition:stroke-dashoffset .6s ease"/>
-        </svg>
-      </div>
-    </div>
-  </div>
-
   <!-- Stat cards -->
   <div class="grid-4" style="margin-bottom:20px">
     <div class="stat-card" onclick="navTo('patients')">
@@ -1449,6 +1426,13 @@ body {
       <div><div class="stat-val" id="ds-pending">0</div><div class="stat-lbl">Meds Pending</div></div>
     </div>
   </div>
+
+  <!-- Resident-Centered Status Rows (Item 1) -->
+  <div id="dash-resident-rows" style="margin-bottom:20px"></div>
+
+
+  <!-- ── QUICK LOG CARD ────────────────────────────────────── -->
+  <div id="quick-log-card" style="margin-bottom:20px"></div>
 
   <!-- Shift Checklist + Quick Actions -->
   <div class="grid-2" style="margin-bottom:20px">
@@ -1477,7 +1461,7 @@ body {
         </button>
         <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('behaviors')">
           <span style="font-size:1rem">🧠</span>
-          <div style="text-align:left"><div style="font-weight:700">Log Behavior (ABC)</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Antecedent, behavior, consequence</div></div>
+          <div style="text-align:left"><div style="font-weight:700">Behavior Patterns (ABC)</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Track triggers, behaviors, and what helps</div></div>
         </button>
         <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('wounds')">
           <span style="font-size:1rem">🩹</span>
@@ -1487,11 +1471,6 @@ body {
     </div>
   </div>
 
-  <!-- ── QUICK LOG CARD ────────────────────────────────────── -->
-  <div id="quick-log-card" style="margin-bottom:20px"></div>
-
-  <!-- Resident-Centered Status Rows (Item 1) -->
-  <div id="dash-resident-rows" style="margin-bottom:20px"></div>
 
   <!-- Patient Roster + Incidents -->
   <div class="grid-2" style="margin-bottom:20px">
@@ -1580,7 +1559,9 @@ body {
       <div class="card"><div class="card-title">👤 Patient Information</div><div id="detail-info"></div></div>
       <div class="card"><div class="card-title">⚠️ Allergies & Conditions</div><div id="detail-medical"></div></div>
       <div class="card"><div class="card-title">💊 Medications on File</div><div id="detail-meds"></div></div>
-      <div class="card"><div class="card-title">📞 Emergency Contact</div><div id="detail-emergency"></div></div>
+      <div class="card"><div class="card-title">📞 Emergency Contact</div><div id="detail-emergency"></div>
+    <div id="detail-status-section"></div>
+    <div id="detail-eol-section"></div></div>
     </div>
   </div>
 </div>
@@ -1664,10 +1645,17 @@ body {
 <div id="section-incidents" class="section">
   <div class="ph">
     <div>
-      <div class="ph-title">📋 Incident Log</div>
-      <div class="ph-sub">Document falls, observations, and clinical events</div>
+      <div class="ph-title">📋 Incident Report</div>
+      <div class="ph-sub">Falls, injuries, medication errors, and events requiring formal documentation</div>
     </div>
     <button class="btn btn-teal" onclick="openIncidentModal()">+ Log Incident</button>
+  </div>
+
+  <!-- Incident guidance -->
+  <div style="background:#FFF8EC;border:1.5px solid #C9963A;border-radius:var(--r-lg);padding:14px 16px;margin-bottom:16px;font-size:.78rem;color:#92400E;line-height:1.7">
+    <div style="font-weight:700;margin-bottom:6px">📋 What to log here</div>
+    <p style="margin-bottom:8px">Use this section for <strong>specific events that need to be formally reported</strong> — a fall, a near-fall, an injury, a medication error, a choking episode, or any behavioral crisis that required calling a physician or family member. These are events where something happened that someone else needs to know about officially.</p>
+    <p style="margin-bottom:0"><strong>Examples:</strong> Found on floor · Refused all medications · Struck caregiver · Elopement attempt · Injury during personal care · Sudden change in condition. <strong>For repeated behaviors and mood patterns</strong> — agitation, restlessness, refusal of care — use the Behavior Patterns (ABC) section instead.</p>
   </div>
   <div id="incidents-patient-bar" style="margin-bottom:14px"></div>
   <div id="incident-list">
@@ -1839,17 +1827,17 @@ body {
 <div id="section-wandering" class="section">
   <div class="ph">
     <div>
-      <div class="ph-title">🚶 Wandering & Elopement</div>
-      <div class="ph-sub">Document wandering incidents and elopement attempts</div>
+      <div class="ph-title">🚶 Wandering & Unsupervised Exits</div>
+      <div class="ph-sub">Document wandering incidents and unsupervised exit attempts</div>
     </div>
     <button class="btn btn-teal" onclick="openModal('wandering-modal')">+ Log Incident</button>
   </div>
   <div id="wandering-patient-bar" style="margin-bottom:10px"></div>
   <div id="wd-prediction-alert"></div>
   <div style="background:var(--refused-bg);border:1.5px solid var(--refused);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:16px;font-size:.78rem;color:#7A2020;line-height:1.7">
-    <div style="font-weight:700;margin-bottom:6px;color:var(--refused)">⚠️ Wandering & Elopement — Safety Guidance</div>
+    <div style="font-weight:700;margin-bottom:6px;color:var(--refused)">⚠️ Wandering & Unsupervised Exits — Safety Guidance</div>
     <p style="margin-bottom:8px"><strong>Document every incident immediately.</strong> A wandering log is only clinically useful when entries are consistent and complete. Time of incident, duration, location found, and what the patient was doing are all essential.</p>
-    <p style="margin-bottom:8px"><strong>Wandering vs. Elopement:</strong> Wandering is movement within a supervised space. Elopement is leaving or attempting to leave a secured area. Elopement is a medical emergency. If a patient leaves or attempts to leave, <strong>call 911 immediately</strong>, then notify the family and supervisor.</p>
+    <p style="margin-bottom:8px"><strong>Wandering vs. Leaving Unsupervised:</strong> Wandering is movement within a supervised space. Leaving unsupervised — clinically called elopement — means the patient has left or attempted to leave without authorization. This is a medical emergency. If a patient leaves or attempts to leave, <strong>call 911 immediately</strong>, then notify the family and supervisor.</p>
     <p style="margin-bottom:8px"><strong>Before logging, verify safeguards are in place:</strong> door alarms active, bed sensor functioning, ID bracelet on patient, family notified of risk level.</p>
     <p style="margin-bottom:0"><strong>Call the physician if:</strong> wandering episodes are new or suddenly increasing in frequency, the patient appears in pain or distressed during episodes, or the patient is found in an unsafe location. A sudden increase in wandering behavior can signal a UTI, pain, medication reaction, or disease progression.</p>
   </div>
@@ -1859,7 +1847,7 @@ body {
 <!-- Wandering Modal -->
 <div class="overlay" id="wandering-modal">
   <div class="modal">
-    <div class="modal-title">🚶 Log Wandering / Elopement Incident</div>
+    <div class="modal-title">🚶 Log Wandering / Exit Incident</div>
     <div class="form-row">
       <div class="fg"><label>Date *</label><input type="date" id="wd-date"></div>
       <div class="fg"><label>Time Discovered *</label><input type="time" id="wd-time"></div>
@@ -1868,8 +1856,8 @@ body {
       <select id="wd-type" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
         <option>Wandering — within facility</option>
         <option>Wandering — entered restricted area</option>
-        <option>Elopement attempt — intercepted</option>
-        <option>Elopement — left facility unaccompanied</option>
+        <option>Unsupervised exit attempt (elopement) — intercepted</option>
+        <option>Left home unaccompanied (elopement)</option>
         <option>Night-time wandering</option>
         <option>Wandering — entered another resident's room</option>
       </select>
@@ -2090,9 +2078,9 @@ body {
       <div style="font-size:.84rem;color:var(--slate-mid);line-height:1.9">
         <div>👤 <strong style="color:var(--navy)">Patient Care:</strong> Patient Roster · Medication Log · Incidents · Shift Handoff</div>
         <div>📋 <strong style="color:var(--navy)">Documentation:</strong> Care Plan · Wound Tracker · Diet &amp; Fluids · Family Log · Pain Scale</div>
-        <div>🧠 <strong style="color:var(--navy)">Behavioral &amp; Clinical:</strong> Routines · Triggers · ABC Behavior · Toileting · Vital Signs · Weekly Trends</div>
+        <div>🧠 <strong style="color:var(--navy)">Behavioral &amp; Clinical:</strong> Routines · Triggers · Behavior Patterns (ABC) · Toileting · Vital Signs · Weekly Trends</div>
         <div>🎓 <strong style="color:var(--navy)">Professional Tools:</strong> Voice to Text · Credentials · Billing · Monthly Report</div>
-        <div>💜 <strong style="color:var(--navy)">Memory Care:</strong> Sundowning Tracker · Wandering &amp; Elopement Log · Memory Care Notes</div>
+        <div>💜 <strong style="color:var(--navy)">Memory Care:</strong> Sundowning Tracker · Wandering &amp; Exit Log · Memory Care Notes</div>
         <div>⚠️ <strong style="color:var(--navy)">Safety:</strong> FDA Black Box Warnings for 90+ medications</div>
       </div>
     </div>
@@ -2395,9 +2383,16 @@ body {
 <!-- ═══ ABC BEHAVIOR ══════════════════════════════════════════ -->
 <div id="section-behaviors" class="section">
   <div class="ph">
-    <div><div class="ph-title">🧠 ABC Behavior Tracking</div>
-    <div class="ph-sub">Antecedent · Behavior · Consequence — clinical gold standard</div></div>
+    <div><div class="ph-title">🧠 Behavior Patterns (ABC)</div>
+    <div class="ph-sub">Track what triggers behaviors and what helps — builds patterns over time</div></div>
     <button class="btn btn-teal" onclick="openModal('behavior-modal')">+ Log Behavior</button>
+  </div>
+
+  <!-- Behavior guidance -->
+  <div style="background:#F0F9FF;border:1.5px solid #0EA5E9;border-radius:var(--r-lg);padding:14px 16px;margin-bottom:16px;font-size:.78rem;color:#0C4A6E;line-height:1.7">
+    <div style="font-weight:700;margin-bottom:6px">🧠 What to log here</div>
+    <p style="margin-bottom:8px">Use this section to document <strong>repeated or pattern-based behaviors</strong> — agitation, restlessness, refusal of care, verbal outbursts, mood changes, or sundowning episodes. The ABC format captures three things: what happened <em>before</em> the behavior (the trigger), what the behavior looked like, and what helped resolve it.</p>
+    <p style="margin-bottom:0"><strong>Why it matters:</strong> A single behavior entry tells you little. Ten entries showing agitation occurs every afternoon when visitors arrive tells you everything. The pattern is where the clinical value lives. <strong>Use the Incident Report section instead</strong> for one-time events like falls, injuries, or medication errors that need to be formally reported.</p>
   </div>
   <div id="behaviors-patient-bar" style="margin-bottom:10px"></div>
   <div class="p3-tabs">
@@ -2522,7 +2517,7 @@ body {
   </div>
 
   <div class="p3-tabs">
-    <button class="p3-tab active" onclick="p3Tab('trends','behaviors')">🧠 Behaviors</button>
+    <button class="p3-tab active" onclick="p3Tab('trends','behaviors')">🧠 Behavior Patterns</button>
     <button class="p3-tab" onclick="p3Tab('trends','incidents')">📋 Incidents</button>
     <button class="p3-tab" onclick="p3Tab('trends','toileting')">🚻 Toileting</button>
     <button class="p3-tab" onclick="p3Tab('trends','intake')">🍽️ Intake</button>
@@ -2800,17 +2795,17 @@ body {
     </div>
     <div class="fg" style="margin-bottom:0"><label>Include Sections</label>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px;font-size:.86rem">
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-meds" checked> 💊 Medications</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-incidents" checked> 📋 Incidents</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-wounds" checked> 🩹 Wounds</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-intake" checked> 🍽️ Diet & Fluids</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-behaviors" checked> 🧠 Behaviors</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-painad" checked> 🧠 PAINAD Assessments</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-toileting" checked> 🚻 Toileting</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-comms" checked> 📞 Family Log</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-careplan" checked> 📌 Care Plan</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-billing" checked> 💳 Billing</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-shiftnotes" checked> 📝 Shift Notes</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-meds" checked onchange="renderReport()"> 💊 Medications</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-incidents" checked onchange="renderReport()"> 📋 Incidents</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-wounds" checked onchange="renderReport()"> 🩹 Wounds</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-intake" checked onchange="renderReport()"> 🍽️ Diet & Fluids</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-behaviors" checked onchange="renderReport()"> 🧠 Behaviors</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-painad" checked onchange="renderReport()"> 🧠 PAINAD Assessments</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-toileting" checked onchange="renderReport()"> 🚻 Toileting</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-comms" checked onchange="renderReport()"> 📞 Family Log</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-careplan" checked onchange="renderReport()"> 📌 Care Plan</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-billing" onchange="renderReport()"> 💳 Billing</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-shiftnotes" checked onchange="renderReport()"> 📝 Shift Notes</label>
       </div>
     </div>
   </div>
@@ -2979,7 +2974,7 @@ body {
 </div>
 
 <!-- Mobile More Menu -->
-<div id="mobile-more" style="display:none;position:fixed;bottom:calc(58px + env(safe-area-inset-bottom,12px));left:0;right:0;background:var(--navy-mid);border-top:1px solid rgba(255,255,255,.1);z-index:2999;padding:8px 0;box-shadow:0 -4px 20px rgba(12,27,51,.3)">
+<div id="mobile-more" style="display:none;position:fixed;top:0;bottom:calc(58px + env(safe-area-inset-bottom,12px));left:0;right:0;background:var(--navy-mid);border-top:1px solid rgba(255,255,255,.1);z-index:2999;padding:8px 0;box-shadow:0 -4px 20px rgba(12,27,51,.3);overflow-y:auto;-webkit-overflow-scrolling:touch;">
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0">
     <button class="bn-btn" onclick="mobileNavTo('handoff')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🔄</span>Handoff</button>
     <button class="bn-btn" onclick="mobileNavTo('careplan')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📌</span>Care Plan</button>
@@ -2989,7 +2984,7 @@ body {
     <button class="bn-btn" onclick="mobileNavTo('pain')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">😣</span>Pain</button>
     <button class="bn-btn" onclick="mobileNavTo('routines')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📅</span>Routines</button>
     <button class="bn-btn" onclick="mobileNavTo('triggers')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">⚡</span>Triggers</button>
-    <button class="bn-btn" onclick="mobileNavTo('behaviors')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🧠</span>ABC</button>
+    <button class="bn-btn" onclick="mobileNavTo('behaviors')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🧠</span>Behaviors</button>
     <button class="bn-btn" onclick="mobileNavTo('toileting')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🚻</span>Toileting</button>
     <button class="bn-btn" onclick="mobileNavTo('trends')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📊</span>Trends</button>
     <button class="bn-btn" onclick="mobileNavTo('vitals')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🩺</span>Vitals</button>
@@ -3003,7 +2998,6 @@ body {
     <button class="bn-btn" onclick="mobileNavTo('report')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📄</span>Report</button>
     <button class="bn-btn" onclick="mobileNavTo('bbw')" style="color:rgba(255,200,50,.85)"><span class="bn-icon">⚠️</span>BBW</button>
     <button class="bn-btn" onclick="mobileNavTo('emergency')" style="color:rgba(255,120,120,.95)"><span class="bn-icon">🚨</span>Emergency</button>
-    <button class="bn-btn" onclick="mobileNavTo('checkin')" style="color:rgba(150,230,200,.95)"><span class="bn-icon">💚</span>Check-In</button>
     <button class="bn-btn" onclick="mobileNavTo('settings')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">⚙️</span>Settings</button>
     <button class="bn-btn" onclick="toggleMobileMore()" style="color:rgba(255,255,255,.4)"><span class="bn-icon">✕</span>Close</button>
   </div>
@@ -3084,6 +3078,38 @@ body {
       </div>
     </div>
     <div class="fg"><label>Care Notes</label><textarea id="pm-notes" rows="2" placeholder="Preferences, mobility restrictions, special instructions…"></textarea></div>
+
+    <div style="border-top:1.5px solid var(--border);margin-top:12px;padding-top:12px">
+      <button type="button" onclick="toggleEOL()" id="eol-toggle-btn" style="width:100%;text-align:left;background:none;border:none;padding:0;font-size:.85rem;font-weight:600;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:space-between"><span>🕊️ End of Life Preferences</span><span id="eol-chevron" style="transition:transform .2s;font-size:.75rem">▼</span></button>
+      <div id="eol-section" style="display:none;margin-top:12px">
+        <div style="background:#FFF8EC;border:1.5px solid #C9963A;border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:.73rem;color:#92400E;line-height:1.6"><strong>Reference only.</strong> In any medical emergency call 911 immediately. Not a legal document.</div>
+        <p style="font-size:.72rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.04em;margin:0 0 8px">Resuscitation &amp; emergency</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <div class="fg" style="margin:0"><label style="font-size:.75rem">DNR on file</label><select id="pm-dnr" style="border:1.5px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:.85rem;background:white;width:100%"><option value="">Unknown</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+          <div class="fg" style="margin:0"><label style="font-size:.75rem">Advance directive</label><select id="pm-adv-dir" style="border:1.5px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:.85rem;background:white;width:100%"><option value="">Unknown</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+          <div class="fg" style="margin:0"><label style="font-size:.75rem">POLST on file</label><select id="pm-polst" style="border:1.5px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:.85rem;background:white;width:100%"><option value="">Unknown</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+          <div class="fg" style="margin:0"><label style="font-size:.75rem">Organ donation</label><select id="pm-organ" style="border:1.5px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:.85rem;background:white;width:100%"><option value="">Unknown</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+        </div>
+        <div class="fg"><label style="font-size:.75rem">Advance directive location</label><input id="pm-adv-loc" placeholder="e.g. Bedside table — blue folder"></div>
+        <div class="fg"><label style="font-size:.75rem">POLST / physician orders location</label><input id="pm-polst-loc" placeholder="e.g. Posted on refrigerator"></div>
+        <p style="font-size:.72rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 8px">Healthcare proxy</p>
+        <div class="form-row"><div class="fg"><label style="font-size:.75rem">Proxy name</label><input id="pm-proxy-name" placeholder="Jane Thompson"></div><div class="fg"><label style="font-size:.75rem">Proxy phone</label><input id="pm-proxy-phone" type="tel" placeholder="(775) 555-0100"></div></div>
+        <div class="fg"><label style="font-size:.75rem">Relationship to patient</label><input id="pm-proxy-rel" placeholder="Daughter"></div>
+        <p style="font-size:.72rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 8px">Hospice</p>
+        <div class="fg" style="margin-bottom:8px"><label style="font-size:.75rem">Enrolled in hospice</label><select id="pm-hospice" onchange="toggleHospiceFields()" style="border:1.5px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:.85rem;background:white;width:100%"><option value="no">No</option><option value="yes">Yes</option></select></div>
+        <div id="pm-hospice-fields" style="display:none">
+          <div style="background:#E1F5EE;border:1px solid #0F6E56;border-radius:8px;padding:8px 10px;font-size:.72rem;color:#085041;margin-bottom:8px;line-height:1.5">⚠️ Patient is on hospice. Contact hospice directly when condition changes. Do not call 911 unless instructed by hospice.</div>
+          <div class="form-row"><div class="fg"><label style="font-size:.75rem">Hospice contact name</label><input id="pm-hospice-name" placeholder="Nurse on call"></div><div class="fg"><label style="font-size:.75rem">Hospice phone</label><input id="pm-hospice-phone" type="tel" placeholder="(775) 555-0200"></div></div>
+        </div>
+        <p style="font-size:.72rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 8px">Comfort care preferences</p>
+        <div class="fg"><label style="font-size:.75rem">Hospitalization wishes</label><input id="pm-hosp-wish" placeholder="e.g. Comfort care only — no hospitalization"></div>
+        <div class="fg"><label style="font-size:.75rem">Feeding tube</label><select id="pm-feeding" style="border:1.5px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:.85rem;background:white;width:100%"><option value="">Not specified</option><option value="yes">Accepted</option><option value="no">Declined</option><option value="trial">Time-limited trial only</option></select></div>
+        <div class="fg"><label style="font-size:.75rem">Religious / cultural preferences</label><textarea id="pm-religious" rows="2" placeholder="e.g. Catholic — last rites requested."></textarea></div>
+        <p style="font-size:.72rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 8px">Final arrangements (optional)</p>
+        <div class="form-row"><div class="fg"><label style="font-size:.75rem">Funeral home name</label><input id="pm-funeral-name" placeholder="Chapel of Peace"></div><div class="fg"><label style="font-size:.75rem">Funeral home phone</label><input id="pm-funeral-phone" type="tel" placeholder="(775) 555-0300"></div></div>
+        <div class="fg"><label style="font-size:.75rem">Personal wishes and notes</label><textarea id="pm-personal-wishes" rows="3" placeholder="e.g. Favorite hymn: Amazing Grace. Notify sister Ruth first."></textarea></div>
+      </div>
+    </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('patient-modal')">Cancel</button>
       <button class="btn btn-teal" id="pm-save" onclick="savePatient()">Add Patient</button>
@@ -3115,7 +3141,7 @@ body {
         <option>Confusion / disorientation</option>
         <option>Breathing difficulty</option>
         <option>Meal refusal</option>
-        <option>Elopement attempt</option>
+        <option>Unsupervised exit attempt (elopement)</option>
         <option>Injury</option>
         <option>Vital sign concern</option>
         <option>Medical Emergency</option>
@@ -3406,7 +3432,7 @@ function setGlobalPatient(id){
 }
 
 function buildPatientSelector(selId, onchangeFn, style=''){
-  const patients = D.patients||[];
+  const patients = (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged');
   if(!patients.length) return '<div style="font-size:.8rem;color:var(--slate-light);padding:4px 0">No patients added yet — go to Patient Roster to add one.</div>';
   const opts = ['<option value="">— Select a patient —</option>',
     ...patients.map(p => `<option value="${p.id}"${String(p.id)===String(_globalPatientId)?' selected':''}>${p.fname} ${p.lname}${p.room?' · Rm '+p.room:''}${p.dob?' · DOB '+p.dob:''}</option>`)
@@ -3602,7 +3628,7 @@ function getRoutinesForPatient(pid){
 }
 function getCarePlanForPatient(pid){
   if(!pid) return {};
-  return D.careplan[String(pid)] || {};
+  return (D.careplan||{})[String(pid)] || {};
 }
 function setCarePlanForPatient(pid, data){
   if(!D.careplan) D.careplan = {};
@@ -3806,6 +3832,81 @@ function openModal(id){
   }
 }
 
+
+function toggleEOL(){
+  const s=document.getElementById('eol-section'),c=document.getElementById('eol-chevron');
+  if(!s) return;
+  const open=s.style.display!=='none';
+  s.style.display=open?'none':'block';
+  if(c) c.style.transform=open?'':'rotate(180deg)';
+}
+function toggleHospiceFields(){
+  const val=document.getElementById('pm-hospice')?.value;
+  const f=document.getElementById('pm-hospice-fields');
+  if(f) f.style.display=val==='yes'?'block':'none';
+  if(val!=='yes'){
+    ['pm-hospice-name','pm-hospice-phone'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  }
+}
+function gv(id){return document.getElementById(id)?.value||'';}
+function getEOLFields(){
+  return{eol_dnr:gv('pm-dnr'),eol_advDir:gv('pm-adv-dir'),eol_polst:gv('pm-polst'),
+    eol_organ:gv('pm-organ'),eol_advLoc:gv('pm-adv-loc'),eol_polstLoc:gv('pm-polst-loc'),
+    eol_proxyName:gv('pm-proxy-name'),eol_proxyPhone:gv('pm-proxy-phone'),eol_proxyRel:gv('pm-proxy-rel'),
+    eol_hospice:gv('pm-hospice'),eol_hospiceName:gv('pm-hospice-name'),eol_hospicePhone:gv('pm-hospice-phone'),
+    eol_hospWish:gv('pm-hosp-wish'),eol_feeding:gv('pm-feeding'),eol_religious:gv('pm-religious'),
+    eol_funeralName:gv('pm-funeral-name'),eol_funeralPhone:gv('pm-funeral-phone'),eol_wishes:gv('pm-personal-wishes')};
+}
+function loadEOLFields(p){
+  resetEOLFields();
+  if(!p) return;
+  const sv=(id,val)=>{const e=document.getElementById(id);if(e)e.value=val||'';};
+  sv('pm-dnr',p.eol_dnr);sv('pm-adv-dir',p.eol_advDir);sv('pm-polst',p.eol_polst);
+  sv('pm-organ',p.eol_organ);sv('pm-adv-loc',p.eol_advLoc);sv('pm-polst-loc',p.eol_polstLoc);
+  sv('pm-proxy-name',p.eol_proxyName);sv('pm-proxy-phone',p.eol_proxyPhone);sv('pm-proxy-rel',p.eol_proxyRel);
+  const h=document.getElementById('pm-hospice');if(h)h.value=p.eol_hospice||'no';
+  sv('pm-hospice-name',p.eol_hospiceName);sv('pm-hospice-phone',p.eol_hospicePhone);
+  sv('pm-hosp-wish',p.eol_hospWish);sv('pm-feeding',p.eol_feeding);sv('pm-religious',p.eol_religious);
+  sv('pm-funeral-name',p.eol_funeralName);sv('pm-funeral-phone',p.eol_funeralPhone);sv('pm-personal-wishes',p.eol_wishes);
+  toggleHospiceFields();
+}
+function resetEOLFields(){
+  ['pm-dnr','pm-adv-dir','pm-polst','pm-organ','pm-feeding'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  const h=document.getElementById('pm-hospice');if(h)h.value='no';
+  ['pm-adv-loc','pm-polst-loc','pm-proxy-name','pm-proxy-phone','pm-proxy-rel',
+   'pm-hospice-name','pm-hospice-phone','pm-hosp-wish','pm-religious',
+   'pm-funeral-name','pm-funeral-phone','pm-personal-wishes'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  toggleHospiceFields();
+  const s=document.getElementById('eol-section');if(s)s.style.display='none';
+  const c=document.getElementById('eol-chevron');if(c)c.style.transform='';
+}
+function recordPatientStatus(status, explicitId){
+  const targetId = explicitId !== undefined ? String(explicitId) : String(_globalPatientId);
+  const msg=status==='deceased'
+    ?'This will mark the patient as passed away. All records will be preserved. Continue?'
+    :'This will mark the patient as discharged. All records will be preserved. Continue?';
+  if(!confirm(msg)) return;
+  const idx=D.patients.findIndex(p=>String(p.id)===targetId);
+  if(idx<0){toast('Patient not found','var(--held)');return;}
+  D.patients[idx].status=status;
+  D.patients[idx].statusDate=new Date().toISOString().split('T')[0];
+  save();renderPatients();renderDashboard();
+  if(status==='deceased') openModal('wtdn-modal');
+  else toast('Patient marked as discharged. Records preserved.','var(--given)');
+}
+function reactivatePatient(patId){
+  if(!confirm('Reactivate this patient and return them to active care?')) return;
+  const idx=D.patients.findIndex(p=>String(p.id)===String(patId));
+  if(idx<0) return;
+  D.patients[idx].status='active';
+  delete D.patients[idx].statusDate;
+  save();renderPatients();renderDashboard();
+  toast('Patient reactivated','var(--given)');
+}
+function activePats(){
+  return (D.patients||[]).filter(p=>p.active && p.status!=='deceased' && p.status!=='discharged');
+}
+
 function closeModal(id){
   const el = document.getElementById(id);
   const wasOpen = el && el.classList.contains('open');
@@ -3816,7 +3917,7 @@ function closeModal(id){
     'toilet-modal':     () => { _editToiletId      = null; const t=document.querySelector('#toilet-modal .modal-title');     if(t) t.textContent='Log Toileting'; },
     'vitals-modal':     () => { _editVitalsId      = null; const t=document.querySelector('#vitals-modal .modal-title');     if(t) t.textContent='Log Vital Signs'; const b=document.getElementById('vm-save-btn'); if(b) b.textContent='Save Vitals'; },
     'sundowning-modal': () => { _editSundownId     = null; const t=document.querySelector('#sundowning-modal .modal-title'); if(t) t.textContent='🌅 Log Sundowning Episode'; const b=document.querySelector('#sundowning-modal .btn-teal'); if(b) b.textContent='Save Episode'; },
-    'wandering-modal':  () => { _editWanderingId   = null; const t=document.querySelector('#wandering-modal .modal-title');  if(t) t.textContent='🚶 Log Wandering / Elopement Incident'; const b=document.querySelector('#wandering-modal .btn-teal'); if(b) b.textContent='Save Incident'; },
+    'wandering-modal':  () => { _editWanderingId   = null; const t=document.querySelector('#wandering-modal .modal-title');  if(t) t.textContent='🚶 Log Wandering / Exit Incident'; const b=document.querySelector('#wandering-modal .btn-teal'); if(b) b.textContent='Save Incident'; },
     'memorycare-modal': () => { _editMemoryCareId  = null; const t=document.querySelector('#memorycare-modal .modal-title'); if(t) t.textContent='💬 Add Memory Care Note'; const b=document.querySelector('#memorycare-modal .btn-teal'); if(b) b.textContent='Save Note'; },
   };
   if(resetMap[id]) resetMap[id]();
@@ -4043,8 +4144,9 @@ function renderDashboard(){
   const _dashR = getRoutinesForPatient(_globalPatientId);
   const morningDone    = (_dashR?.morning||[]).filter(r => isRoutineDoneToday(r)).length;
   const morningTotal   = (_dashR?.morning||[]).length;
-  const hasWounds      = (D.wounds||[]).length > 0;
-  const woundChecked   = (D.wounds||[]).some(w => w.updatedAt && w.updatedAt.startsWith(todayISO));
+  const activeWounds   = (D.wounds||[]).filter(w => w.status !== 'Healed');
+  const hasWounds      = activeWounds.length > 0;
+  const woundChecked   = activeWounds.some(w => w.updatedAt && w.updatedAt.startsWith(todayISO));
   const billedToday    = (D.billing||[]).filter(b => b.date === todayISO).length > 0;
 
   const checkItems = [
@@ -4093,7 +4195,7 @@ function renderDashboard(){
       partial: hasWounds && !woundChecked,
       sub:   !hasWounds ? 'No wounds on file — tap to check skin'
            : woundChecked ? 'Wound assessed today ✓'
-           : `${D.wounds.length} wound${D.wounds.length>1?'s':''} need assessment`,
+           : `${activeWounds.filter(w=>!w.updatedAt||!w.updatedAt.startsWith(todayISO)).length} wound${activeWounds.filter(w=>!w.updatedAt||!w.updatedAt.startsWith(todayISO)).length>1?'s':''} need assessment`,
       nav:   'wounds', icon: '🩹'
     },
     {
@@ -4162,39 +4264,8 @@ function renderDashboard(){
   // Progress ring
   const ring = document.getElementById('dash-progress-ring');
   if(ring) ring.style.strokeDashoffset = 138.2 - (138.2 * pct / 100);
-  const pctEl = document.getElementById('dash-shift-pct');
-  if(pctEl) pctEl.textContent = pct + '%';
 
-  // Shift banner label
-  const shiftLabel = document.getElementById('dash-shift-label');
-  const shiftSub   = document.getElementById('dash-shift-sub');
-  const shiftIcon  = document.getElementById('dash-shift-icon');
-  if(shiftLabel && shiftSub && shiftIcon){
-    if(pct === 100){
-      shiftIcon.textContent  = '🎉';
-      shiftLabel.textContent = 'Shift Complete — Outstanding Care!';
-      shiftSub.textContent   = 'Every task documented. Your residents are well cared for today.';
-    } else if(pct >= 80){
-      shiftIcon.textContent  = '🌟';
-      shiftLabel.textContent = 'Almost Done — Great Work!';
-      const rem = checkItems.length - doneCount;
-      shiftSub.textContent   = `Just ${rem} item${rem>1?'s':''} left — you're nearly there.`;
-    } else if(pct >= 60){
-      shiftIcon.textContent  = h < 17 ? '☀️' : '🌆';
-      shiftLabel.textContent = 'Good Progress — Keep Going';
-      shiftSub.textContent   = `${checkItems.length - doneCount} item${checkItems.length-doneCount>1?'s':''} remaining for a complete shift record`;
-    } else if(pct >= 40){
-      shiftIcon.textContent  = h < 12 ? '🌅' : h < 17 ? '⏰' : '🌙';
-      shiftLabel.textContent = h < 12 ? 'Starting Your Shift' : 'Mid-Shift Check-In';
-      shiftSub.textContent   = `${doneCount} of ${checkItems.length} complete — you're making great progress.`;
-    } else {
-      shiftIcon.textContent  = h < 12 ? '🌅' : h < 17 ? '⏰' : '🌙';
-      shiftLabel.textContent = h < 12 ? 'Starting Your Shift' : h < 17 ? 'Mid-Shift Check-In' : 'Evening Shift';
-      shiftSub.textContent   = D.patients.length === 0
-        ? 'Add a patient to get started with documentation'
-        : "Here's what needs attention today";
-    }
-  }
+
 
   // Render checklist — Item 3: celebrate progress
   const clEl = document.getElementById('dash-checklist');
@@ -4265,10 +4336,10 @@ function renderDashboard(){
   // ── Patient preview ────────────────────────────────────────
   const dpEl = document.getElementById('dash-patients');
   if(dpEl){
-    if(!D.patients.length){
+    if(!activePats().length){
       dpEl.innerHTML = '<div class="empty" style="padding:20px"><div class="empty-icon" style="font-size:1.6rem">👤</div><div class="empty-text" style="font-size:.82rem">No patients added yet.<br>Tap <strong>View All Patients</strong> to add your first.</div></div>';
     } else {
-      dpEl.innerHTML = D.patients.slice(0,4).map(p => {
+      dpEl.innerHTML = activePats().slice(0,4).map(p => {
         const init = ((p.fname||'')[0]||'') + ((p.lname||'')[0]||'');
         const isHighRisk = p.fallRisk === 'high';
         return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer${isHighRisk?';border-left:3px solid var(--refused);padding-left:8px;margin-left:-8px':''}" onclick="navTo('patients')">
@@ -4283,7 +4354,7 @@ function renderDashboard(){
           </div>
           ${p.allergies ? `<span class="pill pill-alert" style="font-size:.64rem">⚠️ Allergies</span>` : ''}
         </div>`;
-      }).join('') + (D.patients.length > 4 ? `<div style="font-size:.76rem;color:var(--slate-light);padding-top:6px">+ ${D.patients.length-4} more patients</div>` : '');
+      }).join('') + (activePats().length > 4 ? `<div style="font-size:.76rem;color:var(--slate-light);padding-top:6px">+ ${activePats().length-4} more patients</div>` : '');
     }
   }
 
@@ -4329,6 +4400,7 @@ function openPatientModal(editId){
   document.getElementById('pm-conditions').value = p?.conditions || '';
   document.getElementById('pm-emergency').value  = p?.emergency  || '';
   document.getElementById('pm-notes').value      = p?.notes      || '';
+  loadEOLFields(p);
   const dpEl = document.getElementById('pm-doctor-phone');
   if(dpEl) dpEl.value = p?.doctorPhone || '';
   // Load contacts — migrate legacy emergency string if needed
@@ -4429,7 +4501,8 @@ function savePatient(){
     contacts:   _pmContacts.filter(c => c.name || c.phone),
     notes:      document.getElementById('pm-notes').value.trim(),
     fallRisk:   document.getElementById('pm-fall-risk')?.value  || '',
-    painLevel:  document.getElementById('pm-pain-level')?.value || ''
+    painLevel:  document.getElementById('pm-pain-level')?.value || '',
+    ...getEOLFields()
   };
 
   if(_editPatientId !== null){
@@ -4469,13 +4542,17 @@ function renderPatients(){
   }
 
   list.innerHTML = D.patients.map(p => {
-    const init = (p.fname[0]||'') + (p.lname[0]||'');
+    const init = ((p.fname||'')[0]||'') + ((p.lname||'')[0]||'');
     const isHighRisk = p.fallRisk === 'high';
-    return `<div class="patient-card" onclick="openPatientDetail(${p.id})" style="${isHighRisk?'border-left:3px solid var(--refused);':''}">
+    const isDeceased = p.status === 'deceased';
+    const isDischarged = p.status === 'discharged';
+    const isInactive = isDeceased || isDischarged;
+    return `<div class="patient-card" onclick="openPatientDetail(${p.id})" style="${isHighRisk&&!isInactive?'border-left:3px solid var(--refused);':''}${isInactive?'opacity:0.55;':''}">
       <div class="patient-avatar" style="background:${p.color}">${init}</div>
       <div style="flex:1;min-width:0">
         <div class="patient-name">${p.fname} ${p.lname}
-          ${p.fallRisk ? ' ' + fallRiskBadge(p.fallRisk, false) : ''}
+          ${isDeceased?'<span style="font-size:.65rem;background:#E5E7EB;color:#6B7280;padding:2px 7px;border-radius:8px;margin-left:6px">Passed away</span>':isDischarged?'<span style="font-size:.65rem;background:#E5E7EB;color:#6B7280;padding:2px 7px;border-radius:8px;margin-left:6px">Discharged</span>':''}
+          ${!isInactive && p.fallRisk ? ' ' + fallRiskBadge(p.fallRisk, false) : ''}
           ${p.painLevel !== undefined && p.painLevel !== '' ? ' ' + painFaceHtml(p.painLevel) : ''}
         </div>
         <div class="patient-meta">${[p.room && '📍 '+p.room, p.dob && 'DOB: '+p.dob].filter(Boolean).join(' · ') || 'No additional info'}</div>
@@ -4489,16 +4566,16 @@ function renderPatients(){
         ${p.allergies ? `<div class="patient-allergy">⚠️ ${p.allergies}</div>` : ''}
       </div>
       <div style="display:flex;gap:6px;flex-shrink:0">
-        <button class="btn btn-secondary btn-xs btn-icon" onclick="event.stopPropagation();openPatientModal(${p.id})" title="Edit">✏️</button>
-        <button class="btn btn-danger btn-xs btn-icon" onclick="event.stopPropagation();deletePatient(${p.id})" title="Delete">✕</button>
+        ${isInactive?`<button class="btn btn-secondary btn-xs" onclick="event.stopPropagation();reactivatePatient(${p.id})" style="font-size:.68rem;padding:4px 8px">Reactivate</button>`:`<button class="btn btn-secondary btn-xs btn-icon" onclick="event.stopPropagation();openPatientModal(${p.id})" title="Edit">✏️</button><button class="btn btn-danger btn-xs btn-icon" onclick="event.stopPropagation();deletePatient(${p.id})" title="Delete">✕</button>`}
       </div>
     </div>`;
   }).join('');
 }
 
 function openPatientDetail(id){
-  const p = D.patients.find(x => x.id === id);
+  const p = D.patients.find(x => String(x.id) === String(id));
   if(!p) return;
+  setGlobalPatient(p.id);
   document.getElementById('patient-list').style.display   = 'none';
   document.getElementById('patient-detail').style.display = 'block';
   document.getElementById('detail-name').textContent = p.fname + ' ' + p.lname;
@@ -4548,6 +4625,99 @@ function openPatientDetail(id){
         return `<div style="font-size:.88rem;color:var(--navy);line-height:1.8">${linked}</div>${callButtons}`;
       })()
     : '<div style="color:var(--slate-light);font-size:.84rem">No emergency contact recorded</div>';
+
+  // Status section
+  const statusDiv = document.getElementById('detail-status-section');
+  if(statusDiv){
+    if(p.status==='deceased'){
+      statusDiv.innerHTML=`<div style="background:#F3F4F6;border-radius:10px;padding:12px 14px;margin-top:16px;font-size:.78rem;color:#6B7280;text-align:center">🕊️ Passed away — ${p.statusDate||'date not recorded'}<br><button onclick="reactivatePatient(${p.id})" style="margin-top:8px;font-size:.72rem;background:none;border:1px solid #D1D5DB;border-radius:8px;padding:4px 12px;cursor:pointer;color:#6B7280">Reactivate patient</button></div>`;
+    } else if(p.status==='discharged'){
+      statusDiv.innerHTML=`<div style="background:#F3F4F6;border-radius:10px;padding:12px 14px;margin-top:16px;font-size:.78rem;color:#6B7280;text-align:center">🏠 Discharged — ${p.statusDate||'date not recorded'}<br><button onclick="reactivatePatient(${p.id})" style="margin-top:8px;font-size:.72rem;background:none;border:1px solid #D1D5DB;border-radius:8px;padding:4px 12px;cursor:pointer;color:#6B7280">Reactivate patient</button></div>`;
+    } else {
+      statusDiv.innerHTML=`<div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px"><div style="font-size:.72rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">Patient status</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button onclick="recordPatientStatus('deceased',${p.id})" style="background:#F9FAFB;border:1px solid #D1D5DB;border-radius:10px;padding:10px;cursor:pointer;font-size:.76rem;color:#374151;line-height:1.6">🕊️<br><strong>Record passing</strong><br><span style='font-size:.68rem;color:#9CA3AF'>All records preserved</span></button><button onclick="recordPatientStatus('discharged',${p.id})" style="background:#F9FAFB;border:1px solid #D1D5DB;border-radius:10px;padding:10px;cursor:pointer;font-size:.76rem;color:#374151;line-height:1.6">🏠<br><strong>Discharge</strong><br><span style='font-size:.68rem;color:#9CA3AF'>All records preserved</span></button></div></div>`;
+    }
+  }
+  renderDetailEOL(p);
+}
+
+
+function renderDetailEOL(p){
+  const el = document.getElementById('detail-eol-section');
+  if(!el) return;
+  if(!p){ el.innerHTML=''; return; }
+
+  const yn = v => v==='yes'?'<span style="color:#16A34A;font-weight:600">Yes</span>':
+                  v==='no' ?'<span style="color:#C0392B;font-weight:600">No</span>':
+                  '<span style="color:var(--slate-light);font-style:italic">—</span>';
+
+  const hasAny = p.eol_dnr||p.eol_advDir||p.eol_polst||p.eol_proxyName||
+                 p.eol_hospice==='yes'||p.eol_hospWish||p.eol_wishes;
+
+  const editBtn = `<button onclick="openPatientModal(${p.id}); setTimeout(()=>{
+    const s=document.getElementById('eol-section');
+    const c=document.getElementById('eol-chevron');
+    if(s&&s.style.display==='none'){s.style.display='block';if(c)c.style.transform='rotate(180deg)';}
+  },400)"
+  style="font-size:.72rem;background:var(--teal);color:white;border:none;border-radius:8px;
+         padding:5px 12px;cursor:pointer;font-weight:600">
+    ${hasAny?'Edit preferences':'+ Add preferences'}
+  </button>`;
+
+  el.innerHTML = `<div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div style="font-size:.78rem;font-weight:600;color:var(--navy)">🕊️ End of Life Preferences</div>
+      ${editBtn}
+    </div>
+    ${!hasAny?`<div style="background:#F9FAFB;border:1px dashed #D1D5DB;border-radius:10px;
+      padding:14px;text-align:center;font-size:.78rem;color:#9CA3AF;line-height:1.7">
+      No preferences recorded yet.<br>
+      <span style="font-size:.72rem">Tap <strong>+ Add preferences</strong> to document DNR status,
+      proxy, hospice, and final wishes.</span></div>`:`
+    <div style="background:#FFFBF5;border:1px solid #E8C97A;border-radius:8px;
+                padding:8px 12px;margin-bottom:10px;font-size:.71rem;color:#92400E">
+      <strong>Reference only.</strong> In any emergency call 911 immediately.
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+      <div style="background:var(--off-white);border-radius:8px;padding:8px 10px">
+        <div style="font-size:.62rem;color:var(--slate-light);text-transform:uppercase;margin-bottom:2px">DNR</div>
+        ${yn(p.eol_dnr)}
+      </div>
+      <div style="background:var(--off-white);border-radius:8px;padding:8px 10px">
+        <div style="font-size:.62rem;color:var(--slate-light);text-transform:uppercase;margin-bottom:2px">Advance directive</div>
+        ${yn(p.eol_advDir)}
+      </div>
+      <div style="background:var(--off-white);border-radius:8px;padding:8px 10px">
+        <div style="font-size:.62rem;color:var(--slate-light);text-transform:uppercase;margin-bottom:2px">POLST</div>
+        ${yn(p.eol_polst)}
+      </div>
+      <div style="background:var(--off-white);border-radius:8px;padding:8px 10px">
+        <div style="font-size:.62rem;color:var(--slate-light);text-transform:uppercase;margin-bottom:2px">Organ donation</div>
+        ${yn(p.eol_organ)}
+      </div>
+    </div>
+    ${p.eol_proxyName?`<div style="background:var(--off-white);border-radius:8px;padding:8px 10px;margin-bottom:6px">
+      <div style="font-size:.62rem;color:var(--slate-light);text-transform:uppercase;margin-bottom:2px">Healthcare proxy</div>
+      <div style="font-size:.82rem;font-weight:600;color:var(--navy)">${p.eol_proxyName}</div>
+      ${p.eol_proxyPhone?`<div style="font-size:.76rem;color:var(--teal)">${p.eol_proxyPhone}</div>`:''}
+      ${p.eol_proxyRel?`<div style="font-size:.72rem;color:var(--slate-light)">${p.eol_proxyRel}</div>`:''}
+    </div>`:''}
+    ${p.eol_hospice==='yes'?`<div style="background:#E1F5EE;border:1px solid #0F6E56;border-radius:8px;
+      padding:8px 10px;margin-bottom:6px;font-size:.73rem;color:#085041;line-height:1.5">
+      ⚠️ <strong>Hospice enrolled</strong>
+      ${p.eol_hospiceName?' — '+p.eol_hospiceName:''}
+      ${p.eol_hospicePhone?' · '+p.eol_hospicePhone:''}<br>
+      Do not call 911 unless instructed by hospice.
+    </div>`:''}
+    ${p.eol_hospWish?`<div style="background:var(--off-white);border-radius:8px;padding:8px 10px;margin-bottom:6px">
+      <div style="font-size:.62rem;color:var(--slate-light);text-transform:uppercase;margin-bottom:2px">Hospitalization wishes</div>
+      <div style="font-size:.78rem;color:var(--navy)">${p.eol_hospWish}</div>
+    </div>`:''}
+    ${p.eol_wishes?`<div style="background:var(--off-white);border-radius:8px;padding:8px 10px">
+      <div style="font-size:.62rem;color:var(--slate-light);text-transform:uppercase;margin-bottom:2px">Personal wishes</div>
+      <div style="font-size:.78rem;color:var(--navy);line-height:1.5">${p.eol_wishes}</div>
+    </div>`:''}
+    `}
+  </div>`;
 }
 
 function closePatientDetail(){
@@ -4759,7 +4929,7 @@ function populateMARPatients(){
   if(!sel) return;
   const cur = sel.value;
   sel.innerHTML = '<option value="">— Select patient —</option>' +
-    D.patients.map(p => `<option value="${p.id}"${p.id == cur?' selected':''}>${p.fname} ${p.lname}${p.room?' ('+p.room+')':''}</option>`).join('');
+    (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged').map(p => `<option value="${p.id}"${p.id == cur?' selected':''}>${p.fname} ${p.lname}${p.room?' ('+p.room+')':''}</option>`).join('');
 }
 
 function saveInitials(){
@@ -6315,7 +6485,7 @@ function generateHandoff(){
   const severePAINAD_ho = todayPAINAD.filter(e => e.total >= 7);
 
   // Hydration summary for handoff
-  const hydrLines = (D.patients||[]).filter(p=>p.active!==false).map(p=>{
+  const hydrLines = (D.patients||[]).filter(p=>p.active!==false&&p.status!=='deceased'&&p.status!=='discharged').map(p=>{
     const td=new Date().toISOString().split('T')[0];
     const all=(D.intake||[]).filter(e=>e.date===td&&String(e.patientId)===String(p.id));
     const offers   =all.filter(e=>e.type==='Fluid Offer'||['Water','Juice','Milk','Coffee / Tea','Supplement drink','Other fluid','IV fluids'].includes(e.type));
@@ -8727,11 +8897,11 @@ function renderReport(){
     const total    = marKeys.length;
     const pct      = total ? Math.round(given/total*100) : 0;
     sections += `<div class="report-section"><div class="report-section-title">💊 Medications</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:12px;text-align:center">
-        <div style="background:#F0F4F8;border-radius:8px;padding:10px"><div style="font-size:1.3rem;font-weight:700;color:#0C1B33;font-family:monospace">${given}</div><div style="font-size:.72rem;color:#8097B3;text-transform:uppercase">Given</div></div>
-        <div style="background:#F0F4F8;border-radius:8px;padding:10px"><div style="font-size:1.3rem;font-weight:700;color:#C0392B;font-family:monospace">${refused}</div><div style="font-size:.72rem;color:#8097B3;text-transform:uppercase">Refused</div></div>
-        <div style="background:#F0F4F8;border-radius:8px;padding:10px"><div style="font-size:1.3rem;font-weight:700;color:#C47A00;font-family:monospace">${held}</div><div style="font-size:.72rem;color:#8097B3;text-transform:uppercase">Held</div></div>
-        <div style="background:#F0F4F8;border-radius:8px;padding:10px"><div style="font-size:1.3rem;font-weight:700;color:#0A7A4A;font-family:monospace">${pct}%</div><div style="font-size:.72rem;color:#8097B3;text-transform:uppercase">Compliance</div></div>
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:12px;text-align:center">
+        <div style="background:#F0F4F8;border-radius:8px;padding:8px;min-width:0;overflow:hidden"><div style="font-size:1.2rem;font-weight:700;color:#0C1B33;font-family:monospace">${given}</div><div style="font-size:.68rem;color:#8097B3;text-transform:uppercase">Given</div></div>
+        <div style="background:#F0F4F8;border-radius:8px;padding:8px;min-width:0;overflow:hidden"><div style="font-size:1.2rem;font-weight:700;color:#C0392B;font-family:monospace">${refused}</div><div style="font-size:.6rem;color:#8097B3;text-transform:uppercase">Refused</div></div>
+        <div style="background:#F0F4F8;border-radius:8px;padding:8px;min-width:0;overflow:hidden"><div style="font-size:1.2rem;font-weight:700;color:#C47A00;font-family:monospace">${held}</div><div style="font-size:.6rem;color:#8097B3;text-transform:uppercase">Held</div></div>
+        <div style="background:#F0F4F8;border-radius:8px;padding:8px;min-width:0;overflow:hidden"><div style="font-size:1.2rem;font-weight:700;color:#0A7A4A;font-family:monospace">${pct}%</div><div style="font-size:.6rem;color:#8097B3;text-transform:uppercase">Comply</div></div>
       </div>
       <div style="font-size:.84rem;color:#526280"><strong>Current medications:</strong> ${rptMeds.map(m=>m.name+' '+m.dose).join(', ')||'None'}</div>
     </div>`;
@@ -9254,7 +9424,7 @@ function buildSampleData(){
         action:'Escorted back to common area. Offered afternoon snack. Door to break room secured.',
         notified:'Charge Nurse Martinez',
         prevention:'Break room door secured with keypad. Resident room moved further from staff corridor.' },
-      { id:16003, patientId:pid, date:dStr(-7), time:'03:45', type:'Elopement attempt — intercepted', isElopement:true,
+      { id:16003, patientId:pid, date:dStr(-7), time:'03:45', type:'Unsupervised exit attempt (elopement) — intercepted', isElopement:true,
         location:'Main entrance — front door alarm activated',
         duration:'Approximately 12 minutes unobserved',
         condition:'Distressed. Dressed in coat over nightgown. Carrying purse. Stated "I need to get home to my children."',
@@ -10164,7 +10334,7 @@ function renderResidentRows(){
   const el = document.getElementById('dash-resident-rows');
   if(!el) return;
 
-  const active   = (D.patients||[]).filter(p => p.active !== false);
+  const active   = (D.patients||[]).filter(p => p.active !== false && p.status !== 'deceased' && p.status !== 'discharged');
   if(!active.length){ el.innerHTML = ''; return; }
 
   const todayISO = new Date().toISOString().split('T')[0];
@@ -10255,7 +10425,7 @@ function renderCriticalAlerts(){
   // ── 1. Overdue medications ──────────────────────────────────
   // A med is overdue if: it has a scheduled time, that time + grace has
   // passed today, and its MAR status is still 'pending'.
-  const activePats = (D.patients||[]).filter(p => p.active !== false);
+  const activePats = (D.patients||[]).filter(p => p.active !== false && p.status !== 'deceased' && p.status !== 'discharged');
   activePats.forEach(p => {
     const ptMeds = (D.meds||[]).filter(m =>
       !m.patientId || String(m.patientId) === String(p.id));
@@ -10403,45 +10573,68 @@ function renderCriticalAlerts(){
      ${rows}`;
 
   // Insert immediately after the shift banner (before BBW/other alerts)
-  const shiftBanner = document.getElementById('dash-shift-banner');
-  if(shiftBanner){
-    shiftBanner.insertAdjacentElement('afterend', banner);
-  }
+  const anchor = document.getElementById('dash-alerts-anchor');
+  if(anchor) anchor.insertAdjacentElement('afterend', banner);
 }
 
 function renderBBWDashboardAlert(){
-  // Called from renderDashboard — injects or removes alert banner
   const existing = document.getElementById('dash-bbw-alert');
   const _dashMeds = _globalPatientId
     ? (D.meds||[]).filter(m => String(m.patientId) === String(_globalPatientId))
     : (D.meds||[]);
   const flagged  = _dashMeds.filter(m => getBBW(m.name));
-  const banner   = document.getElementById('dash-shift-banner');
-  if(!banner) return;
+  const bbwAnchor = document.getElementById('dash-vitals-alert')
+                 || document.getElementById('dash-critical-alerts')
+                 || document.getElementById('dash-alerts-anchor');
+  if(!bbwAnchor) return;
 
   if(existing) existing.remove();
   if(!flagged.length) return;
 
   const alert = document.createElement('div');
   alert.id = 'dash-bbw-alert';
-  alert.style.cssText = 'background:#FFF8ED;border:2px solid #C9963A;border-radius:var(--r-lg);padding:14px 18px;margin-bottom:16px;cursor:pointer';
-  alert.onclick = () => navTo('bbw');
+  alert.style.cssText = 'background:#FFF8ED;border:2px solid #C9963A;border-radius:var(--r-lg);margin-bottom:16px;overflow:hidden;cursor:pointer';
+
+  const medNames = flagged.map(m => m.name).join(', ');
+
+  // Collapsed single-line header (default)
   alert.innerHTML = `
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px">
-      <div style="width:40px;height:40px;background:#FFF3CD;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0">⚠️</div>
+    <div id="bbw-collapsed" onclick="toggleBBW()"
+      style="display:flex;align-items:center;gap:10px;padding:11px 16px">
+      <span style="font-size:1rem;flex-shrink:0">⚠️</span>
       <div style="flex:1;min-width:0">
-        <div style="font-weight:700;font-size:.9rem;color:#7A4A00">Black Box Warning${flagged.length>1?'s':''} Active — ${flagged.length} Medication${flagged.length>1?'s':''}</div>
-        <div style="font-size:.76rem;color:#A06020;margin-top:2px">${flagged.map(m=>m.name).join(', ')} · Tap to review warnings</div>
+        <span style="font-weight:700;font-size:.82rem;color:#7A4A00">Black Box Warning</span>
+        <span style="font-size:.78rem;color:#A06020;margin-left:6px">${medNames}</span>
       </div>
-      <div style="font-size:.8rem;font-weight:700;color:#C9963A;white-space:nowrap">View →</div>
+      <span id="bbw-chevron" style="font-size:.75rem;color:#C9963A;flex-shrink:0;
+        transition:transform .2s">▼</span>
     </div>
-    <div style="background:#FFFDF5;border-top:1px solid #E8C97A;padding-top:8px;font-size:.72rem;color:#92400E;line-height:1.6">
-      ⚕️ <strong>Disclaimer:</strong> Medication warnings are sourced from FDA drug label data and are for <strong>informational reference only</strong>. They do not constitute medical advice. Tended Health Pro is a documentation tool — not a medical device. Always follow your agency's protocols and physician orders.
+    <div id="bbw-expanded" style="display:none;border-top:1px solid #E8C97A;
+      background:#FFF8ED;padding:12px 16px">
+      <div style="font-size:.78rem;color:#7A4A00;line-height:1.6;margin-bottom:8px">
+        ${flagged.map(m => {
+          const b = getBBW(m.name);
+          return b ? `<div style="margin-bottom:6px"><strong>${m.name}:</strong> ${b.short}</div>` : '';
+        }).join('')}
+      </div>
+      <div style="background:#FFFDF5;border-top:1px solid #E8C97A;padding-top:8px;
+        font-size:.72rem;color:#92400E;line-height:1.6">
+        ⚕️ <strong>Reference only.</strong> Always follow physician orders and agency protocols.
+      </div>
     </div>`;
 
-  // Insert after shift banner
-  banner.insertAdjacentElement('afterend', alert);
+  bbwAnchor.insertAdjacentElement('afterend', alert);
 }
+
+function toggleBBW(){
+  const exp = document.getElementById('bbw-expanded');
+  const chev = document.getElementById('bbw-chevron');
+  if(!exp) return;
+  const open = exp.style.display !== 'none';
+  exp.style.display  = open ? 'none' : 'block';
+  if(chev) chev.style.transform = open ? '' : 'rotate(180deg)';
+}
+
 
 // ═══════════════════════════════════════════════════════════════
 // VITAL SIGNS
@@ -10461,7 +10654,7 @@ function populateVitalsPatients(){
     if(!sel) return;
     const cur = sel.value;
     sel.innerHTML = '<option value="">— Select patient —</option>' +
-      (D.patients||[]).map(p => `<option value="${p.id}"${p.id==cur?' selected':''}>${p.fname} ${p.lname}${p.room?' ('+p.room+')':''}</option>`).join('');
+      (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged').map(p => `<option value="${p.id}"${p.id==cur?' selected':''}>${p.fname} ${p.lname}${p.room?' ('+p.room+')':''}</option>`).join('');
   });
 }
 
@@ -10757,9 +10950,6 @@ function renderVitalsDashboardAlert(){
   const criticals   = todayAlerts.filter(a => a.level === 'critical');
   if(!todayAlerts.length) return;
 
-  const banner = document.getElementById('dash-shift-banner');
-  if(!banner) return;
-
   const firstEntry  = alertEntries[0];
   const ptPrefix    = firstEntry?.ptName ? `<strong>${firstEntry.ptName}:</strong> ` : '';
   const extraCount  = todayAlerts.length - 1;
@@ -10776,9 +10966,11 @@ function renderVitalsDashboardAlert(){
     </div>
     <div style="font-size:.8rem;font-weight:700;color:var(--refused);white-space:nowrap">View →</div>
   </div>`;
-  const bbwAlert = document.getElementById('dash-bbw-alert');
-  const insertAfter = bbwAlert || banner;
-  insertAfter.insertAdjacentElement('afterend', alert);
+  // Vitals is urgent — insert directly after critical alerts, before BBW
+  const caAlert  = document.getElementById('dash-critical-alerts');
+  const vAnch    = document.getElementById('dash-alerts-anchor');
+  const insertAfter = caAlert || vAnch;
+  if(insertAfter) insertAfter.insertAdjacentElement('afterend', alert);
 }
 
 
@@ -11342,7 +11534,7 @@ function saveWandering(){
     if(idx !== -1) D.wandering[idx] = { ...D.wandering[idx], ...wdFields };
     _editWanderingId = null;
     const title = document.querySelector('#wandering-modal .modal-title');
-    if(title) title.textContent = '🚶 Log Wandering / Elopement Incident';
+    if(title) title.textContent = '🚶 Log Wandering / Exit Incident';
     const btn = document.querySelector('#wandering-modal .btn-teal');
     if(btn) btn.textContent = 'Save Incident';
     toast('✅ Wandering incident updated', 'var(--given)');
@@ -11444,7 +11636,7 @@ function renderWanderingPredictionAlert(entries){
     medium:'#FFF3D0',   low:'#EDF7EE'
   };
   const riskLabel = {
-    critical:'🚨 CRITICAL — ELOPEMENT HISTORY',
+    critical:'🚨 CRITICAL — UNSUPERVISED EXIT HISTORY',
     high:'⚠️ HIGH RISK',
     medium:'⚡ MODERATE RISK',
     low:'✅ LOW RISK'
@@ -11469,7 +11661,7 @@ function renderWanderingPredictionAlert(entries){
 
   const elopBadge = pred.elopements > 0
     ? `<div style="background:#7C0000;color:white;border-radius:var(--r);padding:6px 12px;font-size:.78rem;font-weight:700;margin-top:8px">
-        🚨 ${pred.elopements} elopement attempt${pred.elopements>1?'s':''} on record — maximum vigilance required
+        🚨 ${pred.elopements} unsupervised exit attempt${pred.elopements>1?'s':''} on record — maximum vigilance required
       </div>` : '';
 
   el.innerHTML = `
@@ -11527,7 +11719,7 @@ function renderWandering(){
         <div>
           <span style="font-weight:700;font-size:.9rem;color:var(--navy)">${new Date(e.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
           <span style="font-size:.76rem;color:var(--slate-light);margin-left:6px">${fmtTime(e.time)}</span>
-          ${e.isElopement?'<span style="background:var(--refused-bg);color:var(--refused);font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px">⚠️ ELOPEMENT</span>':''}
+          ${e.isElopement?'<span style="background:var(--refused-bg);color:var(--refused);font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px">⚠️ UNSUPERVISED EXIT</span>':''}
         </div>
         <button class="btn btn-secondary btn-xs" style="font-size:.68rem;padding:2px 7px" onclick="editWandering(${e.id})">✏️</button>
         <button class="btn btn-danger btn-xs btn-icon" onclick="deleteWandering(${e.id})">✕</button>
@@ -12046,7 +12238,7 @@ function populatePainPatients(){
     if(!sel) return;
     const cur    = sel.value;
     const allOpt = selId === 'pain-patient' ? '<option value="">All patients</option>' : '<option value="">— Select patient —</option>';
-    sel.innerHTML = allOpt + (D.patients||[]).map(p =>
+    sel.innerHTML = allOpt + (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged').map(p =>
       `<option value="${p.id}"${p.id==cur?' selected':''}>${p.fname} ${p.lname}</option>`).join('');
   });
 }
@@ -12056,9 +12248,9 @@ function buildPainPicker(){
   if(!el) return;
   el.innerHTML = Array.from({length:11},(_,i) =>
     `<button type="button" onclick="selectPainScore(${i})" id="pain-btn-${i}"
-      style="display:flex;flex-direction:column;align-items:center;padding:6px 2px;border:2px solid var(--border);border-radius:8px;background:white;cursor:pointer;font-size:.9rem;gap:2px;transition:.15s">
-      <span>${PAIN_FACE[i]}</span>
-      <span style="font-size:.65rem;font-weight:700;color:var(--slate-mid)">${i}</span>
+      style="display:flex;flex-direction:column;align-items:center;padding:5px 1px;border:2px solid var(--border);border-radius:8px;background:white;cursor:pointer;width:100%;min-width:0;box-sizing:border-box;overflow:hidden;font-size:.9rem;gap:2px;transition:.15s">
+      <span style="font-size:.85rem;line-height:1">${PAIN_FACE[i]}</span>
+      <span style="font-size:.58rem;font-weight:700;color:var(--slate-mid)">${i}</span>
     </button>`).join('');
 }
 
@@ -13150,7 +13342,29 @@ function ciLogAndGo(status){
   ciGo('logged');
 }
 function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
-</script>
+</script><div class="modal-overlay" id="wtdn-modal">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-title" style="color:var(--slate-mid)">🕊️ Records preserved</div>
+    <div style="font-size:.82rem;color:var(--slate-mid);line-height:1.7;margin-bottom:14px">All documentation for this patient has been preserved and remains available for printing or export from the Monthly Report section.</div>
+    <div style="background:#F0F9FF;border:1px solid #0EA5E9;border-radius:10px;padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:.75rem;font-weight:600;color:#0C4A6E;margin-bottom:8px">What to do now — in order</div>
+      <ol style="margin:0;padding-left:18px;font-size:.76rem;color:#0C4A6E;line-height:2.2">
+        <li>If hospice enrolled — call your hospice nurse first</li>
+        <li>If no hospice — call the healthcare proxy</li>
+        <li>Call the primary physician to report the death</li>
+        <li>Contact the funeral home if arrangements are pre-made</li>
+        <li>Notify other family members</li>
+        <li>Contact your care agency or employer if applicable</li>
+      </ol>
+    </div>
+    <div style="font-size:.72rem;color:var(--slate-light);line-height:1.6;margin-bottom:16px">Your documented records are caregiver-entered observations stored on your device. They are not official medical records.</div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('wtdn-modal')">Close</button>
+      <button class="btn btn-teal" onclick="navTo('report'); closeModal('wtdn-modal')">View records</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ PAINAD BEHAVIORAL PAIN ASSESSMENT MODAL ══════════════ -->
 <div class="overlay" id="painad-modal">
   <div class="modal">
