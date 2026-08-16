@@ -4131,7 +4131,7 @@ function renderDashboard(){
   const nbI = document.getElementById('nb-incidents');
   if(nbI){ nbI.textContent = todayInc.length; nbI.classList.toggle('show', todayInc.length > 0); }
   const nbP = document.getElementById('nb-patients');
-  if(nbP){ nbP.textContent = D.patients.length; nbP.classList.toggle('show', D.patients.length > 0); }
+  if(nbP){ nbP.textContent = activePats().length; nbP.classList.toggle('show', activePats().length > 0); }
   // BBW badge + dashboard alert
   const flaggedMeds = (D.meds||[]).filter(m => getBBW(m.name));
   const nbBBW = document.getElementById('nb-bbw');
@@ -4539,8 +4539,8 @@ function renderPatients(){
 
   // Sub text
   const sub = document.getElementById('patient-count-sub');
-  if(sub) sub.textContent = D.patients.length
-    ? `${D.patients.length} patient${D.patients.length !== 1 ? 's' : ''} on roster`
+  if(sub) sub.textContent = activePats().length
+    ? `${activePats().length} patient${activePats().length !== 1 ? 's' : ''} active`
     : 'Manage patient profiles and care information';
 
   if(!D.patients.length){
