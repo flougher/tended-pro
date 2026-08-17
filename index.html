@@ -4519,8 +4519,9 @@ function savePatient(){
   } else {
     const newId = Date.now();
     D.patients.push({
-      id:    newId,
-      color: COLORS[D.patients.length % COLORS.length],
+      id:     newId,
+      active: true,
+      color:  COLORS[D.patients.length % COLORS.length],
       ...fields
     });
     setGlobalPatient(newId);
