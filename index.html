@@ -3913,7 +3913,7 @@ function reactivatePatient(patId){
   toast('Patient reactivated','var(--given)');
 }
 function activePats(){
-  return (D.patients||[]).filter(p=>p.active && p.status!=='deceased' && p.status!=='discharged');
+  return (D.patients||[]).filter(p=>p.active!==false && p.status!=='deceased' && p.status!=='discharged');
 }
 
 function closeModal(id){
