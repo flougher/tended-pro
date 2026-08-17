@@ -4073,7 +4073,7 @@ function renderDashboard(){
 
   const DEMO_PATIENT_ID = 1700000001;
   const hasOnlyDemo = D.patients.length === 1 && D.patients[0].id === DEMO_PATIENT_ID;
-  const noPatients  = !D.patients.length;
+  const noPatients  = !activePats().length;
 
   if(noPatients || hasOnlyDemo){
     const headline = hasOnlyDemo
@@ -4115,7 +4115,7 @@ function renderDashboard(){
   }
 
   // ── Stats ──────────────────────────────────────────────────
-  document.getElementById('ds-patients').textContent = D.patients.length;
+  document.getElementById('ds-patients').textContent = activePats().length;
 
   const todayMARKeys = Object.keys(D.mar).filter(k => k.startsWith(todayISO + '|'));
   const givenCount   = todayMARKeys.filter(k => D.mar[k]?.status === 'given').length;
@@ -4159,8 +4159,8 @@ function renderDashboard(){
   const checkItems = [
     {
       label: 'Patient roster set up',
-      done:  D.patients.length > 0,
-      sub:   D.patients.length > 0 ? `${D.patients.length} patient${D.patients.length>1?'s':''} on roster` : 'Add patients to get started',
+      done:  activePats().length > 0,
+      sub:   activePats().length > 0 ? `${activePats().length} patient${activePats().length>1?'s':''} active` : 'Add patients to get started',
       nav:   'patients', icon: '👤'
     },
     {
