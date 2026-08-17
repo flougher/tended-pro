@@ -3532,6 +3532,8 @@ function load(){
       _schemaVersion: 0
     }, JSON.parse(s));
     migrateData();
+    // Ensure all patients have active:true — repair for patients added without it
+    (D.patients||[]).forEach(p=>{ if(p.active===undefined||p.active===null) p.active=true; });
   } catch(e){}
 }
 
