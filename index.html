@@ -1398,9 +1398,6 @@ body {
     <div style="font-family:var(--font-mono);font-size:1.5rem;font-weight:700;color:#14C4B2" id="shift-timer">0:00</div>
   </div>
 
-  <!-- Backup-nag banner (BUG-003) -->
-  <div id="backup-nag-banner" style="display:none"></div>
-
   <!-- Launch Promo Banner -->
   <div id="launch-promo-banner" style="display:none;background:var(--teal);color:white;border-radius:var(--r-lg);padding:14px 18px;margin-bottom:16px;align-items:flex-start;gap:12px;flex-wrap:wrap">
     <span style="flex:1;font-size:.84rem;line-height:1.5">🎉 <strong>Welcome — you have a 10-day free trial.</strong> After your trial ends, unlock forever for a one-time $14.99. No subscription. Thanks for being an early user.</span>
@@ -4080,7 +4077,6 @@ function dismissLaunchBanner(){
 
 function renderDashboard(){
   renderLaunchBanner();
-  renderBackupNagBanner();
   const todayISO = new Date().toISOString().split('T')[0];
   const h = new Date().getHours();
 
