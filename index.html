@@ -1398,6 +1398,9 @@ body {
     <div style="font-family:var(--font-mono);font-size:1.5rem;font-weight:700;color:#14C4B2" id="shift-timer">0:00</div>
   </div>
 
+  <!-- Trial Expiry Banner -->
+  <div id="trial-expiry-banner" style="display:none"></div>
+
   <!-- Launch Promo Banner -->
   <div id="launch-promo-banner" style="display:none;background:var(--teal);color:white;border-radius:var(--r-lg);padding:14px 18px;margin-bottom:16px;align-items:flex-start;gap:12px;flex-wrap:wrap">
     <span style="flex:1;font-size:.84rem;line-height:1.5">🎉 <strong>Welcome — you have a 10-day free trial.</strong> After your trial ends, unlock forever for a one-time $14.99. No subscription. Thanks for being an early user.</span>
@@ -4075,8 +4078,39 @@ function dismissLaunchBanner(){
   if(el) el.style.display = 'none';
 }
 
+
+function renderTrialExpiryBanner(){
+  const host = document.getElementById('trial-expiry-banner');
+  if(!host) return;
+  if(isPremium()){ host.style.display='none'; return; }
+  const trial = getTrialState();
+  if(!trial.active || trial.daysLeft > 2){ host.style.display='none'; return; }
+  const dayWord = trial.daysLeft === 1 ? 'day' : 'days';
+  host.style.display = 'block';
+  host.innerHTML = `
+    <div style="background:#FFF8EC;border:1.5px solid #C9963A;border-radius:12px;
+                padding:12px 14px;margin:0 0 12px;display:flex;align-items:center;
+                gap:10px;flex-wrap:wrap">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#92400E;margin-bottom:3px">
+          ⏰ Your free trial ends in ${trial.daysLeft} ${dayWord}
+        </div>
+        <div style="font-size:.72rem;color:#92400E;line-height:1.5">
+          As an early supporter, email me for your free lifetime unlock code — no cost, no catch.
+        </div>
+      </div>
+      <a href="mailto:tendedhealthapps@gmail.com?subject=Free%20Lifetime%20Code%20Request&body=Hi%2C%20I%20would%20like%20my%20free%20lifetime%20unlock%20code%20for%20Tended%20Health%20Pro."
+         style="display:inline-flex;align-items:center;gap:6px;background:#C9963A;color:white;
+                border-radius:8px;padding:8px 14px;text-decoration:none;font-size:.76rem;
+                font-weight:600;white-space:nowrap;flex-shrink:0">
+        ✉️ Email me
+      </a>
+    </div>`;
+}
+
 function renderDashboard(){
   renderLaunchBanner();
+  renderTrialExpiryBanner();
   const todayISO = new Date().toISOString().split('T')[0];
   const h = new Date().getHours();
 
