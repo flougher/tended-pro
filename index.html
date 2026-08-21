@@ -1965,13 +1965,11 @@ body {
   
 
   <!-- Early Adopter Offer -->
-  <div style="margin:16px 0 8px">
+  <div id="early-adopter-card" style="margin:16px 0 8px;display:none">
     <div class="card" style="border:2px solid var(--teal);background:linear-gradient(135deg,#F0FDF4,#E6F7F4)">
       <div class="card-title" style="color:var(--teal)">🎁 Free for Early Supporters — Offer Expires December 31, 2026</div>
       <p style="font-size:.82rem;color:var(--slate-mid);line-height:1.7;margin:8px 0 12px">
-        Download Tended Health Pro before <strong>December 31, 2026</strong> and get a free
-        permanent unlock code — yours to keep forever, no subscription, no catch.
-        After December 31 the unlock is <strong>$14.99</strong> one time.
+        You're one of our early supporters — so your unlock is free. Reach out before <strong>December 31, 2026</strong> for your permanent code, yours to keep forever: no subscription, no catch. After December 31, unlocking is a one-time <strong>$14.99</strong>.
       </p>
       <p style="font-size:.82rem;color:var(--slate-mid);line-height:1.7;margin:0 0 14px">
         To claim your free code, simply reach out directly:
@@ -4078,6 +4076,14 @@ function dismissLaunchBanner(){
   if(el) el.style.display = 'none';
 }
 
+
+function renderEarlyAdopterCard(){
+  const el = document.getElementById('early-adopter-card');
+  if(!el) return;
+  const expired = new Date().toISOString().split('T')[0] > EARLY_ADOPTER_EXPIRY;
+  const premium = (typeof isPremium === 'function') ? isPremium() : false;
+  el.style.display = (!expired && !premium) ? 'block' : 'none';
+}
 
 function renderTrialExpiryBanner(){
   const host = document.getElementById('trial-expiry-banner');
@@ -6734,6 +6740,7 @@ function loadSettings(){
   set('set-default-rate', s.defaultRate);
   set('set-facility',     s.facility);
   if(typeof renderPremiumCard === 'function') renderPremiumCard();
+  if(typeof renderEarlyAdopterCard === 'function') renderEarlyAdopterCard();
   renderProfileCompletion();
   // Clear dirty state on load
   const unsaved = document.getElementById('settings-unsaved');
@@ -9752,6 +9759,7 @@ function checkFirstLaunch(){
 const PREMIUM_KEY          = 'tendedPro_premium';
 const TRIAL_KEY            = 'tendedPro_trialStart';
 const LAUNCH_BANNER_EXPIRY = '2026-06-30';
+const EARLY_ADOPTER_EXPIRY = '2026-12-31';
 const BANNER_DISMISSED_KEY = 'tendedPro_bannerDismissed';
 const TRIAL_DAYS    = 10;
 const PRICE_DISPLAY = '$14.99';
@@ -9844,7 +9852,7 @@ function activatePremium(source){
   window._pendingOrderId = null;
   const pw = document.getElementById('paywall-overlay');
   if(pw) pw.classList.remove('open');
-  updatePremiumUI(); renderPremiumCard();
+  updatePremiumUI(); renderPremiumCard(); if(typeof renderEarlyAdopterCard==='function') renderEarlyAdopterCard();
   toast('⭐ Tended Health Pro unlocked! Thank you.', 'var(--teal)');
 }
 // The Android wrapper sets a specific UA suffix ("TendedHealthPro/..."). The TWA's MainActivity
