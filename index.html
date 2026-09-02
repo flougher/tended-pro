@@ -9256,7 +9256,25 @@ function shareReport(){
   const patSel  = document.getElementById('report-patient');
   const patName = patSel?.options[patSel.selectedIndex]?.text || 'Patient';
   const month   = document.getElementById('report-month')?.value || '';
-  const text    = (preview.innerText || preview.textContent || '').trim();
+  // Format plain text for readable email
+  const rawText = (preview.innerText || preview.textContent || '').trim();
+  const lines   = rawText.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+  const divider = '─'.repeat(40);
+  const formatted = lines.map(line => {
+    // Section headers — short lines in ALL CAPS or ending with :
+    if(line === line.toUpperCase() && line.length < 50 && line.length > 2){
+      return '\n' + divider + '\n' + line + '\n' + divider;
+    }
+    if(line.endsWith(':') && line.length < 60){
+      return '\n' + line;
+    }
+    return line;
+  }).join('\n');
+  const patSel2  = document.getElementById('report-patient');
+  const patName2 = patSel2?.options[patSel2.selectedIndex]?.text || 'Patient';
+  const month2   = document.getElementById('report-month')?.value || '';
+  const header   = 'TENDED HEALTH PRO — MONTHLY CARE REPORT\n' + divider + '\nPatient: ' + patName2 + '\nMonth: ' + month2 + '\nGenerated: ' + new Date().toLocaleDateString() + '\n' + divider + '\n\n';
+  const text = header + formatted;
   const subject = encodeURIComponent(patName + ' — Monthly Care Report ' + month);
   const body    = encodeURIComponent(text.substring(0, 1800));
 
