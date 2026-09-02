@@ -1965,11 +1965,13 @@ body {
   
 
   <!-- Early Adopter Offer -->
-  <div id="early-adopter-card" style="margin:16px 0 8px;display:none">
+  <div style="margin:16px 0 8px">
     <div class="card" style="border:2px solid var(--teal);background:linear-gradient(135deg,#F0FDF4,#E6F7F4)">
       <div class="card-title" style="color:var(--teal)">🎁 Free for Early Supporters — Offer Expires December 31, 2026</div>
       <p style="font-size:.82rem;color:var(--slate-mid);line-height:1.7;margin:8px 0 12px">
-        You're one of our early supporters — so your unlock is free. Reach out before <strong>December 31, 2026</strong> for your permanent code, yours to keep forever: no subscription, no catch. After December 31, unlocking is a one-time <strong>$14.99</strong>.
+        Download Tended Health Pro before <strong>December 31, 2026</strong> and get a free
+        permanent unlock code — yours to keep forever, no subscription, no catch.
+        After December 31 the unlock is <strong>$14.99</strong> one time.
       </p>
       <p style="font-size:.82rem;color:var(--slate-mid);line-height:1.7;margin:0 0 14px">
         To claim your free code, simply reach out directly:
@@ -2799,6 +2801,7 @@ body {
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-secondary" onclick="renderReport()">🔄 Refresh</button>
       <button class="btn btn-teal" onclick="printReport()">🖨️ Print / Save PDF</button>
+      <button class="btn btn-secondary" onclick="shareReport()">📤 Share</button>
     </div>
   </div>
 
@@ -4076,14 +4079,6 @@ function dismissLaunchBanner(){
   if(el) el.style.display = 'none';
 }
 
-
-function renderEarlyAdopterCard(){
-  const el = document.getElementById('early-adopter-card');
-  if(!el) return;
-  const expired = new Date().toISOString().split('T')[0] > EARLY_ADOPTER_EXPIRY;
-  const premium = (typeof isPremium === 'function') ? isPremium() : false;
-  el.style.display = (!expired && !premium) ? 'block' : 'none';
-}
 
 function renderTrialExpiryBanner(){
   const host = document.getElementById('trial-expiry-banner');
@@ -6740,7 +6735,6 @@ function loadSettings(){
   set('set-default-rate', s.defaultRate);
   set('set-facility',     s.facility);
   if(typeof renderPremiumCard === 'function') renderPremiumCard();
-  if(typeof renderEarlyAdopterCard === 'function') renderEarlyAdopterCard();
   renderProfileCompletion();
   // Clear dirty state on load
   const unsaved = document.getElementById('settings-unsaved');
@@ -9236,20 +9230,46 @@ function printReport(){
     setTimeout(printReport, 600);
     return;
   }
-  const w = window.open('','_blank');
-  if(!w){ _showPopupBlockedHelp('this report'); return; }
-  w.document.write(`<!DOCTYPE html><html><head><title>Monthly Care Report</title>
-<style>body{font-family:system-ui,sans-serif;max-width:800px;margin:24px auto;font-size:13px;color:#1C2B42}
-.report-section{border:1px solid #D8E2EE;border-radius:8px;padding:14px 16px;margin-bottom:12px}
-.report-section-title{font-size:.95rem;font-weight:700;color:#0C1B33;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #0B7A6E}
-.foot{margin-top:20px;padding-top:10px;border-top:1px solid #D8E2EE;font-size:.7rem;color:#8097B3;display:flex;justify-content:space-between}
-@media print{@page{size:A4;margin:12mm}body{margin:0}}</style></head><body>
-${D.settings?.facility ? `<div style="text-align:center;font-weight:700;font-size:14pt;color:#0C1B33;border-bottom:2px solid #0B7A6E;padding-bottom:6px;margin-bottom:12px">${D.settings.facility}</div>` : ''}
-${preview.innerHTML}
-<div class="foot"><span>Tended Health Pro — Monthly Care Report</span><span>Printed ${new Date().toLocaleString()}</span></div>
-</body></html>`);
-  w.document.close();
-  setTimeout(() => w.print(), 400);
+  // Direct print — works reliably in Android TWA
+  // Inject a temporary print-only style that hides everything except the report
+  const styleId = 'tended-print-style';
+  let s = document.getElementById(styleId);
+  if(!s){ s = document.createElement('style'); s.id = styleId; document.head.appendChild(s); }
+  s.textContent = `@media print {
+    body > *:not(#print-frame) { display:none !important; }
+    #print-frame { display:block !important; position:fixed; top:0; left:0; width:100%; }
+  }`;
+  // Build print frame
+  let frame = document.getElementById('print-frame');
+  if(!frame){ frame = document.createElement('div'); frame.id='print-frame'; document.body.appendChild(frame); }
+  frame.style.display = 'none';
+  const facility = D.settings?.facility ? `<div style="text-align:center;font-weight:700;font-size:14pt;color:#0C1B33;border-bottom:2px solid #0B7A6E;padding-bottom:6px;margin-bottom:12px">${D.settings.facility}</div>` : '';
+  frame.innerHTML = `<div style="font-family:system-ui,sans-serif;max-width:800px;margin:0 auto;font-size:13px;color:#1C2B42;padding:20px">${facility}${preview.innerHTML}<div style="margin-top:20px;padding-top:10px;border-top:1px solid #D8E2EE;font-size:.7rem;color:#8097B3;display:flex;justify-content:space-between"><span>Tended Health Pro — Monthly Care Report</span><span>${new Date().toLocaleString()}</span></div></div>`;
+  window.print();
+  // Clean up frame after print
+  setTimeout(()=>{ frame.style.display='none'; frame.innerHTML=''; }, 1000);
+}
+
+function shareReport(){
+  const preview = document.getElementById('report-preview');
+  if(!preview?.innerHTML){ toast('Generate the report first then tap Share','var(--held)'); return; }
+  const patSel = document.getElementById('report-patient');
+  const patName = patSel?.options[patSel.selectedIndex]?.text || 'Patient';
+  const month   = document.getElementById('report-month')?.value || '';
+  const text    = preview.innerText || preview.textContent || '';
+  if(navigator.share){
+    navigator.share({
+      title: `${patName} — Monthly Care Report ${month}`,
+      text: text.substring(0,2000)
+    }).catch(()=>{});
+  } else {
+    // Fallback — copy to clipboard
+    navigator.clipboard?.writeText(text).then(()=>{
+      toast('Report copied to clipboard — paste into email or message','var(--given)');
+    }).catch(()=>{
+      toast('Use the Print/Save PDF button to share this report','var(--given)');
+    });
+  }
 }
 
 
@@ -9759,7 +9779,6 @@ function checkFirstLaunch(){
 const PREMIUM_KEY          = 'tendedPro_premium';
 const TRIAL_KEY            = 'tendedPro_trialStart';
 const LAUNCH_BANNER_EXPIRY = '2026-06-30';
-const EARLY_ADOPTER_EXPIRY = '2026-12-31';
 const BANNER_DISMISSED_KEY = 'tendedPro_bannerDismissed';
 const TRIAL_DAYS    = 10;
 const PRICE_DISPLAY = '$14.99';
@@ -9852,7 +9871,7 @@ function activatePremium(source){
   window._pendingOrderId = null;
   const pw = document.getElementById('paywall-overlay');
   if(pw) pw.classList.remove('open');
-  updatePremiumUI(); renderPremiumCard(); if(typeof renderEarlyAdopterCard==='function') renderEarlyAdopterCard();
+  updatePremiumUI(); renderPremiumCard();
   toast('⭐ Tended Health Pro unlocked! Thank you.', 'var(--teal)');
 }
 // The Android wrapper sets a specific UA suffix ("TendedHealthPro/..."). The TWA's MainActivity
