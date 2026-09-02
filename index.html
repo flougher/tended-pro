@@ -9256,8 +9256,23 @@ function shareReport(){
   const patSel  = document.getElementById('report-patient');
   const patName = patSel?.options[patSel.selectedIndex]?.text || 'Patient';
   const month   = document.getElementById('report-month')?.value || '';
-  // Format plain text for readable email
+  // Force all report sections on temporarily, re-render, extract, restore
+  const _rptChecks = ['rpt-meds', 'rpt-incidents', 'rpt-behaviors', 'rpt-painad', 'rpt-wounds', 'rpt-intake', 'rpt-toileting', 'rpt-comms', 'rpt-careplan', 'rpt-shiftnotes'];
+  const _savedStates = _rptChecks.map(id => {
+    const el = document.getElementById(id);
+    const was = el ? el.checked : false;
+    if(el) el.checked = true;
+    return { id, was };
+  });
+  renderReport();
+  // Wait one tick for render to complete
   const rawText = (preview.innerText || preview.textContent || '').trim();
+  // Restore original checkbox states
+  _savedStates.forEach(({id, was}) => {
+    const el = document.getElementById(id);
+    if(el) el.checked = was;
+  });
+  renderReport();
   const lines   = rawText.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
   const divider = '─'.repeat(40);
   const formatted = lines.map(line => {
