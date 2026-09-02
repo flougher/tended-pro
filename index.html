@@ -9252,119 +9252,187 @@ function printReport(){
 
 
 function buildReportEmailText(){
-  const patSel   = document.getElementById('report-patient');
-  const patientId = patSel?.value || '';
+  const patSel    = document.getElementById('report-patient');
+  const patientId = patSel?.value || _globalPatientId || '';
   const monthVal  = document.getElementById('report-month')?.value || new Date().toISOString().slice(0,7);
-  const monthStart = monthVal + '-01';
-  const monthEnd   = monthVal + '-31';
-  const patObj     = (D.patients||[]).find(p=>String(p.id)===String(patientId));
-  const patName    = patObj ? patObj.fname+' '+patObj.lname : (D.settings?.name||'Patient');
-  const inMonth    = d => d && d >= monthStart && d <= monthEnd;
-  const div        = '─'.repeat(44);
-  const lines      = [];
+  const [yr,mo]   = monthVal.split('-').map(Number);
+  const monthStart= monthVal + '-01';
+  const monthEnd  = new Date(yr, mo, 0).toISOString().split('T')[0];
+  const inMonth   = d => d && d >= monthStart && d <= monthEnd;
+  const patObj    = (D.patients||[]).find(p=>String(p.id)===String(patientId));
+  const patName   = patObj ? patObj.fname+' '+patObj.lname : (D.settings?.name||'Patient');
+  const div       = '─'.repeat(44);
+  const lines     = [];
 
   lines.push('TENDED HEALTH PRO — MONTHLY CARE REPORT');
   lines.push(div);
-  lines.push('Patient: ' + patName);
-  lines.push('Month:   ' + monthVal);
+  lines.push('Patient:   ' + patName);
+  lines.push('Month:     ' + monthVal);
   lines.push('Generated: ' + new Date().toLocaleDateString());
+  if(D.settings?.agency) lines.push('Agency:    ' + D.settings.agency);
+  if(D.settings?.name)   lines.push('Caregiver: ' + D.settings.name);
   lines.push(div);
 
-  // ── MEDICATIONS ──────────────────────────────
+  // ── DEFECT 2 FIX: MEDICATIONS ──────────────────────────────────────────
   const rptMeds = patientId
     ? (D.meds||[]).filter(m=>String(m.patientId)===String(patientId))
     : (D.meds||[]);
   if(rptMeds.length){
     const marKeys = Object.keys(D.mar||{}).filter(k=>{
-      const parts = k.split('|');
-      if(parts[0]<monthStart||parts[0]>monthEnd) return false;
-      if(patientId && String(parts[1])!==String(patientId)) return false;
+      const p = k.split('|');
+      if(p[0]<monthStart||p[0]>monthEnd) return false;
+      if(patientId && String(p[1])!==String(patientId)) return false;
       return true;
     });
-    const given   = marKeys.filter(k=>D.mar[k]?.status==='given').length;
-    const refused = marKeys.filter(k=>D.mar[k]?.status==='refused').length;
-    const held    = marKeys.filter(k=>D.mar[k]?.status==='held').length;
+    const given   = marKeys.filter(k=>(D.mar[k]?.status==='given')).length;
+    const refused = marKeys.filter(k=>(D.mar[k]?.status==='refused')).length;
+    const held    = marKeys.filter(k=>(D.mar[k]?.status==='held')).length;
     const total   = marKeys.length;
     const pct     = total ? Math.round(given/total*100) : 0;
-    lines.push('');
-    lines.push('💊 MEDICATIONS');
+    lines.push('\n💊 MEDICATIONS');
     lines.push(div);
-    lines.push('  Given:    ' + given);
-    lines.push('  Refused:  ' + refused);
-    lines.push('  Held:     ' + held);
-    lines.push('  Total:    ' + total);
-    lines.push('  Compliance: ' + pct + '%');
-    lines.push('');
-    lines.push('Medication List:');
+    lines.push('  Given: '+given+'  |  Refused: '+refused+'  |  Held: '+held+'  |  Total: '+total+'  |  Compliance: '+pct+'%');
+    lines.push('  Medication List:');
     rptMeds.forEach(m=>{
-      // Count given/refused per medication
-      const medKeys = marKeys.filter(k=>k.split('|')[2]===String(m.id||m.name));
-      const mGiven   = medKeys.filter(k=>D.mar[k]?.status==='given').length;
-      const mRefused = medKeys.filter(k=>D.mar[k]?.status==='refused').length;
-      const mHeld    = medKeys.filter(k=>D.mar[k]?.status==='held').length;
+      const medKeys  = marKeys.filter(k=>k.split('|')[2]===String(m.id||m.name));
+      const mGiven   = medKeys.filter(k=>(D.mar[k]?.status==='given')).length;
+      const mRefused = medKeys.filter(k=>(D.mar[k]?.status==='refused')).length;
+      const mHeld    = medKeys.filter(k=>(D.mar[k]?.status==='held')).length;
       lines.push('  • '+m.name+' '+(m.dose||'')+
-        (m.frequency?' | '+m.frequency:'')+
-        ' | Given:'+mGiven+' Refused:'+mRefused+(mHeld?' Held:'+mHeld:''));
+        (m.frequency?' ('+m.frequency+')':'')+
+        ' — Given:'+mGiven+' Refused:'+mRefused+(mHeld?' Held:'+mHeld:''));
     });
   }
 
-  // ── INCIDENTS ────────────────────────────────
+  // ── DEFECT 3 FIX: INCIDENTS ────────────────────────────────────────────
   const inc = (D.incidents||[]).filter(i=>inMonth(i.dt?.split('T')[0]));
   if(inc.length){
-    lines.push(''); lines.push('📋 INCIDENTS ('+inc.length+')'); lines.push(div);
+    lines.push('\n📋 INCIDENTS ('+inc.length+')');
+    lines.push(div);
+    const bySev = {critical:0,moderate:0,minor:0};
+    inc.forEach(i=>bySev[i.severity]=(bySev[i.severity]||0)+1);
+    lines.push('  Critical:'+bySev.critical+'  Moderate:'+bySev.moderate+'  Minor:'+bySev.minor);
     inc.forEach(i=>{
-      lines.push('  ['+((i.severity||'').toUpperCase())+'] '+i.type+' — '+new Date(i.dt).toLocaleDateString());
-      if(i.desc) lines.push('    '+i.desc);
+      lines.push('  ['+(i.severity||'').toUpperCase()+'] '+i.type+' — '+new Date(i.dt).toLocaleDateString());
+      if(i.desc)   lines.push('    '+i.desc);
       if(i.action) lines.push('    Action: '+i.action);
     });
   }
 
-  // ── BEHAVIORS ────────────────────────────────
+  // ── DEFECT 4 FIX: BEHAVIORS ────────────────────────────────────────────
   const beh = (D.behaviors||[]).filter(b=>inMonth(b.dt?.split('T')[0]));
   if(beh.length){
-    lines.push(''); lines.push('🧠 BEHAVIORS ('+beh.length+')'); lines.push(div);
+    lines.push('\n🧠 BEHAVIORAL EVENTS ('+beh.length+')');
+    lines.push(div);
     beh.forEach(b=>{
-      lines.push('  ['+((b.severity||'').toUpperCase())+'] '+b.type+' — '+new Date(b.dt).toLocaleDateString());
-      if(b.desc) lines.push('    '+b.desc);
-      if(b.trigger) lines.push('    Trigger: '+b.trigger);
+      lines.push('  ['+(b.severity||'').toUpperCase()+'] '+b.type+' — '+new Date(b.dt).toLocaleDateString());
+      if(b.desc)         lines.push('    '+b.desc);
+      if(b.trigger)      lines.push('    Trigger: '+b.trigger);
       if(b.intervention) lines.push('    Intervention: '+b.intervention);
     });
   }
 
-  // ── PAIN ─────────────────────────────────────
-  const pain = (D.painad||[]).filter(p=>inMonth(p.date));
-  if(pain.length){
-    lines.push(''); lines.push('😣 PAIN ASSESSMENTS ('+pain.length+')'); lines.push(div);
-    pain.forEach(p=>{
-      lines.push('  '+p.date+' | Score: '+p.total+'/10'+
-        (p.shift?' | Shift: '+p.shift:'')+
-        (p.notes?' | '+p.notes:''));
+  // ── DEFECT 5 FIX: PAINAD ───────────────────────────────────────────────
+  const rptPAINAD = (D.painad||[]).filter(e=>inMonth(e.date));
+  if(rptPAINAD.length){
+    lines.push('\n😣 PAIN ASSESSMENTS ('+rptPAINAD.length+')');
+    lines.push(div);
+    const avgScore = Math.round(rptPAINAD.reduce((s,e)=>s+e.total,0)/rptPAINAD.length*10)/10;
+    const severe   = rptPAINAD.filter(e=>e.total>=7).length;
+    lines.push('  Average Score: '+avgScore+'/10  |  Severe (7+): '+severe);
+    rptPAINAD.slice(0,10).forEach(e=>{
+      lines.push('  '+e.date+' | Score: '+e.total+'/10'+(e.shift?' | '+e.shift:'')+(e.notes?' | '+e.notes.substring(0,60):''));
     });
+    if(rptPAINAD.length>10) lines.push('  ... and '+(rptPAINAD.length-10)+' more entries');
   }
 
-  // ── WOUNDS ───────────────────────────────────
-  const wounds = (D.wounds||[]).filter(w=>inMonth(w.date||w.dt?.split('T')[0]));
+  // ── DEFECT 6 FIX: WOUNDS — show all (no date filter, matches renderReport) ──
+  const wounds = D.wounds||[];
   if(wounds.length){
-    lines.push(''); lines.push('🩹 WOUNDS ('+wounds.length+')'); lines.push(div);
+    lines.push('\n🩹 WOUND STATUS ('+wounds.length+' wounds)');
+    lines.push(div);
     wounds.forEach(w=>{
-      lines.push('  '+( w.date||w.dt?.split('T')[0])+' | '+w.location+' | '+w.stage);
-      if(w.notes) lines.push('    '+w.notes);
+      lines.push('  '+w.location+' — '+(w.type||'')+'  |  Stage: '+(w.stage||'').split(' — ')[0]+
+        '  |  Status: '+(w.status||''));
+      if(w.size)  lines.push('    Size: '+w.size);
+      if(w.notes) lines.push('    Notes: '+w.notes.substring(0,80));
     });
   }
 
-  // ── SHIFT NOTES ──────────────────────────────
-  const shifts = (D.shifts||[]).filter(s=>inMonth(s.date));
-  if(shifts.length){
-    lines.push(''); lines.push('📝 SHIFT NOTES ('+shifts.length+')'); lines.push(div);
-    shifts.forEach(s=>{
-      lines.push('  '+s.date+(s.shift?' | '+s.shift:''));
-      if(s.notes) lines.push('    '+s.notes);
+  // ── DEFECT 7 FIX: INTAKE ───────────────────────────────────────────────
+  const intakeMonth = (D.intake||[]).filter(e=>inMonth(e.date));
+  if(intakeMonth.length){
+    const totalFluid = intakeMonth.reduce((s,e)=>s+(e.fluid||0),0);
+    const totalOz    = Math.round(totalFluid/29.5735);
+    const meals      = intakeMonth.filter(e=>['Breakfast','Lunch','Dinner','Snack'].includes(e.type));
+    const avgPct     = meals.length ? Math.round(meals.reduce((s,e)=>s+(e.pct||0),0)/meals.length) : 0;
+    lines.push('\n🍽️ INTAKE & NUTRITION');
+    lines.push(div);
+    lines.push('  Total Fluid: '+totalOz+' oz ('+totalFluid+' mL)  |  Avg Meal %: '+avgPct+'%');
+    lines.push('  Entries: '+intakeMonth.length);
+  }
+
+  // ── DEFECT 8 FIX: TOILETING ────────────────────────────────────────────
+  const tMonth = (D.toileting||[]).filter(e=>inMonth(e.date));
+  if(tMonth.length){
+    const voids = tMonth.filter(e=>e.type==='void'||e.type==='both').length;
+    const bms   = tMonth.filter(e=>e.type==='bm'||e.type==='both').length;
+    const inc2  = tMonth.filter(e=>e.continent==='incontinent').length;
+    lines.push('\n🚻 TOILETING');
+    lines.push(div);
+    lines.push('  Void: '+voids+'  |  BM: '+bms+'  |  Incontinent: '+inc2+'  |  Total: '+tMonth.length);
+  }
+
+  // ── DEFECT 9 FIX: COMMUNICATIONS ──────────────────────────────────────
+  const commsMonth = (D.comms||[]).filter(c=>inMonth(c.dt?.split('T')[0]));
+  if(commsMonth.length){
+    lines.push('\n📞 FAMILY LOG ('+commsMonth.length+')');
+    lines.push(div);
+    commsMonth.forEach(c=>{
+      lines.push('  '+new Date(c.dt).toLocaleDateString()+' | '+(c.type||'')+
+        (c.name?' | '+c.name:''));
+      if(c.summary) lines.push('    '+c.summary.substring(0,100));
     });
   }
 
-  lines.push('');
-  lines.push(div);
+  // ── DEFECT 10 FIX: CARE PLAN ──────────────────────────────────────────
+  const cp = patientId ? getCarePlanForPatient(patientId) : null;
+  if(cp && cp.goals){
+    lines.push('\n📌 GOALS OF CARE');
+    lines.push(div);
+    if(cp.goals)    lines.push('  Goals: '+cp.goals);
+    if(cp.dnr)      lines.push('  Code Status: '+cp.dnr);
+    if(cp.diet)     lines.push('  Diet: '+cp.diet);
+    if(cp.activity) lines.push('  Activity: '+cp.activity);
+  }
+
+  // ── DEFECT 11 FIX: BILLING ────────────────────────────────────────────
+  const billMonth = (D.billing||[]).filter(b=>inMonth(b.date)&&(!patientId||String(b.patientId)===String(patientId)));
+  if(billMonth.length){
+    const hrs    = billMonth.reduce((s,b)=>s+(b.hours||0),0);
+    const earned = billMonth.reduce((s,b)=>s+(b.earned||0),0);
+    lines.push('\n💳 BILLING SUMMARY');
+    lines.push(div);
+    lines.push('  Hours: '+hrs+'  |  Earned: $'+earned.toFixed(2)+'  |  Entries: '+billMonth.length);
+  }
+
+  // ── DEFECT 12 FIX: SHIFT NOTES — correct data source ─────────────────
+  const allNotes   = JSON.parse(localStorage.getItem('tendedPro_shiftNotes')||'{}');
+  const monthNotes = Object.entries(allNotes)
+    .filter(([date])=>date>=monthStart&&date<=monthEnd)
+    .sort(([a],[b])=>a.localeCompare(b));
+  if(monthNotes.length){
+    lines.push('\n📝 SHIFT NOTES ('+monthNotes.length+')');
+    lines.push(div);
+    monthNotes.forEach(([date,note])=>{
+      lines.push('  '+date+':');
+      lines.push('    '+(typeof note==='string'?note:JSON.stringify(note)).substring(0,120));
+    });
+  }
+
+  lines.push('\n'+div);
   lines.push('Generated by Tended Health Pro');
+  lines.push('tendedhealthapps@gmail.com');
   return lines.join('\n');
 }
 
@@ -9394,7 +9462,7 @@ function shareReport(){
   const header   = 'TENDED HEALTH PRO — MONTHLY CARE REPORT\n' + divider + '\nPatient: ' + patName2 + '\nMonth: ' + month2 + '\nGenerated: ' + new Date().toLocaleDateString() + '\n' + divider + '\n\n';
   const text = header + formatted;
   const subject = encodeURIComponent(patName + ' — Monthly Care Report ' + month);
-  const body    = encodeURIComponent(text.substring(0, 1800));
+  const body    = encodeURIComponent(text.substring(0, 3500)); // mailto: limit
 
   // Build share dialog
   const overlay = document.createElement('div');
@@ -9410,8 +9478,8 @@ function shareReport(){
          onclick="document.getElementById('report-share-overlay').remove()">
         <span style="font-size:1.4rem">📧</span>
         <div>
-          <div style="font-weight:600;font-size:.86rem;color:#0C4A6E">Email Report</div>
-          <div style="font-size:.72rem;color:#0EA5E9">Opens your email app with report ready to send</div>
+          <div style="font-weight:600;font-size:.86rem;color:#0C4A6E">Email Report (Summary)</div>
+          <div style="font-size:.72rem;color:#0EA5E9">Opens email with medication & key data — use Copy below for full report</div>
         </div>
       </a>
 
