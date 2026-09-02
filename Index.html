@@ -6616,6 +6616,14 @@ function generateHandoff(){
 
   preview.style.display = 'block';
   preview.innerHTML = `
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <button onclick="printReport()" style="flex:1;min-width:140px;padding:12px 16px;background:var(--teal);color:white;border:none;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+        📄 Save as PDF / Print
+      </button>
+      <button onclick="shareReport()" style="flex:1;min-width:100px;padding:12px 16px;background:#F1F5F9;color:var(--navy);border:1.5px solid var(--border);border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+        📤 Share / Email
+      </button>
+    </div>
     <div style="background:white;border:2px solid var(--teal);border-radius:var(--r-lg);padding:22px 24px">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px">
         <div>
@@ -9225,13 +9233,10 @@ function renderReport(){
 }
 
 function printReport(){
-  toast('Print button tapped','var(--teal)');
   const preview = document.getElementById('report-preview');
   if(!preview?.innerHTML){ renderReport(); setTimeout(printReport,600); return; }
 
   const isAndroid = /Android/i.test(navigator.userAgent);
-  toast('Device: '+(isAndroid?'Android':'Desktop'),'var(--teal)');
-
   if(!isAndroid){
     // Desktop — window.print() works
     const styleId = 'tended-print-style';
