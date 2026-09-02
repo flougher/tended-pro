@@ -9225,10 +9225,12 @@ function renderReport(){
 }
 
 function printReport(){
+  toast('Print button tapped','var(--teal)');
   const preview = document.getElementById('report-preview');
   if(!preview?.innerHTML){ renderReport(); setTimeout(printReport,600); return; }
 
   const isAndroid = /Android/i.test(navigator.userAgent);
+  toast('Device: '+(isAndroid?'Android':'Desktop'),'var(--teal)');
 
   if(!isAndroid){
     // Desktop — window.print() works
