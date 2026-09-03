@@ -1197,7 +1197,9 @@ body {
 #section-emergency .em-911{width:100%;background:#DC2626;color:#fff;border:none;border-radius:14px;padding:16px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px}
 #section-emergency .em-911:active,#section-emergency .em-share:active{transform:scale(.99)}
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+function _testBtn(){ toast("BUTTON WORKS","var(--given)"); }
+</script>
 </head>
 <body>
 <a href="#main" class="skip">Skip to main content</a>
@@ -2801,13 +2803,9 @@ body {
     <div class="ph-sub">Auto-generates a complete clinical summary from all logged data</div></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-secondary" onclick="renderReport()">🔄 Refresh</button>
+      <button class="btn btn-teal" onclick="printReport()">📄 Save PDF</button>
+      <button class="btn btn-secondary" onclick="shareReport()">📤 Share</button>
     </div>
-  </div>
-
-  <!-- Action bar — inline onclick for TWA compatibility -->
-  <div style="display:flex;gap:8px;margin-bottom:12px">
-    <button onclick="printReport()" style="flex:1;padding:14px;background:var(--teal);color:white;border:none;border-radius:10px;font-size:.92rem;font-weight:700;cursor:pointer">📄 Save as PDF / Print</button>
-    <button onclick="shareReport()" style="flex:1;padding:14px;background:#F1F5F9;color:var(--navy);border:1.5px solid var(--border);border-radius:10px;font-size:.92rem;font-weight:700;cursor:pointer">📤 Share / Email</button>
   </div>
 
   <div class="card" style="margin-bottom:16px">
