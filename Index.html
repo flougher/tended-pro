@@ -1197,9 +1197,7 @@ body {
 #section-emergency .em-911{width:100%;background:#DC2626;color:#fff;border:none;border-radius:14px;padding:16px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px}
 #section-emergency .em-911:active,#section-emergency .em-share:active{transform:scale(.99)}
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
-function _testBtn(){ toast("BUTTON WORKS","var(--given)"); }
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 <a href="#main" class="skip">Skip to main content</a>
@@ -9236,6 +9234,7 @@ function renderReport(){
 }
 
 function printReport(){
+  toast('📄 Starting PDF...','var(--teal)');
   const preview = document.getElementById('report-preview');
   if(!preview?.innerHTML){ renderReport(); setTimeout(printReport,600); return; }
 
