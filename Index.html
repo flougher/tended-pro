@@ -2801,9 +2801,13 @@ body {
     <div class="ph-sub">Auto-generates a complete clinical summary from all logged data</div></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-secondary" onclick="renderReport()">🔄 Refresh</button>
-      <button class="btn btn-teal" onclick="printReport()">📄 Save as PDF / Print</button>
-      <button class="btn btn-secondary" onclick="shareReport()">📤 Share</button>
     </div>
+  </div>
+
+  <!-- Action bar with IDs — bound by _bindReportButtons() -->
+  <div style="display:flex;gap:8px;margin-bottom:12px">
+    <button id="rpt-print-btn" style="flex:1;padding:14px;background:var(--teal);color:white;border:none;border-radius:10px;font-size:.92rem;font-weight:700;cursor:pointer">📄 Save as PDF / Print</button>
+    <button id="rpt-share-btn" style="flex:1;padding:14px;background:#F1F5F9;color:var(--navy);border:1.5px solid var(--border);border-radius:10px;font-size:.92rem;font-weight:700;cursor:pointer">📤 Share / Email</button>
   </div>
 
   <div class="card" style="margin-bottom:16px">
@@ -6616,14 +6620,6 @@ function generateHandoff(){
 
   preview.style.display = 'block';
   preview.innerHTML = `
-    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-      <button onclick="printReport()" style="flex:1;min-width:140px;padding:12px 16px;background:var(--teal);color:white;border:none;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
-        📄 Save as PDF / Print
-      </button>
-      <button onclick="shareReport()" style="flex:1;min-width:100px;padding:12px 16px;background:#F1F5F9;color:var(--navy);border:1.5px solid var(--border);border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
-        📤 Share / Email
-      </button>
-    </div>
     <div style="background:white;border:2px solid var(--teal);border-radius:var(--r-lg);padding:22px 24px">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px">
         <div>
@@ -8960,6 +8956,14 @@ ${D.settings?.facility ? `<div style="text-align:center;font-weight:700;font-siz
 }
 
 // ── 4. MONTHLY REPORT ─────────────────────────────────────────
+
+function _bindReportButtons(){
+  var pb = document.getElementById('rpt-print-btn');
+  var sb = document.getElementById('rpt-share-btn');
+  if(pb){ pb.onclick = function(){ printReport(); }; }
+  if(sb){ sb.onclick = function(){ shareReport(); }; }
+}
+
 function renderReport(){
   // Pre-fill from settings if fields empty
   const rp = document.getElementById('report-provider');
@@ -9229,6 +9233,7 @@ function renderReport(){
         </div>
       </div>`;
     toast('✅ Report generated', 'var(--given)');
+    _bindReportButtons();
   }
 }
 
