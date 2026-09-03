@@ -2804,10 +2804,10 @@ body {
     </div>
   </div>
 
-  <!-- Action bar with IDs — bound by _bindReportButtons() -->
+  <!-- Action bar — inline onclick for TWA compatibility -->
   <div style="display:flex;gap:8px;margin-bottom:12px">
-    <button id="rpt-print-btn" style="flex:1;padding:14px;background:var(--teal);color:white;border:none;border-radius:10px;font-size:.92rem;font-weight:700;cursor:pointer">📄 Save as PDF / Print</button>
-    <button id="rpt-share-btn" style="flex:1;padding:14px;background:#F1F5F9;color:var(--navy);border:1.5px solid var(--border);border-radius:10px;font-size:.92rem;font-weight:700;cursor:pointer">📤 Share / Email</button>
+    <button onclick="printReport()" style="flex:1;padding:14px;background:var(--teal);color:white;border:none;border-radius:10px;font-size:.92rem;font-weight:700;cursor:pointer">📄 Save as PDF / Print</button>
+    <button onclick="shareReport()" style="flex:1;padding:14px;background:#F1F5F9;color:var(--navy);border:1.5px solid var(--border);border-radius:10px;font-size:.92rem;font-weight:700;cursor:pointer">📤 Share / Email</button>
   </div>
 
   <div class="card" style="margin-bottom:16px">
