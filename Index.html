@@ -6500,21 +6500,16 @@ function saveIncident(){
 
 function _incStatusHtml(id, status){
   var s = status || 'open';
-  var bg    = s==='resolved' ? '#F0FDF4' : s==='pending' ? '#FFFBEB' : '#FEF2F2';
-  var color = s==='resolved' ? '#15803D' : s==='pending' ? '#92400E' : '#DC2626';
-  var bdr   = s==='resolved' ? '#86EFAC' : s==='pending' ? '#FCD34D' : '#FCA5A5';
-  var selO  = s==='open'     ? ' selected' : '';
-  var selP  = s==='pending'  ? ' selected' : '';
-  var selR  = s==='resolved' ? ' selected' : '';
-  return '<div style="display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid #D8E2EE">'
-    + '<span style="font-size:.72rem;font-weight:600;color:#64748B">Status:</span>'
-    + '<select onchange="updateIncidentStatus(' + id + ', this.value)"'
-    + ' style="font-size:.76rem;padding:4px 8px;border:1.5px solid ' + bdr + ';border-radius:6px;'
-    + 'background:' + bg + ';color:' + color + ';font-weight:600;cursor:pointer">'
-    + '<option value="open"' + selO + '>🔴 Open</option>'
-    + '<option value="pending"' + selP + '>🟡 Pending Follow-Up</option>'
-    + '<option value="resolved"' + selR + '>🟢 Resolved</option>'
-    + '</select></div>';
+  var base = 'font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;border:1.5px solid;';
+  var oSt = base + (s==='open'     ? 'background:#FEF2F2;color:#DC2626;border-color:#FCA5A5' : 'background:#F8FAFC;color:#94A3B8;border-color:#E2E8F0');
+  var pSt = base + (s==='pending'  ? 'background:#FFFBEB;color:#92400E;border-color:#FCD34D' : 'background:#F8FAFC;color:#94A3B8;border-color:#E2E8F0');
+  var rSt = base + (s==='resolved' ? 'background:#F0FDF4;color:#15803D;border-color:#86EFAC' : 'background:#F8FAFC;color:#94A3B8;border-color:#E2E8F0');
+  return '<div style="display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:8px;border-top:1px solid #D8E2EE;flex-wrap:wrap">'
+    + '<span style="font-size:.7rem;font-weight:600;color:#64748B">Status:</span>'
+    + '<button onclick="updateIncidentStatus(' + id + ',&quot;open&quot;)" style="' + oSt + '">Open</button>'
+    + '<button onclick="updateIncidentStatus(' + id + ',&quot;pending&quot;)" style="' + pSt + '">Pending</button>'
+    + '<button onclick="updateIncidentStatus(' + id + ',&quot;resolved&quot;)" style="' + rSt + '">Resolved</button>'
+    + '</div>';
 }
 
 function updateIncidentStatus(id, status){
