@@ -3188,6 +3188,13 @@ body {
     <div class="fg"><label>Action Taken</label>
       <textarea id="inc-action" rows="2" placeholder="e.g. Assisted to chair, applied ice pack, notified supervisor, called 911…"></textarea>
     </div>
+    <div class="fg"><label>Follow-Up Status</label>
+      <select id="inc-status" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+        <option value="open">🔴 Open</option>
+        <option value="pending">🟡 Pending Follow-Up</option>
+        <option value="resolved">🟢 Resolved</option>
+      </select>
+    </div>
     <div class="fg"><label>Reported To</label>
       <input id="inc-reported" placeholder="Supervisor name / family member notified">
     </div>
@@ -6444,6 +6451,9 @@ function openIncidentModal(editId){
     set('inc-desc',     inc.desc || '');
     set('inc-action',   inc.action || '');
     set('inc-reported', inc.reported || '');
+    (function(s){ setTimeout(function(){
+      var sel=document.getElementById('inc-status'); if(sel) sel.value=s;
+    }, 80); })(inc.status || 'open');
   } else {
     set('inc-desc',''); set('inc-action',''); set('inc-reported','');
     document.getElementById('inc-sev').value = 'minor';
@@ -6462,13 +6472,14 @@ function saveIncident(){
     desc,
     action:    document.getElementById('inc-action').value.trim(),
     reported:  document.getElementById('inc-reported').value.trim(),
+    status:    document.getElementById('inc-status')?.value || 'open',
   };
   if(_editIncidentId !== null){
     const idx = D.incidents.findIndex(x => x.id === _editIncidentId);
     if(idx !== -1) D.incidents[idx] = { ...D.incidents[idx], ...fields };
     toast('✅ Incident updated', 'var(--given)');
   } else {
-    D.incidents.push({ id: Date.now(), patientId: _globalPatientId || '', ...fields });
+    D.incidents.push({ id: Date.now(), patientId: _globalPatientId || '', status: 'open', ...fields });
     toast('✅ Incident logged', 'var(--given)');
   }
   D.incidents.sort((a,b) => new Date(b.dt) - new Date(a.dt));
@@ -6479,8 +6490,20 @@ function saveIncident(){
   document.getElementById('inc-reported').value = '';
   document.getElementById('inc-sev').value      = 'minor';
   document.getElementById('inc-dt').value       = '';
+  const incStatusEl = document.getElementById('inc-status'); if(incStatusEl) incStatusEl.value = 'open';
   _editIncidentId = null;
   if(_qlReturnIfQuickLog('Incident logged')) return;
+  renderIncidents();
+}
+
+
+function updateIncidentStatus(id, status){
+  const idx = D.incidents.findIndex(i => i.id === id);
+  if(idx < 0) return;
+  D.incidents[idx].status = status;
+  save();
+  const labels = {open:'🔴 Open', pending:'🟡 Pending Follow-Up', resolved:'🟢 Resolved'};
+  toast('Status updated: ' + (labels[status]||status), 'var(--given)');
   renderIncidents();
 }
 
@@ -6521,6 +6544,18 @@ function renderIncidents(){
       <div style="font-size:.85rem;color:var(--slate-mid);line-height:1.6;margin-bottom:${i.action||i.reported?'8px':'0'}">${i.desc}</div>
       ${i.action   ? `<div style="font-size:.8rem;color:var(--teal);margin-bottom:3px">🔧 Action: ${i.action}</div>` : ''}
       ${i.reported ? `<div style="font-size:.8rem;color:var(--slate-light)">📣 Reported to: ${i.reported}</div>` : ''}
+      <div style="display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">
+        <span style="font-size:.72rem;font-weight:600;color:var(--slate-mid)">Status:</span>
+        <select onchange="updateIncidentStatus(${i.id}, this.value)"
+          style="font-size:.76rem;padding:4px 8px;border:1.5px solid var(--border);border-radius:6px;
+                 background:${ (i.status||'open')==='resolved' ? '#F0FDF4' : (i.status||'open')==='pending' ? '#FFFBEB' : '#FEF2F2' };
+                 color:${ (i.status||'open')==='resolved' ? '#15803D' : (i.status||'open')==='pending' ? '#92400E' : '#DC2626' };
+                 font-weight:600;cursor:pointer;border-color:${ (i.status||'open')==='resolved' ? '#86EFAC' : (i.status||'open')==='pending' ? '#FCD34D' : '#FCA5A5' }">
+          <option value="open"     ${ (i.status||'open')==='open'    ?'selected':'' }>🔴 Open</option>
+          <option value="pending"  ${ (i.status||'open')==='pending' ?'selected':'' }>🟡 Pending Follow-Up</option>
+          <option value="resolved" ${ (i.status||'open')==='resolved'?'selected':'' }>🟢 Resolved</option>
+        </select>
+      </div>
     </div>`;
   }).join('');
 }
