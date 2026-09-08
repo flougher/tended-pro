@@ -1662,6 +1662,17 @@ body {
   <div id="incident-list">
     <div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No incidents logged yet.<br>Tap + Log Incident to document an event.</div></div>
   </div>
+
+  <!-- Static status panel — tap any incident card to show -->
+  <div id="inc-status-panel" style="display:none;position:sticky;bottom:70px;background:white;border:2px solid var(--teal);border-radius:12px;padding:14px;margin-top:12px;box-shadow:0 4px 20px rgba(0,0,0,.15);z-index:100">
+    <div style="font-size:.75rem;font-weight:600;color:var(--slate-mid);margin-bottom:10px">Update status — <span id="inc-status-name" style="color:var(--navy)"></span></div>
+    <div style="display:flex;gap:8px">
+      <button id="inc-status-btn-open" onclick="setIncStatusFromPanel('open')" style="font-size:.82rem;font-weight:600;padding:10px 16px;border-radius:8px;cursor:pointer;border:1.5px solid;flex:1;background:#FEF2F2;color:#DC2626;border-color:#FCA5A5">Open</button>
+      <button id="inc-status-btn-pending" onclick="setIncStatusFromPanel('pending')" style="font-size:.82rem;font-weight:600;padding:10px 16px;border-radius:8px;cursor:pointer;border:1.5px solid;flex:1;background:#F8FAFC;color:#64748B;border-color:#E2E8F0">Pending</button>
+      <button id="inc-status-btn-resolved" onclick="setIncStatusFromPanel('resolved')" style="font-size:.82rem;font-weight:600;padding:10px 16px;border-radius:8px;cursor:pointer;border:1.5px solid;flex:1;background:#F8FAFC;color:#64748B;border-color:#E2E8F0">Resolved</button>
+    </div>
+    <button onclick="document.getElementById('inc-status-panel').style.display='none'" style="margin-top:10px;width:100%;padding:8px;background:#F1F5F9;border:none;border-radius:6px;font-size:.8rem;color:var(--slate-mid);cursor:pointer">Cancel</button>
+  </div>
 </div>
 
 <!-- ═══ HANDOFF ════════════════════════════════════════════ -->
@@ -6498,19 +6509,46 @@ function saveIncident(){
 
 
 
-function _incStatusHtml(id, status){
-  var s = status || 'open';
-  var base = 'font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;border:1.5px solid;';
-  var oSt = base + (s==='open'     ? 'background:#FEF2F2;color:#DC2626;border-color:#FCA5A5' : 'background:#F8FAFC;color:#94A3B8;border-color:#E2E8F0');
-  var pSt = base + (s==='pending'  ? 'background:#FFFBEB;color:#92400E;border-color:#FCD34D' : 'background:#F8FAFC;color:#94A3B8;border-color:#E2E8F0');
-  var rSt = base + (s==='resolved' ? 'background:#F0FDF4;color:#15803D;border-color:#86EFAC' : 'background:#F8FAFC;color:#94A3B8;border-color:#E2E8F0');
-  return '<div style="display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:8px;border-top:1px solid #D8E2EE;flex-wrap:wrap">'
-    + '<span style="font-size:.7rem;font-weight:600;color:#64748B">Status:</span>'
-    + '<button onclick="updateIncidentStatus(' + id + ',&quot;open&quot;)" style="' + oSt + '">Open</button>'
-    + '<button onclick="updateIncidentStatus(' + id + ',&quot;pending&quot;)" style="' + pSt + '">Pending</button>'
-    + '<button onclick="updateIncidentStatus(' + id + ',&quot;resolved&quot;)" style="' + rSt + '">Resolved</button>'
-    + '</div>';
+function showIncStatusPanel(id, currentStatus){
+  var panel = document.getElementById('inc-status-panel');
+  var label = document.getElementById('inc-status-name');
+  if(!panel) return;
+  panel.setAttribute('data-inc-id', String(id));
+  if(label){
+    var inc = (D.incidents||[]).find(function(i){ return i.id===id; });
+    label.textContent = inc ? (inc.type || 'Incident') : 'Incident';
+  }
+  var s = currentStatus || 'open';
+  ['open','pending','resolved'].forEach(function(val){
+    var btn = document.getElementById('inc-status-btn-' + val);
+    if(!btn) return;
+    if(val===s){
+      btn.style.fontWeight='800';
+      btn.style.opacity='1';
+      if(val==='open')     { btn.style.background='#FEF2F2'; btn.style.color='#DC2626'; btn.style.borderColor='#FCA5A5'; }
+      if(val==='pending')  { btn.style.background='#FFFBEB'; btn.style.color='#92400E'; btn.style.borderColor='#FCD34D'; }
+      if(val==='resolved') { btn.style.background='#F0FDF4'; btn.style.color='#15803D'; btn.style.borderColor='#86EFAC'; }
+    } else {
+      btn.style.fontWeight='600';
+      btn.style.opacity='0.5';
+      btn.style.background='#F8FAFC';
+      btn.style.color='#64748B';
+      btn.style.borderColor='#E2E8F0';
+    }
+  });
+  panel.style.display='block';
 }
+
+function setIncStatusFromPanel(val){
+  var panel = document.getElementById('inc-status-panel');
+  if(!panel) return;
+  var id = Number(panel.getAttribute('data-inc-id'));
+  if(!id) return;
+  updateIncidentStatus(id, val);
+  panel.style.display='none';
+}
+
+
 
 function updateIncidentStatus(id, status){
   const idx = D.incidents.findIndex(i => i.id === id);
@@ -6543,7 +6581,7 @@ function renderIncidents(){
 
   el.innerHTML = _incSource.map(i => {
     const dt = new Date(i.dt);
-    return `<div class="incident-card ${i.severity}">
+    return `<div class="incident-card ${i.severity}" onclick="showIncStatusPanel(${i.id}, '${i.status||'open'}')" style="cursor:pointer">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <strong style="font-size:.9rem;color:var(--navy)">${dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</strong>
@@ -6559,7 +6597,6 @@ function renderIncidents(){
       <div style="font-size:.85rem;color:var(--slate-mid);line-height:1.6;margin-bottom:${i.action||i.reported?'8px':'0'}">${i.desc}</div>
       ${i.action   ? `<div style="font-size:.8rem;color:var(--teal);margin-bottom:3px">🔧 Action: ${i.action}</div>` : ''}
       ${i.reported ? `<div style="font-size:.8rem;color:var(--slate-light)">📣 Reported to: ${i.reported}</div>` : ''}
-      ${_incStatusHtml(i.id, i.status)}
     </div>`;
   }).join('');
 }
