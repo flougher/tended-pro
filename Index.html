@@ -6497,6 +6497,26 @@ function saveIncident(){
 }
 
 
+
+function _incStatusHtml(id, status){
+  var s = status || 'open';
+  var bg    = s==='resolved' ? '#F0FDF4' : s==='pending' ? '#FFFBEB' : '#FEF2F2';
+  var color = s==='resolved' ? '#15803D' : s==='pending' ? '#92400E' : '#DC2626';
+  var bdr   = s==='resolved' ? '#86EFAC' : s==='pending' ? '#FCD34D' : '#FCA5A5';
+  var selO  = s==='open'     ? ' selected' : '';
+  var selP  = s==='pending'  ? ' selected' : '';
+  var selR  = s==='resolved' ? ' selected' : '';
+  return '<div style="display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid #D8E2EE">'
+    + '<span style="font-size:.72rem;font-weight:600;color:#64748B">Status:</span>'
+    + '<select onchange="updateIncidentStatus(' + id + ', this.value)"'
+    + ' style="font-size:.76rem;padding:4px 8px;border:1.5px solid ' + bdr + ';border-radius:6px;'
+    + 'background:' + bg + ';color:' + color + ';font-weight:600;cursor:pointer">'
+    + '<option value="open"' + selO + '>🔴 Open</option>'
+    + '<option value="pending"' + selP + '>🟡 Pending Follow-Up</option>'
+    + '<option value="resolved"' + selR + '>🟢 Resolved</option>'
+    + '</select></div>';
+}
+
 function updateIncidentStatus(id, status){
   const idx = D.incidents.findIndex(i => i.id === id);
   if(idx < 0) return;
@@ -6544,18 +6564,7 @@ function renderIncidents(){
       <div style="font-size:.85rem;color:var(--slate-mid);line-height:1.6;margin-bottom:${i.action||i.reported?'8px':'0'}">${i.desc}</div>
       ${i.action   ? `<div style="font-size:.8rem;color:var(--teal);margin-bottom:3px">🔧 Action: ${i.action}</div>` : ''}
       ${i.reported ? `<div style="font-size:.8rem;color:var(--slate-light)">📣 Reported to: ${i.reported}</div>` : ''}
-      <div style="display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">
-        <span style="font-size:.72rem;font-weight:600;color:var(--slate-mid)">Status:</span>
-        <select onchange="updateIncidentStatus(${i.id}, this.value)"
-          style="font-size:.76rem;padding:4px 8px;border:1.5px solid var(--border);border-radius:6px;
-                 background:${ (i.status||'open')==='resolved' ? '#F0FDF4' : (i.status||'open')==='pending' ? '#FFFBEB' : '#FEF2F2' };
-                 color:${ (i.status||'open')==='resolved' ? '#15803D' : (i.status||'open')==='pending' ? '#92400E' : '#DC2626' };
-                 font-weight:600;cursor:pointer;border-color:${ (i.status||'open')==='resolved' ? '#86EFAC' : (i.status||'open')==='pending' ? '#FCD34D' : '#FCA5A5' }">
-          <option value="open"     ${ (i.status||'open')==='open'    ?'selected':'' }>🔴 Open</option>
-          <option value="pending"  ${ (i.status||'open')==='pending' ?'selected':'' }>🟡 Pending Follow-Up</option>
-          <option value="resolved" ${ (i.status||'open')==='resolved'?'selected':'' }>🟢 Resolved</option>
-        </select>
-      </div>
+      ${_incStatusHtml(i.id, i.status)}
     </div>`;
   }).join('');
 }
