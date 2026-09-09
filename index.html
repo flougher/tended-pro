@@ -1197,6 +1197,7 @@ body {
 #section-emergency .em-911{width:100%;background:#DC2626;color:#fff;border:none;border-radius:14px;padding:16px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px}
 #section-emergency .em-911:active,#section-emergency .em-share:active{transform:scale(.99)}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 <a href="#main" class="skip">Skip to main content</a>
@@ -1660,6 +1661,17 @@ body {
   <div id="incidents-patient-bar" style="margin-bottom:14px"></div>
   <div id="incident-list">
     <div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No incidents logged yet.<br>Tap + Log Incident to document an event.</div></div>
+  </div>
+
+  <!-- Static status panel — tap any incident card to show -->
+  <div id="inc-status-panel" style="display:none;position:sticky;bottom:70px;background:white;border:2px solid var(--teal);border-radius:12px;padding:14px;margin-top:12px;box-shadow:0 4px 20px rgba(0,0,0,.15);z-index:100">
+    <div style="font-size:.75rem;font-weight:600;color:var(--slate-mid);margin-bottom:10px">Update status — <span id="inc-status-name" style="color:var(--navy)"></span></div>
+    <div style="display:flex;gap:8px">
+      <button id="inc-status-btn-open" onclick="setIncStatusFromPanel('open')" style="font-size:.82rem;font-weight:600;padding:10px 16px;border-radius:8px;cursor:pointer;border:1.5px solid;flex:1;background:#FEF2F2;color:#DC2626;border-color:#FCA5A5">Open</button>
+      <button id="inc-status-btn-pending" onclick="setIncStatusFromPanel('pending')" style="font-size:.82rem;font-weight:600;padding:10px 16px;border-radius:8px;cursor:pointer;border:1.5px solid;flex:1;background:#F8FAFC;color:#64748B;border-color:#E2E8F0">Pending follow-up</button>
+      <button id="inc-status-btn-resolved" onclick="setIncStatusFromPanel('resolved')" style="font-size:.82rem;font-weight:600;padding:10px 16px;border-radius:8px;cursor:pointer;border:1.5px solid;flex:1;background:#F8FAFC;color:#64748B;border-color:#E2E8F0">Resolved</button>
+    </div>
+    <button onclick="document.getElementById('inc-status-panel').style.display='none'" style="margin-top:10px;width:100%;padding:8px;background:#F1F5F9;border:none;border-radius:6px;font-size:.8rem;color:var(--slate-mid);cursor:pointer">Cancel</button>
   </div>
 </div>
 
@@ -2800,7 +2812,7 @@ body {
     <div class="ph-sub">Auto-generates a complete clinical summary from all logged data</div></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-secondary" onclick="renderReport()">🔄 Refresh</button>
-      <button class="btn btn-teal" onclick="printReport()">🖨️ Print / Save PDF</button>
+      <button class="btn btn-teal" onclick="printReport()">📄 Save PDF</button>
       <button class="btn btn-secondary" onclick="shareReport()">📤 Share</button>
     </div>
   </div>
@@ -3186,6 +3198,13 @@ body {
     </div>
     <div class="fg"><label>Action Taken</label>
       <textarea id="inc-action" rows="2" placeholder="e.g. Assisted to chair, applied ice pack, notified supervisor, called 911…"></textarea>
+    </div>
+    <div class="fg"><label>Follow-Up Status</label>
+      <select id="inc-status" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+        <option value="open">Open</option>
+        <option value="pending">Pending follow-up</option>
+        <option value="resolved">Resolved</option>
+      </select>
     </div>
     <div class="fg"><label>Reported To</label>
       <input id="inc-reported" placeholder="Supervisor name / family member notified">
@@ -6415,7 +6434,8 @@ function installPWA(){
 }
 window.addEventListener('appinstalled', () => { _deferredInstall=null; const b=document.getElementById('install-banner'); if(b) b.remove(); if(typeof toast==='function') toast('✅ Tended Health Pro added to home screen!','var(--given)'); });
 </script>
-<script>
+<script>var _pendingIncStatus = null;
+
 "use strict";
 
 // ═══════════════════════════════════════════════════════════════
@@ -6443,12 +6463,19 @@ function openIncidentModal(editId){
     set('inc-desc',     inc.desc || '');
     set('inc-action',   inc.action || '');
     set('inc-reported', inc.reported || '');
+    set('inc-status', inc.status || 'open');
+    _pendingIncStatus = inc.status || 'open';
   } else {
     set('inc-desc',''); set('inc-action',''); set('inc-reported','');
     document.getElementById('inc-sev').value = 'minor';
     document.getElementById('inc-dt').value  = '';
   }
   openModal('incident-modal');
+  // Backup: re-apply status after modal animation (handles reset edge case)
+  if(typeof _pendingIncStatus !== 'undefined'){
+    var _ps = _pendingIncStatus;
+    setTimeout(function(){ var el=document.getElementById('inc-status'); if(el) el.value=_ps; },120);
+  }
 }
 
 function saveIncident(){
@@ -6461,13 +6488,14 @@ function saveIncident(){
     desc,
     action:    document.getElementById('inc-action').value.trim(),
     reported:  document.getElementById('inc-reported').value.trim(),
+    status:    document.getElementById('inc-status')?.value || 'open',
   };
   if(_editIncidentId !== null){
     const idx = D.incidents.findIndex(x => x.id === _editIncidentId);
     if(idx !== -1) D.incidents[idx] = { ...D.incidents[idx], ...fields };
     toast('✅ Incident updated', 'var(--given)');
   } else {
-    D.incidents.push({ id: Date.now(), patientId: _globalPatientId || '', ...fields });
+    D.incidents.push({ id: Date.now(), patientId: _globalPatientId || '', status: 'open', ...fields });
     toast('✅ Incident logged', 'var(--given)');
   }
   D.incidents.sort((a,b) => new Date(b.dt) - new Date(a.dt));
@@ -6478,9 +6506,82 @@ function saveIncident(){
   document.getElementById('inc-reported').value = '';
   document.getElementById('inc-sev').value      = 'minor';
   document.getElementById('inc-dt').value       = '';
+  const incStatusEl = document.getElementById('inc-status'); if(incStatusEl) incStatusEl.value = 'open';
   _editIncidentId = null;
   if(_qlReturnIfQuickLog('Incident logged')) return;
   renderIncidents();
+}
+
+
+
+function showIncStatusPanel(id, currentStatus){
+  var panel = document.getElementById('inc-status-panel');
+  var label = document.getElementById('inc-status-name');
+  if(!panel) return;
+  panel.setAttribute('data-inc-id', String(id));
+  if(label){
+    var inc = (D.incidents||[]).find(function(i){ return i.id===id; });
+    label.textContent = inc ? (inc.type || 'Incident') : 'Incident';
+  }
+  var s = currentStatus || 'open';
+  ['open','pending','resolved'].forEach(function(val){
+    var btn = document.getElementById('inc-status-btn-' + val);
+    if(!btn) return;
+    if(val===s){
+      btn.style.fontWeight='800';
+      btn.style.opacity='1';
+      if(val==='open')     { btn.style.background='#FEF2F2'; btn.style.color='#DC2626'; btn.style.borderColor='#FCA5A5'; }
+      if(val==='pending')  { btn.style.background='#FFFBEB'; btn.style.color='#92400E'; btn.style.borderColor='#FCD34D'; }
+      if(val==='resolved') { btn.style.background='#F0FDF4'; btn.style.color='#15803D'; btn.style.borderColor='#86EFAC'; }
+    } else {
+      btn.style.fontWeight='600';
+      btn.style.opacity='0.5';
+      btn.style.background='#F8FAFC';
+      btn.style.color='#64748B';
+      btn.style.borderColor='#E2E8F0';
+    }
+  });
+  panel.style.display='block';
+}
+
+function setIncStatusFromPanel(val){
+  var panel = document.getElementById('inc-status-panel');
+  if(!panel) return;
+  var id = Number(panel.getAttribute('data-inc-id'));
+  if(!id) return;
+  updateIncidentStatus(id, val);
+  panel.style.display='none';
+}
+
+
+
+function updateIncidentStatus(id, status){
+  const idx = D.incidents.findIndex(i => i.id === id);
+  if(idx < 0) return;
+  D.incidents[idx].status = status;
+  save();
+  const labels = {open:'🔴 Open', pending:'🟡 Pending Follow-Up', resolved:'🟢 Resolved'};
+  toast('Status updated: ' + (labels[status]||status), 'var(--given)');
+  renderIncidents();
+}
+
+
+function _incStatusLabel(status){
+  if(status === 'pending')  return 'Pending follow-up';
+  if(status === 'resolved') return 'Resolved';
+  return 'Open';
+}
+
+function _incStatusColor(status){
+  if(status === 'pending')  return '#92400E';
+  if(status === 'resolved') return '#15803D';
+  return '#DC2626';
+}
+
+function _incStatusBg(status){
+  if(status === 'pending')  return '#FFFBEB';
+  if(status === 'resolved') return '#F0FDF4';
+  return '#FEF2F2';
 }
 
 function renderIncidents(){
@@ -6504,7 +6605,10 @@ function renderIncidents(){
 
   el.innerHTML = _incSource.map(i => {
     const dt = new Date(i.dt);
-    return `<div class="incident-card ${i.severity}">
+    const _sl = _incStatusLabel(i.status);
+    const _sc = _incStatusColor(i.status);
+    const _sb = _incStatusBg(i.status);
+    return `<div class="incident-card ${i.severity}" style="cursor:pointer">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <strong style="font-size:.9rem;color:var(--navy)">${dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</strong>
@@ -6520,6 +6624,7 @@ function renderIncidents(){
       <div style="font-size:.85rem;color:var(--slate-mid);line-height:1.6;margin-bottom:${i.action||i.reported?'8px':'0'}">${i.desc}</div>
       ${i.action   ? `<div style="font-size:.8rem;color:var(--teal);margin-bottom:3px">🔧 Action: ${i.action}</div>` : ''}
       ${i.reported ? `<div style="font-size:.8rem;color:var(--slate-light)">📣 Reported to: ${i.reported}</div>` : ''}
+      <div style="display:inline-block;margin-top:8px;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700;background:${_sb};color:${_sc}">${_sl}</div>
     </div>`;
   }).join('');
 }
@@ -8951,6 +9056,14 @@ ${D.settings?.facility ? `<div style="text-align:center;font-weight:700;font-siz
 }
 
 // ── 4. MONTHLY REPORT ─────────────────────────────────────────
+
+function _bindReportButtons(){
+  var pb = document.getElementById('rpt-print-btn');
+  var sb = document.getElementById('rpt-share-btn');
+  if(pb){ pb.onclick = function(){ printReport(); }; }
+  if(sb){ sb.onclick = function(){ shareReport(); }; }
+}
+
 function renderReport(){
   // Pre-fill from settings if fields empty
   const rp = document.getElementById('report-provider');
@@ -9220,34 +9333,133 @@ function renderReport(){
         </div>
       </div>`;
     toast('✅ Report generated', 'var(--given)');
+    _bindReportButtons();
   }
 }
 
 function printReport(){
+  toast('📄 Starting PDF...','var(--teal)');
   const preview = document.getElementById('report-preview');
-  if(!preview?.innerHTML){
-    renderReport();
-    setTimeout(printReport, 600);
-    return;
+  if(!preview?.innerHTML){ renderReport(); setTimeout(printReport,600); return; }
+
+  toast('Generating PDF...','var(--teal)');
+
+  setTimeout(function(){
+    // Try jsPDF first (works on all devices)
+    var jsPDFClass = null;
+    try {
+      if(window.jspdf && typeof window.jspdf.jsPDF==='function'){
+        jsPDFClass = window.jspdf.jsPDF;
+      } else if(typeof window.jsPDF==='function'){
+        jsPDFClass = window.jsPDF;
+      }
+    } catch(e){}
+
+    if(jsPDFClass){
+      try {
+        var patSel   = document.getElementById('report-patient');
+        var patName  = (patSel&&patSel.options[patSel.selectedIndex])?patSel.options[patSel.selectedIndex].text:'Patient';
+        var monthVal = (document.getElementById('report-month')||{}).value||new Date().toISOString().slice(0,7);
+        var text     = buildReportEmailText();
+        var lines    = text.split('\n');
+        var doc      = new jsPDFClass({unit:'mm',format:'a4',orientation:'portrait'});
+        var pageW    = doc.internal.pageSize.getWidth();
+        var pageH    = doc.internal.pageSize.getHeight();
+        var margin   = 15;
+        var y        = margin;
+
+        doc.setFontSize(13);doc.setFont('helvetica','bold');doc.setTextColor(12,27,51);
+        doc.text('Tended Health Pro — Monthly Care Report',margin,y);
+        y+=8;
+        doc.setDrawColor(12,27,51);doc.line(margin,y,pageW-margin,y);y+=6;
+
+        lines.forEach(function(line){
+          if(y>pageH-margin){doc.addPage();y=margin;}
+          var t=line.trim();
+          if(!t){y+=3;return;}
+          if(/^─/.test(t)){
+            doc.setDrawColor(180,180,180);doc.line(margin,y,pageW-margin,y);y+=4;return;
+          }
+          var isHdr=/^[💊📋🧠😣🩹🍽️🚻📞📌💳📝]/.test(t);
+          if(isHdr){y+=2;doc.setFontSize(11);doc.setFont('helvetica','bold');doc.setTextColor(12,27,51);}
+          else{doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(50,50,50);}
+          var wrapped=doc.splitTextToSize(t,pageW-margin*2);
+          wrapped.forEach(function(wl){
+            if(y>pageH-margin){doc.addPage();y=margin;}
+            doc.text(wl,margin,y);y+=doc.getFontSize()*0.45;
+          });
+          y+=1;
+        });
+
+        var pc=doc.internal.getNumberOfPages();
+        for(var i=1;i<=pc;i++){
+          doc.setPage(i);doc.setFontSize(7);doc.setTextColor(150,150,150);
+          doc.text('Tended Health Pro — tendedhealthapps@gmail.com',margin,pageH-8);
+          doc.text('Page '+i+' of '+pc,pageW-margin,pageH-8,{align:'right'});
+        }
+
+        var fn=patName.replace(/\s+/g,'-')+'-'+monthVal+'-Report.pdf';
+        doc.save(fn);
+        toast('PDF saved — check your Downloads folder','var(--given)');
+        return;
+      } catch(pdfErr){
+        toast('PDF error: '+pdfErr.message,'var(--held)');
+      }
+    }
+
+    // Fallback: save as HTML file
+    try {
+      var patSel2  = document.getElementById('report-patient');
+      var patName2 = (patSel2&&patSel2.options[patSel2.selectedIndex])?patSel2.options[patSel2.selectedIndex].text:'Patient';
+      var month2   = (document.getElementById('report-month')||{}).value||'';
+      var content  = preview.innerHTML||'';
+      var hdoc     = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Care Report</title>'
+        +'<style>body{font-family:system-ui,sans-serif;max-width:800px;margin:24px auto;font-size:13px}'
+        +'.report-section{border:1px solid #D8E2EE;border-radius:8px;padding:14px;margin-bottom:12px}'
+        +'.report-section-title{font-weight:700;color:#0C1B33;border-bottom:2px solid #0B7A6E;padding-bottom:6px;margin-bottom:10px}'
+        +'button{display:none}@media print{@page{size:A4;margin:12mm}}</style></head><body>'
+        +content+'<p style="font-size:.7rem;color:#888;margin-top:20px">Tended Health Pro — '+new Date().toLocaleString()+'</p>'
+        +'</body></html>';
+      var blob=new Blob([hdoc],{type:'text/html'});
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement('a');
+      a.href=url;a.download=patName2.replace(/\s+/g,'-')+'-'+month2+'-Report.html';
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+      setTimeout(function(){URL.revokeObjectURL(url);},2000);
+      toast('Report downloaded — open file and use browser Print to save as PDF','var(--given)');
+    } catch(e2){
+      // Last resort: window.print()
+      toast('Opening print dialog...','var(--teal)');
+      window.print();
+    }
+  },200);
+}
+
+function _saveReportAsHTML(){
+  try {
+    var patSel   = document.getElementById('report-patient');
+    var patName  = (patSel && patSel.options[patSel.selectedIndex]) ? patSel.options[patSel.selectedIndex].text : 'Patient';
+    var monthVal = (document.getElementById('report-month')||{}).value || '';
+    var preview  = document.getElementById('report-preview');
+    var content  = preview ? preview.innerHTML : '';
+    var htmlDoc  = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Monthly Care Report</title>'
+      +'<style>body{font-family:system-ui,sans-serif;max-width:800px;margin:24px auto;font-size:13px;color:#1C2B42}'
+      +'.report-section{border:1px solid #D8E2EE;border-radius:8px;padding:14px 16px;margin-bottom:12px}'
+      +'.report-section-title{font-size:.95rem;font-weight:700;color:#0C1B33;margin-bottom:10px;border-bottom:2px solid #0B7A6E;padding-bottom:6px}'
+      +'@media print{@page{size:A4;margin:12mm}}</style></head><body>'
+      +'<h2 style="color:#0C1B33;border-bottom:2px solid #0B7A6E;padding-bottom:8px">Monthly Care Report</h2>'
+      +content
+      +'<p style="font-size:.7rem;color:#888;margin-top:20px">Generated by Tended Health Pro — '+new Date().toLocaleString()+'</p>'
+      +'</body></html>';
+    var blob = new Blob([htmlDoc],{type:'text/html'});
+    var url  = URL.createObjectURL(blob);
+    var a    = document.createElement('a');
+    a.href=url; a.download=patName.replace(/\s+/g,'-')+'-'+monthVal+'-Report.html';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); },2000);
+  } catch(e){
+    toast('Could not save file: '+e.message,'var(--held)');
   }
-  // Direct print — works reliably in Android TWA
-  // Inject a temporary print-only style that hides everything except the report
-  const styleId = 'tended-print-style';
-  let s = document.getElementById(styleId);
-  if(!s){ s = document.createElement('style'); s.id = styleId; document.head.appendChild(s); }
-  s.textContent = `@media print {
-    body > *:not(#print-frame) { display:none !important; }
-    #print-frame { display:block !important; position:fixed; top:0; left:0; width:100%; }
-  }`;
-  // Build print frame
-  let frame = document.getElementById('print-frame');
-  if(!frame){ frame = document.createElement('div'); frame.id='print-frame'; document.body.appendChild(frame); }
-  frame.style.display = 'none';
-  const facility = D.settings?.facility ? `<div style="text-align:center;font-weight:700;font-size:14pt;color:#0C1B33;border-bottom:2px solid #0B7A6E;padding-bottom:6px;margin-bottom:12px">${D.settings.facility}</div>` : '';
-  frame.innerHTML = `<div style="font-family:system-ui,sans-serif;max-width:800px;margin:0 auto;font-size:13px;color:#1C2B42;padding:20px">${facility}${preview.innerHTML}<div style="margin-top:20px;padding-top:10px;border-top:1px solid #D8E2EE;font-size:.7rem;color:#8097B3;display:flex;justify-content:space-between"><span>Tended Health Pro — Monthly Care Report</span><span>${new Date().toLocaleString()}</span></div></div>`;
-  window.print();
-  // Clean up frame after print
-  setTimeout(()=>{ frame.style.display='none'; frame.innerHTML=''; }, 1000);
 }
 
 
