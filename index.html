@@ -6608,7 +6608,7 @@ function renderIncidents(){
     const _sl = _incStatusLabel(i.status);
     const _sc = _incStatusColor(i.status);
     const _sb = _incStatusBg(i.status);
-    return `<div class="incident-card ${i.severity}" style="cursor:pointer">
+    return `<div class="incident-card ${i.severity}" onclick="showIncStatusPanel(${i.id},'${i.status||'open'}')" style="cursor:pointer">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <strong style="font-size:.9rem;color:var(--navy)">${dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</strong>
