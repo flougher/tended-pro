@@ -2170,6 +2170,16 @@ body {
     </div>
   </div>
 
+  <!-- How Your Data Works card -->
+  <div class="card" style="border-color:#CBD5E1">
+    <div class="card-title" style="color:var(--slate-mid)">🔒 How Your Data Works</div>
+    <div style="font-size:.82rem;color:var(--slate-mid);line-height:1.8">
+      <p style="margin-bottom:10px">Your care records are stored <strong style="color:var(--navy)">privately on this device</strong> — no cloud servers, no third party access, no subscription required to keep your data.</p>
+      <p style="margin-bottom:10px">Because data lives on this device it is <strong style="color:var(--navy)">not automatically synced</strong> to other phones or tablets. If multiple family members share caregiving responsibilities, designate <strong style="color:var(--navy)">one shared device</strong> as your caregiving hub so everyone works from the same record.</p>
+      <p style="margin-bottom:0;color:var(--slate-light);font-size:.78rem">Use the Backup &amp; Restore option below to transfer data between devices if needed.</p>
+    </div>
+  </div>
+
   <div style="text-align:center;margin-top:8px;font-size:.74rem;color:var(--slate-light)">
     Tended Health Pro · Personal Caregiving Tool · Version 4.1.0
   </div>
@@ -14120,6 +14130,12 @@ function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
          target="_blank" rel="noopener"
          style="color:var(--teal);font-weight:600">Privacy Policy</a>.
     </p>
+
+    <!-- Single device disclosure -->
+    <div style="background:#F8FAFC;border:1.5px solid #CBD5E1;border-radius:12px;padding:14px 18px;margin-bottom:20px;text-align:left">
+      <div style="font-weight:700;font-size:.84rem;color:var(--navy);margin-bottom:6px">🔒 Your Data Stays Private on This Device</div>
+      <p style="font-size:.81rem;color:var(--slate-mid);line-height:1.65;margin:0">Tended Pro stores all care records privately on this device — no cloud, no servers, no third party access. For families with multiple caregivers, designate <strong>one shared phone or tablet</strong> as your caregiving hub so everyone works from the same record.</p>
+    </div>
 
     <div style="display:flex;flex-direction:column;gap:10px">
       <button onclick="acceptLegalTerms()"
