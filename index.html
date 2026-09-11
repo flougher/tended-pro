@@ -1325,6 +1325,7 @@ body {
   <div class="nav-group">
     <div class="nav-label">Documentation</div>
     <button class="nav-btn" onclick="navTo('careplan',this)"><span class="ni">📌</span> Care Plan</button>
+    <button class="nav-btn" onclick="navTo('comfortcare',this)"><span class="ni">🕊️</span> Comfort Care Log</button>
     <button class="nav-btn" onclick="navTo('wounds',this)"><span class="ni">🩹</span> Wound Tracker</button>
     <button class="nav-btn" onclick="navTo('intake',this)"><span class="ni">🍽️</span> Diet & Fluids</button>
     <button class="nav-btn" onclick="navTo('comms',this)"><span class="ni">📞</span> Family Log</button>
@@ -2346,6 +2347,24 @@ body {
   </div>
 </div>
 
+<!-- ═══ COMFORT CARE LOG ══════════════════════════════════════ -->
+<div id="section-comfortcare" class="section">
+  <div class="ph">
+    <div>
+      <div class="ph-title">🕊️ Comfort Care Log</div>
+      <div class="ph-sub">Daily observations for patients receiving comfort or end-of-life care</div>
+    </div>
+    <button class="btn btn-teal" onclick="openModal('comfortcare-modal')">+ Log Entry</button>
+  </div>
+  <div id="comfortcare-patient-bar" style="margin-bottom:14px"></div>
+  <div id="comfortcare-list">
+    <div class="empty">
+      <div class="empty-icon">🕊️</div>
+      <div class="empty-text">No comfort care entries yet.<br>Tap + Log Entry to begin daily tracking.</div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ WOUND TRACKER ═════════════════════════════════════════ -->
 <div id="section-wounds" class="section">
   <div class="ph">
@@ -3356,6 +3375,84 @@ const COLORS = ['#0C7A6E','#0C3B6E','#7A0C4A','#4A0C7A','#6E4A0C','#0C4A6E','#6E
 // ── BLACK BOX WARNING DATABASE ─────────────────────────────────
 // FDA boxed warnings curated for elderly/home care settings.
 // Key = lowercase drug name (partial match). Value = { short, watch }
+
+function renderComfortCare(){
+  var el = document.getElementById("comfortcare-list");
+  if(!el) return;
+  var pid = _globalPatientId;
+  var entries = (D.comfortcare||[]).filter(function(e){
+    return !pid || String(e.patientId)===String(pid);
+  }).sort(function(a,b){ return (b.dt||"").localeCompare(a.dt||""); });
+  if(!entries.length){
+    el.innerHTML = '<div class="empty"><div class="empty-icon">Comfort Care</div>'
+      + '<div class="empty-text">No entries yet. Tap + Log Entry to begin.</div></div>';
+    return;
+  }
+  el.innerHTML = entries.map(function(e){
+    var dt = e.dt ? new Date(e.dt).toLocaleString() : "-";
+    var pn = (e.pain !== "" && e.pain !== undefined) ? e.pain+"/10" : "-";
+    var cs = e.consciousness || "";
+    var br = e.breathing ? " | "+e.breathing : "";
+    var ms = e.measures ? e.measures.substring(0,100)+(e.measures.length>100?"...":"") : "";
+    return '<div class="incident-card moderate" style="border-left:4px solid #8B5CF6">'
+      + '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:8px">'
+      + '<div style="font-weight:700;font-size:.88rem;color:var(--navy)">'+dt+' | '+(e.shift||"-")+'</div>'
+      + '<div style="font-size:.75rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#F3E8FF;color:#6D28D9">Pain: '+pn+'</div>'
+      + '</div>'
+      + (cs ? '<div style="font-size:.82rem;color:var(--slate-mid);margin-bottom:4px">'+cs+br+'</div>' : "")
+      + (ms ? '<div style="font-size:.82rem;color:var(--slate-mid);margin-bottom:4px">'+ms+'</div>' : "")
+      + (e.meds ? '<div style="font-size:.8rem;color:var(--slate-light)">'+e.meds+'</div>' : "")
+      + (e.family ? '<div style="font-size:.8rem;color:var(--slate-light)">'+e.family+'</div>' : "")
+      + '<div style="margin-top:8px"><button onclick="deleteComfortCareEntry('+e.id+')"'
+      + ' style="font-size:.72rem;padding:3px 10px;background:#FEF2F2;color:#DC2626;border:1px solid #FCA5A5;border-radius:6px;cursor:pointer">Delete</button></div>'
+      + '</div>';
+  }).join("");
+}
+
+function saveComfortCare(){
+  var get = function(id){ var el=document.getElementById(id); return el ? el.value.trim() : ""; };
+  var entry = {
+    id:            Date.now(),
+    patientId:     _globalPatientId || "",
+    dt:            get("cc-dt") || new Date().toISOString(),
+    shift:         get("cc-shift") || "AM",
+    pain:          get("cc-pain"),
+    consciousness: get("cc-consciousness"),
+    breathing:     get("cc-breathing"),
+    measures:      get("cc-measures"),
+    meds:          get("cc-meds"),
+    family:        get("cc-family"),
+    notes:         get("cc-notes"),
+  };
+  if(!D.comfortcare) D.comfortcare = [];
+  D.comfortcare.push(entry);
+  save();
+  toast("Comfort care entry saved","var(--given)");
+  closeModal("comfortcare-modal");
+  _resetComfortCareForm();
+  renderComfortCare();
+}
+
+function _resetComfortCareForm(){
+  var now = new Date();
+  var pad = function(n){ return String(n).padStart(2,"0"); };
+  var dt = now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate())
+    +"T"+pad(now.getHours())+":"+pad(now.getMinutes());
+  var dtEl = document.getElementById("cc-dt");
+  if(dtEl) dtEl.value = dt;
+  var shEl = document.getElementById("cc-shift");
+  if(shEl){ var h=now.getHours(); shEl.value = h<12?"AM":h<18?"PM":"Night"; }
+  ["cc-pain","cc-consciousness","cc-breathing","cc-measures","cc-meds","cc-family","cc-notes"]
+    .forEach(function(id){ var el=document.getElementById(id); if(el) el.value=""; });
+}
+
+function deleteComfortCareEntry(id){
+  D.comfortcare = (D.comfortcare||[]).filter(function(e){ return e.id !== id; });
+  save();
+  toast("Entry deleted","var(--held)");
+  renderComfortCare();
+}
+
 const BBW_DB = {
   // Anticoagulants
   'warfarin':      { short:'Bleeding risk', watch:'Monitor for unusual bruising, blood in urine/stool, prolonged bleeding from cuts. Report immediately.' },
@@ -3622,6 +3719,7 @@ function populatePatientBars(){
     { id:'billing-patient-bar',     fn:'renderBillingList' },
     { id:'intake-patient-bar',      fn:'renderIntake'      },
     { id:'toileting-patient-bar',   fn:'renderToileting'   },
+    { id:'comfortcare-patient-bar', fn:'renderComfortCare' },
     { id:'trends-patient-bar',      fn:'renderTrends'      },
   ];
   bars.forEach(bar => {
@@ -3664,6 +3762,7 @@ function load(){
       careplan:{}, wounds:[], intake:[], comms:[],
       routines:{},
       triggers:[], behaviors:[], toileting:[], vitals:[],
+      comfortcare:[],
       pain:[], shifts:[], sundowning:[], wandering:[], memorycare:[],
       creds:[], billing:[], itmProgress:{},
       settings:{ name:'', agency:'', role:'', initials:'', supervisor:'' },
@@ -14311,5 +14410,71 @@ function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
   </div>
 </div>
 
+
+<!-- ── COMFORT CARE MODAL ──────────────────────────────────────── -->
+<div class="overlay" id="comfortcare-modal">
+  <div class="modal">
+    <div class="modal-title">🕊️ Log Comfort Care Entry</div>
+    <div class="form-row">
+      <div class="fg"><label>Date & Time</label>
+        <input type="datetime-local" id="cc-dt"></div>
+      <div class="fg"><label>Shift</label>
+        <select id="cc-shift" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+          <option value="AM">AM — Day</option>
+          <option value="PM">PM — Afternoon</option>
+          <option value="Night">Night</option>
+        </select></div>
+    </div>
+    <div class="form-row">
+      <div class="fg"><label>Pain Level (0–10)</label>
+        <select id="cc-pain" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+          <option value="">-- Select --</option>
+          <option value="0">0 — No signs of pain</option>
+          <option value="1">1</option><option value="2">2</option>
+          <option value="3">3 — Mild</option>
+          <option value="4">4</option><option value="5">5</option>
+          <option value="6">6 — Moderate</option>
+          <option value="7">7</option><option value="8">8</option>
+          <option value="9">9 — Severe</option>
+          <option value="10">10 — Worst possible</option>
+        </select></div>
+      <div class="fg"><label>Consciousness / Alertness</label>
+        <select id="cc-consciousness" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+          <option value="">-- Select --</option>
+          <option value="Alert">Alert and responsive</option>
+          <option value="Drowsy">Drowsy but arousable</option>
+          <option value="Unresponsive">Unresponsive</option>
+          <option value="Restless">Restless / agitated</option>
+          <option value="Peaceful">Peaceful / calm</option>
+        </select></div>
+    </div>
+    <div class="fg"><label>Breathing Pattern</label>
+      <select id="cc-breathing" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+        <option value="">-- Select --</option>
+        <option value="Normal">Normal and regular</option>
+        <option value="Labored">Labored or effortful</option>
+        <option value="Irregular">Irregular pattern</option>
+        <option value="Cheyne-Stokes">Cheyne-Stokes (cycles of fast/slow)</option>
+        <option value="Shallow">Shallow</option>
+      </select>
+    </div>
+    <div class="fg"><label>Comfort Measures Taken</label>
+      <textarea id="cc-measures" rows="3" placeholder="e.g. Repositioned every 2 hours, mouth care, soft music…"></textarea>
+    </div>
+    <div class="fg"><label>Comfort Medications Given</label>
+      <input id="cc-meds" placeholder="e.g. Morphine 2mg SL at 14:30">
+    </div>
+    <div class="fg"><label>Family Present</label>
+      <input id="cc-family" placeholder="e.g. Daughter Jane and Son Robert — bedside all day">
+    </div>
+    <div class="fg" style="margin-bottom:0"><label>Additional Observations</label>
+      <textarea id="cc-notes" rows="2" placeholder="Skin color, temperature, sounds, emotional state…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('comfortcare-modal')">Cancel</button>
+      <button class="btn btn-teal" onclick="saveComfortCare()">Save Entry</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
