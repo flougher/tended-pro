@@ -2270,6 +2270,79 @@ body {
         <textarea id="cp-notes" rows="5" placeholder="Any other important care information…"></textarea>
       </div>
     </div>
+
+    <!-- ── FEATURE 1: End of Life Planning ──────────────────────── -->
+    <div class="card" style="border-color:#8B5CF6;border-width:2px">
+      <div class="card-title" style="color:#6D28D9">🕊️ End of Life Planning</div>
+      <p style="font-size:.78rem;color:var(--slate-mid);margin:-4px 0 14px">Important documents and wishes — have these ready before they are needed.</p>
+      <div class="fg"><label>Advance Directive / POLST Status</label>
+        <select id="cp-polst" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+          <option value="">-- Not specified --</option>
+          <option value="full-code">Full code — resuscitate all measures</option>
+          <option value="dnr">DNR — Do Not Resuscitate</option>
+          <option value="dni">DNI — Do Not Intubate</option>
+          <option value="dnr-dni">DNR/DNI — No resuscitation or intubation</option>
+          <option value="comfort">Comfort care only — no aggressive interventions</option>
+        </select>
+      </div>
+      <div class="fg"><label>POLST Form Location</label>
+        <input id="cp-polst-location" placeholder="e.g. Top drawer of dresser, on the refrigerator door">
+      </div>
+      <div class="fg"><label>Organ Donation Wishes</label>
+        <select id="cp-organ-donation" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+          <option value="">-- Not specified --</option>
+          <option value="yes">Yes — registered organ donor</option>
+          <option value="no">No — does not wish to donate</option>
+          <option value="family">Family to decide</option>
+        </select>
+      </div>
+      <div class="fg"><label>Funeral / Burial Preferences</label>
+        <textarea id="cp-funeral" rows="2" placeholder="e.g. Burial at Oak Hill Cemetery, pre-arranged with Smith Funeral Home (555-0100)…"></textarea>
+      </div>
+      <div class="fg" style="margin-bottom:0"><label>Other End of Life Wishes</label>
+        <textarea id="cp-eol-wishes" rows="2" placeholder="e.g. Prefers to pass at home, specific music or readings requested, religious rites…"></textarea>
+      </div>
+    </div>
+
+    <!-- ── FEATURE 2: Care Team Contacts ─────────────────────────── -->
+    <div class="card" style="border-color:#0EA5E9;border-width:2px">
+      <div class="card-title" style="color:#0369A1">📞 Care Team Contacts</div>
+      <p style="font-size:.78rem;color:var(--slate-mid);margin:-4px 0 14px">Keep these numbers where any caregiver can find them quickly.</p>
+      <div class="fg"><label>Hospice / Palliative Care Agency</label>
+        <input id="cp-hospice-agency" placeholder="e.g. Compassionate Care Hospice">
+      </div>
+      <div class="fg"><label>24-Hour Nurse Line</label>
+        <input id="cp-hospice-nurse" placeholder="e.g. 555-800-1234 (call anytime, day or night)">
+      </div>
+      <div class="fg"><label>Hospice Social Worker</label>
+        <input id="cp-hospice-sw" placeholder="Name and phone number">
+      </div>
+      <div class="fg"><label>Hospice Chaplain</label>
+        <input id="cp-hospice-chaplain" placeholder="Name and phone number">
+      </div>
+      <div class="fg"><label>Primary Physician</label>
+        <input id="cp-physician" placeholder="Dr. name and office number">
+      </div>
+      <div class="fg" style="margin-bottom:0"><label>Pharmacy</label>
+        <input id="cp-pharmacy" placeholder="Name, address, and phone number">
+      </div>
+    </div>
+
+    <!-- ── FEATURE 3: Notification Preferences ───────────────────── -->
+    <div class="card" style="border-color:#F59E0B;border-width:2px">
+      <div class="card-title" style="color:#92400E">🔔 Notification Preferences</div>
+      <p style="font-size:.78rem;color:var(--slate-mid);margin:-4px 0 14px">Who to contact and in what order if the patient's condition changes significantly.</p>
+      <div class="fg"><label>Notify in this order</label>
+        <textarea id="cp-notify-order" rows="4" placeholder="1. Jane Smith (daughter) — 555-100-2000&#10;2. Robert Smith (son) — 555-200-3000&#10;3. Dr. Johnson — 555-300-4000"></textarea>
+      </div>
+      <div class="fg"><label>Do NOT contact</label>
+        <textarea id="cp-notify-exclude" rows="2" placeholder="e.g. Do not contact estranged family members — notify Jane first in all circumstances"></textarea>
+      </div>
+      <div class="fg" style="margin-bottom:0"><label>Special circumstances or wishes</label>
+        <textarea id="cp-notify-wishes" rows="2" placeholder="e.g. Patient wishes to be at home — do not call 911 unless directed by hospice nurse"></textarea>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -7143,6 +7216,23 @@ function loadCareplan(){
   set('cp-comfort',    cp.comfort);
   set('cp-updated-by', cp.updatedBy);
   set('cp-notes',      cp.notes);
+  // Feature 1 — End of Life Planning
+  set('cp-polst',           cp.polst);
+  set('cp-polst-location',  cp.polstLocation);
+  set('cp-organ-donation',  cp.organDonation);
+  set('cp-funeral',         cp.funeral);
+  set('cp-eol-wishes',      cp.eolWishes);
+  // Feature 2 — Care Team Contacts
+  set('cp-hospice-agency',   cp.hospiceAgency);
+  set('cp-hospice-nurse',    cp.hospiceNurse);
+  set('cp-hospice-sw',       cp.hospiceSW);
+  set('cp-hospice-chaplain', cp.hospiceChaplain);
+  set('cp-physician',        cp.physician);
+  set('cp-pharmacy',         cp.pharmacy);
+  // Feature 3 — Notification Preferences
+  set('cp-notify-order',   cp.notifyOrder);
+  set('cp-notify-exclude', cp.notifyExclude);
+  set('cp-notify-wishes',  cp.notifyWishes);
 }
 
 function saveCareplan(){
@@ -7151,21 +7241,38 @@ function saveCareplan(){
   if(!_cpPid){ toast('Please select a patient first', 'var(--held)'); return; }
   const get = id => document.getElementById(id)?.value?.trim() || '';
   setCarePlanForPatient(_cpPid, {
-    goals:        get('cp-goals'),
-    dnr:          get('cp-dnr'),
-    proxy:        get('cp-proxy'),
-    hospital:     get('cp-hospital'),
-    insurance:    get('cp-insurance'),
-    instructions: get('cp-instructions'),
-    mobility:     get('cp-mobility'),
-    diet:         get('cp-diet'),
-    cultural:     get('cp-cultural'),
-    pain:         get('cp-pain'),
-    sleep:        get('cp-sleep'),
-    comfort:      get('cp-comfort'),
-    updatedBy:    get('cp-updated-by'),
-    notes:        get('cp-notes'),
-    savedAt:      new Date().toISOString()
+    goals:           get('cp-goals'),
+    dnr:             get('cp-dnr'),
+    proxy:           get('cp-proxy'),
+    hospital:        get('cp-hospital'),
+    insurance:       get('cp-insurance'),
+    instructions:    get('cp-instructions'),
+    mobility:        get('cp-mobility'),
+    diet:            get('cp-diet'),
+    cultural:        get('cp-cultural'),
+    pain:            get('cp-pain'),
+    sleep:           get('cp-sleep'),
+    comfort:         get('cp-comfort'),
+    updatedBy:       get('cp-updated-by'),
+    notes:           get('cp-notes'),
+    // Feature 1 — End of Life Planning
+    polst:           get('cp-polst'),
+    polstLocation:   get('cp-polst-location'),
+    organDonation:   get('cp-organ-donation'),
+    funeral:         get('cp-funeral'),
+    eolWishes:       get('cp-eol-wishes'),
+    // Feature 2 — Care Team Contacts
+    hospiceAgency:   get('cp-hospice-agency'),
+    hospiceNurse:    get('cp-hospice-nurse'),
+    hospiceSW:       get('cp-hospice-sw'),
+    hospiceChaplain: get('cp-hospice-chaplain'),
+    physician:       get('cp-physician'),
+    pharmacy:        get('cp-pharmacy'),
+    // Feature 3 — Notification Preferences
+    notifyOrder:     get('cp-notify-order'),
+    notifyExclude:   get('cp-notify-exclude'),
+    notifyWishes:    get('cp-notify-wishes'),
+    savedAt:         new Date().toISOString()
   });
   save();
   toast('✅ Care plan saved', 'var(--given)');
