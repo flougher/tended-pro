@@ -1324,7 +1324,7 @@ body {
   </div>
   <div class="nav-group">
     <div class="nav-label">Documentation</div>
-    <button class="nav-btn" onclick="navTo('careplan',this)"><span class="ni">📌</span> Care Plan</button>
+    <button class="nav-btn" onclick="navTo('careplan',this)"><span class="ni">📌</span> Care Preferences</button>
     <button class="nav-btn" onclick="navTo('comfortcare',this)"><span class="ni">🕊️</span> Comfort Care Log</button>
     <button class="nav-btn" onclick="navTo('wounds',this)"><span class="ni">🩹</span> Wound Tracker</button>
     <button class="nav-btn" onclick="navTo('intake',this)"><span class="ni">🍽️</span> Diet & Fluids</button>
@@ -2202,10 +2202,10 @@ body {
 <div id="section-careplan" class="section">
   <div class="ph">
     <div>
-      <div class="ph-title">📌 Care Plan</div>
-      <div class="ph-sub">Goals of care, advance directives, and special instructions</div>
+      <div class="ph-title">📌 Care Preferences & Emergency Planning</div>
+      <div class="ph-sub">Standing care decisions, advance directives, emergency contacts, and end of life wishes — set once, updated as needed</div>
     </div>
-    <button class="btn btn-teal" onclick="saveCareplan()">💾 Save Care Plan</button>
+    <button class="btn btn-teal" onclick="saveCareplan()">💾 Save</button>
   </div>
   <div id="careplan-patient-bar" style="margin-bottom:14px"></div>
   <div id="careplan-last-updated" style="margin-bottom:14px;font-size:.78rem;color:var(--slate-light)"></div>
@@ -2352,7 +2352,7 @@ body {
   <div class="ph">
     <div>
       <div class="ph-title">🕊️ Comfort Care Log</div>
-      <div class="ph-sub">Daily observations for patients receiving comfort or end-of-life care</div>
+      <div class="ph-sub">Daily shift observations — pain, breathing, and comfort measures. Use this section when your loved one is receiving hospice or palliative care.</div>
     </div>
     <button class="btn btn-teal" onclick="openModal('comfortcare-modal')">+ Log Entry</button>
   </div>
@@ -3128,7 +3128,7 @@ body {
 <div id="mobile-more" style="display:none;position:fixed;top:0;bottom:calc(58px + env(safe-area-inset-bottom,12px));left:0;right:0;background:var(--navy-mid);border-top:1px solid rgba(255,255,255,.1);z-index:2999;padding:8px 0;box-shadow:0 -4px 20px rgba(12,27,51,.3);overflow-y:auto;-webkit-overflow-scrolling:touch;">
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0">
     <button class="bn-btn" onclick="mobileNavTo('handoff')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🔄</span>Handoff</button>
-    <button class="bn-btn" onclick="mobileNavTo('careplan')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📌</span>Care Plan</button>
+    <button class="bn-btn" onclick="mobileNavTo('careplan')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📌</span>Care Prefs</button>
     <button class="bn-btn" onclick="mobileNavTo('comfortcare')" style="color:rgba(180,140,255,.9)"><span class="bn-icon">🕊️</span>Comfort Care</button>
     <button class="bn-btn" onclick="mobileNavTo('wounds')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🩹</span>Wounds</button>
     <button class="bn-btn" onclick="mobileNavTo('intake')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🍽️</span>Diet & Fluids</button>
@@ -14416,6 +14416,7 @@ function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
 <div class="overlay" id="comfortcare-modal">
   <div class="modal">
     <div class="modal-title">🕊️ Log Comfort Care Entry</div>
+    <p style="font-size:.78rem;color:var(--slate-mid);margin:-8px 0 12px;line-height:1.5">For patients receiving hospice or palliative care. Records pain, breathing, and comfort measures each shift.</p>
     <div class="form-row">
       <div class="fg"><label>Date & Time</label>
         <input type="datetime-local" id="cc-dt"></div>
