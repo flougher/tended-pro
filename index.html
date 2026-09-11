@@ -708,17 +708,21 @@ body {
   .trial-banner { padding: 4px 12px; font-size: .72rem; }
   .trial-upgrade-btn { padding: 3px 10px; font-size: .7rem; }
   #disclaimer-bar { font-size: .68rem; padding: 4px 14px; }
-  .body-area { flex: 1; overflow: hidden; flex-direction: column; min-height: 0; display: flex; }
+  .body-area { display: flex; flex-direction: column; overflow: hidden;
+    height: calc(100dvh - 46px); min-height: 0; flex-shrink: 0; }
   .content { 
-    flex: 1;
+    position: fixed !important;
+    top: 46px;
+    bottom: 0;
+    left: 0;
+    right: 0;
     overflow-y: scroll !important;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
-    padding: 16px 14px calc(90px + env(safe-area-inset-bottom,0px));
-    min-height: 0;
-    height: 0;
-    display: block;
+    padding: 16px 14px calc(80px + env(safe-area-inset-bottom,0px));
+    background: var(--off-white);
     touch-action: pan-y;
+    z-index: 1;
   }
   .section { 
     min-height: 100%;
