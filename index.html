@@ -2635,6 +2635,7 @@ body {
       <select id="global-patient-toileting" onchange="setGlobalPatient(this.value);renderToileting()" style="border:1.5px solid var(--teal);border-radius:var(--r);padding:7px 12px;font-family:var(--font-body);font-size:.84rem;background:white;color:var(--navy);font-weight:600"><option value="">— All patients —</option></select>
       <input type="date" id="toilet-date" onchange="renderToileting()" style="border:1.5px solid var(--border);border-radius:var(--r);padding:7px 11px;font-family:var(--font-body);font-size:.84rem;background:white;color:var(--text)">
       <button class="btn btn-teal btn-sm" onclick="openModal('toilet-modal')">+ Log Entry</button>
+      <button class="btn btn-secondary btn-sm" onclick="quickLogDiscoveredAccident()">🔍 Log Discovery</button>
     </div>
   </div>
 
@@ -6389,10 +6390,11 @@ function printMAR(){
         </select>
       </div>
       <div class="fg"><label>Continence</label>
-        <select id="tl-continent" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+        <select id="tl-continent" onchange="var dw=document.getElementById('tl-discovery-wrap');if(dw)dw.style.display=this.value==='discovered'?'block':'none';" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
           <option value="continent">Continent — reached toilet in time</option>
-          <option value="incontinent">Incontinent — episode occurred</option>
+          <option value="incontinent">Incontinent — witnessed episode</option>
           <option value="assisted">Assisted — prompted successfully</option>
+          <option value="discovered">🔍 Discovered accident — found evidence after the fact</option>
         </select>
       </div>
     </div>
@@ -6410,6 +6412,11 @@ function printMAR(){
       <div class="fg"><label>Characteristics</label>
         <input id="tl-notes" placeholder="Colour, consistency, odour, blood, other…">
       </div>
+    </div>
+    <div class="fg" id="tl-discovery-wrap" style="display:none;margin:4px 0">
+      <label>What did you find?</label>
+      <textarea id="tl-discovery" rows="3" placeholder="e.g. Found wet clothes in hamper, handwashed underwear in sink, noticed she changed clothes twice today…"></textarea>
+      <div style="font-size:.72rem;color:var(--slate-light);margin-top:4px">Document what you found — helps identify patterns for physician reporting.</div>
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('toilet-modal')">Cancel</button>
@@ -8462,6 +8469,34 @@ function initToileting(){
   renderToileting();
 }
 
+
+function quickLogDiscoveredAccident(){
+  if(!_globalPatientId){ toast('Select a patient first','var(--refused)'); return; }
+  const desc = prompt('What did you find? (brief description)');
+  if(desc === null) return; // cancelled
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const dateVal = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+  const timeVal = pad(now.getHours())+':'+pad(now.getMinutes());
+  if(!D.toileting) D.toileting = [];
+  D.toileting.push({
+    id:        Date.now(),
+    patientId: _globalPatientId,
+    date:      dateVal,
+    time:      timeVal,
+    type:      'void',
+    amount:    'Unknown',
+    continent: 'discovered',
+    product:   '',
+    notes:     '',
+    discovery: desc || 'Evidence of accident found'
+  });
+  D.toileting.sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
+  save();
+  toast('🔍 Discovered accident logged', 'var(--given)');
+  renderToileting();
+}
+
 function saveToileting(){
   const type = document.getElementById('tl-type')?.value;
   if(!type){ toast('Please select a type', 'var(--held)'); return; }
@@ -8474,7 +8509,10 @@ function saveToileting(){
     amount:    document.getElementById('tl-amount')?.value    || 'Moderate',
     continent: document.getElementById('tl-continent')?.value || 'continent',
     product:   document.getElementById('tl-product')?.value   || '',
-    notes:     document.getElementById('tl-notes')?.value.trim() || ''
+    notes:     document.getElementById('tl-notes')?.value.trim() || '',
+    discovery: document.getElementById('tl-continent')?.value === 'discovered'
+               ? (document.getElementById('tl-discovery')?.value.trim() || '')
+               : ''
   };
   if(_editToiletId !== null){
     const idx = D.toileting.findIndex(x => x.id === _editToiletId);
@@ -8490,6 +8528,9 @@ function saveToileting(){
   save(); closeModal('toilet-modal');
   document.getElementById('tl-notes').value = '';
   document.getElementById('tl-time').value  = '';
+  const discEl=document.getElementById('tl-discovery'); if(discEl) discEl.value='';
+  const discWrap=document.getElementById('tl-discovery-wrap'); if(discWrap) discWrap.style.display='none';
+  const contEl=document.getElementById('tl-continent'); if(contEl) contEl.value='continent';
   const title = document.querySelector('#toilet-modal .modal-title');
   if(title) title.textContent = 'Log Toileting';
   if(_qlReturnIfQuickLog('Bathroom logged')) return;
@@ -8506,7 +8547,7 @@ function renderToileting(){
   if(_toiletPat) entries = entries.filter(e => String(e.patientId) === String(_toiletPat));
   const voids      = entries.filter(e => e.type==='void'||e.type==='both').length;
   const bms        = entries.filter(e => e.type==='bm'||e.type==='both').length;
-  const incontinent= entries.filter(e => e.continent==='incontinent').length;
+  const incontinent= entries.filter(e => e.continent==='incontinent'||e.continent==='discovered').length;
   const continent  = entries.filter(e => e.continent==='continent'||e.continent==='assisted').length;
 
   const set = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
@@ -8521,8 +8562,8 @@ function renderToileting(){
   }
   const typeLabel = { void:'Void', bm:'BM', both:'Both', attempt:'Attempt' };
   const typeClass = { void:'tt-void', bm:'tt-bm', both:'tt-both', attempt:'ws-unchanged' };
-  const contLabel = { continent:'✓ Continent', incontinent:'✗ Incontinent', assisted:'★ Assisted' };
-  const contColor = { continent:'var(--given)', incontinent:'var(--refused)', assisted:'var(--held)' };
+  const contLabel = { continent:'✓ Continent', incontinent:'✗ Incontinent', assisted:'★ Assisted', discovered:'🔍 Discovered' };
+  const contColor = { continent:'var(--given)', incontinent:'var(--refused)', assisted:'var(--held)', discovered:'var(--held)' };
   log.innerHTML = entries.map(e => `
     <div class="toilet-row" data-row-id="toilet-${e.id}">
       <div style="font-family:var(--font-mono);font-size:.8rem;color:var(--slate-mid)">${fmtTime(e.time)}</div>
@@ -8530,6 +8571,7 @@ function renderToileting(){
         <span class="toilet-type-badge ${typeClass[e.type]||'tt-void'}">${typeLabel[e.type]||e.type}</span>
         <span style="font-size:.76rem;color:var(--slate-light);margin-left:6px">${e.amount}</span>
         ${e.notes ? `<div style="font-size:.72rem;color:var(--slate-light);margin-top:2px">${e.notes}</div>` : ''}
+        ${e.discovery ? `<div style="font-size:.72rem;color:var(--held);margin-top:2px">🔍 ${e.discovery}</div>` : ''}
       </div>
       <div style="font-size:.78rem;font-weight:600;color:${contColor[e.continent]||'var(--slate)'}">${contLabel[e.continent]||e.continent}</div>
       <div style="font-size:.76rem;color:var(--slate-light)">${e.product||'—'}</div>
@@ -8567,6 +8609,9 @@ function editToileting(id){
   set('tl-continent', e.continent);
   set('tl-product', e.product);
   set('tl-notes', e.notes);
+  set('tl-discovery', e.discovery || '');
+  const dw=document.getElementById('tl-discovery-wrap');
+  if(dw) dw.style.display = e.continent==='discovered' ? 'block' : 'none';
   const dateEl = document.getElementById('toilet-date');
   if(dateEl) dateEl.value = e.date;
   _editToiletId = id;
@@ -8721,7 +8766,7 @@ function renderToiletingTrends(){
   const dayLabels = days.map(d => new Date(d+'T12:00:00').toLocaleDateString('en-US',{weekday:'short'}));
   const voidCounts = days.map(d => entries.filter(e => e.date===d && (e.type==='void'||e.type==='both')).length);
   const bmCounts   = days.map(d => entries.filter(e => e.date===d && (e.type==='bm'||e.type==='both')).length);
-  const incCounts  = days.map(d => entries.filter(e => e.date===d && e.continent==='incontinent').length);
+  const incCounts  = days.map(d => entries.filter(e => e.date===d && (e.continent==='incontinent'||e.continent==='discovered')).length);
   const maxVal     = Math.max(...voidCounts,...bmCounts,...incCounts,1);
 
   el.innerHTML = entries.length ? `
@@ -9467,7 +9512,8 @@ function renderReport(){
     const tMonth = (D.toileting||[]).filter(e=>inMonth(e.date));
     const voids  = tMonth.filter(e=>e.type==='void'||e.type==='both').length;
     const bms    = tMonth.filter(e=>e.type==='bm'||e.type==='both').length;
-    const inc2   = tMonth.filter(e=>e.continent==='incontinent').length;
+    const inc2   = tMonth.filter(e=>e.continent==='incontinent'||e.continent==='discovered').length;
+    const discovered = tMonth.filter(e=>e.continent==='discovered').length;
     sections += `<div class="report-section"><div class="report-section-title">🚻 Toileting Summary</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;text-align:center">
         <div style="background:#F0F4F8;border-radius:8px;padding:8px"><div style="font-size:1.2rem;font-weight:700;color:#0B7A6E;font-family:monospace">${voids}</div><div style="font-size:.7rem;color:#8097B3">Total Voids</div></div>
@@ -9811,7 +9857,8 @@ function buildReportEmailText(){
   if(tMonth.length){
     const voids = tMonth.filter(e=>e.type==='void'||e.type==='both').length;
     const bms   = tMonth.filter(e=>e.type==='bm'||e.type==='both').length;
-    const inc2  = tMonth.filter(e=>e.continent==='incontinent').length;
+    const inc2       = tMonth.filter(e=>e.continent==='incontinent'||e.continent==='discovered').length;
+    const discovered = tMonth.filter(e=>e.continent==='discovered').length;
     lines.push('\n🚻 TOILETING');
     lines.push(div);
     lines.push('  Void: '+voids+'  |  BM: '+bms+'  |  Incontinent: '+inc2+'  |  Total: '+tMonth.length);
