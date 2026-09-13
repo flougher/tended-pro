@@ -1350,8 +1350,6 @@ body {
   <div class="nav-group">
     <div class="nav-label">Professional Tools</div>
     <button class="nav-btn" onclick="navTo('voice',this)"><span class="ni">🎤</span> Voice to Text</button>
-    <button class="nav-btn" onclick="navTo('creds',this)"><span class="ni">🎓</span> Credentials</button>
-    <button class="nav-btn" onclick="navTo('billing',this)"><span class="ni">💳</span> Billing</button>
     <button class="nav-btn" onclick="navTo('report',this)"><span class="ni">📄</span> Monthly Report</button>
   </div>
   <div class="nav-group">
@@ -2862,57 +2860,6 @@ body {
   </div>
 </div>
 
-<!-- ═══ CREDENTIALS ══════════════════════════════════════════ -->
-<div id="section-creds" class="section">
-  <div class="ph">
-    <div><div class="ph-title">🎓 Credentials & Certifications</div>
-    <div class="ph-sub">Track licenses, certifications, and renewal dates</div></div>
-    <button class="btn btn-teal" onclick="openModal('cred-modal')">+ Add Credential</button>
-  </div>
-  <div id="creds-alert" style="display:none;margin-bottom:14px"></div>
-  <div id="cred-list">
-    <div class="empty"><div class="empty-icon">🎓</div><div class="empty-text">No credentials added yet.<br>Tap + Add Credential to track your licenses and certifications.</div></div>
-  </div>
-</div>
-
-<!-- ═══ BILLING & TIME TRACKING ══════════════════════════════ -->
-<div id="section-billing" class="section">
-  <div class="ph">
-    <div><div class="ph-title">💳 Billing & Time Tracking</div>
-    <div class="ph-sub">Log visits, hours, and mileage for billing and payroll</div></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-secondary btn-sm" onclick="printBillingReport()">🖨️ Print Report</button>
-      <button class="btn btn-teal" onclick="openBillingModal()">+ Log Visit</button>
-    </div>
-  </div>
-  <div id="billing-patient-bar" style="margin-bottom:14px"></div>
-
-  <!-- Billing summary cards -->
-  <div class="grid-3" style="margin-bottom:16px">
-    <div class="card" style="margin:0;text-align:center">
-      <div class="stat-val" id="bill-total-visits" style="font-size:1.5rem">0</div>
-      <div class="stat-lbl">Total Visits</div>
-    </div>
-    <div class="card" style="margin:0;text-align:center">
-      <div class="stat-val" id="bill-total-hours" style="font-size:1.5rem">0h</div>
-      <div class="stat-lbl">Total Hours</div>
-    </div>
-    <div class="card" style="margin:0;text-align:center">
-      <div class="stat-val" id="bill-total-earned" style="font-size:1.5rem;color:var(--teal)">$0</div>
-      <div class="stat-lbl">Est. Earnings</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div style="display:grid;grid-template-columns:90px 1fr 80px 90px 90px 36px;gap:8px;padding:6px 0;border-bottom:2px solid var(--border);font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--slate-light)">
-      <div>Date</div><div>Patient / Service</div><div>Hours</div><div>Rate</div><div>Status</div><div></div>
-    </div>
-    <div id="billing-list">
-      <div class="empty" style="padding:24px"><div class="empty-icon" style="font-size:1.6rem">💳</div><div class="empty-text" style="font-size:.84rem">No visits logged yet.</div></div>
-    </div>
-  </div>
-</div>
-
 <!-- ═══ MONTHLY REPORT ════════════════════════════════════════ -->
 <div id="section-report" class="section">
   <div class="ph">
@@ -2955,9 +2902,7 @@ body {
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-painad" checked onchange="renderReport()"> 🧠 PAINAD Assessments</label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-toileting" checked onchange="renderReport()"> 🚻 Toileting</label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-comms" checked onchange="renderReport()"> 📞 Family Log</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-careplan" checked onchange="renderReport()"> 📌 Care Plan</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-billing" onchange="renderReport()"> 💳 Billing</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-shiftnotes" checked onchange="renderReport()"> 📝 Shift Notes</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-careplan" checked onchange="renderReport()"> 📌 Care Plan</label>        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-shiftnotes" checked onchange="renderReport()"> 📝 Shift Notes</label>
       </div>
     </div>
   </div>
@@ -3145,10 +3090,7 @@ body {
     <button class="bn-btn" onclick="mobileNavTo('sundowning')" style="color:rgba(180,140,255,.9)"><span class="bn-icon">🌅</span>Sundowning</button>
     <button class="bn-btn" onclick="mobileNavTo('wandering')" style="color:rgba(180,140,255,.9)"><span class="bn-icon">🚶</span>Wandering</button>
     <button class="bn-btn" onclick="mobileNavTo('memorycare')" style="color:rgba(180,140,255,.9)"><span class="bn-icon">💬</span>Mem Care</button>
-    <button class="bn-btn" onclick="mobileNavTo('voice')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🎤</span>Voice</button>
-    <button class="bn-btn" onclick="mobileNavTo('creds')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🎓</span>Creds</button>
-    <button class="bn-btn" onclick="mobileNavTo('billing')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">💳</span>Billing</button>
-    <button class="bn-btn" onclick="mobileNavTo('report')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📄</span>Report</button>
+    <button class="bn-btn" onclick="mobileNavTo('voice')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🎤</span>Voice</button>    <button class="bn-btn" onclick="mobileNavTo('report')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📄</span>Report</button>
     <button class="bn-btn" onclick="mobileNavTo('bbw')" style="color:rgba(255,200,50,.85)"><span class="bn-icon">⚠️</span>BBW</button>
     <button class="bn-btn" onclick="mobileNavTo('emergency')" style="color:rgba(255,120,120,.95)"><span class="bn-icon">🚨</span>Emergency</button>
     <button class="bn-btn" onclick="mobileNavTo('settings')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">⚙️</span>Settings</button>
@@ -3718,7 +3660,6 @@ function populatePatientBars(){
     { id:'careplan-patient-bar',    fn:'loadCareplan'      },
     { id:'routines-patient-bar',    fn:'renderRoutines'    },
     { id:'triggers-patient-bar',    fn:'renderTriggers'    },
-    { id:'billing-patient-bar',     fn:'renderBillingList' },
     { id:'intake-patient-bar',      fn:'renderIntake'      },
     { id:'toileting-patient-bar',   fn:'renderToileting'   },
     { id:'comfortcare-patient-bar', fn:'renderComfortCare' },
@@ -4242,8 +4183,6 @@ function navTo(id, btn){
     toileting: initToileting,
     trends:    renderTrends,
     voice:     renderVoice,
-    creds:     renderCreds,
-    billing:   initBilling,
     report:    renderReport,
     settings:  loadSettings,
     bbw:       renderBBWSection,
@@ -4391,9 +4330,10 @@ function renderDashboard(){
   const todayMARKeys = Object.keys(D.mar).filter(k => k.startsWith(todayISO + '|'));
   const givenCount   = todayMARKeys.filter(k => D.mar[k]?.status === 'given').length;
   const pendingCount = todayMARKeys.filter(k => D.mar[k]?.status === 'pending').length;
-  const totalMeds    = todayMARKeys.length || D.meds.length;
+  const activeMedCount = (D.meds||[]).filter(m => !m.discontinued).length;
+  const totalMeds    = todayMARKeys.length || activeMedCount;
   document.getElementById('ds-meds').textContent    = givenCount + '/' + totalMeds;
-  document.getElementById('ds-pending').textContent = todayMARKeys.length ? pendingCount : D.meds.length;
+  document.getElementById('ds-pending').textContent = todayMARKeys.length ? pendingCount : activeMedCount;
 
   const todayInc = D.incidents.filter(i => i.dt.startsWith(todayISO));
   document.getElementById('ds-incidents').textContent = todayInc.length;
@@ -4425,7 +4365,6 @@ function renderDashboard(){
   const activeWounds   = (D.wounds||[]).filter(w => w.status !== 'Healed');
   const hasWounds      = activeWounds.length > 0;
   const woundChecked   = activeWounds.some(w => w.updatedAt && w.updatedAt.startsWith(todayISO));
-  const billedToday    = (D.billing||[]).filter(b => b.date === todayISO).length > 0;
 
   const checkItems = [
     {
@@ -4475,12 +4414,6 @@ function renderDashboard(){
            : woundChecked ? 'Wound assessed today ✓'
            : `${activeWounds.filter(w=>!w.updatedAt||!w.updatedAt.startsWith(todayISO)).length} wound${activeWounds.filter(w=>!w.updatedAt||!w.updatedAt.startsWith(todayISO)).length>1?'s':''} need assessment`,
       nav:   'wounds', icon: '🩹'
-    },
-    {
-      label: "Today's visit logged",
-      done:  billedToday,
-      sub:   billedToday ? 'Visit logged for billing ✓' : 'Remember to log your hours',
-      nav:   'billing', icon: '💳'
     },
     {
       label: 'Memory care notes reviewed',
@@ -5160,15 +5093,18 @@ function saveMed(){
 function renderMedList(){
   const el = document.getElementById('med-list');
   if(!el) return;
-  // In MAR context, use the MAR patient selector; fall back to _globalPatientId
   const _marPat = document.getElementById('mar-patient')?.value || _globalPatientId || '';
   const _listMeds = _marPat
     ? (D.meds||[]).filter(m => String(m.patientId) === String(_marPat))
     : (D.meds||[]);
-  // Update title with count
+
+  const activeMeds = _listMeds.filter(m => !m.discontinued);
+  const discMeds   = _listMeds.filter(m => m.discontinued);
+
   const titleEl = document.getElementById('med-list-title');
   if(titleEl) titleEl.textContent = '💊 Medications on File'
-    + (_listMeds.length ? ' ('+_listMeds.length+')' : '');
+    + (activeMeds.length ? ' ('+activeMeds.length+' active)' : '');
+
   if(!_listMeds.length){
     el.innerHTML = '<div style="color:var(--slate-light);font-size:.82rem;padding:12px 0">'
       + (_globalPatientId ? 'No medications added yet — tap + Add Medication above.'
@@ -5176,15 +5112,11 @@ function renderMedList(){
       + '</div>';
     return;
   }
-  // Sort by scheduled time
-  const sorted = [..._listMeds].sort((a,b) => {
-    const t = s => { if(!s) return 9999; const p=s.split(':'); return parseInt(p[0])*60+(parseInt(p[1])||0); };
-    return t(a.time) - t(b.time);
-  });
-  el.innerHTML = sorted.map(m => {
-    const ptName = m.patientId
-      ? ((D.patients||[]).find(p=>p.id==m.patientId)?.fname || '')
-      : 'All patients';
+
+  const sortTime = s => { if(!s) return 9999; const p=s.split(':'); return parseInt(p[0])*60+(parseInt(p[1])||0); };
+  const sorted = [...activeMeds].sort((a,b) => sortTime(a.time)-sortTime(b.time));
+
+  const activeHTML = sorted.length ? sorted.map(m => {
     const bbw = bbwBadgeHtml(m.name, false);
     return `<div style="padding:11px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
       <div style="flex:1;min-width:0">
@@ -5203,10 +5135,70 @@ function renderMedList(){
       <div style="display:flex;gap:5px;flex-shrink:0">
         <button class="btn btn-secondary btn-xs" style="padding:4px 10px;font-size:.75rem;font-weight:600"
           onclick="openMedModal(${m.id})">✏️ Edit</button>
+        <button class="btn btn-secondary btn-xs" style="padding:4px 10px;font-size:.75rem;font-weight:600;background:#FFFBEB;color:#92400E;border-color:#FCD34D"
+          onclick="discontinueMed(${m.id})">⏹ Stop</button>
         <button class="btn btn-danger btn-xs btn-icon" onclick="deleteMed(${m.id})">✕</button>
       </div>
     </div>`;
-  }).join('');
+  }).join('') : '<div style="color:var(--slate-light);font-size:.82rem;padding:8px 0">No active medications.</div>';
+
+  const discHTML = discMeds.length ? `
+    <div style="margin-top:16px;padding-top:12px;border-top:2px dashed var(--border)">
+      <div style="font-size:.75rem;font-weight:700;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">
+        ⏹ Discontinued (${discMeds.length})</div>
+      ${discMeds.map(m => `<div style="padding:9px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;opacity:.65">
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px">
+            <span style="font-weight:700;font-size:.88rem;color:var(--slate-mid);text-decoration:line-through">${m.name}</span>
+            ${m.dose ? `<span style="font-size:.78rem;color:var(--slate-light)">${m.dose}</span>` : ''}
+          </div>
+          <div style="font-size:.74rem;color:var(--slate-light)">
+            Stopped ${m.discontinuedDate||'—'}${m.discontinuedReason ? ' · '+m.discontinuedReason : ''}
+          </div>
+        </div>
+        <div style="display:flex;gap:5px;flex-shrink:0">
+          <button class="btn btn-secondary btn-xs" style="padding:4px 10px;font-size:.75rem;font-weight:600;background:#F0FDF4;color:#15803D;border-color:#86EFAC"
+            onclick="reinstateMed(${m.id})">↩ Reinstate</button>
+          <button class="btn btn-danger btn-xs btn-icon" onclick="deleteMed(${m.id})">✕</button>
+        </div>
+      </div>`).join('')}
+    </div>` : '';
+
+  el.innerHTML = activeHTML + discHTML;
+}
+
+
+function discontinueMed(id){
+  const med = (D.meds||[]).find(m => m.id === id);
+  if(!med) return;
+  const reason = prompt('Reason for discontinuing ' + med.name + '?\n(e.g. Physician stopped, side effects, switched medication)');
+  if(reason === null) return; // cancelled
+  const idx = D.meds.findIndex(m => m.id === id);
+  if(idx < 0) return;
+  D.meds[idx] = {
+    ...D.meds[idx],
+    discontinued:       true,
+    discontinuedDate:   new Date().toISOString().split('T')[0],
+    discontinuedReason: reason.trim() || 'Discontinued'
+  };
+  save();
+  toast('✅ ' + med.name + ' marked as discontinued', 'var(--held)');
+  renderMedList();
+  renderMAR();
+}
+
+function reinstateMed(id){
+  const med = (D.meds||[]).find(m => m.id === id);
+  if(!med) return;
+  if(!confirm('Reinstate ' + med.name + ' as an active medication?')) return;
+  const idx = D.meds.findIndex(m => m.id === id);
+  if(idx < 0) return;
+  D.meds[idx] = { ...D.meds[idx],
+    discontinued: false, discontinuedDate: '', discontinuedReason: '' };
+  save();
+  toast('✅ ' + med.name + ' reinstated as active', 'var(--given)');
+  renderMedList();
+  renderMAR();
 }
 
 function deleteMed(id){
@@ -5218,8 +5210,8 @@ function deleteMed(id){
     return parts.length >= 3 && parts[2] === String(id);
   }).length;
   const warning = marRecordCount > 0
-    ? `Delete ${name}?\n\n${marRecordCount} medication log record${marRecordCount>1?'s':''} reference this medication. The records will remain but show as orphaned.`
-    : `Delete ${name}?`;
+    ? `Permanently delete ${name}?\n\nTip: Use the Stop button instead to discontinue it while keeping history.\n\n${marRecordCount} log record${marRecordCount>1?'s':''} reference this medication and will show as orphaned after deletion.`
+    : `Permanently delete ${name}?\n\nTip: Use the Stop button to discontinue it while keeping medication history.`;
   if(!confirm(warning)) return;
   D.meds = D.meds.filter(x => x.id !== id);
   save(); renderMedList();
@@ -5663,9 +5655,9 @@ function renderMAR(){
   if(!table) return;
 
   // Filter meds by selected patient
-  const patMeds = patientId
+  const patMeds = (patientId
     ? (D.meds||[]).filter(m => String(m.patientId) === String(patientId))
-    : (D.meds||[]);
+    : (D.meds||[])).filter(m => !m.discontinued);
 
   if(!patMeds.length){
     table.innerHTML = `<div class="card" style="text-align:center;padding:28px 20px">
@@ -6427,88 +6419,9 @@ function printMAR(){
 
 
 <!-- ══ CREDENTIAL MODAL ════════════════════════════════════ -->
-<div class="overlay" id="cred-modal">
-  <div class="modal">
-    <div class="modal-title" id="cred-modal-title">Add Credential</div>
-    <div class="fg"><label>Credential / License Name *</label>
-      <input id="cred-name" placeholder="e.g. CNA License, CPR/AED, Medication Aide, HHA Certificate…">
-    </div>
-    <div class="form-row">
-      <div class="fg"><label>Issuing Organization</label>
-        <input id="cred-issuer" placeholder="e.g. American Red Cross, State Board of Nursing">
-      </div>
-      <div class="fg"><label>Certificate / License Number</label>
-        <input id="cred-number" placeholder="Optional">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label>Issue Date</label><input type="date" id="cred-issued"></div>
-      <div class="fg"><label>Expiry Date</label><input type="date" id="cred-expiry"></div>
-    </div>
-    <div class="fg"><label>Renewal Notes</label>
-      <input id="cred-notes" placeholder="e.g. Renew every 2 years, 8 CEUs required, online renewal available">
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeModal('cred-modal')">Cancel</button>
-      <button class="btn btn-teal" id="cred-save" onclick="saveCred()">Add Credential</button>
-    </div>
-  </div>
-</div>
+
 
 <!-- ══ BILLING MODAL ════════════════════════════════════════ -->
-<div class="overlay" id="billing-modal">
-  <div class="modal">
-    <div class="modal-title" id="billing-modal-title">Log Visit</div>
-    <div class="form-row">
-      <div class="fg"><label>Date *</label><input type="date" id="bl-date"></div>
-      <div class="fg"><label>Patient / Client</label>
-        <input id="bl-patient" placeholder="Patient or client name">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label>Start Time</label><input type="time" id="bl-start"></div>
-      <div class="fg"><label>End Time</label><input type="time" id="bl-end"></div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label>Service Type</label>
-        <select id="bl-service" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
-          <option>Personal care</option>
-          <option>Skilled nursing</option>
-          <option>Medication administration</option>
-          <option>Wound care</option>
-          <option>Companionship</option>
-          <option>Transportation</option>
-          <option>Housekeeping</option>
-          <option>Respite care</option>
-          <option>Behavioral support</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div class="fg"><label>Hourly Rate ($)</label>
-        <input type="number" id="bl-rate" placeholder="e.g. 18.50" step="0.01" min="0">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label>Mileage (miles)</label>
-        <input type="number" id="bl-miles" placeholder="0" step="0.1" min="0">
-      </div>
-      <div class="fg"><label>Status</label>
-        <select id="bl-status" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
-          <option value="pending">Pending</option>
-          <option value="submitted">Submitted</option>
-          <option value="paid">Paid</option>
-        </select>
-      </div>
-    </div>
-    <div class="fg"><label>Notes</label>
-      <input id="bl-notes" placeholder="Holiday rate, overtime, special circumstances…">
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeModal('billing-modal')">Cancel</button>
-      <button class="btn btn-teal" id="bl-save" onclick="saveBilling()">Save Visit</button>
-    </div>
-  </div>
-</div>
 
 
 <script>
@@ -9024,304 +8937,6 @@ function injectVoiceButtons(){
   });
 }
 
-// ── 2. CREDENTIALS ────────────────────────────────────────────
-let _editCredId = null;
-
-function openCredModal(editId){
-  _editCredId = editId !== undefined ? editId : null;
-  const isEdit = _editCredId !== null;
-  document.getElementById('cred-modal-title').textContent = isEdit ? 'Edit Credential' : 'Add Credential';
-  document.getElementById('cred-save').textContent = isEdit ? 'Update' : 'Add Credential';
-  const c = isEdit ? (D.creds||[]).find(x => x.id === _editCredId) : null;
-  const set = (id,v) => { const el=document.getElementById(id); if(el) el.value=v||''; };
-  set('cred-name',   c?.name);
-  set('cred-issuer', c?.issuer);
-  set('cred-number', c?.number);
-  set('cred-issued', c?.issued);
-  set('cred-expiry', c?.expiry);
-  set('cred-notes',  c?.notes);
-  openModal('cred-modal');
-}
-
-function saveCred(){
-  const name = document.getElementById('cred-name')?.value.trim();
-  if(!name){ toast('Please enter credential name', 'var(--held)'); return; }
-  if(!D.creds) D.creds = [];
-  const fields = {
-    name,
-    issuer: document.getElementById('cred-issuer')?.value.trim() || '',
-    number: document.getElementById('cred-number')?.value.trim() || '',
-    issued: document.getElementById('cred-issued')?.value       || '',
-    expiry: document.getElementById('cred-expiry')?.value       || '',
-    notes:  document.getElementById('cred-notes')?.value.trim() || ''
-  };
-  if(_editCredId !== null){
-    const idx = D.creds.findIndex(x => x.id === _editCredId);
-    if(idx !== -1) D.creds[idx] = { ...D.creds[idx], ...fields };
-    toast('✅ Credential updated', 'var(--given)');
-  } else {
-    D.creds.push({ id:Date.now(), ...fields });
-    toast('✅ Credential added', 'var(--given)');
-  }
-  save(); closeModal('cred-modal'); renderCreds();
-}
-
-function credExpiryStatus(expiry){
-  if(!expiry) return { cls:'ceb-none', label:'No expiry' };
-  const diff = Math.ceil((new Date(expiry) - new Date()) / (1000*60*60*24));
-  if(diff < 0)   return { cls:'ceb-expired', label:'EXPIRED' };
-  if(diff <= 30) return { cls:'ceb-soon',    label:'Expires in ' + diff + 'd' };
-  if(diff <= 90) return { cls:'ceb-soon',    label:'Exp. ' + new Date(expiry).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) };
-  return { cls:'ceb-ok', label:'Valid until ' + new Date(expiry).toLocaleDateString('en-US',{month:'short',year:'numeric'}) };
-}
-
-function renderCreds(){
-  const el = document.getElementById('cred-list');
-  const alertEl = document.getElementById('creds-alert');
-  if(!el) return;
-  if(!(D.creds||[]).length){
-    el.innerHTML = '<div class="empty"><div class="empty-icon">🎓</div><div class="empty-text">No credentials added yet.<br>Tap + Add Credential to track your licenses.</div></div>';
-    if(alertEl) alertEl.style.display = 'none';
-    return;
-  }
-  // Sort: expired first, then expiring soon, then ok
-  const order = c => {
-    const s = credExpiryStatus(c.expiry);
-    if(s.cls === 'ceb-expired') return 0;
-    if(s.cls === 'ceb-soon')    return 1;
-    return 2;
-  };
-  const sorted = [...D.creds].sort((a,b) => order(a)-order(b));
-
-  // Alert banner
-  const expiring = sorted.filter(c => credExpiryStatus(c.expiry).cls !== 'ceb-ok' && credExpiryStatus(c.expiry).cls !== 'ceb-none');
-  if(alertEl){
-    if(expiring.length){
-      alertEl.style.display = 'block';
-      alertEl.innerHTML = `<div style="background:var(--refused-bg);border:1.5px solid #FECACA;border-radius:var(--r);padding:10px 14px;font-size:.84rem;color:var(--refused);font-weight:600">
-        ⚠️ ${expiring.length} credential${expiring.length>1?'s':''} require${expiring.length===1?'s':''} attention: ${expiring.map(c=>c.name).join(', ')}
-      </div>`;
-    } else {
-      alertEl.style.display = 'none';
-    }
-  }
-
-  const credIcons = {
-    'CNA':'🏥','RN':'👩‍⚕️','LPN':'💉','CPR':'❤️','AED':'⚡',
-    'HHA':'🏠','Medication':'💊','First Aid':'🩺','default':'🎓'
-  };
-  const getIcon = name => {
-    for(const [k,v] of Object.entries(credIcons)) if(name.toUpperCase().includes(k.toUpperCase())) return v;
-    return credIcons.default;
-  };
-
-  el.innerHTML = sorted.map(c => {
-    const s = credExpiryStatus(c.expiry);
-    return `<div class="cred-card">
-      <div class="cred-icon">${getIcon(c.name)}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-weight:700;font-size:.92rem;color:var(--navy)">${c.name}
-          <span class="cred-expiry-badge ${s.cls}">${s.label}</span>
-        </div>
-        ${c.issuer ? `<div style="font-size:.78rem;color:var(--slate-light);margin-top:2px">${c.issuer}${c.number?' · #'+c.number:''}</div>` : ''}
-        ${c.issued ? `<div style="font-size:.76rem;color:var(--slate-light)">Issued: ${c.issued}</div>` : ''}
-        ${c.notes  ? `<div style="font-size:.76rem;color:var(--slate-mid);font-style:italic;margin-top:3px">${c.notes}</div>` : ''}
-      </div>
-      <div style="display:flex;gap:5px;flex-shrink:0">
-        <button class="btn btn-secondary btn-xs btn-icon" onclick="openCredModal(${c.id})">✏️</button>
-        <button class="btn btn-danger btn-xs btn-icon" onclick="deleteCred(${c.id})">✕</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function deleteCred(id){
-  if(!confirm('Delete this credential record?')) return;
-  D.creds = (D.creds||[]).filter(x => x.id !== id);
-  save(); renderCreds();
-}
-
-// ── 3. BILLING & TIME TRACKING ────────────────────────────────
-let _editBillId = null;
-
-function initBilling(){
-  populatePatientBars();
-  const dateEl = document.getElementById('bl-date');
-  if(dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
-  renderBillingList();
-}
-
-function openBillingModal(editId){
-  _editBillId = editId !== undefined ? editId : null;
-  const isEdit = _editBillId !== null;
-  const b = isEdit ? (D.billing||[]).find(x => x.id === _editBillId) : null;
-
-  document.getElementById('billing-modal-title').textContent = isEdit ? 'Edit Visit' : 'Log Visit';
-  document.getElementById('bl-save').textContent = isEdit ? 'Update Visit' : 'Save Visit';
-
-  const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
-  if(b){
-    set('bl-date',    b.date);
-    set('bl-patient', b.patient);
-    set('bl-start',   b.start);
-    set('bl-end',     b.end);
-    set('bl-rate',    b.rate);
-    set('bl-miles',   b.miles || 0);
-    set('bl-notes',   b.notes);
-    const svc = document.getElementById('bl-service');
-    if(svc) svc.value = b.service || 'Personal care';
-    const sts = document.getElementById('bl-status');
-    if(sts) sts.value = b.status || 'pending';
-  } else {
-    // Reset form for new entry
-    set('bl-patient', ''); set('bl-start', ''); set('bl-end', '');
-    set('bl-rate', ''); set('bl-miles', ''); set('bl-notes', '');
-    const dateEl = document.getElementById('bl-date');
-    if(dateEl) dateEl.value = new Date().toISOString().split('T')[0];
-    const svc = document.getElementById('bl-service');
-    if(svc) svc.value = 'Personal care';
-    const sts = document.getElementById('bl-status');
-    if(sts) sts.value = 'pending';
-  }
-  openModal('billing-modal');
-}
-
-function saveBilling(){
-  const date = document.getElementById('bl-date')?.value;
-  if(!date){ toast('Please select a date', 'var(--held)'); return; }
-  if(_editBillId === null && !_globalPatientId){
-    toast('Please select a patient first', 'var(--held)'); return;
-  }
-  if(!D.billing) D.billing = [];
-
-  const start   = document.getElementById('bl-start')?.value || '';
-  const end     = document.getElementById('bl-end')?.value   || '';
-  const rate    = parseFloat(document.getElementById('bl-rate')?.value || '0') || 0;
-  let   hours   = 0;
-  if(start && end){
-    const [sh,sm] = start.split(':').map(Number);
-    const [eh,em] = end.split(':').map(Number);
-    hours = Math.max(0, ((eh*60+em) - (sh*60+sm)) / 60);
-  }
-
-  const fields = {
-    date, start, end, hours: Math.round(hours*100)/100,
-    patient: document.getElementById('bl-patient')?.value.trim() || '',
-    service: document.getElementById('bl-service')?.value        || 'Personal care',
-    rate,
-    earned:  Math.round(hours * rate * 100) / 100,
-    miles:   parseFloat(document.getElementById('bl-miles')?.value || '0') || 0,
-    status:  document.getElementById('bl-status')?.value         || 'pending',
-    notes:   document.getElementById('bl-notes')?.value.trim()   || ''
-  };
-
-  if(_editBillId !== null){
-    const idx = D.billing.findIndex(x => x.id === _editBillId);
-    if(idx !== -1) D.billing[idx] = { ...D.billing[idx], ...fields };
-    toast('✅ Visit updated', 'var(--given)');
-  } else {
-    D.billing.push({ id:Date.now(), patientId: _globalPatientId || '', ...fields });
-    toast('✅ Visit logged', 'var(--given)');
-  }
-  D.billing.sort((a,b) => b.date.localeCompare(a.date));
-  save(); closeModal('billing-modal'); renderBillingList();
-}
-
-function renderBillingList(){
-  populatePatientBars();
-  const el = document.getElementById('billing-list');
-  if(!el) return;
-  const _billPat = _globalPatientId;
-  let billing = D.billing || [];
-  if(_billPat) billing = billing.filter(b => String(b.patientId) === String(_billPat));
-
-  // Summary stats
-  const totalVisits = billing.length;
-  const totalHours  = billing.reduce((s,b) => s+(b.hours||0), 0);
-  const totalEarned = billing.reduce((s,b) => s+(b.earned||0), 0);
-  const set = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
-  set('bill-total-visits', totalVisits);
-  set('bill-total-hours',  Math.round(totalHours*10)/10 + 'h');
-  set('bill-total-earned', '$' + totalEarned.toFixed(2));
-
-  if(!billing.length){
-    el.innerHTML = '<div class="empty" style="padding:24px"><div class="empty-icon" style="font-size:1.6rem">💳</div><div class="empty-text" style="font-size:.84rem">No visits logged yet.</div></div>';
-    return;
-  }
-
-  el.innerHTML = billing.map(b => `
-    <div class="billing-row">
-      <div style="font-family:var(--font-mono);font-size:.78rem;color:var(--slate-mid)">${b.date}</div>
-      <div>
-        <div style="font-weight:600;font-size:.84rem;color:var(--navy)">${b.patient||'—'}</div>
-        <div style="font-size:.74rem;color:var(--slate-light)">${b.service}</div>
-        ${b.notes?`<div style="font-size:.72rem;color:var(--slate-light);font-style:italic">${b.notes}</div>`:''}
-      </div>
-      <div style="font-family:var(--font-mono);font-size:.82rem">${b.hours>0?b.hours+'h':'—'}</div>
-      <div style="font-family:var(--font-mono);font-size:.82rem;color:var(--teal)">${b.earned>0?'$'+b.earned.toFixed(2):'—'}</div>
-      <div><span class="billing-status bs-${b.status}">${b.status}</span></div>
-      <div style="display:flex;gap:3px">
-        <button class="btn btn-secondary btn-xs btn-icon" onclick="openBillingModal(${b.id})" title="Edit">✏️</button>
-        <button class="btn btn-danger btn-xs btn-icon" onclick="deleteBilling(${b.id})" title="Delete">✕</button>
-      </div>
-    </div>`).join('');
-}
-
-function deleteBilling(id){
-  if(!confirm('Delete this billing entry? This cannot be undone.')) return;
-  D.billing = (D.billing||[]).filter(x => x.id !== id);
-  save(); renderBillingList();
-}
-
-function printBillingReport(){
-  // Billing is caregiver-level; optionally filter by patient if one is selected
-  const _allBilling = D.billing || [];
-  const billing = _globalPatientId
-    ? _allBilling.filter(b => !b.patientId || String(b.patientId) === String(_globalPatientId))
-    : _allBilling;
-  if(!billing.length){ toast('No billing entries to print', 'var(--held)'); return; }
-  const totalHours  = billing.reduce((s,b)=>s+(b.hours||0),0);
-  const totalEarned = billing.reduce((s,b)=>s+(b.earned||0),0);
-  const rows = billing.map(b=>`<tr>
-    <td>${b.date}</td><td>${b.patient||'—'}</td><td>${b.service}</td>
-    <td>${b.start||'—'}${b.end?' – '+b.end:''}</td>
-    <td>${b.hours>0?b.hours+'h':'—'}</td>
-    <td>$${b.rate.toFixed(2)}/h</td>
-    <td>${b.miles>0?b.miles+' mi':'—'}</td>
-    <td style="font-weight:700;color:${b.status==='paid'?'#0A7A4A':b.status==='submitted'?'#C47A00':'#8097B3'}">${b.status.toUpperCase()}</td>
-    <td>${b.earned>0?'$'+b.earned.toFixed(2):'—'}</td>
-  </tr>`).join('');
-  const w = window.open('','_blank');
-  if(!w){ _showPopupBlockedHelp('this report'); return; }
-  w.document.write(`<!DOCTYPE html><html><head><title>Billing Report</title>
-<style>body{font-family:system-ui,sans-serif;max-width:900px;margin:24px auto;font-size:13px;color:#1C2B42}
-h1{font-size:1.4rem;color:#0C1B33;border-bottom:2px solid #0B7A6E;padding-bottom:8px;margin-bottom:4px}
-.meta{color:#8097B3;font-size:.8rem;margin-bottom:16px}
-table{width:100%;border-collapse:collapse}th{background:#0C1B33;color:rgba(255,255,255,.7);padding:7px 8px;text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em}
-td{padding:7px 8px;border-bottom:1px solid #D8E2EE;font-size:.84rem}tr:nth-child(even) td{background:#F0F4F8}
-.totals{margin-top:16px;display:flex;gap:24px;font-size:.9rem}
-.tot{background:#F0F4F8;border-radius:8px;padding:10px 16px;text-align:center}
-.tot-val{font-size:1.3rem;font-weight:700;color:#0C1B33;font-family:monospace}
-.tot-lbl{font-size:.72rem;color:#8097B3;text-transform:uppercase;letter-spacing:.05em}
-.foot{margin-top:20px;padding-top:10px;border-top:1px solid #D8E2EE;font-size:.7rem;color:#8097B3;display:flex;justify-content:space-between}
-@media print{@page{size:A4 landscape;margin:8mm}}</style></head><body>
-${D.settings?.facility ? `<div style="text-align:center;font-weight:700;font-size:13pt;margin-bottom:4px">${D.settings.facility}</div>` : ''}
-<h1>Billing & Time Tracking Report</h1>
-<div class="meta">Caregiver: ${D.settings.name||'—'} · Agency: ${D.settings.agency||'—'} · Printed ${new Date().toLocaleDateString()}</div>
-<table><thead><tr><th>Date</th><th>Patient</th><th>Service</th><th>Time</th><th>Hours</th><th>Rate</th><th>Miles</th><th>Status</th><th>Earned</th></tr></thead>
-<tbody>${rows}</tbody></table>
-<div class="totals">
-  <div class="tot"><div class="tot-val">${billing.length}</div><div class="tot-lbl">Total Visits</div></div>
-  <div class="tot"><div class="tot-val">${Math.round(totalHours*10)/10}h</div><div class="tot-lbl">Total Hours</div></div>
-  <div class="tot"><div class="tot-val">$${totalEarned.toFixed(2)}</div><div class="tot-lbl">Total Earned</div></div>
-  <div class="tot"><div class="tot-val">${billing.filter(b=>b.status==='paid').length}</div><div class="tot-lbl">Paid Visits</div></div>
-</div>
-<div class="foot"><span>Tended Health Pro — Billing Report</span><span>Generated ${new Date().toLocaleString()}</span></div>
-</body></html>`);
-  w.document.close();
-  setTimeout(() => w.print(), 400);
-}
-
 // ── 4. MONTHLY REPORT ─────────────────────────────────────────
 
 function _bindReportButtons(){
@@ -9357,7 +8972,9 @@ function renderReport(){
   const patientId  = document.getElementById('report-patient')?.value || _globalPatientId || '';
   const patientObj = (D.patients||[]).find(p => p.id == patientId);
   // Patient-scoped data for report
-  const rptMeds     = patientId ? (D.meds||[]).filter(m => String(m.patientId) === String(patientId)) : (D.meds||[]);
+  const _allRptMeds = patientId ? (D.meds||[]).filter(m => String(m.patientId) === String(patientId)) : (D.meds||[]);
+  const rptMeds     = _allRptMeds.filter(m => !m.discontinued);
+  const rptDiscMeds = _allRptMeds.filter(m => m.discontinued);
   const rptTriggers = patientId ? (D.triggers||[]).filter(t => !t.patientId || String(t.patientId) === String(patientId)) : (D.triggers||[]);
   const rptBilling  = patientId ? (D.billing||[]).filter(b => !b.patientId || String(b.patientId) === String(patientId)) : (D.billing||[]);
   const patient    = patientObj ? patientObj.fname + ' ' + patientObj.lname : D.settings.name || 'Patient';
@@ -9392,8 +9009,7 @@ function renderReport(){
         <div style="background:#F0F4F8;border-radius:8px;padding:8px;min-width:0;overflow:hidden"><div style="font-size:1.2rem;font-weight:700;color:#C47A00;font-family:monospace">${held}</div><div style="font-size:.6rem;color:#8097B3;text-transform:uppercase">Held</div></div>
         <div style="background:#F0F4F8;border-radius:8px;padding:8px;min-width:0;overflow:hidden"><div style="font-size:1.2rem;font-weight:700;color:#0A7A4A;font-family:monospace">${pct}%</div><div style="font-size:.6rem;color:#8097B3;text-transform:uppercase">Comply</div></div>
       </div>
-      <div style="font-size:.84rem;color:#526280"><strong>Current medications:</strong> ${rptMeds.map(m=>m.name+' '+m.dose).join(', ')||'None'}</div>
-    </div>`;
+      <div style="font-size:.84rem;color:#526280"><strong>Current medications:</strong> ${rptMeds.map(m=>m.name+' '+m.dose).join(', ')||'None'}</div>\n      ${rptDiscMeds && rptDiscMeds.length ? `<div style='font-size:.74rem;color:var(--slate-light);margin-top:4px'>`+`<strong>Discontinued:</strong> `+rptDiscMeds.map(function(m){return m.name+(m.discontinuedDate?' (stopped '+m.discontinuedDate+')':'');}).join(', ')+`</div>` : ''}\n    </div>`;
   }
 
   // Incidents
@@ -9555,15 +9171,7 @@ function renderReport(){
     </div>`;
   }
 
-  // Billing summary
-  if(check('rpt-billing')){
-    const billMonth = (D.billing||[]).filter(b=>inMonth(b.date) && (!_globalPatientId || String(b.patientId) === String(_globalPatientId)));
-    const hrs = billMonth.reduce((s,b)=>s+(b.hours||0),0);
-    const earned = billMonth.reduce((s,b)=>s+(b.earned||0),0);
-    sections += `<div class="report-section"><div class="report-section-title">💳 Billing Summary</div>
-      <div style="font-size:.84rem;color:#526280">Visits: ${billMonth.length} · Hours: ${Math.round(hrs*10)/10}h · Earned: $${earned.toFixed(2)}</div>
-    </div>`;
-  }
+
 
   // Shift Notes narrative
   if(check('rpt-shiftnotes')){
@@ -9782,6 +9390,13 @@ function buildReportEmailText(){
         (m.frequency?' ('+m.frequency+')':'')+
         ' — Given:'+mGiven+' Refused:'+mRefused+(mHeld?' Held:'+mHeld:''));
     });
+  if(emailDiscMeds.length){
+    lines.push('Discontinued medications:');
+    emailDiscMeds.forEach(function(m){
+      lines.push('  • '+m.name+' '+(m.dose||'')+(m.discontinuedDate?' — stopped '+m.discontinuedDate:'')+(m.discontinuedReason?' ('+m.discontinuedReason+')':''));
+    });
+  }
+
   }
 
   // ── DEFECT 3 FIX: INCIDENTS ────────────────────────────────────────────
@@ -10712,9 +10327,9 @@ function renderBBWSection(){
   const emptyEl = document.getElementById('bbw-empty');
   if(!listEl) return;
 
-  const _bbwMeds = _globalPatientId
+  const _bbwMeds = (_globalPatientId
     ? (D.meds||[]).filter(m => String(m.patientId) === String(_globalPatientId))
-    : (D.meds||[]);
+    : (D.meds||[])).filter(m => !m.discontinued);
   const flagged = _bbwMeds.filter(m => getBBW(m.name));
 
   // Update nav badge
@@ -10751,7 +10366,7 @@ function renderBBWSection(){
     </div>`;
   }).join('') +
   `<div style="background:#FFF8ED;border-radius:var(--r);padding:12px 16px;font-size:.78rem;color:#7A4A00;line-height:1.6;border:1.5px solid #C9963A">
-    ⚕️ <strong>${flagged.length} of ${D.meds.length} medication${D.meds.length!==1?'s':''} in your list carry FDA black box warnings.</strong>
+    ⚕️ <strong>${flagged.length} of ${_bbwMeds.length} active medication${_bbwMeds.length!==1?'s':''} carry FDA black box warnings.</strong>
     These warnings are for <strong>informational reference only and do not constitute medical advice.</strong>
     Never adjust, withhold, or administer medication outside of a physician's order. Always follow your agency's medication administration policies.
   </div>`;
