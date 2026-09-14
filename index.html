@@ -1378,12 +1378,12 @@ body {
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <div id="clock-in-btn-wrap">
-        <button class="btn btn-teal" id="clock-in-btn" onclick="clockIn()">🟢 Clock In</button>
+        <button class="btn btn-teal" id="clock-in-btn" onclick="clockIn()">🌅 Start My Day</button>
       </div>
       <div id="clock-out-btn-wrap" style="display:none">
-        <button class="btn btn-secondary" id="clock-out-btn" onclick="clockOut()" style="border-color:var(--refused);color:var(--refused)">🔴 Clock Out</button>
+        <button class="btn btn-secondary" id="clock-out-btn" onclick="clockOut()" style="border-color:var(--refused);color:var(--refused)">🤝 Hand Off Care</button>
       </div>
-      <button class="btn btn-teal" onclick="navTo('handoff')">🔄 End Shift Handoff</button>
+      <button class="btn btn-teal" onclick="navTo('handoff')">📋 Daily Handoff Summary</button>
     </div>
   </div>
 
@@ -1682,13 +1682,12 @@ body {
 <div id="section-handoff" class="section">
   <div class="ph">
     <div>
-      <div class="ph-title">🔄 Shift Handoff Report</div>
-      <div class="ph-sub">Auto-generates from today's medication log, incidents, and vitals</div>
+      <div class="ph-title">📋 Daily Handoff Summary</div>
+      <div class="ph-sub">Auto-generates from today's care log — share with whoever is taking over care</div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-secondary" onclick="generateHandoff()">🔄 Generate</button>
       <button class="btn btn-teal" onclick="printHandoff()">🖨️ Print Single-Patient Handoff</button>
-      <button class="btn btn-secondary" onclick="exportAgencySummary()" title="Generates a Multi-Patient Handoff covering every patient on your roster">🧾 Multi-Patient Handoff</button>
     </div>
   </div>
 
@@ -6831,7 +6830,7 @@ function generateHandoff(){
     <div style="background:white;border:2px solid var(--teal);border-radius:var(--r-lg);padding:22px 24px">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px">
         <div>
-          <div style="font-family:var(--font-head);font-size:1.15rem;font-weight:700;color:var(--navy)">Shift Handoff Report</div>
+          <div style="font-family:var(--font-head);font-size:1.15rem;font-weight:700;color:var(--navy)">Daily Handoff Summary</div>
           <div style="font-size:.78rem;color:var(--slate-light);margin-top:3px">${todayDisp}</div>
         </div>
         <div style="text-align:right;font-size:.8rem;color:var(--slate-mid)">
@@ -6917,7 +6916,7 @@ function printHandoff(){
   @media print{@page{size:A4;margin:12mm}}
 
   ${D.settings?.facility ? `<div style="text-align:center;font-weight:700;font-size:13pt;margin-bottom:6px">${D.settings.facility}</div>` : ''}
-  <h1>Shift Handoff Report</h1>
+  <h1>Daily Handoff Summary</h1>
   <div class="meta"><span>${today}</span><span>${out} → ${incoming}</span></div>
   ${preview.innerHTML}
   <div class="sig">
@@ -6925,7 +6924,7 @@ function printHandoff(){
     <div class="sig-line">Incoming Caregiver: ${incoming} &nbsp; Time: ________</div>
   </div>
   <div class="foot">
-    <span>Tended Health Pro — Shift Handoff Report</span>
+    <span>Tended Health Pro — Daily Handoff Summary</span>
     <span>Printed ${new Date().toLocaleString()}</span>
   </div>
 </body></html>`);
@@ -11525,60 +11524,43 @@ function clockIn(){
   updateClockUI(shift);
   startShiftTimer(now);
   if('vibrate' in navigator) navigator.vibrate(25);
-  toast('🟢 Clocked in at ' + shift.clockInDisp, 'var(--given)');
+  toast('🌅 Care started at ' + shift.clockInDisp, 'var(--given)');
 }
 
 function clockOut(){
   const raw = localStorage.getItem(SHIFT_KEY);
   if(!raw) return;
   const shift = JSON.parse(raw);
-  // Fold final foreground delta before computing hours
   _shiftHeartbeat(true);
   const stored = JSON.parse(localStorage.getItem(SHIFT_KEY) || raw);
   const now   = new Date();
   stored.clockOut     = now.toISOString();
-  stored.clockOutDisp = now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  stored.clockOutDisp = now.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
   const wallMs = now - new Date(stored.clockIn);
-  const fgMs   = typeof stored.fgActiveMs === 'number' ? stored.fgActiveMs : wallMs;
-  // BUG-002: prefer foreground time. If wall-clock is dramatically larger,
-  // the user likely force-closed / rebooted — confirm with them.
+  const fgMs   = typeof stored.fgActiveMs === "number" ? stored.fgActiveMs : wallMs;
   let ms = fgMs;
   if(wallMs - fgMs > 30 * 60 * 1000){
     const wallH = Math.round(wallMs / 36000) / 100;
-    const fgH   = Math.round(fgMs / 36000) / 100;
+    const fgH   = Math.round(fgMs  / 36000) / 100;
     const useWall = confirm(
-      `Active shift was open for ${wallH}h by the clock, but the app was only in use for ${fgH}h.\n\n` +
-      `OK = log ${wallH}h (you stayed on the floor, app was closed)\n` +
-      `Cancel = log ${fgH}h (auto-tracked active time)\n\n` +
-      `If unsure, choose Cancel and edit the billing entry afterwards.`
+      "You were caring for "+wallH+"h by the clock, but the app was active for "+fgH+"h.\n\n"
+      + "OK = record "+wallH+"h (you were present, app was in the background)\n"
+      + "Cancel = record "+fgH+"h (app-tracked time only)\n\n"
+      + "If unsure, choose Cancel."
     );
     ms = useWall ? wallMs : fgMs;
   }
-  const hrs  = Math.round(ms / 36000) / 100;
+  const hrs   = Math.round(ms / 36000) / 100;
   const shift_ = Object.assign({}, stored);
   shift_.hours = hrs;
-  // For downstream code below, alias back to `shift`
   Object.assign(shift, shift_);
   if(!D.shifts) D.shifts = [];
   D.shifts.unshift(shift);
-  // Auto-create billing entry
-  const startT = new Date(shift.clockIn).toTimeString().slice(0,5);
-  const endT   = now.toTimeString().slice(0,5);
-  if(!D.billing) D.billing = [];
-  const defRate = parseFloat(D.settings?.defaultRate) || 0;
-  D.billing.unshift({
-    id: Date.now(), date: shift.date, start: startT, end: endT,
-    hours: hrs, patient: '', service: 'Personal care',
-    rate: defRate,
-    earned: Math.round(hrs * defRate * 100) / 100,
-    miles: 0, status: 'pending', patientId: _globalPatientId || '',
-    notes: `Auto-logged from shift clock. ${shift.clockInDisp} – ${shift.clockOutDisp}` + (defRate === 0 ? ' (rate not set — add a default hourly rate in Settings)' : '')
-  });
   save();
   localStorage.removeItem(SHIFT_KEY);
   stopShiftTimer();
   updateClockUI(null);
-  toast(`🔴 Clocked out — ${hrs}h logged. Billing entry created.`, 'var(--held)');
+  toast("Care handed off — " + hrs + "h recorded", "var(--given)");
 }
 
 function updateClockUI(shift){
