@@ -1,43 +1,19 @@
 {
-  "id": "com.flougher.tendedpro",
-  "name": "Tended Health Pro: CNA Shift & MAR Log",
-  "short_name": "Tended Health Pro",
-  "description": "CNA & HHA shift documentation: MAR, incident log, vitals, care notes, wound tracker & billing. Works offline. No login required.",
-  "start_url": "/tended-pro/",
-  "scope": "/tended-pro/",
+  "name": "Tended Health Pro",
+  "short_name": "Tended Pro",
+  "description": "Free caregiving app for families caring for a loved one with Alzheimer's or dementia. Track medications, behaviors, incidents, and daily care.",
+  "start_url": "https://flougher.github.io/tended-pro/",
+  "scope": "https://flougher.github.io/tended-pro/",
+  "id": "https://flougher.github.io/tended-pro/",
   "display": "standalone",
-  "background_color": "#0C1B33",
-  "theme_color": "#0E9E8E",
-  "orientation": "portrait-primary",
-  "lang": "en-US",
+  "orientation": "portrait",
+  "background_color": "#0C7A6E",
+  "theme_color": "#0C7A6E",
   "categories": [
+    "health",
     "medical",
-    "productivity"
+    "lifestyle"
   ],
-  "icons": [
-    {
-      "src": "https://flougher.github.io/tended-pro/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "https://flougher.github.io/tended-pro/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Log Medications",
-      "url": "/tended-pro/",
-      "description": "Open the MAR medication log"
-    },
-    {
-      "name": "Log Incident",
-      "url": "/tended-pro/",
-      "description": "Log a shift incident"
-    }
-  ]
+  "lang": "en-US",
+  "dir": "ltr"
 }
