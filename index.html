@@ -4567,6 +4567,7 @@ function renderDashboard(){
           <div style="width:34px;height:34px;border-radius:50%;background:${p.color};color:white;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:.85rem;font-weight:700;flex-shrink:0">${init}</div>
           <div style="flex:1;min-width:0">
             <div style="font-weight:600;font-size:.88rem;color:var(--navy)">${p.fname} ${p.lname}</div>
+            ${p.isSample ? '<div style="font-size:.72rem;color:#0C7A6E;font-weight:600;margin-top:1px">Sample Patient</div>' : ''}
             <div style="font-size:.74rem;color:var(--slate-light);display:flex;gap:6px;flex-wrap:wrap;margin-top:2px">
               <span>${p.room||''}</span>
               ${p.fallRisk ? fallRiskBadge(p.fallRisk, false) : ''}
@@ -4772,7 +4773,7 @@ function renderPatients(){
     return `<div class="patient-card" onclick="openPatientDetail(${p.id})" style="${isHighRisk&&!isInactive?'border-left:3px solid var(--refused);':''}${isInactive?'opacity:0.55;':''}">
       <div class="patient-avatar" style="background:${p.color}">${init}</div>
       <div style="flex:1;min-width:0">
-        <div class="patient-name">${p.fname} ${p.lname}${p.isSample?'<span style="margin-left:8px;font-size:.68rem;font-weight:700;background:#E8F5F3;color:#0C7A6E;border:1px solid #0C7A6E;border-radius:4px;padding:1px 6px;vertical-align:middle;letter-spacing:.03em">SAMPLE</span>':''}
+        <div class="patient-name">${p.fname} ${p.lname}${p.isSample?'<span style="margin-left:8px;font-size:.68rem;font-weight:700;background:#E8F5F3;color:#0C7A6E;border:1px solid #0C7A6E;border-radius:4px;padding:1px 6px;vertical-align:middle;letter-spacing:.03em">SAMPLE PATIENT</span>':''}
           ${isDeceased?'<span style="font-size:.65rem;background:#E5E7EB;color:#6B7280;padding:2px 7px;border-radius:8px;margin-left:6px">Passed away</span>':isDischarged?'<span style="font-size:.65rem;background:#E5E7EB;color:#6B7280;padding:2px 7px;border-radius:8px;margin-left:6px">Discharged</span>':''}
           ${!isInactive && p.fallRisk ? ' ' + fallRiskBadge(p.fallRisk, false) : ''}
           ${p.painLevel !== undefined && p.painLevel !== '' ? ' ' + painFaceHtml(p.painLevel) : ''}
