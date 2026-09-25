@@ -3308,7 +3308,7 @@ body {
 
 // ── Data ──────────────────────────────────────────────────────
 const STORE          = 'tendedPro_v1';
-const SCHEMA_VERSION = 4;
+const SCHEMA_VERSION = 5;
 const COLORS = ['#0C7A6E','#0C3B6E','#7A0C4A','#4A0C7A','#6E4A0C','#0C4A6E','#6E0C2A','#2A6E0C'];
 
 // ── BLACK BOX WARNING DATABASE ─────────────────────────────────
@@ -3786,6 +3786,12 @@ function migrateData(){
     if(p.room && /^Room\s+\d+[A-Za-z]*$/i.test(p.room.trim())) {
       p.room = '';
     }
+  });
+
+  
+  // Migration v5 — tag the known sample patient (Margaret Thompson, id 1700000001)
+  (D.patients||[]).forEach(p => {
+    if(String(p.id) === '1700000001') p.isSample = true;
   });
 
     // Mark migration complete — must be last line
