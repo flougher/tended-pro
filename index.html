@@ -1210,7 +1210,7 @@ body {
   <div style="background:var(--white);border-radius:20px;padding:40px 36px;max-width:540px;width:100%;box-shadow:0 24px 64px rgba(12,27,51,.4);text-align:center;animation:welcomeFadeIn .4s ease;margin:auto 0">
     <div style="width:64px;height:64px;background:linear-gradient(135deg,var(--teal-mid),var(--teal-bright));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 20px">🏥</div>
     <div style="font-family:var(--font-head);font-size:1.6rem;font-weight:700;color:var(--navy);margin-bottom:8px">Welcome to Tended Health Pro</div>
-    <div style="font-size:.92rem;color:var(--slate-mid);line-height:1.7;margin-bottom:6px">Professional shift documentation for <strong style="color:var(--navy)">CNAs, HHAs, and direct care workers.</strong></div>
+    <div style="font-size:.92rem;color:var(--slate-mid);line-height:1.7;margin-bottom:6px">Shift documentation for <strong style="color:var(--navy)">family caregivers and care teams.</strong></div>
     <div style="font-size:.84rem;color:var(--slate-light);line-height:1.6;margin-bottom:24px">Medication Log · Incidents · Vitals · Wound Tracker · Behavior Log · <strong style="color:#7C3AED">Memory Care</strong> · Billing · Monthly Report — all in one secure offline app.</div>
     <!-- UX-001 — capture caregiver name/initials up front -->
     <div style="background:var(--off-white);border-radius:14px;padding:18px;margin-bottom:18px;text-align:left">
@@ -2017,21 +2017,21 @@ body {
         <div id="set-name-err" style="display:none;font-size:.72rem;color:var(--refused);margin-top:3px">⚠ Name is required — it appears on your Medication Log and handoff reports</div>
       </div>
       <div class="fg">
-        <label>Agency / Facility</label>
-        <input id="set-agency" placeholder="e.g. Caring Hands Home Health" oninput="markSettingsDirty()">
+        <label>Organization / Group (optional)</label>
+        <input id="set-agency" placeholder="e.g. Alzheimer's Association, Church Group" oninput="markSettingsDirty()">
       </div>
       <div class="fg">
-        <label>Role / Title</label>
-        <input id="set-role" placeholder="e.g. CNA, RN, Home Health Aide" oninput="markSettingsDirty()">
+        <label>Your Relationship to Patient</label>
+        <input id="set-role" placeholder="e.g. Daughter, Son, Spouse, Partner" oninput="markSettingsDirty()">
       </div>
       <div class="fg">
         <label>Default Initials <span style="color:var(--refused);font-size:.78rem">*</span></label>
-        <input id="set-initials" placeholder="e.g. JD or RN-JS" maxlength="10" oninput="markSettingsDirty()">
+        <input id="set-initials" placeholder="e.g. JD or FL" maxlength="10" oninput="markSettingsDirty()">
         <div id="set-initials-err" style="display:none;font-size:.72rem;color:var(--refused);margin-top:3px">⚠ Initials are required — they appear on every medication log entry</div>
       </div>
       <div class="fg" style="margin-bottom:16px">
-        <label>Supervisor</label>
-        <input id="set-supervisor" placeholder="Supervisor name and contact" oninput="markSettingsDirty()">
+        <label>Emergency Contact / Primary Doctor</label>
+        <input id="set-supervisor" placeholder="e.g. Dr. Smith · 702-555-0100" oninput="markSettingsDirty()">
       </div>
       <div class="fg" style="margin-bottom:16px">
         <label>Default hourly rate ($/hr)</label>
@@ -2039,8 +2039,8 @@ body {
         <div style="font-size:.72rem;color:var(--slate-light);margin-top:3px">Used to auto-populate billing entries created from Clock Out.</div>
       </div>
       <div class="fg" style="margin-bottom:16px">
-        <label>Facility name (optional, for printed reports)</label>
-        <input id="set-facility" placeholder="e.g. Sunrise Manor — North Wing" oninput="markSettingsDirty()">
+        <label>Day Program / Support Group (optional)</label>
+        <input id="set-facility" placeholder="e.g. Adult Day Program name (optional)" oninput="markSettingsDirty()">
       </div>
       <button class="btn btn-teal" id="settings-save-btn" onclick="saveSettings()" style="width:100%;justify-content:center;font-size:.92rem">💾 Save Caregiver Profile</button>
       <div id="settings-saved-msg" style="display:none;text-align:center;font-size:.78rem;color:var(--given);margin-top:8px">✅ Profile saved successfully</div>
@@ -3120,7 +3120,7 @@ body {
         placeholder="YYYY-MM-DD">
       <small style="color:var(--slate-light);font-size:.75rem">Tap field — starts at 1940. Use keyboard icon to type directly.</small>
       </div>
-      <div class="fg"><label>Room / Unit</label><input id="pm-room" placeholder="Room 12B"></div>
+      <div class="fg"><label>Home Address (optional)</label><input id="pm-room" placeholder="e.g. 123 Main St, Sparks NV"></div>
     </div>
     <div class="form-row">
       <div class="fg"><label>Primary Doctor</label><input id="pm-doctor" placeholder="Dr. Chen"></div>
@@ -3614,7 +3614,7 @@ function buildPatientSelector(selId, onchangeFn, style=''){
   const patients = (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged');
   if(!patients.length) return '<div style="font-size:.8rem;color:var(--slate-light);padding:4px 0">No patients added yet — go to Patient Roster to add one.</div>';
   const opts = ['<option value="">— Select a patient —</option>',
-    ...patients.map(p => `<option value="${p.id}"${String(p.id)===String(_globalPatientId)?' selected':''}>${p.fname} ${p.lname}${p.room?' · Rm '+p.room:''}${p.dob?' · DOB '+p.dob:''}</option>`)
+    ...patients.map(p => `<option value="${p.id}"${String(p.id)===String(_globalPatientId)?' selected':''}>${p.fname} ${p.lname}${p.dob?' · DOB '+p.dob:''}</option>`)
   ].join('');
   return `<select id="${selId}" onchange="setGlobalPatient(this.value);${onchangeFn}()" style="border:2px solid var(--teal);border-radius:var(--r);padding:8px 14px;font-family:var(--font-body);font-size:.9rem;background:white;color:var(--navy);font-weight:700;flex:1;${style}">${opts}</select>`;
 }
@@ -3682,7 +3682,7 @@ function populatePatientBars(){
     const el = document.getElementById(id);
     if(!el || el.tagName !== 'SELECT') return;
     el.innerHTML = '<option value="">— Select a patient —</option>' +
-      (D.patients||[]).map(p => `<option value="${p.id}"${String(p.id)===String(_globalPatientId)?' selected':''}>${p.fname} ${p.lname}${p.room?' · Rm '+p.room:''}</option>`).join('');
+      (D.patients||[]).map(p => `<option value="${p.id}"${String(p.id)===String(_globalPatientId)?' selected':''}>${p.fname} ${p.lname}</option>`).join('');
     if(_globalPatientId) el.value = _globalPatientId;
   });
   // Update topbar badge
@@ -4557,7 +4557,7 @@ function renderDashboard(){
           <div style="flex:1;min-width:0">
             <div style="font-weight:600;font-size:.88rem;color:var(--navy)">${p.fname} ${p.lname}</div>
             <div style="font-size:.74rem;color:var(--slate-light);display:flex;gap:6px;flex-wrap:wrap;margin-top:2px">
-              <span>${p.room||'No room assigned'}</span>
+              <span>${p.room||''}</span>
               ${p.fallRisk ? fallRiskBadge(p.fallRisk, false) : ''}
               ${p.painLevel!==undefined&&p.painLevel!=='' ? painFaceHtml(p.painLevel) : ''}
             </div>
@@ -4633,7 +4633,7 @@ const CONTACT_TYPES = [
   '🚨 Emergency Contact',
   '👨‍⚕️ Primary Doctor',
   '🏥 Specialist',
-  '🩺 Home Health Agency',
+  '🏠 Home Health Services',
   '☎️ Hospice',
   '📋 Power of Attorney',
   '📞 Case Manager',
@@ -4748,7 +4748,7 @@ function renderPatients(){
     : 'Manage patient profiles and care information';
 
   if(!D.patients.length){
-    list.innerHTML = '<div class="empty"><div class="empty-icon">👤</div><div class="empty-text">No patients added yet.<br><br>Tap <strong style="color:var(--teal)">+ Add Patient</strong> above to create your first patient profile.<br><br><span style="font-size:.78rem;color:var(--slate-light)">Add name, room number, allergies, emergency contacts, and care notes.</span></div></div>';
+    list.innerHTML = '<div class="empty"><div class="empty-icon">👤</div><div class="empty-text">No patients added yet.<br><br>Tap <strong style="color:var(--teal)">+ Add Patient</strong> above to create your first patient profile.<br><br><span style="font-size:.78rem;color:var(--slate-light)">Add name, allergies, emergency contacts, and care notes.</span></div></div>';
     return;
   }
 
@@ -4766,7 +4766,7 @@ function renderPatients(){
           ${!isInactive && p.fallRisk ? ' ' + fallRiskBadge(p.fallRisk, false) : ''}
           ${p.painLevel !== undefined && p.painLevel !== '' ? ' ' + painFaceHtml(p.painLevel) : ''}
         </div>
-        <div class="patient-meta">${[p.room && '📍 '+p.room, p.dob && 'DOB: '+p.dob].filter(Boolean).join(' · ') || 'No additional info'}</div>
+        <div class="patient-meta">${[p.room && '🏠 '+p.room, p.dob && 'DOB: '+p.dob].filter(Boolean).join(' · ') || 'No additional info'}</div>
         ${p.doctor ? `<div style="margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span style="font-weight:700;font-size:.86rem;color:var(--navy)">👨‍⚕️ ${p.doctor}</span>
           ${p.doctorPhone ? `<span style="font-weight:700;font-size:.84rem;color:var(--teal)">${p.doctorPhone}</span>
@@ -4794,7 +4794,7 @@ function openPatientDetail(id){
   document.getElementById('detail-info').innerHTML = `
     <div style="font-size:.87rem;line-height:2;color:var(--slate-mid)">
       ${p.dob    ? `<div><strong style="color:var(--slate)">DOB:</strong> ${p.dob}</div>` : ''}
-      ${p.room   ? `<div><strong style="color:var(--slate)">Room:</strong> ${p.room}</div>` : ''}
+      ${p.room   ? `<div><strong style="color:var(--slate)">Address:</strong> ${p.room}</div>` : ''}
       ${p.doctor ? `<div><strong style="color:var(--slate)">Doctor:</strong> ${p.doctor}</div>` : ''}
       ${p.blood  ? `<div><strong style="color:var(--slate)">Blood Type:</strong> <span style="font-family:var(--font-mono);font-weight:700">${p.blood}</span></div>` : ''}
       ${p.notes  ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-style:italic;color:var(--slate-light);font-size:.82rem">${p.notes}</div>` : ''}
@@ -5237,7 +5237,7 @@ function populateMARPatients(){
   if(!sel) return;
   const cur = sel.value;
   sel.innerHTML = '<option value="">— Select patient —</option>' +
-    (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged').map(p => `<option value="${p.id}"${p.id == cur?' selected':''}>${p.fname} ${p.lname}${p.room?' ('+p.room+')':''}</option>`).join('');
+    (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged').map(p => `<option value="${p.id}"${p.id == cur?' selected':''}>${p.fname} ${p.lname}</option>`).join('');
 }
 
 function saveInitials(){
@@ -5297,7 +5297,7 @@ function renderMARAllPatients(){
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <div>
           <span style="font-weight:700;font-size:.95rem;color:var(--navy)">${fallBadge} ${p.fname} ${p.lname}</span>
-          ${p.room ? `<span style="font-size:.74rem;color:var(--slate-light);margin-left:8px">Room ${p.room}</span>` : ''}
+          ${p.room ? `<span style="font-size:.74rem;color:var(--slate-light);margin-left:8px">${p.room}</span>` : ''}
         </div>
         <div style="display:flex;gap:6px;font-size:.72rem;font-weight:700">
           ${given.length   ? `<span style="background:var(--given-bg);color:var(--given);padding:2px 8px;border-radius:10px">${given.length} given</span>` : ''}
@@ -5502,7 +5502,7 @@ function exportAgencySummary(){
           <div>
             <span class="patient-name">${p.fname} ${p.lname}</span>
             ${p.dob?`<span class="patient-meta">DOB: ${p.dob}</span>`:''}
-            ${p.room?`<span class="patient-meta">Room: ${p.room}</span>`:''}
+            ${p.room?`<span class="patient-meta">${p.room}</span>`:''}
             ${p.doctor?`<span class="patient-meta">Dr. ${p.doctor}</span>`:''}
           </div>
           <div class="fall-risk">Fall Risk: ${fallLabel}</div>
@@ -5575,8 +5575,8 @@ function exportAgencySummary(){
     <div class="report-meta">
       <div><strong>Caregiver:</strong> ${caregiver}${initials?' ('+initials+')':''}</div>
       ${role?`<div><strong>Role:</strong> ${role}</div>`:''}
-      ${agency?`<div><strong>Agency:</strong> ${agency}</div>`:''}
-      ${supervisor?`<div><strong>Supervisor:</strong> ${supervisor}</div>`:''}
+      ${agency?`<div><strong>Organization:</strong> ${agency}</div>`:''}
+      ${supervisor?`<div><strong>Emergency Contact:</strong> ${supervisor}</div>`:''}
       <div><strong>Generated:</strong> ${new Date().toLocaleString()}</div>
     </div>
   </div>
@@ -5874,7 +5874,7 @@ function printMAR(){
   <h1>Medication Administration Record</h1>
   <div class="meta">
     ${dateDisp} &nbsp;·&nbsp;
-    ${patient ? patient.fname+' '+patient.lname+(patient.room?' · '+patient.room:'') : 'All patients'} &nbsp;·&nbsp;
+    ${patient ? patient.fname+' '+patient.lname : 'All patients'} &nbsp;·&nbsp;
     Caregiver: ${initials} &nbsp;·&nbsp; Tended Health Pro
   </div>
   <table>
@@ -6872,8 +6872,8 @@ function generateHandoff(){
 
       ${(highRiskPts.length || medRiskPts.length) ? `<div class="ho-block" style="background:#FFF5F5;border:1.5px solid var(--refused);border-radius:var(--r)">
         <div class="ho-block-title" style="color:var(--refused)">🚨 Fall Risk Patients</div>
-        ${highRiskPts.map(p => `<div style="font-size:.84rem;color:var(--refused);font-weight:600">🔴 HIGH — ${p.fname} ${p.lname}${p.room?' ('+p.room+')':''}</div>`).join('')}
-        ${medRiskPts.map(p => `<div style="font-size:.84rem;color:#8A6A00">🟡 MEDIUM — ${p.fname} ${p.lname}${p.room?' ('+p.room+')':''}</div>`).join('')}
+        ${highRiskPts.map(p => `<div style="font-size:.84rem;color:var(--refused);font-weight:600">🔴 HIGH — ${p.fname} ${p.lname}</div>`).join('')}
+        ${medRiskPts.map(p => `<div style="font-size:.84rem;color:#8A6A00">🟡 MEDIUM — ${p.fname} ${p.lname}</div>`).join('')}
       </div>` : ''}
 
       ${extra ? `<div class="ho-block">
@@ -9617,7 +9617,7 @@ function buildSampleData(){
   const pid = 1700000001;
   const patients = [{
     id:pid, color:'#0C7A6E', fname:'Margaret', lname:'Thompson', dob:'1942-03-14',
-    room:'Room 4B', doctor:'Dr. Evelyn Marks, MD', blood:'A+',
+    room:'', doctor:'Dr. Evelyn Marks, MD', blood:'A+',
     allergies:'Penicillin (rash/hives), Sulfa drugs (severe), Codeine (nausea)',
     conditions:'Type 2 Diabetes, Hypertension, Mild Vascular Dementia, Osteoarthritis (bilateral knees), Hypothyroidism, CKD Stage 2',
     emergency:'Daughter — Linda Flores · 702-555-0182',
@@ -9636,9 +9636,9 @@ function buildSampleData(){
   const mk = (medId, status, timeGiven, initials) =>
     ({ [`${todayISO}|${pid}|${medId}`]: { status, timeGiven, initials } });
   const mar = Object.assign(
-    mk(2001,'given','08:05','CNA-JR'), mk(2002,'given','08:06','CNA-JR'),
-    mk(2003,'given','07:02','CNA-JR'), mk(2004,'given','08:07','CNA-JR'),
-    mk(2005,'refused','09:15','RN-AS'), mk(2006,'given','14:30','CNA-JR')
+    mk(2001,'given','08:05','JR'), mk(2002,'given','08:06','JR'),
+    mk(2003,'given','07:02','JR'), mk(2004,'given','08:07','JR'),
+    mk(2005,'refused','09:15','DR-S'), mk(2006,'given','14:30','JR')
   );
   const marNotes = { [`${todayISO}|${pid}`]: 'Memantine refused — resident stated "I don\'t need that one." Supervisor notified.' };
   const incidents = [
@@ -9668,7 +9668,7 @@ function buildSampleData(){
     pain:'Arthritis pain bilateral knees. Acetaminophen PRN.',
     sleep:'Lights out by 10pm. White noise machine helpful.',
     comfort:'Prefers showers. Hair washed Tue/Fri. Likes Chopin. Jeopardy at 7pm.',
-    updatedBy:'RN Amy Stanton', notes:'Daughter Linda visits M/W/F. Son Robert Sundays.',
+    updatedBy:'Jordan Rivera', notes:'Daughter Linda visits M/W/F. Son Robert Sundays.',
     savedAt: new Date().toISOString()
   };
   const wounds = [
@@ -9763,10 +9763,8 @@ function buildSampleData(){
     { id:10006, patientId:pid, date:dStr(-1),  time:'14:00', type:'bm',   amount:'Moderate', continent:'continent',   product:'', notes:'Normal stool.' }
   ];
   const creds = [
-    { id:11001, name:'CNA License — California', number:'CA-CNA-298471', issued:'2021-06-15', expiry:dStr(60),  issuer:'California Dept. of Health', notes:'Renewal required every 2 years.' },
-    { id:11002, name:'CPR / BLS Certification',  number:'AHA-BLS-77320', issued:'2024-01-10', expiry:dStr(320), issuer:'American Heart Association',   notes:'Healthcare provider level.' },
-    { id:11003, name:'Medication Aide Certificate', number:'MA-CA-8841', issued:'2022-09-01', expiry:dStr(-15), issuer:'Caring Hands Training Institute', notes:'EXPIRED — renewal class scheduled.' },
-    { id:11004, name:'First Aid Certification',  number:'RC-FA-2024-551',issued:'2024-03-22', expiry:dStr(355), issuer:'American Red Cross',             notes:'' }
+    { id:11001, name:'CPR / First Aid Certification', number:'AHA-CPR-77320', issued:'2024-01-10', expiry:dStr(320), issuer:'American Heart Association', notes:'Recommended for family caregivers.' },
+    { id:11002, name:'First Aid Certification',  number:'RC-FA-2024-551',issued:'2024-03-22', expiry:dStr(355), issuer:'American Red Cross',             notes:'' }
   ];
   const billing = [
     { id:12001, patientId:pid, date:dStr(-6), patient:'Margaret Thompson', service:'Personal care',              start:'08:00', end:'12:00', hours:4, rate:28, earned:112, miles:12, status:'paid',      notes:'Regular shift.' },
@@ -9774,7 +9772,7 @@ function buildSampleData(){
     { id:12003, patientId:pid, date:dStr(-2), patient:'Margaret Thompson', service:'Personal care',              start:'08:00', end:'12:00', hours:4, rate:28, earned:112, miles:12, status:'submitted',  notes:'Submitted 2 days ago.' },
     { id:12004, patientId:pid, date:todayISO, patient:'Margaret Thompson', service:'Personal care',              start:'08:00', end:'12:00', hours:4, rate:28, earned:112, miles:12, status:'pending',    notes:"Today's shift." }
   ];
-  const settings = { name:'Jordan Rivera', agency:'Caring Hands Home Health', role:'CNA', initials:'CNA-JR', supervisor:'RN Amy Stanton · 702-555-0199' };
+  const settings = { name:'Jordan Rivera', agency:'', role:'Daughter', initials:'JR', supervisor:'Dr. Maria Sanchez · 702-555-0199' };
   // Sample vitals
   const dStr2 = d => { const dt = new Date(); dt.setDate(dt.getDate()+d); return dt.toISOString().split('T')[0]; };
   const vitals = [
@@ -9802,23 +9800,23 @@ function buildSampleData(){
     { id:18001, patientId:pid, date:todayISO, time:'08:30',
       breathing:0, vocalization:1, facial:1, body:1, consolability:0, total:3,
       notes:'Morning stiffness. Slight moaning during position change. Settled after repositioning.',
-      caregiver:'CNA-JR' },
+      caregiver:'JR' },
     { id:18002, patientId:pid, date:todayISO, time:'14:00',
       breathing:0, vocalization:0, facial:0, body:0, consolability:0, total:0,
       notes:'Resting comfortably. No pain indicators during afternoon assessment.',
-      caregiver:'CNA-JR' },
+      caregiver:'JR' },
     { id:18003, patientId:pid, date:dStr(-1), time:'10:15',
       breathing:1, vocalization:2, facial:2, body:2, consolability:1, total:8,
       notes:'Loud groaning during wound dressing change. Rigid posture. Very difficult to console. Supervisor notified.',
-      caregiver:'CNA-JR' },
+      caregiver:'JR' },
     { id:18004, patientId:pid, date:dStr(-1), time:'15:30',
       breathing:0, vocalization:1, facial:1, body:0, consolability:0, total:2,
       notes:'Post-nap assessment. Mild residual discomfort. Much improved from morning.',
-      caregiver:'CNA-JR' },
+      caregiver:'JR' },
     { id:18005, patientId:pid, date:dStr(-2), time:'09:00',
       breathing:0, vocalization:0, facial:1, body:1, consolability:0, total:2,
       notes:'Mild frowning during morning care. Relaxed after warm blanket applied.',
-      caregiver:'CNA-JR' }
+      caregiver:'JR' }
   ];
   // Hydration settings for Margaret
   const hydrationSettings = {
@@ -9916,7 +9914,7 @@ function buildSampleData(){
         activities:'Folding towels (finds repetitive tasks calming). Listening to Rosemary Clooney. Looking at her wedding photo album.' },
       { id:17003, patientId:pid, date:dStr(-3), shift:'Morning (7am–3pm)',
         mood:'😊 Good — calm, engaged, cooperative',
-        worked:'Today was a great morning. She remembered the CNA name from yesterday. Engaged well during breakfast. Accepted all personal care without resistance.',
+        worked:'Today was a great morning. She remembered my name from yesterday. Engaged well during breakfast. Accepted all personal care without resistance.',
         avoid:'Busy common areas during lunch — becomes overwhelmed by noise and activity.',
         calming:'When overstimulated — move to quiet sunroom. White noise machine helpful at night.',
         communication:'On good days she responds to humor and light conversation about her past as a schoolteacher. Ask her about her favorite students.',
@@ -10483,7 +10481,7 @@ function _quickLogShowPicker(action, patients){
             </div>
             <div style="text-align:left">
               <div>${p.fname} ${p.lname}</div>
-              ${p.room?`<div style="font-size:.74rem;font-weight:400;color:var(--slate-light)">Room ${p.room}</div>`:''}
+              ${p.room?`<div style="font-size:.74rem;font-weight:400;color:var(--slate-light)">${p.room}</div>`:''}
             </div>
           </button>`).join('')}
         <button onclick="document.getElementById('ql-picker-overlay').remove()"
@@ -10853,8 +10851,7 @@ function renderResidentRows(){
         <div style="flex:1;min-width:0">
           <div style="font-weight:700;font-size:.95rem;color:var(--navy);line-height:1.2">
             ${p.fname} ${p.lname}</div>
-          ${p.room ? `<div style="font-size:.72rem;color:var(--slate-light);margin-top:1px">
-            Room ${p.room}</div>` : ''}
+          ${p.room ? `<div style="font-size:.72rem;color:var(--slate-light);margin-top:1px">${p.room}</div>` : ''}
         </div>
         <div style="width:10px;height:10px;border-radius:50%;background:${worst};flex-shrink:0"></div>
       </div>
@@ -11119,7 +11116,7 @@ function populateVitalsPatients(){
     if(!sel) return;
     const cur = sel.value;
     sel.innerHTML = '<option value="">— Select patient —</option>' +
-      (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged').map(p => `<option value="${p.id}"${p.id==cur?' selected':''}>${p.fname} ${p.lname}${p.room?' ('+p.room+')':''}</option>`).join('');
+      (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged').map(p => `<option value="${p.id}"${p.id==cur?' selected':''}>${p.fname} ${p.lname}</option>`).join('');
   });
 }
 
@@ -13411,7 +13408,7 @@ function itmRenderEntry(root){
     <div id="itm-patient-bar" style="margin-bottom:12px"></div>
     <div style="background:linear-gradient(135deg,var(--teal) 0%,var(--navy) 100%);border-radius:var(--r-lg);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
       <div style="color:white">
-        <div style="font-size:1rem;font-weight:800">${emEsc(p.fname)} ${emEsc(p.lname)}${p.room?' · Rm '+emEsc(p.room):''}</div>
+        <div style="font-size:1rem;font-weight:800">${emEsc(p.fname)} ${emEsc(p.lname)}</div>
         <div style="font-size:.76rem;color:rgba(255,255,255,.8);margin-top:2px">${p.allergies?'⚠️ '+emEsc(p.allergies):'No known allergies on file'}</div>
       </div>
       ${riskBadge}
@@ -13581,7 +13578,7 @@ function renderEmergency(){
 
   if(sel){
     sel.innerHTML = patients.length
-      ? patients.map(p => `<option value="${p.id}"${String(p.id)===String(_globalPatientId)?' selected':''}>${emEsc(p.fname)} ${emEsc(p.lname)}${p.room?' · Rm '+emEsc(p.room):''}</option>`).join('')
+      ? patients.map(p => `<option value="${p.id}"${String(p.id)===String(_globalPatientId)?' selected':''}>${emEsc(p.fname)} ${emEsc(p.lname)}</option>`).join('')
       : '<option>No patients</option>';
   }
 
@@ -13662,7 +13659,7 @@ function renderEmergency(){
     <div class="em-head"><div>
       <div class="em-badge">🚨 Emergency Mode</div>
       <div class="em-name">${emEsc(p.fname)} ${emEsc(p.lname)}</div>
-      <div class="em-dob">${idLine || 'No demographic info on file'}${p.room?' · Rm '+emEsc(p.room):''}</div>
+      <div class="em-dob">${idLine || 'No demographic info on file'}</div>
     </div></div>
     <div class="em-banner"><span style="font-size:1.3rem;flex-shrink:0">📱</span><div><div class="t">Show this screen to any EMT, nurse or doctor.</div><div class="s">Everything critical is on this screen — pulled from this patient's record.</div></div></div>
     <div class="em-body">
@@ -13688,7 +13685,7 @@ function emGetText(p){
   L.push('Patient: ' + (p.fname||'') + ' ' + (p.lname||''));
   if(p.dob)   L.push('DOB: ' + p.dob + (age!==''?' (Age '+age+')':''));
   if(p.blood) L.push('Blood Type: ' + p.blood);
-  if(p.room)  L.push('Room: ' + p.room);
+  if(p.room)  L.push('Address: ' + p.room);
   L.push('');
   L.push('ALLERGIES: ' + (p.allergies || 'None recorded'));
   if(p.conditions){ L.push(''); L.push('CONDITIONS: ' + p.conditions); }
