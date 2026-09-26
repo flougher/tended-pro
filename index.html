@@ -1390,6 +1390,40 @@ body {
   <!-- Alert anchor — critical/BBW/vitals alerts insert here -->
   <div id="dash-alerts-anchor" style="margin:0"></div>
 
+  <!-- Getting Started card — shown to new users, dismissed via localStorage -->
+  <div id="getting-started-card" style="display:none;background:linear-gradient(135deg,#E8F5F3,#F0FAF9);border:1.5px solid #0C7A6E;border-radius:var(--r-lg);padding:16px 18px;margin-bottom:16px">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px">
+      <div>
+        <div style="font-family:var(--font-head);font-size:1rem;color:var(--navy);font-weight:700">👋 Welcome to Tended Health Pro</div>
+        <div style="font-size:.78rem;color:var(--slate-mid);margin-top:2px">Here are the best places to start as a family caregiver.</div>
+      </div>
+      <button onclick="dismissGettingStarted()" aria-label="Dismiss" style="background:none;border:none;color:var(--slate-light);font-size:1.1rem;cursor:pointer;padding:2px 6px;line-height:1;flex-shrink:0">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button onclick="navTo('patients');dismissGettingStarted()" style="background:white;border:1px solid #C8E6E3;border-radius:var(--r);padding:10px 12px;text-align:left;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow=''">
+        <div style="font-size:1.1rem;margin-bottom:4px">👤</div>
+        <div style="font-weight:700;font-size:.82rem;color:var(--navy)">Add Your Patient</div>
+        <div style="font-size:.72rem;color:var(--slate-light);margin-top:2px;line-height:1.4">Set up your loved one's profile</div>
+      </button>
+      <button onclick="navTo('mar');dismissGettingStarted()" style="background:white;border:1px solid #C8E6E3;border-radius:var(--r);padding:10px 12px;text-align:left;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow=''">
+        <div style="font-size:1.1rem;margin-bottom:4px">💊</div>
+        <div style="font-weight:700;font-size:.82rem;color:var(--navy)">Medication Log</div>
+        <div style="font-size:.72rem;color:var(--slate-light);margin-top:2px;line-height:1.4">Track daily medications</div>
+      </button>
+      <button onclick="navTo('careplan');dismissGettingStarted()" style="background:white;border:1px solid #C8E6E3;border-radius:var(--r);padding:10px 12px;text-align:left;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow=''">
+        <div style="font-size:1.1rem;margin-bottom:4px">📌</div>
+        <div style="font-weight:700;font-size:.82rem;color:var(--navy)">Care Preferences</div>
+        <div style="font-size:.72rem;color:var(--slate-light);margin-top:2px;line-height:1.4">Document what matters most</div>
+      </button>
+      <button onclick="navTo('itm');dismissGettingStarted()" style="background:white;border:1px solid #C8E6E3;border-radius:var(--r);padding:10px 12px;text-align:left;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow=''">
+        <div style="font-size:1.1rem;margin-bottom:4px">🫂</div>
+        <div style="font-weight:700;font-size:.82rem;color:var(--navy)">In The Moment</div>
+        <div style="font-size:.72rem;color:var(--slate-light);margin-top:2px;line-height:1.4">Quick help during difficult moments</div>
+      </button>
+    </div>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--slate-light);text-align:center">Tap any section in the menu to explore all features.</div>
+  </div>
+
   <!-- Active Shift Timer -->
   <div id="dash-shift-clock" style="display:none;background:linear-gradient(135deg,#0B4A3E,#0C7A6E);border-radius:var(--r-lg);padding:12px 20px;margin-bottom:12px;display:none;align-items:center;justify-content:space-between;gap:12px">
     <div style="display:flex;align-items:center;gap:10px">
@@ -1521,7 +1555,7 @@ body {
       <div style="display:flex;align-items:center;gap:14px">
         <div style="width:44px;height:44px;background:var(--teal);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">📋</div>
         <div>
-          <div style="font-weight:700;font-size:.95rem;color:var(--navy)">Daily Shift Summary</div>
+          <div style="font-weight:700;font-size:.95rem;color:var(--navy)">Daily Care Summary</div>
           <div style="font-size:.78rem;color:var(--slate-mid);margin-top:2px">Export a complete PDF report — medications, vitals, incidents, meals, behaviors & more</div>
         </div>
       </div>
@@ -4153,6 +4187,7 @@ function navTo(id, btn){
   const sec = document.getElementById('section-' + id);
   if(sec) sec.classList.add('active');
   if(btn) btn.classList.add('active');
+  _expandNavGroup(id); // ensure sidebar group is visible for this section
 
   // Push history entry for back-button support — skipped when triggered by popstate
   if(id !== _currentSection){
@@ -4266,9 +4301,26 @@ function renderTrialExpiryBanner(){
     </div>`;
 }
 
+function dismissGettingStarted(){
+  try { localStorage.setItem('tendedPro_gettingStartedDismissed','1'); } catch(e){}
+  const card = document.getElementById('getting-started-card');
+  if(card) card.style.display = 'none';
+}
+
+function _showGettingStartedIfNew(){
+  let dismissed = false;
+  try { dismissed = !!localStorage.getItem('tendedPro_gettingStartedDismissed'); } catch(e){}
+  const card = document.getElementById('getting-started-card');
+  if(!card) return;
+  // Show only if not dismissed AND user has no real patients (or only the sample patient)
+  const realPatients = (D.patients || []).filter(p => !p.isSample);
+  card.style.display = (!dismissed && realPatients.length === 0) ? 'block' : 'none';
+}
+
 function renderDashboard(){
   renderLaunchBanner();
   renderTrialExpiryBanner();
+  _showGettingStartedIfNew();
   const todayISO = new Date().toISOString().split('T')[0];
   const h = new Date().getHours();
 
@@ -5532,7 +5584,7 @@ function exportAgencySummary(){
 <html>
 <head>
 <meta charset="utf-8">
-<title>Daily Shift Summary — ${dateDisp}</title>
+<title>Daily Care Summary — ${dateDisp}</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; color: #1a1a2e; background: white; }
@@ -5583,7 +5635,7 @@ function exportAgencySummary(){
   ${D.settings?.facility ? `<div style="text-align:center;font-weight:700;font-size:14pt;color:#0C1B33;border-bottom:2px solid #0B7A6E;padding-bottom:6px;margin-bottom:10px">${D.settings.facility}</div>` : ''}
   <div class="report-header">
     <div>
-      <div class="report-title">Daily Shift Summary</div>
+      <div class="report-title">Daily Care Summary</div>
       <div class="report-subtitle">${dateDisp}</div>
     </div>
     <div class="report-meta">
@@ -6444,9 +6496,9 @@ if('serviceWorker' in navigator){
     const isRealHost = loc.protocol === 'https:' || loc.hostname === 'localhost' || loc.hostname === '127.0.0.1';
     if(!isRealHost) return;
 
-    const APP_VERSION = '4.1.0-b11';
+    const APP_VERSION = '4.1.0-b12';
     const swCode = `
-const CACHE = 'tended-pro-v13';
+const CACHE = 'tended-pro-v14';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -12947,13 +12999,28 @@ function renderTriggerReminderCard(){
 // INIT
 // ═══════════════════════════════════════════════════════════════
 // UX-004 — sidebar groups collapsible; state persisted in localStorage
+// Groups always expanded for new users (no saved state): Overview, Patient Care, Safety, Account
+const _NAV_DEFAULT_OPEN = ['Overview', 'Patient Care', 'Safety', 'Account'];
+
 function _wireSidebarCollapse(){
   const labels = document.querySelectorAll('.nav-group .nav-label');
+  const hasSavedState = !!localStorage.getItem('tendedPro_sidebarCollapsed');
   let collapsed = [];
   try { collapsed = JSON.parse(localStorage.getItem('tendedPro_sidebarCollapsed') || '[]'); } catch(e){}
+
   labels.forEach((lbl, idx) => {
     const groupKey = (lbl.textContent || ('group-'+idx)).trim();
-    if(collapsed.includes(groupKey)) lbl.parentElement.classList.add('collapsed');
+    // First-ever visit: collapse all groups not in the default-open list
+    if(!hasSavedState){
+      const isOpen = _NAV_DEFAULT_OPEN.some(name => groupKey.toLowerCase().includes(name.toLowerCase()));
+      if(!isOpen){
+        lbl.parentElement.classList.add('collapsed');
+        collapsed.push(groupKey);
+      }
+    } else {
+      if(collapsed.includes(groupKey)) lbl.parentElement.classList.add('collapsed');
+    }
+
     lbl.addEventListener('click', () => {
       const group = lbl.parentElement;
       group.classList.toggle('collapsed');
@@ -12965,6 +13032,27 @@ function _wireSidebarCollapse(){
       try { localStorage.setItem('tendedPro_sidebarCollapsed', JSON.stringify(cur)); } catch(e){}
     });
   });
+
+  // Save initial collapsed state on first visit
+  if(!hasSavedState){
+    try { localStorage.setItem('tendedPro_sidebarCollapsed', JSON.stringify(collapsed)); } catch(e){}
+  }
+}
+
+// Auto-expand the sidebar group that contains the nav button for a given section id
+function _expandNavGroup(sectionId){
+  const btn = document.querySelector(`.nav-btn[onclick*="navTo('${sectionId}'"]`);
+  if(!btn) return;
+  const group = btn.closest('.nav-group');
+  if(!group || !group.classList.contains('collapsed')) return;
+  const lbl = group.querySelector('.nav-label');
+  if(!lbl) return;
+  group.classList.remove('collapsed');
+  const groupKey = (lbl.textContent || '').trim();
+  let cur = [];
+  try { cur = JSON.parse(localStorage.getItem('tendedPro_sidebarCollapsed') || '[]'); } catch(e){}
+  cur = cur.filter(x => x !== groupKey);
+  try { localStorage.setItem('tendedPro_sidebarCollapsed', JSON.stringify(cur)); } catch(e){}
 }
 
 async function init(){
