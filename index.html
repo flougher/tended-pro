@@ -1374,16 +1374,15 @@ body {
   <div class="ph">
     <div>
       <div class="ph-title">Good <span id="dash-greeting">morning</span><span id="dash-name-inline"></span></div>
-      <div class="ph-sub" id="dash-caregiver-sub">Professional caregiver dashboard</div>
+      <div class="ph-sub" id="dash-caregiver-sub">Your family caregiving companion</div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <div id="clock-in-btn-wrap">
         <button class="btn btn-teal" id="clock-in-btn" onclick="clockIn()">🌅 Start My Day</button>
       </div>
       <div id="clock-out-btn-wrap" style="display:none">
-        <button class="btn btn-secondary" id="clock-out-btn" onclick="clockOut()" style="border-color:var(--refused);color:var(--refused)">🤝 Hand Off Care</button>
+        <button class="btn btn-secondary" id="clock-out-btn" onclick="clockOut()" style="border-color:var(--refused);color:var(--refused)">🌙 End My Day</button>
       </div>
-      <button class="btn btn-teal" onclick="navTo('handoff')">📋 Daily Handoff Summary</button>
     </div>
   </div>
 
@@ -1483,28 +1482,32 @@ body {
       <div style="display:flex;flex-direction:column;gap:8px">
         <button class="btn btn-teal btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('mar')">
           <span style="font-size:1rem">💊</span>
-          <div style="text-align:left"><div style="font-weight:700">Administer Medications</div><div style="font-size:.72rem;opacity:.8;font-weight:400">Log today's medications</div></div>
+          <div style="text-align:left"><div style="font-weight:700">Medication Log</div><div style="font-size:.72rem;opacity:.8;font-weight:400">Log today's medications</div></div>
         </button>
         <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="openIncidentModal()">
           <span style="font-size:1rem">📋</span>
           <div style="text-align:left"><div style="font-weight:700">Log an Incident</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Falls, observations, events</div></div>
         </button>
-        <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('intake')">
-          <span style="font-size:1rem">🍽️</span>
-          <div style="text-align:left"><div style="font-weight:700">Log Meal / Fluids</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Diet & fluid intake tracker</div></div>
-        </button>
-        <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('toileting')">
-          <span style="font-size:1rem">🚻</span>
-          <div style="text-align:left"><div style="font-weight:700">Log Toileting</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Void, BM, continence record</div></div>
-        </button>
         <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('behaviors')">
           <span style="font-size:1rem">🧠</span>
-          <div style="text-align:left"><div style="font-weight:700">Behavior Patterns</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Track triggers, behaviors, and what helps</div></div>
+          <div style="text-align:left"><div style="font-weight:700">Log a Behavior</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Track mood, triggers & what helped</div></div>
         </button>
-        <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('wounds')">
-          <span style="font-size:1rem">🩹</span>
-          <div style="text-align:left"><div style="font-weight:700">Wound Assessment</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Skin integrity & wound tracker</div></div>
-        </button>
+        <!-- More actions (hidden by default) -->
+        <div id="quick-actions-more" style="display:none;flex-direction:column;gap:8px">
+          <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('intake')">
+            <span style="font-size:1rem">🍽️</span>
+            <div style="text-align:left"><div style="font-weight:700">Log Meal / Fluids</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Diet & fluid intake tracker</div></div>
+          </button>
+          <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('toileting')">
+            <span style="font-size:1rem">🚻</span>
+            <div style="text-align:left"><div style="font-weight:700">Log Toileting</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Continence record</div></div>
+          </button>
+          <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('wounds')">
+            <span style="font-size:1rem">🩹</span>
+            <div style="text-align:left"><div style="font-weight:700">Wound & Skin Care</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Skin integrity tracker</div></div>
+          </button>
+        </div>
+        <button id="quick-actions-toggle" onclick="toggleQuickActionsMore()" style="background:none;border:none;color:var(--teal);font-size:.76rem;font-weight:600;cursor:pointer;text-align:left;padding:2px 0">▸ More actions</button>
       </div>
     </div>
   </div>
@@ -1526,8 +1529,8 @@ body {
 
   <!-- Shift Notes -->
   <div class="card" style="margin-bottom:20px">
-    <div class="card-title">📝 Shift Notes
-      <span style="font-size:.7rem;font-weight:400;color:var(--slate-light);margin-left:8px">General narrative — separate from incident log</span>
+    <div class="card-title">📝 Today's Care Notes
+      <span style="font-size:.7rem;font-weight:400;color:var(--slate-light);margin-left:8px">Separate from the incident log</span>
     </div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
       <label style="font-size:.78rem;color:var(--slate-mid);font-weight:600;flex-shrink:0">Date:</label>
@@ -1537,12 +1540,15 @@ body {
       <span id="shift-notes-date-label" style="font-size:.74rem;color:var(--slate-light)"></span>
     </div>
     <textarea id="shift-notes-text" rows="4"
-      placeholder="Write a general shift narrative here — how the patient is doing, observations, mood, anything the next caregiver should know beyond the structured logs…"
+      placeholder="Write your care notes here — how your loved one is doing, mood, observations, anything worth remembering from today…"
       onblur="saveShiftNotes()"
       style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:10px 12px;font-family:var(--font-body);font-size:.86rem;color:var(--text);resize:vertical;line-height:1.6;background:var(--off-white)"></textarea>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
       <span style="font-size:.72rem;color:var(--slate-light)" id="shift-notes-saved"></span>
-      <button class="btn btn-teal btn-sm" onclick="saveShiftNotes()">💾 Save Notes</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-secondary btn-sm" onclick="navTo('handoff')" style="font-size:.74rem">📋 Daily Care Summary</button>
+        <button class="btn btn-teal btn-sm" onclick="saveShiftNotes()">💾 Save Notes</button>
+      </div>
     </div>
   </div>
 
@@ -4301,6 +4307,15 @@ function renderTrialExpiryBanner(){
     </div>`;
 }
 
+function toggleQuickActionsMore(){
+  const more = document.getElementById('quick-actions-more');
+  const btn  = document.getElementById('quick-actions-toggle');
+  if(!more || !btn) return;
+  const open = more.style.display !== 'none';
+  more.style.display = open ? 'none' : 'flex';
+  btn.textContent = open ? '▸ More actions' : '▴ Less';
+}
+
 function dismissGettingStarted(){
   try { localStorage.setItem('tendedPro_gettingStartedDismissed','1'); } catch(e){}
   const card = document.getElementById('getting-started-card');
@@ -4334,7 +4349,7 @@ function renderDashboard(){
   const sub = document.getElementById('dash-caregiver-sub');
   if(sub) sub.textContent = D.settings.agency
     ? D.settings.agency + (D.settings.role ? ' · ' + D.settings.role : '')
-    : 'Professional caregiver dashboard';
+    : 'Your family caregiving companion';
 
   // ── Empty state — show 3-step wizard when no patients OR only the demo patient is loaded ──
   // Demo-aware: keeps guidance visible for users who clicked "Load Sample Patient" so they
@@ -6496,9 +6511,9 @@ if('serviceWorker' in navigator){
     const isRealHost = loc.protocol === 'https:' || loc.hostname === 'localhost' || loc.hostname === '127.0.0.1';
     if(!isRealHost) return;
 
-    const APP_VERSION = '4.2.2';
+    const APP_VERSION = '4.3.0';
     const swCode = `
-const CACHE = 'tended-pro-v17';
+const CACHE = 'tended-pro-v18';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
