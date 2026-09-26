@@ -1441,7 +1441,7 @@ body {
   <!-- Shift Checklist + Quick Actions -->
   <div class="grid-2" style="margin-bottom:20px">
     <div class="card">
-      <div class="card-title">📋 Today's Shift Checklist</div>
+      <div class="card-title">📋 Today's Care Checklist</div>
       <div id="dash-checklist"></div>
     </div>
     <div class="card">
@@ -6444,9 +6444,9 @@ if('serviceWorker' in navigator){
     const isRealHost = loc.protocol === 'https:' || loc.hostname === 'localhost' || loc.hostname === '127.0.0.1';
     if(!isRealHost) return;
 
-    const APP_VERSION = '4.1.0-b10';
+    const APP_VERSION = '4.1.0-b11';
     const swCode = `
-const CACHE = 'tended-pro-v12';
+const CACHE = 'tended-pro-v13';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -10879,7 +10879,7 @@ function renderResidentRows(){
   el.innerHTML =
     `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
        <div style="font-weight:700;font-size:.84rem;color:var(--slate);text-transform:uppercase;
-                   letter-spacing:.07em">👤 Resident Status</div>
+                   letter-spacing:.07em">👤 Care Status</div>
      </div>` + layout;
 }
 
