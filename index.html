@@ -1348,7 +1348,7 @@ body {
     <button class="nav-btn" onclick="navTo('memorycare',this)"><span class="ni">💬</span> Memory Care Notes</button>
   </div>
   <div class="nav-group">
-    <div class="nav-label">Professional Tools</div>
+    <div class="nav-label">Additional Tools</div>
     <button class="nav-btn" onclick="navTo('voice',this)"><span class="ni">🎤</span> Voice to Text</button>
     <button class="nav-btn" onclick="navTo('report',this)"><span class="ni">📄</span> Monthly Report</button>
   </div>
@@ -2153,7 +2153,7 @@ body {
         <div>👤 <strong style="color:var(--navy)">Patient Care:</strong> Patient Roster · Medication Log · Incidents · Shift Handoff</div>
         <div>📋 <strong style="color:var(--navy)">Documentation:</strong> Care Plan · Wound Tracker · Diet &amp; Fluids · Family Log · Pain Scale</div>
         <div>🧠 <strong style="color:var(--navy)">Behavioral &amp; Clinical:</strong> Routines · Triggers · Behavior Patterns · Toileting · Vital Signs · Weekly Trends</div>
-        <div>🎓 <strong style="color:var(--navy)">Professional Tools:</strong> Voice to Text · Credentials · Billing · Monthly Report</div>
+        <div>🎓 <strong style="color:var(--navy)">Additional Tools:</strong> Voice to Text · Credentials · Billing · Monthly Report</div>
         <div>💜 <strong style="color:var(--navy)">Memory Care:</strong> Sundowning Tracker · Wandering &amp; Exit Log · Memory Care Notes</div>
         <div>⚠️ <strong style="color:var(--navy)">Safety:</strong> FDA Medication Warnings for 90+ medications</div>
       </div>
@@ -6496,9 +6496,9 @@ if('serviceWorker' in navigator){
     const isRealHost = loc.protocol === 'https:' || loc.hostname === 'localhost' || loc.hostname === '127.0.0.1';
     if(!isRealHost) return;
 
-    const APP_VERSION = '4.1.0-b12';
+    const APP_VERSION = '4.2.1';
     const swCode = `
-const CACHE = 'tended-pro-v14';
+const CACHE = 'tended-pro-v16';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
