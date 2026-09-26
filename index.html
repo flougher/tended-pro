@@ -1326,7 +1326,7 @@ body {
     <div class="nav-label">Documentation</div>
     <button class="nav-btn" onclick="navTo('careplan',this)"><span class="ni">📌</span> Care Preferences</button>
     <button class="nav-btn" onclick="navTo('comfortcare',this)"><span class="ni">🕊️</span> Comfort Care Log</button>
-    <button class="nav-btn" onclick="navTo('wounds',this)"><span class="ni">🩹</span> Wound Tracker</button>
+    <button class="nav-btn" onclick="navTo('wounds',this)"><span class="ni">🩹</span> Wound &amp; Skin Care</button>
     <button class="nav-btn" onclick="navTo('intake',this)"><span class="ni">🍽️</span> Diet & Fluids</button>
     <button class="nav-btn" onclick="navTo('comms',this)"><span class="ni">📞</span> Family Log</button>
     <button class="nav-btn" onclick="navTo('pain',this)"><span class="ni">😣</span> Pain Scale <span class="nav-badge" id="nb-pain"></span></button>
@@ -1354,7 +1354,7 @@ body {
   </div>
   <div class="nav-group">
     <div class="nav-label">Safety</div>
-    <button class="nav-btn" onclick="navTo('bbw',this)" style="color:rgba(255,200,50,.85)"><span class="ni">⚠️</span> Black Box Warnings <span class="nav-badge" id="nb-bbw" style="background:#C9963A"></span></button>
+    <button class="nav-btn" onclick="navTo('bbw',this)" style="color:rgba(255,200,50,.85)"><span class="ni">⚠️</span> Medication Warnings <span class="nav-badge" id="nb-bbw" style="background:#C9963A"></span></button>
     <button class="nav-btn" onclick="navTo('emergency',this)" style="color:rgba(255,120,120,.95)"><span class="ni">🚨</span> Emergency Mode</button>
   </div>
   <div class="nav-group">
@@ -1719,7 +1719,7 @@ body {
 <div id="section-bbw" class="section">
   <div class="ph">
     <div>
-      <div class="ph-title">⚠️ Black Box Warnings</div>
+      <div class="ph-title">⚠️ Medication Warnings</div>
       <div class="ph-sub">FDA boxed warnings for medications currently in your shared list</div>
     </div>
   </div>
@@ -1738,14 +1738,14 @@ body {
   <div id="bbw-empty" style="display:none" class="card">
     <div style="text-align:center;padding:32px 20px">
       <div style="font-size:2.4rem;margin-bottom:12px">✅</div>
-      <div style="font-family:var(--font-head);font-size:1.1rem;color:var(--navy);margin-bottom:8px">No Black Box Warnings Detected</div>
+      <div style="font-family:var(--font-head);font-size:1.1rem;color:var(--navy);margin-bottom:8px">No Medication Warnings Detected</div>
       <div style="font-size:.86rem;color:var(--slate-light);line-height:1.6">None of the medications in your current list carry FDA black box warnings — or none have been added yet.</div>
       <button class="btn btn-secondary btn-sm" style="margin-top:16px" onclick="navTo('mar')">➕ Add Medications to Medication Log</button>
     </div>
   </div>
   <div class="card" style="margin-top:4px">
-    <div class="card-title">ℹ️ About Black Box Warnings</div>
-    <p style="font-size:.84rem;color:var(--slate-mid);line-height:1.7;margin-bottom:0">A <strong style="color:var(--navy)">Black Box Warning</strong> (also called a boxed warning) is the FDA's most serious drug safety warning. It means the medication has a known risk of serious or life-threatening adverse effects. As a caregiver, your role is to <strong style="color:var(--navy)">monitor for the listed symptoms</strong> and <strong style="color:var(--navy)">report them immediately</strong> to the supervising nurse or physician — never adjust or withhold medication without an order.</p>
+    <div class="card-title">ℹ️ About Medication Warnings</div>
+    <p style="font-size:.84rem;color:var(--slate-mid);line-height:1.7;margin-bottom:0">A <strong style="color:var(--navy)">Medication Warning</strong> (also called an FDA boxed warning) is the FDA's most serious drug safety alert. It means the medication has a known risk of serious or life-threatening side effects. As a caregiver, your role is to <strong style="color:var(--navy)">watch for the listed symptoms</strong> and <strong style="color:var(--navy)">report them immediately</strong> to your doctor or pharmacist — never adjust or stop medication without medical guidance.</p>
       <p style="font-size:.82rem;color:var(--slate-light);line-height:1.6;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">⚕️ <strong style="color:var(--navy)">Disclaimer:</strong> Medication warnings in Tended Health Pro are sourced from FDA drug label data and are for <strong style="color:var(--navy)">informational reference only</strong>. They do not constitute medical advice. Tended Health Pro is a documentation tool — not a medical device. Always follow your agency's protocols and physician orders.</p>
   </div>
 </div>
@@ -6444,9 +6444,9 @@ if('serviceWorker' in navigator){
     const isRealHost = loc.protocol === 'https:' || loc.hostname === 'localhost' || loc.hostname === '127.0.0.1';
     if(!isRealHost) return;
 
-    const APP_VERSION = '4.1.0-b8';
+    const APP_VERSION = '4.1.0-b9';
     const swCode = `
-const CACHE = 'tended-pro-v10';
+const CACHE = 'tended-pro-v11';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -10862,6 +10862,7 @@ function renderResidentRows(){
         <div style="flex:1;min-width:0">
           <div style="font-weight:700;font-size:.95rem;color:var(--navy);line-height:1.2">
             ${p.fname} ${p.lname}</div>
+          ${p.isSample ? `<div style="font-size:.72rem;color:#0C7A6E;font-weight:600;margin-top:1px">Sample Patient</div>` : ''}
           ${p.room ? `<div style="font-size:.72rem;color:var(--slate-light);margin-top:1px">${p.room}</div>` : ''}
         </div>
         <div style="width:10px;height:10px;border-radius:50%;background:${worst};flex-shrink:0"></div>
