@@ -1228,9 +1228,9 @@ body {
       <div style="font-size:.7rem;color:var(--slate-light);margin-top:6px">You can change these later in Settings.</div>
     </div>
     <div style="background:var(--off-white);border-radius:14px;padding:18px;margin-bottom:24px;text-align:left">
-      <div style="font-size:.8rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Load sample patient to explore all sections:</div>
+      <div style="font-size:.8rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Load a sample care recipient to explore all sections:</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;font-size:.82rem;color:var(--navy)">
-        <div>✅ Patient profile</div><div>✅ Medication Log with 4 meds</div>
+        <div>✅ Care recipient profile</div><div>✅ Medication Log with 4 meds</div>
         <div>✅ 3 incidents</div><div>✅ Care plan</div>
         <div>✅ 2 active wounds</div><div>✅ Today's intake</div>
         <div>✅ Family log</div><div>✅ Morning routines</div>
@@ -1243,10 +1243,10 @@ body {
     </div>
     <div style="display:flex;flex-direction:column;gap:10px">
       <button onclick="loadSamplePatient()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--teal),var(--teal-mid));color:white;border:none;border-radius:10px;font-family:var(--font-body);font-size:.95rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
-        👴 Load Sample Patient (Margaret Thompson)
+        👴 Load Sample Care Recipient (Margaret Thompson)
       </button>
       <button onclick="dismissWelcome()" style="width:100%;padding:12px;background:transparent;color:var(--slate-mid);border:1.5px solid var(--border);border-radius:10px;font-family:var(--font-body);font-size:.88rem;cursor:pointer">
-        Start Fresh — I'll add my own patients
+        Start Fresh — I'll add my own care recipients
       </button>
     </div>
     <div style="margin-top:16px;font-size:.74rem;color:var(--slate-light)">⚕️ All data stays on your device only — no cloud, no login required</div>
@@ -1316,8 +1316,8 @@ body {
     <button class="nav-btn active" onclick="navTo('dashboard',this)"><span class="ni">🏠</span> Dashboard</button>
   </div>
   <div class="nav-group">
-    <div class="nav-label">Patient Care</div>
-    <button class="nav-btn" onclick="navTo('patients',this)"><span class="ni">👤</span> Patients <span class="nav-badge" id="nb-patients"></span></button>
+    <div class="nav-label">Care Recipients</div>
+    <button class="nav-btn" onclick="navTo('patients',this)"><span class="ni">👤</span> Care Recipients <span class="nav-badge" id="nb-patients"></span></button>
     <button class="nav-btn" onclick="navTo('mar',this)"><span class="ni">💊</span> Medication Log</button>
     <button class="nav-btn" onclick="navTo('incidents',this)"><span class="ni">📋</span> Incidents <span class="nav-badge" id="nb-incidents"></span></button>
     <button class="nav-btn" onclick="navTo('handoff',this)"><span class="ni">🔄</span> Shift Handoff</button>
@@ -1401,7 +1401,7 @@ body {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
       <button onclick="navTo('patients');dismissGettingStarted()" style="background:white;border:1px solid #C8E6E3;border-radius:var(--r);padding:10px 12px;text-align:left;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow=''">
         <div style="font-size:1.1rem;margin-bottom:4px">👤</div>
-        <div style="font-weight:700;font-size:.82rem;color:var(--navy)">Add Your Patient</div>
+        <div style="font-weight:700;font-size:.82rem;color:var(--navy)">Add Your Care Recipient</div>
         <div style="font-size:.72rem;color:var(--slate-light);margin-top:2px;line-height:1.4">Set up your loved one's profile</div>
       </button>
       <button onclick="navTo('mar');dismissGettingStarted()" style="background:white;border:1px solid #C8E6E3;border-radius:var(--r);padding:10px 12px;text-align:left;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow=''">
@@ -1428,8 +1428,8 @@ body {
     <div style="display:flex;align-items:center;gap:10px">
       <div style="width:10px;height:10px;background:#14C4B2;border-radius:50%;animation:pulse 1.5s infinite"></div>
       <div>
-        <div style="font-family:var(--font-head);font-size:.88rem;color:white;font-weight:700">Shift In Progress</div>
-        <div style="font-size:.72rem;color:rgba(255,255,255,.5)" id="clock-in-time-label">Clocked in at —</div>
+        <div style="font-family:var(--font-head);font-size:.88rem;color:white;font-weight:700">Care Day In Progress</div>
+        <div style="font-size:.72rem;color:rgba(255,255,255,.5)" id="clock-in-time-label">Started at —</div>
       </div>
     </div>
     <div style="font-family:var(--font-mono);font-size:1.5rem;font-weight:700;color:#14C4B2" id="shift-timer">0:00</div>
@@ -1448,7 +1448,7 @@ body {
   <div class="grid-4" style="margin-bottom:20px">
     <div class="stat-card" onclick="navTo('patients')">
       <div class="stat-icon" style="background:rgba(11,122,110,.1)">👤</div>
-      <div><div class="stat-val" id="ds-patients">0</div><div class="stat-lbl">Patients</div></div>
+      <div><div class="stat-val" id="ds-patients">0</div><div class="stat-lbl">Care Recipients</div></div>
     </div>
     <div class="stat-card" onclick="navTo('mar')">
       <div class="stat-icon" style="background:rgba(11,122,110,.1)">💊</div>
@@ -1456,7 +1456,7 @@ body {
     </div>
     <div class="stat-card" onclick="navTo('incidents')">
       <div class="stat-icon" style="background:rgba(192,57,43,.08)">📋</div>
-      <div><div class="stat-val" id="ds-incidents">0</div><div class="stat-lbl">Incidents Today</div></div>
+      <div><div class="stat-val" id="ds-incidents">0</div><div class="stat-lbl">Events Today</div></div>
     </div>
     <div class="stat-card" onclick="navTo('mar')">
       <div class="stat-icon" style="background:rgba(196,122,0,.08)">⚠️</div>
@@ -1516,9 +1516,9 @@ body {
   <!-- Patient Roster + Incidents -->
   <div class="grid-2" style="margin-bottom:20px">
     <div class="card">
-      <div class="card-title">👤 Patient Roster</div>
+      <div class="card-title">👤 Care Recipients</div>
       <div id="dash-patients"></div>
-      <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:10px" onclick="navTo('patients')">View All Patients →</button>
+      <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:10px" onclick="navTo('patients')">View All Care Recipients →</button>
     </div>
     <div class="card">
       <div class="card-title">📋 Today's Incidents</div>
@@ -1570,7 +1570,7 @@ body {
       </button>
     </div>
     <div style="margin-top:10px;font-size:.7rem;color:var(--slate-light);padding-top:8px;border-top:1px solid var(--border)">
-      ⚕️ Contains PHI — share only through your agency's approved secure channel
+      🔒 Contains personal health information — share only with trusted family members or healthcare providers.
     </div>
   </div>
 
@@ -1579,16 +1579,16 @@ body {
 <div id="section-patients" class="section">
   <div class="ph">
     <div>
-      <div class="ph-title">👤 Patient Roster</div>
-      <div class="ph-sub" id="patient-count-sub">Manage patient profiles and care information</div>
+      <div class="ph-title">👤 Care Recipients</div>
+      <div class="ph-sub" id="patient-count-sub">Manage care recipient profiles and care information</div>
     </div>
-    <button class="btn btn-teal" onclick="openPatientModal()">+ Add Patient</button>
+    <button class="btn btn-teal" onclick="openPatientModal()">+ Add Care Recipient</button>
   </div>
 
   <!-- Patient photo privacy note -->
   <div style="display:flex;align-items:flex-start;gap:10px;background:#F0F4F8;border-radius:var(--r);padding:10px 14px;margin-bottom:14px;font-size:.76rem;color:var(--slate-mid);line-height:1.6">
     <span style="font-size:1rem;flex-shrink:0">🔒</span>
-    <span><strong style="color:var(--navy)">Patient photos are not stored in this app.</strong> Patients are identified by name and color-coded avatar to protect privacy. This app is a personal caregiving tool and is not a HIPAA-covered service.</span>
+    <span><strong style="color:var(--navy)">Care recipient photos are not stored in this app.</strong> Care recipients are identified by name and color-coded avatar to protect privacy. This app is a personal caregiving tool and is not a HIPAA-covered service.</span>
   </div>
 
   <div id="patient-list"></div>
@@ -1598,10 +1598,10 @@ body {
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
       <button class="btn btn-secondary btn-sm" onclick="closePatientDetail()">← Back to Roster</button>
       <div id="detail-name" style="font-family:var(--font-head);font-size:1.15rem;font-weight:700;color:var(--navy)"></div>
-      <div id="detail-sample-banner" style="display:none;margin-top:8px;background:#E8F5F3;border:1px solid #0C7A6E;border-radius:8px;padding:8px 12px;font-size:.8rem;color:#0C7A6E;font-weight:600;line-height:1.4">🌟 Sample Patient — Margaret Thompson is a demo to help you explore all features. When ready, add your real patient above.</div>
+      <div id="detail-sample-banner" style="display:none;margin-top:8px;background:#E8F5F3;border:1px solid #0C7A6E;border-radius:8px;padding:8px 12px;font-size:.8rem;color:#0C7A6E;font-weight:600;line-height:1.4">🌟 Sample Care Recipient — Margaret Thompson is a demo to help you explore all features. When ready, add your real care recipient above.</div>
     </div>
     <div class="grid-2">
-      <div class="card"><div class="card-title">👤 Patient Information</div><div id="detail-info"></div></div>
+      <div class="card"><div class="card-title">👤 Care Recipient Information</div><div id="detail-info"></div></div>
       <div class="card"><div class="card-title">⚠️ Allergies & Conditions</div><div id="detail-medical"></div></div>
       <div class="card"><div class="card-title">💊 Medications on File</div><div id="detail-meds"></div></div>
       <div class="card"><div class="card-title">📞 Emergency Contact</div><div id="detail-emergency"></div>
@@ -1630,11 +1630,11 @@ body {
   <div style="display:flex;margin-bottom:16px;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:white">
     <button id="mar-tab-single" onclick="setMARTab('single')"
       style="flex:1;padding:9px 14px;border:none;background:var(--teal);color:white;font-family:var(--font-body);font-size:.84rem;font-weight:700;cursor:pointer">
-      Single Patient
+      Single Care Recipient
     </button>
     <button id="mar-tab-all" onclick="setMARTab('all')"
       style="flex:1;padding:9px 14px;border:none;background:white;color:var(--slate-mid);font-family:var(--font-body);font-size:.84rem;font-weight:600;cursor:pointer;border-left:1.5px solid var(--border)">
-      All Patients Today
+      All Care Recipients Today
     </button>
   </div>
 
@@ -1643,9 +1643,9 @@ body {
     <div class="card" style="margin-bottom:16px">
       <div class="grid-2">
         <div class="fg" style="margin:0">
-          <label>Patient</label>
+          <label>Care Recipient</label>
           <select id="mar-patient" onchange="renderMAR()" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
-            <option value="">— Select patient —</option>
+            <option value="">— Select care recipient —</option>
           </select>
         </div>
         <div class="fg" style="margin:0">
@@ -1728,14 +1728,14 @@ body {
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-secondary" onclick="generateHandoff()">🔄 Generate</button>
-      <button class="btn btn-teal" onclick="printHandoff()">🖨️ Print Single-Patient Handoff</button>
+      <button class="btn btn-teal" onclick="printHandoff()">🖨️ Print Single Care Recipient Handoff</button>
     </div>
   </div>
 
   <div class="card" style="margin-bottom:16px">
     <div style="font-size:.78rem;color:var(--slate-light);margin-bottom:10px">
-      💡 <strong>Single-patient handoff</strong> covers the patient selected in the bar above.
-      <strong>Multi-patient handoff</strong> rolls every patient on your roster into one printable summary for end-of-shift handover.
+      💡 <strong>Single care recipient handoff</strong> covers the care recipient selected in the bar above.
+      <strong>Multi care recipient handoff</strong> rolls every care recipient on your roster into one printable summary.
     </div>
     <div class="form-row">
       <div class="fg" style="margin:0"><label>Outgoing Caregiver</label><input id="ho-out" placeholder="Your name or initials"></div>
@@ -1743,7 +1743,7 @@ body {
     </div>
     <div class="fg" style="margin-top:12px">
       <label>📝 Shift Narrative <span style="font-size:.72rem;font-weight:400;color:var(--slate-light)">(auto-loaded from Dashboard → Shift Notes)</span></label>
-      <textarea id="ho-narrative" rows="3" placeholder="General shift narrative — patient mood, observations, anything beyond structured logs…" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.86rem;color:var(--text);resize:vertical"></textarea>
+      <textarea id="ho-narrative" rows="3" placeholder="General shift narrative — care recipient mood, observations, anything beyond structured logs…" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.86rem;color:var(--text);resize:vertical"></textarea>
     </div>
     <div class="fg" style="margin-top:8px;margin-bottom:0">
       <label>Additional Notes for Incoming Shift</label>
@@ -1921,7 +1921,7 @@ body {
       <input id="wd-location" placeholder="e.g. Hallway near exit, parking lot, another resident's room…"></div>
     <div class="fg"><label>Duration Missing / Unaccounted</label>
       <input id="wd-duration" placeholder="e.g. Approximately 5 minutes, 20 minutes…"></div>
-    <div class="fg"><label>Patient Condition When Found</label>
+    <div class="fg"><label>Care Recipient Condition When Found</label>
       <textarea id="wd-condition" rows="2" placeholder="e.g. Calm and cooperative, confused but uninjured, distressed, fell while wandering…"></textarea>
     </div>
     <div class="fg"><label>Action Taken</label>
@@ -1962,7 +1962,7 @@ body {
   </div>
   <div id="memorycare-patient-bar" style="margin-bottom:10px"></div>
   <div style="background:#F0F4F8;border-radius:var(--r);padding:10px 14px;margin-bottom:16px;font-size:.78rem;color:var(--slate-mid);line-height:1.6">
-    💬 <strong>Memory Care Notes</strong> capture what works for each patient — phrases that calm, topics that engage, triggers to avoid, and communication strategies that connect. These notes help every caregiver provide consistent, personalized memory care.
+    💬 <strong>Memory Care Notes</strong> capture what works for your care recipient — phrases that calm, topics that engage, triggers to avoid, and communication strategies that connect. These notes help every caregiver provide consistent, personalized memory care.
   </div>
   <div id="memorycare-list"></div>
 </div>
@@ -2062,7 +2062,7 @@ body {
         <input id="set-agency" placeholder="e.g. Alzheimer's Association, Church Group" oninput="markSettingsDirty()">
       </div>
       <div class="fg">
-        <label>Your Relationship to Patient</label>
+        <label>Your Relationship to Care Recipient</label>
         <input id="set-role" placeholder="e.g. Daughter, Son, Spouse, Partner" oninput="markSettingsDirty()">
       </div>
       <div class="fg">
@@ -2112,7 +2112,7 @@ body {
           <div style="font-weight:700;font-size:.84rem;color:var(--navy);margin-bottom:6px">📥 Restore from Backup</div>
           <p style="font-size:.8rem;color:var(--slate-mid);line-height:1.7;margin-bottom:8px">
             Tapping <strong>Import Backup</strong> lets you select a previously exported <strong>.json file</strong>
-            and restores all your data — patients, records, and settings — exactly as they were
+            and restores all your data — care recipients, records, and settings — exactly as they were
             when you exported.
           </p>
           <div style="font-size:.78rem;color:var(--slate-mid);line-height:1.8;margin-bottom:8px">
@@ -2156,7 +2156,7 @@ body {
       <div><strong style="color:var(--navy)">Version:</strong> 4.1.0</div>
       <div><strong style="color:var(--navy)">Sections:</strong> 22 clinical documentation sections</div>
       <div style="font-size:.84rem;color:var(--slate-mid);line-height:1.9">
-        <div>👤 <strong style="color:var(--navy)">Patient Care:</strong> Patient Roster · Medication Log · Incidents · Shift Handoff</div>
+        <div>👤 <strong style="color:var(--navy)">Care Recipients:</strong> Care Recipients · Medication Log · Incidents · Shift Handoff</div>
         <div>📋 <strong style="color:var(--navy)">Health &amp; Care Notes:</strong> Care Plan · Wound Tracker · Diet &amp; Fluids · Family Log · Pain Scale</div>
         <div>🧠 <strong style="color:var(--navy)">Daily Behaviors:</strong> Routines · Triggers · Behavior Patterns · Toileting · Vital Signs · Weekly Trends</div>
         <div>🎓 <strong style="color:var(--navy)">Additional Tools:</strong> Voice to Text · Credentials · Billing · Monthly Report</div>
@@ -2271,7 +2271,7 @@ body {
     <div class="card">
       <div class="card-title">⚠️ Special Instructions</div>
       <div class="fg"><label>Specific care instructions</label>
-        <textarea id="cp-instructions" rows="3" placeholder="e.g. Patient refuses blood draws from right arm, prefers shower not bath, no strangers in room without knock…"></textarea>
+        <textarea id="cp-instructions" rows="3" placeholder="e.g. They refuse blood draws from right arm, prefer shower not bath, no strangers in room without a knock…"></textarea>
       </div>
       <div class="fg"><label>Mobility / Fall Risk Notes</label>
         <textarea id="cp-mobility" rows="2" placeholder="e.g. High fall risk — 2-person assist required, always use gait belt, no unsupervised ambulation…"></textarea>
@@ -2373,7 +2373,7 @@ body {
         <textarea id="cp-notify-exclude" rows="2" placeholder="e.g. Do not contact estranged family members — notify Jane first in all circumstances"></textarea>
       </div>
       <div class="fg" style="margin-bottom:0"><label>Special circumstances or wishes</label>
-        <textarea id="cp-notify-wishes" rows="2" placeholder="e.g. Patient wishes to be at home — do not call 911 unless directed by hospice nurse"></textarea>
+        <textarea id="cp-notify-wishes" rows="2" placeholder="e.g. They wish to be at home — do not call 911 unless directed by hospice nurse"></textarea>
       </div>
     </div>
 
@@ -2412,7 +2412,7 @@ body {
   <!-- Privacy note re: no photos -->
   <div style="display:flex;align-items:flex-start;gap:10px;background:#F0F4F8;border-radius:var(--r);padding:10px 14px;margin-bottom:14px;font-size:.76rem;color:var(--slate-mid);line-height:1.6">
     <span style="font-size:1rem;flex-shrink:0">🔒</span>
-    <span><strong style="color:var(--navy)">Photo documentation is not included in this app.</strong> To protect patient privacy, wound status should be documented using detailed written descriptions, measurements, and staging notes. Professional caregivers should follow their agency's protocol for clinical photography. This app is a personal caregiving tool and is not a HIPAA-covered service.</span>
+    <span><strong style="color:var(--navy)">Photo documentation is not included in this app.</strong> To protect care recipient privacy, wound status should be documented using detailed written descriptions, measurements, and staging notes. Professional caregivers should follow their agency's protocol for clinical photography. This app is a personal caregiving tool and is not a HIPAA-covered service.</span>
   </div>
 
   <div id="wound-list">
@@ -2612,7 +2612,7 @@ body {
     <div style="font-weight:700;margin-bottom:6px">😣 About This Pain Scale — Important Guidance</div>
     <p style="margin-bottom:8px">The 0–10 face scale is for patients who can communicate their pain verbally or by pointing. <strong>For patients with moderate to advanced dementia who cannot self-report, this scale alone is not reliable.</strong> A patient who scores 0 may still be in significant pain — they simply cannot express it.</p>
     <p style="margin-bottom:8px"><strong>For non-verbal dementia patients, observe behavior instead of asking.</strong> Signs of unrecognized pain include: facial grimacing, bracing or guarding a body part, moaning or calling out during movement, resisting care, increased agitation or confusion, changes in breathing, or refusing to bear weight.</p>
-    <p style="margin-bottom:8px"><strong>When documenting pain:</strong> Record what you observed, not what you assumed. "Patient grimaced and pulled arm away during dressing change" is more useful than "pain score 4." Specificity helps the physician make better decisions.</p>
+    <p style="margin-bottom:8px"><strong>When documenting pain:</strong> Record what you observed, not what you assumed. "They grimaced and pulled their arm away during dressing" is more useful than "pain score 4." Specificity helps the physician make better decisions.</p>
     <p style="margin-bottom:0"><strong>Call the physician if:</strong> pain appears sudden or severe, the patient shows signs of pain at rest (not only during care), pain seems to come from a new location, or behavioral changes are unexplained. Pain in dementia patients is consistently underdiagnosed and undertreated.</p>
   </div>
 
@@ -2620,7 +2620,7 @@ body {
   <div class="card" style="margin-bottom:16px">
     <div class="form-row" style="margin:0">
       <div class="fg" style="margin:0">
-        <label>Patient</label>
+        <label>Care Recipient</label>
         <select id="pain-patient" onchange="renderPainLog()" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
           <option value="">All patients</option>
         </select>
@@ -2760,9 +2760,9 @@ body {
   <div class="card" style="margin-bottom:16px">
     <div class="form-row" style="margin:0">
       <div class="fg" style="margin:0">
-        <label>Patient</label>
+        <label>Care Recipient</label>
         <select id="vitals-patient" onchange="renderVitals()" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
-          <option value="">— Select patient —</option>
+          <option value="">— Select care recipient —</option>
         </select>
       </div>
       <div class="fg" style="margin:0">
@@ -2827,7 +2827,7 @@ body {
         <div style="color:var(--refused);font-size:.78rem">Tachypnea: &gt;20/min</div>
       </div>
     </div>
-    <div style="margin-top:10px;font-size:.72rem;color:var(--slate-light);line-height:1.5">⚕️ Reference ranges are general guidelines for adults. Always follow your patient's physician-ordered target ranges, which may differ. Report out-of-range values to your supervisor immediately.</div>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--slate-light);line-height:1.5">⚕️ Reference ranges are general guidelines for adults. Always follow your care recipient's physician-ordered target ranges, which may differ. Report out-of-range values to your supervisor immediately.</div>
   </div>
 </div>
 
@@ -2913,9 +2913,9 @@ body {
       <div class="fg"><label>Report Month</label>
         <input type="month" id="report-month" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
       </div>
-      <div class="fg"><label>Patient Name (for header)</label>
+      <div class="fg"><label>Care Recipient Name (for header)</label>
         <select id="report-patient" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%" onchange="renderReport()">
-          <option value="">— Select patient —</option>
+          <option value="">— Select care recipient —</option>
         </select>
       </div>
     </div>
@@ -2954,10 +2954,10 @@ body {
   <div class="em-wrap">
     <div style="margin-bottom:14px">
       <h2 style="font-size:1.3rem;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px">🚨 Emergency Mode</h2>
-      <div style="font-size:.84rem;color:var(--slate-mid);margin-top:4px">One screen with everything a first responder needs — pulled from this patient's record. Hand them the phone.</div>
+      <div style="font-size:.84rem;color:var(--slate-mid);margin-top:4px">One screen with everything a first responder needs — pulled from this care recipient's record. Hand them the phone.</div>
     </div>
     <div class="fg" style="margin-bottom:14px">
-      <label>Patient</label>
+      <label>Care Recipient</label>
       <select id="em-patient" onchange="emPatientChange(this.value)" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%"></select>
     </div>
     <div id="em-body"></div>
@@ -3099,7 +3099,7 @@ body {
 <!-- Bottom nav (mobile) -->
 <div class="bnav" id="bnav">
   <button class="bn-btn active" onclick="navTo('dashboard')"><span class="bn-icon">🏠</span>Home</button>
-  <button class="bn-btn" onclick="navTo('patients')"><span class="bn-icon">👤</span>Patients</button>
+  <button class="bn-btn" onclick="navTo('patients')"><span class="bn-icon">👤</span>Recipients</button>
   <button class="bn-btn" onclick="navTo('mar')"><span class="bn-icon">💊</span>Meds</button>
   <button class="bn-btn" onclick="navTo('incidents')"><span class="bn-icon">📋</span>Incidents</button>
   <button class="bn-btn" onclick="toggleMobileMore()"><span class="bn-icon">⋯</span>More</button>
@@ -3143,7 +3143,7 @@ body {
 <!-- Patient Modal -->
 <div class="overlay" id="patient-modal">
   <div class="modal">
-    <div class="modal-title" id="patient-modal-title">Add Patient</div>
+    <div class="modal-title" id="patient-modal-title">Add Care Recipient</div>
     <div class="form-row">
       <div class="fg"><label>First Name *</label><input id="pm-fname" placeholder="Dorothy"></div>
       <div class="fg"><label>Last Name *</label><input id="pm-lname" placeholder="Williams"></div>
@@ -3224,11 +3224,11 @@ body {
         <div class="fg"><label style="font-size:.75rem">POLST / physician orders location</label><input id="pm-polst-loc" placeholder="e.g. Posted on refrigerator"></div>
         <p style="font-size:.72rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 8px">Healthcare proxy</p>
         <div class="form-row"><div class="fg"><label style="font-size:.75rem">Proxy name</label><input id="pm-proxy-name" placeholder="Jane Thompson"></div><div class="fg"><label style="font-size:.75rem">Proxy phone</label><input id="pm-proxy-phone" type="tel" placeholder="(775) 555-0100"></div></div>
-        <div class="fg"><label style="font-size:.75rem">Relationship to patient</label><input id="pm-proxy-rel" placeholder="Daughter"></div>
+        <div class="fg"><label style="font-size:.75rem">Relationship to care recipient</label><input id="pm-proxy-rel" placeholder="Daughter"></div>
         <p style="font-size:.72rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 8px">Hospice</p>
         <div class="fg" style="margin-bottom:8px"><label style="font-size:.75rem">Enrolled in hospice</label><select id="pm-hospice" onchange="toggleHospiceFields()" style="border:1.5px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:.85rem;background:white;width:100%"><option value="no">No</option><option value="yes">Yes</option></select></div>
         <div id="pm-hospice-fields" style="display:none">
-          <div style="background:#E1F5EE;border:1px solid #0F6E56;border-radius:8px;padding:8px 10px;font-size:.72rem;color:#085041;margin-bottom:8px;line-height:1.5">⚠️ Patient is on hospice. Contact hospice directly when condition changes. Do not call 911 unless instructed by hospice.</div>
+          <div style="background:#E1F5EE;border:1px solid #0F6E56;border-radius:8px;padding:8px 10px;font-size:.72rem;color:#085041;margin-bottom:8px;line-height:1.5">⚠️ Your loved one is on hospice. Contact hospice directly when condition changes. Do not call 911 unless instructed by hospice.</div>
           <div class="form-row"><div class="fg"><label style="font-size:.75rem">Hospice contact name</label><input id="pm-hospice-name" placeholder="Nurse on call"></div><div class="fg"><label style="font-size:.75rem">Hospice phone</label><input id="pm-hospice-phone" type="tel" placeholder="(775) 555-0200"></div></div>
         </div>
         <p style="font-size:.72rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 8px">Comfort care preferences</p>
@@ -3242,7 +3242,7 @@ body {
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('patient-modal')">Cancel</button>
-      <button class="btn btn-teal" id="pm-save" onclick="savePatient()">Add Patient</button>
+      <button class="btn btn-teal" id="pm-save" onclick="savePatient()">Add Care Recipient</button>
     </div>
   </div>
 </div>
@@ -3306,7 +3306,7 @@ body {
 <div class="overlay" id="med-modal">
   <div class="modal">
     <div class="modal-title" id="med-modal-title">Add Medication</div>
-    <div class="fg"><label>Patient (optional — leave blank for all patients)</label>
+    <div class="fg"><label>Care Recipient (optional — leave blank for all)</label>
       <select id="mm-patient" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
         <option value="">— All patients (shared) —</option>
       </select>
@@ -3559,8 +3559,8 @@ const BBW_DB = {
   'soma':          { short:'Addiction & abuse risk', watch:'Monitor for sedation. Do not combine with other CNS depressants.' },
   // Chemotherapy / Other
   'tamoxifen':     { short:'Uterine cancer, stroke & blood clots', watch:'Monitor for unusual vaginal bleeding, leg pain/swelling, vision changes, chest pain.' },
-  'alendronate':   { short:'Esophageal erosion & osteonecrosis of jaw', watch:'Must take with full glass of water. Patient must remain upright 30 min after dose. Monitor for jaw pain.' },
-  'fosamax':       { short:'Esophageal erosion & osteonecrosis', watch:'Take with full glass of water. Patient must stay upright 30 min. Monitor for jaw/hip pain.' },
+  'alendronate':   { short:'Esophageal erosion & osteonecrosis of jaw', watch:'Must take with full glass of water. They must remain upright 30 min after dose. Monitor for jaw pain.' },
+  'fosamax':       { short:'Esophageal erosion & osteonecrosis', watch:'Take with full glass of water. They must stay upright 30 min. Monitor for jaw/hip pain.' },
 };
 
 // Look up BBW for a medication name. Returns warning object or null.
@@ -3648,8 +3648,8 @@ function setGlobalPatient(id){
 
 function buildPatientSelector(selId, onchangeFn, style=''){
   const patients = (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged');
-  if(!patients.length) return '<div style="font-size:.8rem;color:var(--slate-light);padding:4px 0">No patients added yet — go to Patient Roster to add one.</div>';
-  const opts = ['<option value="">— Select a patient —</option>',
+  if(!patients.length) return '<div style="font-size:.8rem;color:var(--slate-light);padding:4px 0">No care recipients added yet — go to Care Recipients to add one.</div>';
+  const opts = ['<option value="">— Select a care recipient —</option>',
     ...patients.map(p => `<option value="${p.id}"${String(p.id)===String(_globalPatientId)?' selected':''}>${p.fname} ${p.lname}${p.dob?' · DOB '+p.dob:''}</option>`)
   ].join('');
   return `<select id="${selId}" onchange="setGlobalPatient(this.value);${onchangeFn}()" style="border:2px solid var(--teal);border-radius:var(--r);padding:8px 14px;font-family:var(--font-body);font-size:.9rem;background:white;color:var(--navy);font-weight:700;flex:1;${style}">${opts}</select>`;
@@ -3669,7 +3669,7 @@ function _patientBannerHtml(fn){
           ? `<div style="font-size:1.1rem;font-weight:800;color:white;line-height:1.2">👤 ${name}</div>
              <div style="font-size:.73rem;color:rgba(255,255,255,.8);margin-top:3px">${[age?`Age ${age}`:'',room?`Room ${room}`:'',allerg?`⚠️ ${allerg}`:''].filter(Boolean).join(' · ')}</div>`
           : `<div style="font-size:.9rem;font-weight:700;color:rgba(255,255,255,.9)">⚠️ No patient selected</div>
-             <div style="font-size:.7rem;color:rgba(255,255,255,.7);margin-top:2px">Select a patient to document</div>`
+             <div style="font-size:.7rem;color:rgba(255,255,255,.7);margin-top:2px">Select a care recipient to document</div>`
         }
       </div>
       <div style="flex:2;min-width:180px;display:flex;align-items:center">
@@ -3717,7 +3717,7 @@ function populatePatientBars(){
   simpleSelectors.forEach(({id, fn}) => {
     const el = document.getElementById(id);
     if(!el || el.tagName !== 'SELECT') return;
-    el.innerHTML = '<option value="">— Select a patient —</option>' +
+    el.innerHTML = '<option value="">— Select a care recipient —</option>' +
       (D.patients||[]).map(p => `<option value="${p.id}"${String(p.id)===String(_globalPatientId)?' selected':''}>${p.fname} ${p.lname}</option>`).join('');
     if(_globalPatientId) el.value = _globalPatientId;
   });
@@ -4120,7 +4120,7 @@ function recordPatientStatus(status, explicitId){
     :'This will mark the patient as discharged. All records will be preserved. Continue?';
   if(!confirm(msg)) return;
   const idx=D.patients.findIndex(p=>String(p.id)===targetId);
-  if(idx<0){toast('Patient not found','var(--held)');return;}
+  if(idx<0){toast('Care recipient not found','var(--held)');return;}
   D.patients[idx].status=status;
   D.patients[idx].statusDate=new Date().toISOString().split('T')[0];
   save();renderPatients();renderDashboard();
@@ -4130,7 +4130,7 @@ function recordPatientStatus(status, explicitId){
     populateWTDNModal();
     openModal('wtdn-modal');
   } else {
-    toast('Patient marked as discharged. All records are preserved.','var(--given)');
+    toast('Care recipient marked as discharged. All records are preserved.','var(--given)');
   }
 }
 function reactivatePatient(patId){
@@ -4140,7 +4140,7 @@ function reactivatePatient(patId){
   D.patients[idx].status='active';
   delete D.patients[idx].statusDate;
   save();renderPatients();renderDashboard();
-  toast('Patient reactivated','var(--given)');
+  toast('Care recipient reactivated','var(--given)');
 }
 function activePats(){
   return (D.patients||[]).filter(p=>p.active!==false && p.status!=='deceased' && p.status!=='discharged');
@@ -4370,8 +4370,8 @@ function renderDashboard(){
       ? "Margaret Thompson is loaded as a sample. When you're ready, complete these 3 steps to set up your real patient. You can add more details to any section later."
       : "These 3 steps get you started. You can add more details to any section later — just come back when you have the information.";
     const step1Label = hasOnlyDemo
-      ? "👤 Step 1 — Add Your Real Patient"
-      : "👤 Step 1 — Add Your First Patient";
+      ? "👤 Step 1 — Add Your Real Care Recipient"
+      : "👤 Step 1 — Add Your First Care Recipient";
     const sampleLink = hasOnlyDemo
       ? ''
       : `<div style="margin-top:16px;font-size:.74rem;color:var(--slate-light)">Or <span style="color:var(--teal);cursor:pointer;text-decoration:underline" onclick="confirmLoadDemo()">load the sample patient</span> to explore all features first</div>`;
@@ -4445,7 +4445,7 @@ function renderDashboard(){
 
   const checkItems = [
     {
-      label: 'Patient roster set up',
+      label: 'Care recipient added',
       done:  activePats().length > 0,
       sub:   activePats().length > 0 ? `${activePats().length} patient${activePats().length>1?'s':''} active` : 'Add patients to get started',
       nav:   'patients', icon: '👤'
@@ -4625,7 +4625,7 @@ function renderDashboard(){
   const dpEl = document.getElementById('dash-patients');
   if(dpEl){
     if(!activePats().length){
-      dpEl.innerHTML = '<div class="empty" style="padding:20px"><div class="empty-icon" style="font-size:1.6rem">👤</div><div class="empty-text" style="font-size:.82rem">No patients added yet.<br>Tap <strong>View All Patients</strong> to add your first.</div></div>';
+      dpEl.innerHTML = '<div class="empty" style="padding:20px"><div class="empty-icon" style="font-size:1.6rem">👤</div><div class="empty-text" style="font-size:.82rem">No care recipients added yet.<br>Tap <strong>View All Care Recipients</strong> to add your first.</div></div>';
     } else {
       dpEl.innerHTML = activePats().slice(0,4).map(p => {
         const init = ((p.fname||'')[0]||'') + ((p.lname||'')[0]||'');
@@ -4634,7 +4634,7 @@ function renderDashboard(){
           <div style="width:34px;height:34px;border-radius:50%;background:${p.color};color:white;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:.85rem;font-weight:700;flex-shrink:0">${init}</div>
           <div style="flex:1;min-width:0">
             <div style="font-weight:600;font-size:.88rem;color:var(--navy)">${p.fname} ${p.lname}</div>
-            ${p.isSample ? '<div style="font-size:.72rem;color:#0C7A6E;font-weight:600;margin-top:1px">Sample Patient</div>' : ''}
+            ${p.isSample ? '<div style="font-size:.72rem;color:#0C7A6E;font-weight:600;margin-top:1px">Sample Care Recipient</div>' : ''}
             <div style="font-size:.74rem;color:var(--slate-light);display:flex;gap:6px;flex-wrap:wrap;margin-top:2px">
               <span>${p.room||''}</span>
               ${p.fallRisk ? fallRiskBadge(p.fallRisk, false) : ''}
@@ -4677,7 +4677,7 @@ function openPatientModal(editId){
   _editPatientId = editId !== undefined ? editId : null;
   const isEdit = _editPatientId !== null;
   document.getElementById('patient-modal-title').textContent = isEdit ? 'Edit Patient' : 'Add Patient';
-  document.getElementById('pm-save').textContent = isEdit ? 'Update Patient' : 'Add Patient';
+  document.getElementById('pm-save').textContent = isEdit ? 'Update Care Recipient' : 'Add Care Recipient';
   const p = isEdit ? D.patients.find(x => x.id === _editPatientId) : null;
   document.getElementById('pm-fname').value      = p?.fname      || '';
   document.getElementById('pm-lname').value      = p?.lname      || '';
@@ -4797,7 +4797,7 @@ function savePatient(){
   if(_editPatientId !== null){
     const idx = D.patients.findIndex(x => x.id === _editPatientId);
     if(idx !== -1) D.patients[idx] = { ...D.patients[idx], ...fields };
-    toast('✅ Patient updated', 'var(--given)');
+    toast('✅ Care recipient updated', 'var(--given)');
   } else {
     const newId = Date.now();
     D.patients.push({
@@ -4807,7 +4807,7 @@ function savePatient(){
       ...fields
     });
     setGlobalPatient(newId);
-    toast('✅ Patient added', 'var(--given)');
+    toast('✅ Care recipient added', 'var(--given)');
   }
 
   save();
@@ -4824,10 +4824,10 @@ function renderPatients(){
   const sub = document.getElementById('patient-count-sub');
   if(sub) sub.textContent = activePats().length
     ? `${activePats().length} patient${activePats().length !== 1 ? 's' : ''} active`
-    : 'Manage patient profiles and care information';
+    : 'Manage care recipient profiles and care information';
 
   if(!D.patients.length){
-    list.innerHTML = '<div class="empty"><div class="empty-icon">👤</div><div class="empty-text">No patients added yet.<br><br>Tap <strong style="color:var(--teal)">+ Add Patient</strong> above to create your first patient profile.<br><br><span style="font-size:.78rem;color:var(--slate-light)">Add name, allergies, emergency contacts, and care notes.</span></div></div>';
+    list.innerHTML = '<div class="empty"><div class="empty-icon">👤</div><div class="empty-text">No care recipients added yet.<br><br>Tap <strong style="color:var(--teal)">+ Add Care Recipient</strong> above to create your first profile.<br><br><span style="font-size:.78rem;color:var(--slate-light)">Add name, allergies, emergency contacts, and care notes.</span></div></div>';
     return;
   }
 
@@ -5081,7 +5081,7 @@ function showDeletePatientModal(id, name, meds, incidents, wounds){
     </div>
     <div style="display:flex;gap:10px">
       <button onclick="document.getElementById('delete-patient-modal').remove()" style="flex:1;padding:11px;background:var(--off-white);border:1.5px solid var(--border);border-radius:var(--r);font-family:var(--font-body);font-size:.9rem;cursor:pointer;font-weight:600">Cancel</button>
-      <button onclick="confirmDeletePatient(${id})" style="flex:1;padding:11px;background:var(--refused);color:white;border:none;border-radius:var(--r);font-family:var(--font-body);font-size:.9rem;cursor:pointer;font-weight:700">Yes, Remove Patient</button>
+      <button onclick="confirmDeletePatient(${id})" style="flex:1;padding:11px;background:var(--refused);color:white;border:none;border-radius:var(--r);font-family:var(--font-body);font-size:.9rem;cursor:pointer;font-weight:700">Yes, Remove Care Recipient</button>
     </div>
   </div>`;
   document.body.appendChild(modal);
@@ -5116,7 +5116,7 @@ function confirmDeletePatient(id){
   // If this was the selected patient, clear selection
   if(String(_globalPatientId) === pidKey) setGlobalPatient('');
   save(); renderPatients();
-  toast('Patient removed', 'var(--slate)');
+  toast('Care recipient removed', 'var(--slate)');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -5317,7 +5317,7 @@ function populateMARPatients(){
   const sel = document.getElementById('mar-patient');
   if(!sel) return;
   const cur = sel.value;
-  sel.innerHTML = '<option value="">— Select patient —</option>' +
+  sel.innerHTML = '<option value="">— Select care recipient —</option>' +
     (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged').map(p => `<option value="${p.id}"${p.id == cur?' selected':''}>${p.fname} ${p.lname}</option>`).join('');
 }
 
@@ -5986,14 +5986,14 @@ function printMAR(){
     <div class="fg"><label>Reason for Refusal *</label>
       <select id="refusal-reason" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
         <option value="">— Select reason —</option>
-        <option>Patient states they don't want it</option>
-        <option>Patient states it makes them feel sick</option>
-        <option>Patient states they already took it</option>
-        <option>Patient asleep / unable to rouse</option>
-        <option>Patient spat out medication</option>
-        <option>Patient physically combative</option>
-        <option>Patient reports side effects</option>
-        <option>Patient states they don't recognize it</option>
+        <option>They don't want to take it</option>
+        <option>They say it makes them feel sick</option>
+        <option>They say they already took it</option>
+        <option>Care recipient asleep / unable to rouse</option>
+        <option>They spat out medication</option>
+        <option>Care recipient physically combative</option>
+        <option>They report side effects</option>
+        <option>They don't recognize it</option>
         <option>Religious / personal objection</option>
         <option>Other (see notes)</option>
       </select>
@@ -6024,7 +6024,7 @@ function printMAR(){
       ⚠️ If the patient reports or shows side effects: document the specific symptom, the medication, and notify the supervising nurse or physician. Do not encourage the patient to stop taking the medication without physician instruction.
     </div>
     <div class="fg" style="margin-bottom:0"><label>Additional Notes</label>
-      <input id="refusal-notes" placeholder="Patient's exact words, specific circumstances…">
+      <input id="refusal-notes" placeholder="Their exact words, specific circumstances…">
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('refusal-modal')">Cancel</button>
@@ -6044,9 +6044,9 @@ function printMAR(){
       <div class="fg"><label>Date *</label><input type="date" id="pain-date"></div>
       <div class="fg"><label>Time *</label><input type="time" id="pain-time"></div>
     </div>
-    <div class="fg"><label>Patient</label>
+    <div class="fg"><label>Care Recipient</label>
       <select id="pain-modal-patient" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
-        <option value="">— Select patient —</option>
+        <option value="">— Select care recipient —</option>
       </select>
     </div>
     <div class="fg"><label>Pain Score (0–10) *</label>
@@ -6084,7 +6084,7 @@ function printMAR(){
         <option>Applied heat/cold pack</option>
         <option>Notified nurse / supervisor</option>
         <option>Distraction / comfort measures</option>
-        <option>Patient declined intervention</option>
+        <option>Care recipient declined intervention</option>
         <option>No action — monitoring</option>
         <option>Other</option>
       </select>
@@ -6107,9 +6107,9 @@ function printMAR(){
       <div class="fg"><label>Date *</label><input type="date" id="vm-date"></div>
       <div class="fg"><label>Time *</label><input type="time" id="vm-time"></div>
     </div>
-    <div class="fg"><label>Patient</label>
+    <div class="fg"><label>Care Recipient</label>
       <select id="vm-patient" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
-        <option value="">— Select patient —</option>
+        <option value="">— Select care recipient —</option>
       </select>
     </div>
     <div class="form-row">
@@ -6158,7 +6158,7 @@ function printMAR(){
       </select>
     </div>
     <div class="fg" style="margin-bottom:0"><label>Notes / Alerts</label>
-      <input id="vm-notes" placeholder="e.g. Patient reported dizziness, physician notified…">
+      <input id="vm-notes" placeholder="e.g. They reported dizziness, physician notified…">
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('vitals-modal')">Cancel</button>
@@ -6511,9 +6511,9 @@ if('serviceWorker' in navigator){
     const isRealHost = loc.protocol === 'https:' || loc.hostname === 'localhost' || loc.hostname === '127.0.0.1';
     if(!isRealHost) return;
 
-    const APP_VERSION = '4.3.0';
+    const APP_VERSION = '4.4.2';
     const swCode = `
-const CACHE = 'tended-pro-v18';
+const CACHE = 'tended-pro-v22';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -6952,7 +6952,7 @@ function generateHandoff(){
       </div>` : ''}
 
       ${(highRiskPts.length || medRiskPts.length) ? `<div class="ho-block" style="background:#FFF5F5;border:1.5px solid var(--refused);border-radius:var(--r)">
-        <div class="ho-block-title" style="color:var(--refused)">🚨 Fall Risk Patients</div>
+        <div class="ho-block-title" style="color:var(--refused)">🚨 Fall Risk Care Recipients</div>
         ${highRiskPts.map(p => `<div style="font-size:.84rem;color:var(--refused);font-weight:600">🔴 HIGH — ${p.fname} ${p.lname}</div>`).join('')}
         ${medRiskPts.map(p => `<div style="font-size:.84rem;color:#8A6A00">🟡 MEDIUM — ${p.fname} ${p.lname}</div>`).join('')}
       </div>` : ''}
@@ -7652,7 +7652,7 @@ function renderHydrationCard(){
 // ── Quick fluid offer (with or without decline) ───────────────
 function openQuickFluid(patientId){
   const p = (D.patients||[]).find(x => x.id == patientId);
-  const nm = p ? p.fname + ' ' + p.lname : 'Patient';
+  const nm = p ? p.fname + ' ' + p.lname : 'Care Recipient';
   const qf = document.getElementById('quick-fluid-modal');
   if(!qf) return;
   const nmel = qf.querySelector('.qf-patient-name');
@@ -7690,7 +7690,7 @@ function logFluidOffer(accepted){
     type:      accepted ? 'Fluid Offer' : 'Fluid Offer — Declined',
     fluid:     accepted ? fluidMl : 0,
     pct:       '',
-    notes:     note || (accepted ? '' : 'Patient declined fluids')
+    notes:     note || (accepted ? '' : 'Care recipient declined fluids')
   });
   D.intake.sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
   save();
@@ -9033,7 +9033,7 @@ function renderReport(){
   const rpat = document.getElementById('report-patient');
   if(rpat && rpat.tagName === 'SELECT'){
     const currentVal = rpat.value;
-    rpat.innerHTML = '<option value="">— Select patient —</option>' +
+    rpat.innerHTML = '<option value="">— Select care recipient —</option>' +
       (D.patients||[]).map(p => `<option value="${p.id}">${p.fname} ${p.lname}</option>`).join('');
     if(currentVal) rpat.value = currentVal;
     // Auto-select if only one patient
@@ -9054,7 +9054,7 @@ function renderReport(){
   const rptDiscMeds = _allRptMeds.filter(m => m.discontinued);
   const rptTriggers = patientId ? (D.triggers||[]).filter(t => !t.patientId || String(t.patientId) === String(patientId)) : (D.triggers||[]);
   const rptBilling  = patientId ? (D.billing||[]).filter(b => !b.patientId || String(b.patientId) === String(patientId)) : (D.billing||[]);
-  const patient    = patientObj ? patientObj.fname + ' ' + patientObj.lname : D.settings.name || 'Patient';
+  const patient    = patientObj ? patientObj.fname + ' ' + patientObj.lname : D.settings.name || 'Care Recipient';
   const provider   = document.getElementById('report-provider')?.value.trim() || D.settings.agency || '';
   const caregiver  = document.getElementById('report-caregiver')?.value.trim()|| D.settings.name || '';
   const monthName= new Date(year, month-1, 1).toLocaleDateString('en-US',{month:'long',year:'numeric'});
@@ -9274,7 +9274,7 @@ function renderReport(){
         <div style="border-bottom:3px solid var(--teal);padding-bottom:12px;margin-bottom:18px">
           <div style="font-family:var(--font-head);font-size:1.3rem;font-weight:700;color:var(--navy)">Monthly Care Report — ${monthName}</div>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px;font-size:.8rem;color:var(--slate-mid)">
-            <div><strong>Patient:</strong> ${patient}</div>
+            <div><strong>Care Recipient:</strong> ${patient}</div>
             <div><strong>Provider:</strong> ${provider||'—'}</div>
             <div><strong>Caregiver:</strong> ${caregiver||'—'}</div>
           </div>
@@ -9311,7 +9311,7 @@ function printReport(){
     if(jsPDFClass){
       try {
         var patSel   = document.getElementById('report-patient');
-        var patName  = (patSel&&patSel.options[patSel.selectedIndex])?patSel.options[patSel.selectedIndex].text:'Patient';
+        var patName  = (patSel&&patSel.options[patSel.selectedIndex])?patSel.options[patSel.selectedIndex].text:'Care Recipient';
         var monthVal = (document.getElementById('report-month')||{}).value||new Date().toISOString().slice(0,7);
         var text     = buildReportEmailText();
         var lines    = text.split('\n');
@@ -9363,7 +9363,7 @@ function printReport(){
     // Fallback: save as HTML file
     try {
       var patSel2  = document.getElementById('report-patient');
-      var patName2 = (patSel2&&patSel2.options[patSel2.selectedIndex])?patSel2.options[patSel2.selectedIndex].text:'Patient';
+      var patName2 = (patSel2&&patSel2.options[patSel2.selectedIndex])?patSel2.options[patSel2.selectedIndex].text:'Care Recipient';
       var month2   = (document.getElementById('report-month')||{}).value||'';
       var content  = preview.innerHTML||'';
       var hdoc     = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Care Report</title>'
@@ -9391,7 +9391,7 @@ function printReport(){
 function _saveReportAsHTML(){
   try {
     var patSel   = document.getElementById('report-patient');
-    var patName  = (patSel && patSel.options[patSel.selectedIndex]) ? patSel.options[patSel.selectedIndex].text : 'Patient';
+    var patName  = (patSel && patSel.options[patSel.selectedIndex]) ? patSel.options[patSel.selectedIndex].text : 'Care Recipient';
     var monthVal = (document.getElementById('report-month')||{}).value || '';
     var preview  = document.getElementById('report-preview');
     var content  = preview ? preview.innerHTML : '';
@@ -9425,13 +9425,13 @@ function buildReportEmailText(){
   const monthEnd  = new Date(yr, mo, 0).toISOString().split('T')[0];
   const inMonth   = d => d && d >= monthStart && d <= monthEnd;
   const patObj    = (D.patients||[]).find(p=>String(p.id)===String(patientId));
-  const patName   = patObj ? patObj.fname+' '+patObj.lname : (D.settings?.name||'Patient');
+  const patName   = patObj ? patObj.fname+' '+patObj.lname : (D.settings?.name||'Care Recipient');
   const div       = '─'.repeat(44);
   const lines     = [];
 
   lines.push('TENDED HEALTH PRO — MONTHLY CARE REPORT');
   lines.push(div);
-  lines.push('Patient:   ' + patName);
+  lines.push('Care Recipient: ' + patName);
   lines.push('Month:     ' + monthVal);
   lines.push('Generated: ' + new Date().toLocaleDateString());
   if(D.settings?.agency) lines.push('Agency:    ' + D.settings.agency);
@@ -9613,7 +9613,7 @@ function shareReport(){
   const preview = document.getElementById('report-preview');
   if(!preview?.innerHTML){ toast('Generate the report first then tap Share','var(--held)'); return; }
   const patSel  = document.getElementById('report-patient');
-  const patName = patSel?.options[patSel.selectedIndex]?.text || 'Patient';
+  const patName = patSel?.options[patSel.selectedIndex]?.text || 'Care Recipient';
   const month   = document.getElementById('report-month')?.value || '';
   // Build email text directly from data — no HTML extraction
   const rawText = buildReportEmailText();
@@ -9630,9 +9630,9 @@ function shareReport(){
     return line;
   }).join('\n');
   const patSel2  = document.getElementById('report-patient');
-  const patName2 = patSel2?.options[patSel2.selectedIndex]?.text || 'Patient';
+  const patName2 = patSel2?.options[patSel2.selectedIndex]?.text || 'Care Recipient';
   const month2   = document.getElementById('report-month')?.value || '';
-  const header   = 'TENDED HEALTH PRO — MONTHLY CARE REPORT\n' + divider + '\nPatient: ' + patName2 + '\nMonth: ' + month2 + '\nGenerated: ' + new Date().toLocaleDateString() + '\n' + divider + '\n\n';
+  const header   = 'TENDED HEALTH PRO — MONTHLY CARE REPORT\n' + divider + '\nCare Recipient: ' + patName2 + '\nMonth: ' + month2 + '\nGenerated: ' + new Date().toLocaleDateString() + '\n' + divider + '\n\n';
   const text = header + formatted;
   const subject = encodeURIComponent(patName + ' — Monthly Care Report ' + month);
   const body    = encodeURIComponent(text.substring(0, 3500)); // mailto: limit
@@ -10696,7 +10696,7 @@ function _qlOpenAgitated(){
   const sel = document.getElementById('bm-type');
   if(sel) sel.value = 'Agitation / restlessness';
   const beh = document.getElementById('bm-behavior');
-  if(beh) beh.value = 'Patient observed agitated';
+  if(beh) beh.value = 'Care recipient observed agitated';
   const sev = document.getElementById('bm-severity');
   if(sev) sev.value = 'moderate';
 }
@@ -10706,7 +10706,7 @@ function _qlOpenHappy(){
   const sel = document.getElementById('bm-type');
   if(sel) sel.value = 'Positive / calm behavior';
   const beh = document.getElementById('bm-behavior');
-  if(beh) beh.value = 'Patient observed happy and content';
+  if(beh) beh.value = 'Care recipient observed happy and content';
   const sev = document.getElementById('bm-severity');
   if(sev) sev.value = 'mild';
 }
@@ -10929,7 +10929,7 @@ function renderResidentRows(){
         <div style="flex:1;min-width:0">
           <div style="font-weight:700;font-size:.95rem;color:var(--navy);line-height:1.2">
             ${p.fname} ${p.lname}</div>
-          ${p.isSample ? `<div style="font-size:.72rem;color:#0C7A6E;font-weight:600;margin-top:1px">Sample Patient</div>` : ''}
+          ${p.isSample ? `<div style="font-size:.72rem;color:#0C7A6E;font-weight:600;margin-top:1px">Sample Care Recipient</div>` : ''}
           ${p.room ? `<div style="font-size:.72rem;color:var(--slate-light);margin-top:1px">${p.room}</div>` : ''}
         </div>
         <div style="width:10px;height:10px;border-radius:50%;background:${worst};flex-shrink:0"></div>
@@ -11037,7 +11037,7 @@ function renderCriticalAlerts(){
     w.status === 'Worsening' && activePats.some(p => String(p.id)===String(w.patientId)));
   worseningWounds.forEach(w => {
     const pt = activePats.find(p => String(p.id)===String(w.patientId));
-    const nm = pt ? pt.fname+' '+pt.lname : 'Patient';
+    const nm = pt ? pt.fname+' '+pt.lname : 'Care Recipient';
     alerts.push({
       level: 'red',
       icon:  '🩹',
@@ -11194,7 +11194,7 @@ function populateVitalsPatients(){
     const sel = document.getElementById(selId);
     if(!sel) return;
     const cur = sel.value;
-    sel.innerHTML = '<option value="">— Select patient —</option>' +
+    sel.innerHTML = '<option value="">— Select care recipient —</option>' +
       (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged').map(p => `<option value="${p.id}"${p.id==cur?' selected':''}>${p.fname} ${p.lname}</option>`).join('');
   });
 }
@@ -11907,7 +11907,7 @@ function renderSundowningPredictionAlert(entries){
 
   const nowWarning = pred.inWindowNow
     ? `<div style="background:var(--refused);color:white;border-radius:var(--r);padding:8px 14px;font-size:.8rem;font-weight:700;margin-top:10px;animation:pulse 2s infinite">
-        ⚠️ ACTIVE RISK WINDOW — Patient is currently in their peak sundowning period. Increase observation now.
+        ⚠️ ACTIVE RISK WINDOW — Care recipient is currently in their peak sundowning period. Increase observation now.
       </div>` : '';
 
   el.innerHTML = `
@@ -12177,7 +12177,7 @@ function renderWanderingPredictionAlert(entries){
 
   const nowWarning = pred.inWindowNow
     ? `<div style="background:var(--refused);color:white;border-radius:var(--r);padding:8px 14px;font-size:.8rem;font-weight:700;margin-top:10px">
-        🚨 ACTIVE RISK WINDOW — Patient is currently in their peak wandering period. Verify all safety measures now.
+        🚨 ACTIVE RISK WINDOW — Care recipient is currently in their peak wandering period. Verify all safety measures now.
       </div>` : '';
 
   const nightBadge = pred.isNightRisk
@@ -12490,7 +12490,7 @@ function openPainADModal(editId){
   // Populate patient dropdown
   const sel = document.getElementById('pa-patient');
   if(sel){
-    sel.innerHTML = '<option value="">— Select patient —</option>'
+    sel.innerHTML = '<option value="">— Select care recipient —</option>'
       + (D.patients||[]).filter(p=>p.active!==false).map(p=>
           `<option value="${p.id}">${p.fname} ${p.lname}</option>`).join('');
     sel.value = isEdit ? entry.patientId
@@ -12761,7 +12761,7 @@ function populatePainPatients(){
     const sel = document.getElementById(selId);
     if(!sel) return;
     const cur    = sel.value;
-    const allOpt = selId === 'pain-patient' ? '<option value="">All patients</option>' : '<option value="">— Select patient —</option>';
+    const allOpt = selId === 'pain-patient' ? '<option value="">All patients</option>' : '<option value="">— Select care recipient —</option>';
     sel.innerHTML = allOpt + (D.patients||[]).filter(p=>p.status!=='deceased'&&p.status!=='discharged').map(p =>
       `<option value="${p.id}"${p.id==cur?' selected':''}>${p.fname} ${p.lname}</option>`).join('');
   });
@@ -13015,7 +13015,7 @@ function renderTriggerReminderCard(){
 // ═══════════════════════════════════════════════════════════════
 // UX-004 — sidebar groups collapsible; state persisted in localStorage
 // Groups always expanded for new users (no saved state): Overview, Patient Care, Safety, Account
-const _NAV_DEFAULT_OPEN = ['Overview', 'Patient Care', 'Safety', 'Account'];
+const _NAV_DEFAULT_OPEN = ['Overview', 'Care Recipients', 'Safety', 'Account'];
 
 function _wireSidebarCollapse(){
   const labels = document.querySelectorAll('.nav-group .nav-label');
@@ -13533,7 +13533,7 @@ function itmRenderEntry(root){
       ${summary.triggers.map(t => `<span style="display:inline-block;background:white;border:1px solid var(--held);border-radius:20px;padding:3px 10px;font-size:.72rem;color:var(--slate);margin:3px 4px 0 0">${emEsc(t.trigger)}</span>`).join('')}
     </div>` : ''}
     ${summary.worked.length ? `<div style="background:var(--given-bg);border:1.5px solid var(--given);border-radius:var(--r-lg);padding:12px 14px;margin-bottom:16px">
-      <div style="font-size:.7rem;font-weight:700;color:var(--given);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">✓ What Works For This Patient</div>
+      <div style="font-size:.7rem;font-weight:700;color:var(--given);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">✓ What Works For This Care Recipient</div>
       ${summary.worked.map(w => `<div style="font-size:.76rem;color:var(--slate);padding:2px 0">• ${emEsc(w)}</div>`).join('')}
     </div>` : ''}
     <div style="font-size:.72rem;font-weight:700;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Select what you are seeing</div>
@@ -13797,7 +13797,7 @@ function emGetText(p){
   const L = [];
   L.push('EMERGENCY MEDICAL INFORMATION');
   L.push('==============================');
-  L.push('Patient: ' + (p.fname||'') + ' ' + (p.lname||''));
+  L.push('Care Recipient: ' + (p.fname||'') + ' ' + (p.lname||''));
   if(p.dob)   L.push('DOB: ' + p.dob + (age!==''?' (Age '+age+')':''));
   if(p.blood) L.push('Blood Type: ' + p.blood);
   if(p.room)  L.push('Address: ' + p.room);
@@ -14001,7 +14001,7 @@ function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
     <!-- Guidance -->
     <div style="background:#F0F9FF;border:1.5px solid #0EA5E9;border-radius:var(--r);
          padding:9px 13px;margin-bottom:12px;font-size:.72rem;color:#0C4A6E;line-height:1.6">
-      <strong>Who this is for:</strong> Patients who cannot self-report pain verbally.
+      <strong>Who this is for:</strong> Care recipients who cannot self-report pain verbally.
       Score what you observe <em>right now</em> — do not reconstruct from memory.
       Consistency across entries matters more than any single score.
     </div>
@@ -14012,10 +14012,10 @@ function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
       <div class="fg"><label>Time *</label><input type="time" id="pa-time"></div>
     </div>
     <div class="fg">
-      <label>Patient *</label>
+      <label>Care Recipient *</label>
       <select id="pa-patient" style="border:1.5px solid var(--border);border-radius:var(--r);
         padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
-        <option value="">— Select patient —</option>
+        <option value="">— Select care recipient —</option>
       </select>
     </div>
 
@@ -14131,7 +14131,7 @@ function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
 <div class="overlay" id="quick-fluid-modal">
   <div class="modal">
     <div class="modal-title">💧 Offer Fluids</div>
-    <div style="font-size:.88rem;color:var(--slate-mid);margin-bottom:14px;font-weight:600" class="qf-patient-name">Patient</div>
+    <div style="font-size:.88rem;color:var(--slate-mid);margin-bottom:14px;font-weight:600" class="qf-patient-name">Care Recipient</div>
     <div class="form-row">
       <div class="fg">
         <label>Fluid type</label>
