@@ -1261,7 +1261,7 @@ body {
     <div class="paywall-title">Unlock Tended Health Pro</div>
     <div class="paywall-sub" id="paywall-sub">Your 10-day free trial has ended. Unlock complete professional documentation — <strong>one-time purchase, no subscription, no recurring fees.</strong></div>
     <div class="paywall-features">
-      <div>✅ Full Medication Log</div><div>✅ FDA BBW alerts</div>
+      <div>✅ Full Medication Log</div><div>✅ FDA Medication Warnings</div>
       <div>✅ Wound tracker</div><div>✅ Incident log</div>
       <div>✅ Vital signs & alerts</div><div>✅ PDF daily summary</div>
       <div>✅ Monthly report</div><div>✅ Billing & hours</div>
@@ -1335,7 +1335,7 @@ body {
     <div class="nav-label">Behavioral & Clinical</div>
     <button class="nav-btn" onclick="navTo('routines',this)"><span class="ni">📅</span> Routines</button>
     <button class="nav-btn" onclick="navTo('triggers',this)"><span class="ni">⚡</span> Triggers</button>
-    <button class="nav-btn" onclick="navTo('behaviors',this)"><span class="ni">🧠</span> Behavior Patterns (ABC)</button>
+    <button class="nav-btn" onclick="navTo('behaviors',this)"><span class="ni">🧠</span> Behavior Patterns</button>
     <button class="nav-btn" onclick="navTo('toileting',this)"><span class="ni">🚻</span> Toileting</button>
     <button class="nav-btn" onclick="navTo('trends',this)"><span class="ni">📊</span> Weekly Trends</button>
     <button class="nav-btn" onclick="navTo('vitals',this)"><span class="ni">🩺</span> Vital Signs <span class="nav-badge" id="nb-vitals"></span></button>
@@ -1465,7 +1465,7 @@ body {
         </button>
         <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('behaviors')">
           <span style="font-size:1rem">🧠</span>
-          <div style="text-align:left"><div style="font-weight:700">Behavior Patterns (ABC)</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Track triggers, behaviors, and what helps</div></div>
+          <div style="text-align:left"><div style="font-weight:700">Behavior Patterns</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Track triggers, behaviors, and what helps</div></div>
         </button>
         <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('wounds')">
           <span style="font-size:1rem">🩹</span>
@@ -1660,7 +1660,7 @@ body {
   <div style="background:#FFF8EC;border:1.5px solid #C9963A;border-radius:var(--r-lg);padding:14px 16px;margin-bottom:16px;font-size:.78rem;color:#92400E;line-height:1.7">
     <div style="font-weight:700;margin-bottom:6px">📋 What to log here</div>
     <p style="margin-bottom:8px">Use this section for <strong>specific events that need to be formally reported</strong> — a fall, a near-fall, an injury, a medication error, a choking episode, or any behavioral crisis that required calling a physician or family member. These are events where something happened that someone else needs to know about officially.</p>
-    <p style="margin-bottom:0"><strong>Examples:</strong> Found on floor · Refused all medications · Struck caregiver · Elopement attempt · Injury during personal care · Sudden change in condition. <strong>For repeated behaviors and mood patterns</strong> — agitation, restlessness, refusal of care — use the Behavior Patterns (ABC) section instead.</p>
+    <p style="margin-bottom:0"><strong>Examples:</strong> Found on floor · Refused all medications · Struck caregiver · Elopement attempt · Injury during personal care · Sudden change in condition. <strong>For repeated behaviors and mood patterns</strong> — agitation, restlessness, refusal of care — use the Behavior Patterns section instead.</p>
   </div>
   <div id="incidents-patient-bar" style="margin-bottom:14px"></div>
   <div id="incident-list">
@@ -1739,7 +1739,7 @@ body {
     <div style="text-align:center;padding:32px 20px">
       <div style="font-size:2.4rem;margin-bottom:12px">✅</div>
       <div style="font-family:var(--font-head);font-size:1.1rem;color:var(--navy);margin-bottom:8px">No Medication Warnings Detected</div>
-      <div style="font-size:.86rem;color:var(--slate-light);line-height:1.6">None of the medications in your current list carry FDA black box warnings — or none have been added yet.</div>
+      <div style="font-size:.86rem;color:var(--slate-light);line-height:1.6">None of the medications in your current list carry FDA medication warnings — or none have been added yet.</div>
       <button class="btn btn-secondary btn-sm" style="margin-top:16px" onclick="navTo('mar')">➕ Add Medications to Medication Log</button>
     </div>
   </div>
@@ -2118,10 +2118,10 @@ body {
       <div style="font-size:.84rem;color:var(--slate-mid);line-height:1.9">
         <div>👤 <strong style="color:var(--navy)">Patient Care:</strong> Patient Roster · Medication Log · Incidents · Shift Handoff</div>
         <div>📋 <strong style="color:var(--navy)">Documentation:</strong> Care Plan · Wound Tracker · Diet &amp; Fluids · Family Log · Pain Scale</div>
-        <div>🧠 <strong style="color:var(--navy)">Behavioral &amp; Clinical:</strong> Routines · Triggers · Behavior Patterns (ABC) · Toileting · Vital Signs · Weekly Trends</div>
+        <div>🧠 <strong style="color:var(--navy)">Behavioral &amp; Clinical:</strong> Routines · Triggers · Behavior Patterns · Toileting · Vital Signs · Weekly Trends</div>
         <div>🎓 <strong style="color:var(--navy)">Professional Tools:</strong> Voice to Text · Credentials · Billing · Monthly Report</div>
         <div>💜 <strong style="color:var(--navy)">Memory Care:</strong> Sundowning Tracker · Wandering &amp; Exit Log · Memory Care Notes</div>
-        <div>⚠️ <strong style="color:var(--navy)">Safety:</strong> FDA Black Box Warnings for 90+ medications</div>
+        <div>⚠️ <strong style="color:var(--navy)">Safety:</strong> FDA Medication Warnings for 90+ medications</div>
       </div>
     </div>
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
@@ -2526,7 +2526,7 @@ body {
 <!-- ═══ ABC BEHAVIOR ══════════════════════════════════════════ -->
 <div id="section-behaviors" class="section">
   <div class="ph">
-    <div><div class="ph-title">🧠 Behavior Patterns (ABC)</div>
+    <div><div class="ph-title">🧠 Behavior Patterns</div>
     <div class="ph-sub">Track what triggers behaviors and what helps — builds patterns over time</div></div>
     <button class="btn btn-teal" onclick="openModal('behavior-modal')">+ Log Behavior</button>
   </div>
@@ -3538,12 +3538,12 @@ function bbwBadgeHtml(medName, compact){
   const w = getBBW(medName);
   if(!w) return '';
   if(compact){
-    return `<span style="display:inline-flex;align-items:center;gap:3px;background:#FFF3CD;border:1px solid #C9963A;border-radius:4px;padding:1px 6px;font-size:.65rem;font-weight:700;color:#7A4A00;white-space:nowrap;vertical-align:middle">⚠ BBW</span>`;
+    return `<span style="display:inline-flex;align-items:center;gap:3px;background:#FFF3CD;border:1px solid #C9963A;border-radius:4px;padding:1px 6px;font-size:.65rem;font-weight:700;color:#7A4A00;white-space:nowrap;vertical-align:middle">⚠ Warning</span>`;
   }
   return `<div style="display:flex;align-items:flex-start;gap:6px;background:#FFF8ED;border:1.5px solid #C9963A;border-radius:6px;padding:6px 9px;margin-top:5px">
     <span style="font-size:.85rem;flex-shrink:0">⚠️</span>
     <div>
-      <div style="font-size:.7rem;font-weight:700;color:#7A4A00;text-transform:uppercase;letter-spacing:.05em">Black Box Warning — ${w.short}</div>
+      <div style="font-size:.7rem;font-weight:700;color:#7A4A00;text-transform:uppercase;letter-spacing:.05em">Medication Warning — ${w.short}</div>
       <div style="font-size:.72rem;color:#7A4A00;margin-top:2px;line-height:1.5">${w.watch}</div>
     </div>
   </div>`;
@@ -5490,7 +5490,7 @@ function exportAgencySummary(){
           <td>${b.intervention||'—'}</td>
         </tr>`;
       }).join('');
-      behaviorsHTML = `<h4>Behavior Log (ABC)</h4>
+      behaviorsHTML = `<h4>Behavior Log</h4>
         <table><thead><tr><th>Time</th><th>Antecedent</th><th>Behavior</th><th>Consequence</th><th>Intervention</th></tr></thead>
         <tbody>${rows}</tbody></table>`;
     }
@@ -6444,9 +6444,9 @@ if('serviceWorker' in navigator){
     const isRealHost = loc.protocol === 'https:' || loc.hostname === 'localhost' || loc.hostname === '127.0.0.1';
     if(!isRealHost) return;
 
-    const APP_VERSION = '4.1.0-b9';
+    const APP_VERSION = '4.1.0-b10';
     const swCode = `
-const CACHE = 'tended-pro-v11';
+const CACHE = 'tended-pro-v12';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -11077,7 +11077,7 @@ function renderBBWDashboardAlert(){
       style="display:flex;align-items:center;gap:10px;padding:11px 16px">
       <span style="font-size:1rem;flex-shrink:0">⚠️</span>
       <div style="flex:1;min-width:0">
-        <span style="font-weight:700;font-size:.82rem;color:#7A4A00">Black Box Warning</span>
+        <span style="font-weight:700;font-size:.82rem;color:#7A4A00">Medication Warning</span>
         <span style="font-size:.78rem;color:#A06020;margin-left:6px">${medNames}</span>
       </div>
       <span id="bbw-chevron" style="font-size:.75rem;color:#C9963A;flex-shrink:0;
