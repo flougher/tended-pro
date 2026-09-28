@@ -1210,7 +1210,7 @@ body {
   <div style="background:var(--white);border-radius:20px;padding:40px 36px;max-width:540px;width:100%;box-shadow:0 24px 64px rgba(12,27,51,.4);text-align:center;animation:welcomeFadeIn .4s ease;margin:auto 0">
     <div style="width:64px;height:64px;background:linear-gradient(135deg,var(--teal-mid),var(--teal-bright));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 20px">🏥</div>
     <div style="font-family:var(--font-head);font-size:1.6rem;font-weight:700;color:var(--navy);margin-bottom:8px">Welcome to Tended Health Pro</div>
-    <div style="font-size:.92rem;color:var(--slate-mid);line-height:1.7;margin-bottom:6px">Shift documentation for <strong style="color:var(--navy)">family caregivers and care teams.</strong></div>
+    <div style="font-size:.92rem;color:var(--slate-mid);line-height:1.7;margin-bottom:6px">Daily care tracking for <strong style="color:var(--navy)">family caregivers and care teams.</strong></div>
     <div style="font-size:.84rem;color:var(--slate-light);line-height:1.6;margin-bottom:24px">Medication Log · Incidents · Vitals · Wound Tracker · Behavior Log · <strong style="color:#7C3AED">Memory Care</strong> · Billing · Monthly Report — all in one secure offline app.</div>
     <!-- UX-001 — capture caregiver name/initials up front -->
     <div style="background:var(--off-white);border-radius:14px;padding:18px;margin-bottom:18px;text-align:left">
@@ -1302,7 +1302,7 @@ body {
 
 <!-- ═══ PROFESSIONAL USE DISCLAIMER BAR ══════════════════════ -->
 <div id="disclaimer-bar" style="background:#F0F4F8;border-bottom:1px solid var(--border);padding:4px 16px;font-size:.68rem;color:var(--slate-mid);line-height:1.4;display:flex;align-items:center;justify-content:space-between;gap:8px">
-  <span>⚕️ <strong style="color:var(--navy)">Professional Use Only.</strong> Documentation tool — not a medical device. Always follow employer policies.</span>
+  <span>🏡 <strong style="color:var(--navy)">Personal Caregiving Tool.</strong> Not a medical device — always follow your care team's guidance.</span>
   <button onclick="this.parentElement.style.display='none';try{localStorage.setItem('disclaimerDismissed','1')}catch(e){}" style="background:none;border:none;color:var(--slate-light);cursor:pointer;font-size:.9rem;flex-shrink:0;padding:0 4px" title="Dismiss">✕</button>
 </div>
 
@@ -1319,8 +1319,8 @@ body {
     <div class="nav-label">Care Recipients</div>
     <button class="nav-btn" onclick="navTo('patients',this)"><span class="ni">👤</span> Care Recipients <span class="nav-badge" id="nb-patients"></span></button>
     <button class="nav-btn" onclick="navTo('mar',this)"><span class="ni">💊</span> Medication Log</button>
-    <button class="nav-btn" onclick="navTo('incidents',this)"><span class="ni">📋</span> Incidents <span class="nav-badge" id="nb-incidents"></span></button>
-    <button class="nav-btn" onclick="navTo('handoff',this)"><span class="ni">🔄</span> Shift Handoff</button>
+    <button class="nav-btn" onclick="navTo('incidents',this)"><span class="ni">📋</span> Care Events <span class="nav-badge" id="nb-incidents"></span></button>
+    <button class="nav-btn" onclick="navTo('handoff',this)"><span class="ni">🔄</span> Daily Handoff</button>
   </div>
   <div class="nav-group">
     <div class="nav-label">Health &amp; Care Notes</div>
@@ -2015,7 +2015,7 @@ body {
 <div id="section-settings" class="section">
   <div class="ph">
     <div><div class="ph-title">⚙️ Settings</div><div class="ph-sub">Caregiver profile and data management</div></div>
-    <div style="font-size:.7rem;color:var(--slate-light);margin-top:4px">App version: <strong>v2.14-patientfix</strong></div>
+    <div style="font-size:.7rem;color:var(--slate-light);margin-top:4px">App version: <strong id="mar-app-version"></strong></div>
   </div>
   
 
@@ -2153,10 +2153,10 @@ body {
   <div class="card" style="margin-top:0">
     <div class="card-title">ℹ️ About Tended Health Pro</div>
     <div style="font-size:.86rem;color:var(--slate-mid);line-height:2">
-      <div><strong style="color:var(--navy)">Version:</strong> 4.1.0</div>
-      <div><strong style="color:var(--navy)">Sections:</strong> 22 clinical documentation sections</div>
+      <div><strong style="color:var(--navy)">Version:</strong> <span id="about-version"></span></div>
+      <div><strong style="color:var(--navy)">Sections:</strong> 22 care documentation sections</div>
       <div style="font-size:.84rem;color:var(--slate-mid);line-height:1.9">
-        <div>👤 <strong style="color:var(--navy)">Care Recipients:</strong> Care Recipients · Medication Log · Incidents · Shift Handoff</div>
+        <div>👤 <strong style="color:var(--navy)">Care Recipients:</strong> Care Recipients · Medication Log · Care Events · Daily Care Summary</div>
         <div>📋 <strong style="color:var(--navy)">Health &amp; Care Notes:</strong> Care Plan · Wound Tracker · Diet &amp; Fluids · Family Log · Pain Scale</div>
         <div>🧠 <strong style="color:var(--navy)">Daily Behaviors:</strong> Routines · Triggers · Behavior Patterns · Toileting · Vital Signs · Weekly Trends</div>
         <div>🎓 <strong style="color:var(--navy)">Additional Tools:</strong> Voice to Text · Credentials · Billing · Monthly Report</div>
@@ -2204,7 +2204,7 @@ body {
       <p style="margin-bottom:10px">Tended Health Pro is a <strong style="color:var(--navy)">personal caregiving tool</strong> designed for family caregivers and private individuals caring for a loved one at home. It is not a medical device and does not provide clinical diagnoses.</p>
       <p style="margin-bottom:10px">Tended Health Pro is <strong style="color:var(--navy)">not a HIPAA-covered service</strong> and is not intended for use by healthcare covered entities or business associates under HIPAA. If you are a home health agency or healthcare provider please consult your compliance officer before use.</p>
       <p style="margin-bottom:10px"><strong style="color:var(--navy)">Medication warnings</strong> displayed in this app are sourced from FDA drug label data and are for <strong style="color:var(--navy)">informational reference only</strong>. They do not constitute medical advice. Never adjust, withhold, or administer medication outside of a physician's order.</p>
-      <p style="margin-bottom:0;color:var(--slate-light);font-size:.76rem">Tended Health Pro · Version 4.1.0 · For personal caregiving use</p>
+      <p style="margin-bottom:0;color:var(--slate-light);font-size:.76rem">Tended Health Pro · Personal Caregiving Tool</p>
     </div>
   </div>
 
@@ -2219,7 +2219,7 @@ body {
   </div>
 
   <div style="text-align:center;margin-top:8px;font-size:.74rem;color:var(--slate-light)">
-    Tended Health Pro · Personal Caregiving Tool · Version 4.1.0
+    Tended Health Pro · Personal Caregiving Tool
   </div>
   <div style="text-align:center;margin-top:6px;margin-bottom:8px">
     <a href="mailto:tendedhealthapps@gmail.com" style="font-size:.78rem;color:var(--teal);font-weight:600;text-decoration:none">
@@ -6511,9 +6511,9 @@ if('serviceWorker' in navigator){
     const isRealHost = loc.protocol === 'https:' || loc.hostname === 'localhost' || loc.hostname === '127.0.0.1';
     if(!isRealHost) return;
 
-    const APP_VERSION = '4.4.2';
+    const APP_VERSION = '4.5.0';
     const swCode = `
-const CACHE = 'tended-pro-v22';
+const CACHE = 'tended-pro-v23';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -7131,7 +7131,7 @@ async function exportData(){
   if(!confirm(warn)) return;
   const wantsEncrypt = confirm('Encrypt this backup with a passphrase?\n\nOK = encrypt (recommended)\nCancel = export plain JSON');
   const payload = {
-    _meta: { app:'tended-pro', version:'4.1.0', phases:'1-4-complete', exported: new Date().toISOString() },
+    _meta: { app:'tended-pro', version:APP_VERSION, phases:'1-4-complete', exported: new Date().toISOString() },
     ...D
   };
   const plaintext = JSON.stringify(payload, null, 2);
@@ -7154,7 +7154,7 @@ async function exportData(){
       const cipher = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(plaintext));
       const b64 = b => btoa(String.fromCharCode(...new Uint8Array(b)));
       const envelope = {
-        _meta: { app:'tended-pro', version:'4.1.0', exported: new Date().toISOString(), encrypted: true, kdf:'PBKDF2-SHA256', iterations: 250000, cipher: 'AES-GCM-256' },
+        _meta: { app:'tended-pro', version:APP_VERSION, exported: new Date().toISOString(), encrypted: true, kdf:'PBKDF2-SHA256', iterations: 250000, cipher: 'AES-GCM-256' },
         salt: b64(salt), iv: b64(iv), data: b64(cipher)
       };
       const blob = new Blob([JSON.stringify(envelope)], { type:'application/json' });
@@ -13113,6 +13113,11 @@ async function init(){
       toast('👋 Complete your Caregiver Profile in Settings to get started', 'var(--teal)');
     }, 1500);
   }
+  // Populate dynamic version spans
+  const av = document.getElementById('about-version');
+  if(av) av.textContent = APP_VERSION;
+  const mav = document.getElementById('mar-app-version');
+  if(mav) mav.textContent = 'v' + APP_VERSION;
   // Premium + welcome
   checkURLPremiumFlag();
   startTrialIfNew();
