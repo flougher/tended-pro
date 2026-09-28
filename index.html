@@ -1211,7 +1211,7 @@ body {
     <div style="width:64px;height:64px;background:linear-gradient(135deg,var(--teal-mid),var(--teal-bright));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 20px">🏥</div>
     <div style="font-family:var(--font-head);font-size:1.6rem;font-weight:700;color:var(--navy);margin-bottom:8px">Welcome to Tended Health Pro</div>
     <div style="font-size:.92rem;color:var(--slate-mid);line-height:1.7;margin-bottom:6px">Daily care tracking for <strong style="color:var(--navy)">family caregivers and care teams.</strong></div>
-    <div style="font-size:.84rem;color:var(--slate-light);line-height:1.6;margin-bottom:24px">Medication Log · Incidents · Vitals · Wound Tracker · Behavior Log · <strong style="color:#7C3AED">Memory Care</strong> · Billing · Monthly Report — all in one secure offline app.</div>
+    <div style="font-size:.84rem;color:var(--slate-light);line-height:1.6;margin-bottom:24px">Medication Log · Care Events · Vitals · Wound Tracker · Behavior Log · <strong style="color:#7C3AED">Memory Care</strong> · Billing · Monthly Report — all in one secure offline app.</div>
     <!-- UX-001 — capture caregiver name/initials up front -->
     <div style="background:var(--off-white);border-radius:14px;padding:18px;margin-bottom:18px;text-align:left">
       <div style="font-size:.8rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Your details (used on Medication Log and reports):</div>
@@ -1231,7 +1231,7 @@ body {
       <div style="font-size:.8rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Load a sample care recipient to explore all sections:</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;font-size:.82rem;color:var(--navy)">
         <div>✅ Care recipient profile</div><div>✅ Medication Log with 4 meds</div>
-        <div>✅ 3 incidents</div><div>✅ Care plan</div>
+        <div>✅ 3 care events</div><div>✅ Care plan</div>
         <div>✅ 2 active wounds</div><div>✅ Today's intake</div>
         <div>✅ Family log</div><div>✅ Morning routines</div>
         <div>✅ 3 triggers</div><div>✅ Behavior patterns</div>
@@ -1262,7 +1262,7 @@ body {
     <div class="paywall-sub" id="paywall-sub">Your 10-day free trial has ended. Unlock complete professional documentation — <strong>one-time purchase, no subscription, no recurring fees.</strong></div>
     <div class="paywall-features">
       <div>✅ Full Medication Log</div><div>✅ FDA Medication Warnings</div>
-      <div>✅ Wound tracker</div><div>✅ Incident log</div>
+      <div>✅ Wound tracker</div><div>✅ Care Events log</div>
       <div>✅ Vital signs & alerts</div><div>✅ PDF daily summary</div>
       <div>✅ Monthly report</div><div>✅ Billing & hours</div>
       <div>✅ Voice to text</div><div>✅ Memory care tools</div>
@@ -1486,7 +1486,7 @@ body {
         </button>
         <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="openIncidentModal()">
           <span style="font-size:1rem">📋</span>
-          <div style="text-align:left"><div style="font-weight:700">Log an Incident</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Falls, observations, events</div></div>
+          <div style="text-align:left"><div style="font-weight:700">Log a Care Event</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Falls, observations, events</div></div>
         </button>
         <button class="btn btn-secondary btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('behaviors')">
           <span style="font-size:1rem">🧠</span>
@@ -1521,16 +1521,16 @@ body {
       <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:10px" onclick="navTo('patients')">View All Care Recipients →</button>
     </div>
     <div class="card">
-      <div class="card-title">📋 Today's Incidents</div>
+      <div class="card-title">📋 Today's Care Events</div>
       <div id="dash-incidents"></div>
-      <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:10px" onclick="navTo('incidents')">View All Incidents →</button>
+      <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:10px" onclick="navTo('incidents')">View All Care Events →</button>
     </div>
   </div>
 
   <!-- Shift Notes -->
   <div class="card" style="margin-bottom:20px">
     <div class="card-title">📝 Today's Care Notes
-      <span style="font-size:.7rem;font-weight:400;color:var(--slate-light);margin-left:8px">Separate from the incident log</span>
+      <span style="font-size:.7rem;font-weight:400;color:var(--slate-light);margin-left:8px">Separate from the care events log</span>
     </div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
       <label style="font-size:.78rem;color:var(--slate-mid);font-weight:600;flex-shrink:0">Date:</label>
@@ -1562,7 +1562,7 @@ body {
         <div style="width:44px;height:44px;background:var(--teal);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">📋</div>
         <div>
           <div style="font-weight:700;font-size:.95rem;color:var(--navy)">Daily Care Summary</div>
-          <div style="font-size:.78rem;color:var(--slate-mid);margin-top:2px">Export a complete PDF report — medications, vitals, incidents, meals, behaviors & more</div>
+          <div style="font-size:.78rem;color:var(--slate-mid);margin-top:2px">Export a complete PDF report — medications, vitals, care events, meals, behaviors & more</div>
         </div>
       </div>
       <button class="btn btn-teal" onclick="exportAgencySummary()" style="white-space:nowrap;flex-shrink:0">
@@ -1690,10 +1690,10 @@ body {
 <div id="section-incidents" class="section">
   <div class="ph">
     <div>
-      <div class="ph-title">📋 Incident Report</div>
+      <div class="ph-title">📋 Care Events</div>
       <div class="ph-sub">Falls, injuries, medication errors, and events requiring formal documentation</div>
     </div>
-    <button class="btn btn-teal" onclick="openIncidentModal()">+ Log Incident</button>
+    <button class="btn btn-teal" onclick="openIncidentModal()">+ Log Care Event</button>
   </div>
 
   <!-- Incident guidance -->
@@ -1704,7 +1704,7 @@ body {
   </div>
   <div id="incidents-patient-bar" style="margin-bottom:14px"></div>
   <div id="incident-list">
-    <div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No incidents logged yet.<br>Tap + Log Incident to document an event.</div></div>
+    <div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No care events logged yet.<br>Tap + Log Care Event to document an event.</div></div>
   </div>
 
   <!-- Static status panel — tap any incident card to show -->
@@ -1883,15 +1883,15 @@ body {
   <div class="ph">
     <div>
       <div class="ph-title">🚶 Wandering & Unsupervised Exits</div>
-      <div class="ph-sub">Document wandering incidents and unsupervised exit attempts</div>
+      <div class="ph-sub">Document wandering events and unsupervised exit attempts</div>
     </div>
-    <button class="btn btn-teal" onclick="openModal('wandering-modal')">+ Log Incident</button>
+    <button class="btn btn-teal" onclick="openModal('wandering-modal')">+ Log Care Event</button>
   </div>
   <div id="wandering-patient-bar" style="margin-bottom:10px"></div>
   <div id="wd-prediction-alert"></div>
   <div style="background:var(--refused-bg);border:1.5px solid var(--refused);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:16px;font-size:.78rem;color:#7A2020;line-height:1.7">
     <div style="font-weight:700;margin-bottom:6px;color:var(--refused)">⚠️ Wandering & Unsupervised Exits — Safety Guidance</div>
-    <p style="margin-bottom:8px"><strong>Document every incident immediately.</strong> A wandering log is only clinically useful when entries are consistent and complete. Time of incident, duration, location found, and what the patient was doing are all essential.</p>
+    <p style="margin-bottom:8px"><strong>Document every event immediately.</strong> A wandering log is only clinically useful when entries are consistent and complete. Time of incident, duration, location found, and what the patient was doing are all essential.</p>
     <p style="margin-bottom:8px"><strong>Wandering vs. Leaving Unsupervised:</strong> Wandering is movement within a supervised space. Leaving unsupervised — clinically called elopement — means the patient has left or attempted to leave without authorization. This is a medical emergency. If a patient leaves or attempts to leave, <strong>call 911 immediately</strong>, then notify the family and supervisor.</p>
     <p style="margin-bottom:8px"><strong>Before logging, verify safeguards are in place:</strong> door alarms active, bed sensor functioning, ID bracelet on patient, family notified of risk level.</p>
     <p style="margin-bottom:0"><strong>Call the physician if:</strong> wandering episodes are new or suddenly increasing in frequency, the patient appears in pain or distressed during episodes, or the patient is found in an unsafe location. A sudden increase in wandering behavior can signal a UTI, pain, medication reaction, or disease progression.</p>
@@ -1907,7 +1907,7 @@ body {
       <div class="fg"><label>Date *</label><input type="date" id="wd-date"></div>
       <div class="fg"><label>Time Discovered *</label><input type="time" id="wd-time"></div>
     </div>
-    <div class="fg"><label>Incident Type *</label>
+    <div class="fg"><label>Event Type *</label>
       <select id="wd-type" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
         <option>Wandering — within facility</option>
         <option>Wandering — entered restricted area</option>
@@ -1946,7 +1946,7 @@ body {
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('wandering-modal')">Cancel</button>
-      <button class="btn btn-teal" onclick="saveWandering()">Save Incident</button>
+      <button class="btn btn-teal" onclick="saveWandering()">Save Care Event</button>
     </div>
   </div>
 </div>
@@ -2093,7 +2093,7 @@ body {
           </div>
           <p style="font-size:.8rem;color:var(--navy);line-height:1.7;margin-bottom:8px">
             Tapping <strong>Export All Data</strong> saves a complete backup of everything in the app —
-            all patients, medications, medication log records, incidents, care plans, wounds, behaviors,
+            all patients, medications, medication log records, care events, care plans, wounds, behaviors,
             billing, vitals, pain logs, and credentials — as a single <strong>.json file</strong> on your device.
           </p>
           <div style="font-size:.78rem;color:var(--teal);font-weight:600;margin-bottom:4px">What to do with the file:</div>
@@ -2575,7 +2575,7 @@ body {
   <div style="background:#F0F9FF;border:1.5px solid #0EA5E9;border-radius:var(--r-lg);padding:14px 16px;margin-bottom:16px;font-size:.78rem;color:#0C4A6E;line-height:1.7">
     <div style="font-weight:700;margin-bottom:6px">🧠 What to log here</div>
     <p style="margin-bottom:8px">Use this section to document <strong>repeated or pattern-based behaviors</strong> — agitation, restlessness, refusal of care, verbal outbursts, mood changes, or sundowning episodes. The ABC format captures three things: what happened <em>before</em> the behavior (the trigger), what the behavior looked like, and what helped resolve it.</p>
-    <p style="margin-bottom:0"><strong>Why it matters:</strong> A single behavior entry tells you little. Ten entries showing agitation occurs every afternoon when visitors arrive tells you everything. The pattern is where the clinical value lives. <strong>Use the Incident Report section instead</strong> for one-time events like falls, injuries, or medication errors that need to be formally reported.</p>
+    <p style="margin-bottom:0"><strong>Why it matters:</strong> A single behavior entry tells you little. Ten entries showing agitation occurs every afternoon when visitors arrive tells you everything. The pattern is where the clinical value lives. <strong>Use the Care Events section instead</strong> for one-time events like falls, injuries, or medication errors that need to be formally reported.</p>
   </div>
   <div id="behaviors-patient-bar" style="margin-bottom:10px"></div>
   <div class="p3-tabs">
@@ -2702,7 +2702,7 @@ body {
 
   <div class="p3-tabs">
     <button class="p3-tab active" onclick="p3Tab('trends','behaviors')">🧠 Behavior Patterns</button>
-    <button class="p3-tab" onclick="p3Tab('trends','incidents')">📋 Incidents</button>
+    <button class="p3-tab" onclick="p3Tab('trends','incidents')">📋 Care Events</button>
     <button class="p3-tab" onclick="p3Tab('trends','toileting')">🚻 Toileting</button>
     <button class="p3-tab" onclick="p3Tab('trends','intake')">🍽️ Intake</button>
   </div>
@@ -2930,7 +2930,7 @@ body {
     <div class="fg" style="margin-bottom:0"><label>Include Sections</label>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px;font-size:.86rem">
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-meds" checked onchange="renderReport()"> 💊 Medications</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-incidents" checked onchange="renderReport()"> 📋 Incidents</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-incidents" checked onchange="renderReport()"> 📋 Care Events</label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-wounds" checked onchange="renderReport()"> 🩹 Wounds</label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-intake" checked onchange="renderReport()"> 🍽️ Diet & Fluids</label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="rpt-behaviors" checked onchange="renderReport()"> 🧠 Behaviors</label>
@@ -3101,7 +3101,7 @@ body {
   <button class="bn-btn active" onclick="navTo('dashboard')"><span class="bn-icon">🏠</span>Home</button>
   <button class="bn-btn" onclick="navTo('patients')"><span class="bn-icon">👤</span>Recipients</button>
   <button class="bn-btn" onclick="navTo('mar')"><span class="bn-icon">💊</span>Meds</button>
-  <button class="bn-btn" onclick="navTo('incidents')"><span class="bn-icon">📋</span>Incidents</button>
+  <button class="bn-btn" onclick="navTo('incidents')"><span class="bn-icon">📋</span>Care Events</button>
   <button class="bn-btn" onclick="toggleMobileMore()"><span class="bn-icon">⋯</span>More</button>
 </div>
 
@@ -3250,7 +3250,7 @@ body {
 <!-- Incident Modal -->
 <div class="overlay" id="incident-modal">
   <div class="modal">
-    <div class="modal-title">Log Incident / Observation</div>
+    <div class="modal-title">Log Care Event / Observation</div>
     <div class="form-row">
       <div class="fg"><label>Date & Time</label><input type="datetime-local" id="inc-dt"></div>
       <div class="fg"><label>Severity</label>
@@ -3261,7 +3261,7 @@ body {
         </select>
       </div>
     </div>
-    <div class="fg"><label>Incident Type</label>
+    <div class="fg"><label>Event Type</label>
       <select id="inc-type" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
         <option>Fall</option>
         <option>Medication refusal</option>
@@ -3297,7 +3297,7 @@ body {
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('incident-modal')">Cancel</button>
-      <button class="btn btn-teal" id="inc-save-btn" onclick="saveIncident()">Save Incident</button>
+      <button class="btn btn-teal" id="inc-save-btn" onclick="saveIncident()">Save Care Event</button>
     </div>
   </div>
 </div>
@@ -4156,7 +4156,7 @@ function closeModal(id){
     'toilet-modal':     () => { _editToiletId      = null; const t=document.querySelector('#toilet-modal .modal-title');     if(t) t.textContent='Log Toileting'; },
     'vitals-modal':     () => { _editVitalsId      = null; const t=document.querySelector('#vitals-modal .modal-title');     if(t) t.textContent='Log Vital Signs'; const b=document.getElementById('vm-save-btn'); if(b) b.textContent='Save Vitals'; },
     'sundowning-modal': () => { _editSundownId     = null; const t=document.querySelector('#sundowning-modal .modal-title'); if(t) t.textContent='🌅 Log Sundowning Episode'; const b=document.querySelector('#sundowning-modal .btn-teal'); if(b) b.textContent='Save Episode'; },
-    'wandering-modal':  () => { _editWanderingId   = null; const t=document.querySelector('#wandering-modal .modal-title');  if(t) t.textContent='🚶 Log Wandering / Exit Incident'; const b=document.querySelector('#wandering-modal .btn-teal'); if(b) b.textContent='Save Incident'; },
+    'wandering-modal':  () => { _editWanderingId   = null; const t=document.querySelector('#wandering-modal .modal-title');  if(t) t.textContent='🚶 Log Wandering / Exit Event'; const b=document.querySelector('#wandering-modal .btn-teal'); if(b) b.textContent='Save Event'; },
     'memorycare-modal': () => { _editMemoryCareId  = null; const t=document.querySelector('#memorycare-modal .modal-title'); if(t) t.textContent='💬 Add Memory Care Note'; const b=document.querySelector('#memorycare-modal .btn-teal'); if(b) b.textContent='Save Note'; },
   };
   if(resetMap[id]) resetMap[id]();
@@ -4651,7 +4651,7 @@ function renderDashboard(){
   const diEl = document.getElementById('dash-incidents');
   if(diEl){
     if(!todayInc.length){
-      diEl.innerHTML = '<div class="empty" style="padding:20px"><div class="empty-icon" style="font-size:1.6rem">✅</div><div class="empty-text" style="font-size:.82rem">No incidents this shift.<br>Tap + Log Incident if something occurs.</div></div>';
+      diEl.innerHTML = '<div class="empty" style="padding:20px"><div class="empty-icon" style="font-size:1.6rem">✅</div><div class="empty-text" style="font-size:.82rem">No care events this shift.<br>Tap + Log Care Event if something occurs.</div></div>';
     } else {
       diEl.innerHTML = todayInc.slice(0,3).map(i => {
         const dt = new Date(i.dt);
@@ -4663,7 +4663,7 @@ function renderDashboard(){
           <div style="font-size:.84rem;font-weight:600;color:var(--navy)">${i.type}</div>
           <div style="font-size:.76rem;color:var(--slate-light);margin-top:2px">${i.desc.slice(0,70)}${i.desc.length>70?'…':''}</div>
         </div>`;
-      }).join('') + (todayInc.length > 3 ? `<div style="font-size:.76rem;color:var(--slate-light);padding-top:6px">+ ${todayInc.length-3} more incidents today</div>` : '');
+      }).join('') + (todayInc.length > 3 ? `<div style="font-size:.76rem;color:var(--slate-light);padding-top:6px">+ ${todayInc.length-3} more care events today</div>` : '');
     }
   }
 }
@@ -5077,7 +5077,7 @@ function showDeletePatientModal(id, name, meds, incidents, wounds){
     <div style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy);text-align:center;margin-bottom:8px">Remove ${name}?</div>
     <div style="font-size:.84rem;color:var(--slate-mid);line-height:1.7;margin-bottom:16px;text-align:center">This will permanently remove this patient and all their associated records. This cannot be undone.</div>
     <div style="background:var(--refused-bg);border-radius:var(--r);padding:10px 14px;font-size:.78rem;color:var(--refused);margin-bottom:20px">
-      ⚠️ All medication records, incidents, wounds, and other data linked to this patient will be deleted.
+      ⚠️ All medication records, care events, wounds, and other data linked to this patient will be deleted.
     </div>
     <div style="display:flex;gap:10px">
       <button onclick="document.getElementById('delete-patient-modal').remove()" style="flex:1;padding:11px;background:var(--off-white);border:1.5px solid var(--border);border-radius:var(--r);font-family:var(--font-body);font-size:.9rem;cursor:pointer;font-weight:600">Cancel</button>
@@ -5489,7 +5489,7 @@ function exportAgencySummary(){
           <td>${i.reported||'—'}</td>
         </tr>`;
       }).join('');
-      incsHTML = `<h4>Incidents</h4>
+      incsHTML = `<h4>Care Events</h4>
         <table><thead><tr><th>Time</th><th>Severity</th><th>Type</th><th>Description</th><th>Action Taken</th><th>Reported To</th></tr></thead>
         <tbody>${rows}</tbody></table>`;
     }
@@ -6511,9 +6511,9 @@ if('serviceWorker' in navigator){
     const isRealHost = loc.protocol === 'https:' || loc.hostname === 'localhost' || loc.hostname === '127.0.0.1';
     if(!isRealHost) return;
 
-    const APP_VERSION = '4.5.0';
+    const APP_VERSION = '4.5.2';
     const swCode = `
-const CACHE = 'tended-pro-v23';
+const CACHE = 'tended-pro-v25';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -6639,9 +6639,9 @@ function openIncidentModal(editId){
   const inc = isEdit ? (D.incidents||[]).find(x => x.id === _editIncidentId) : null;
 
   const title = document.querySelector('#incident-modal .modal-title');
-  if(title) title.textContent = isEdit ? 'Edit Incident' : 'Log Incident';
+  if(title) title.textContent = isEdit ? 'Edit Care Event' : 'Log Care Event';
   const saveBtn = document.getElementById('inc-save-btn');
-  if(saveBtn) saveBtn.textContent = isEdit ? 'Update Incident' : 'Save Incident';
+  if(saveBtn) saveBtn.textContent = isEdit ? 'Update Care Event' : 'Save Care Event';
 
   const set = (id, val) => { const el=document.getElementById(id); if(el) el.value = val||''; };
   if(inc){
@@ -6684,7 +6684,7 @@ function saveIncident(){
     toast('✅ Incident updated', 'var(--given)');
   } else {
     D.incidents.push({ id: Date.now(), patientId: _globalPatientId || '', status: 'open', ...fields });
-    toast('✅ Incident logged', 'var(--given)');
+    toast('✅ Care Events logged', 'var(--given)');
   }
   D.incidents.sort((a,b) => new Date(b.dt) - new Date(a.dt));
   save();
@@ -6787,7 +6787,7 @@ function renderIncidents(){
   if(nb){ nb.textContent = todayInc.length; nb.classList.toggle('show', todayInc.length > 0); }
 
   if(!_incSource.length){
-    el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No incidents logged yet.<br>Tap + Log Incident to document an event.</div></div>';
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No care events logged yet.<br>Tap + Log Care Event to document an event.</div></div>';
     return;
   }
 
@@ -6818,7 +6818,7 @@ function renderIncidents(){
 }
 
 function deleteIncident(id){
-  if(!confirm('Delete this incident record? This cannot be undone.')) return;
+  if(!confirm('Delete this care event record? This cannot be undone.')) return;
   D.incidents = D.incidents.filter(x => x.id !== id);
   save(); renderIncidents();
 }
@@ -6865,7 +6865,7 @@ function generateHandoff(){
   // Incidents today
   const todayInc = D.incidents.filter(i => i.dt.startsWith(todayISO));
   const incLines = todayInc.map(i => '• [' + i.severity.toUpperCase() + '] ' + i.type + ' — ' + i.desc.slice(0,80) + (i.desc.length > 80 ? '...' : ''));
-  const incSummary = incLines.length ? incLines.join('\n') : 'No incidents today';
+  const incSummary = incLines.length ? incLines.join('\n') : 'No care events today';
 
   // Pain summary for handoff
   const todayPain = (D.pain||[]).filter(e => e.date === todayISO);
@@ -6936,7 +6936,7 @@ function generateHandoff(){
       </div>` : ''}
 
       <div class="ho-block">
-        <div class="ho-block-title">📋 Incidents Today (${todayInc.length})</div>
+        <div class="ho-block-title">📋 Care Events Today (${todayInc.length})</div>
         <div class="ho-pre">${incSummary}</div>
       </div>
 
@@ -8718,7 +8718,7 @@ function renderIncidentTrends(){
   el.innerHTML = incidents.length ? `
     <div class="grid-2">
       <div class="trend-chart-wrap">
-        <div class="card-title" style="margin-bottom:14px">📅 Incidents by Day (Last 7 Days)</div>
+        <div class="card-title" style="margin-bottom:14px">📅 Care Events by Day (Last 7 Days)</div>
         ${dayLabels.map((label,i) => `
           <div class="trend-bar-row">
             <div class="trend-bar-label">${label}</div>
@@ -8736,7 +8736,7 @@ function renderIncidentTrends(){
           </div>`).join('')}
       </div>
       ${topTypes.length ? `<div class="trend-chart-wrap" style="grid-column:1/-1">
-        <div class="card-title" style="margin-bottom:14px">📋 Most Common Incident Types</div>
+        <div class="card-title" style="margin-bottom:14px">📋 Most Common Care Event Types</div>
         ${topTypes.map(([type,count]) => `
           <div class="trend-bar-row">
             <div style="width:160px;font-size:.78rem;color:var(--slate-mid);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0">${type}</div>
@@ -8745,7 +8745,7 @@ function renderIncidentTrends(){
           </div>`).join('')}
       </div>` : ''}
     </div>` :
-    '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No incident data yet. Log incidents to see trends.</div></div>';
+    '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No care event data yet. Log care events to see trends.</div></div>';
 }
 
 function renderToiletingTrends(){
@@ -9094,7 +9094,7 @@ function renderReport(){
     const inc = D.incidents.filter(i => inMonth(i.dt?.split('T')[0]));
     const bySev = {critical:0,moderate:0,minor:0};
     inc.forEach(i => bySev[i.severity] = (bySev[i.severity]||0)+1);
-    sections += `<div class="report-section"><div class="report-section-title">📋 Incidents (${inc.length})</div>
+    sections += `<div class="report-section"><div class="report-section-title">📋 Care Events (${inc.length})</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:${inc.length?'12px':'0'};text-align:center">
         <div style="background:#FFE4E4;border-radius:8px;padding:8px"><div style="font-size:1.2rem;font-weight:700;color:#C0392B;font-family:monospace">${bySev.critical}</div><div style="font-size:.7rem;color:#8097B3">Critical</div></div>
         <div style="background:#FFF3D0;border-radius:8px;padding:8px"><div style="font-size:1.2rem;font-weight:700;color:#C47A00;font-family:monospace">${bySev.moderate}</div><div style="font-size:.7rem;color:#8097B3">Moderate</div></div>
@@ -9106,7 +9106,7 @@ function renderReport(){
           <div style="font-size:.80rem;color:#526280;margin-top:3px;line-height:1.6">${i.desc}</div>
           ${i.action?`<div style="font-size:.78rem;color:#0B7A6E;margin-top:3px">🔧 Action: ${i.action}</div>`:''}
           ${i.reported?`<div style="font-size:.78rem;color:#8097B3;margin-top:2px">📣 Reported to: ${i.reported}</div>`:''}
-        </div>`).join('') : '<div style="font-size:.84rem;color:#8097B3">No incidents this month.</div>'}
+        </div>`).join('') : '<div style="font-size:.84rem;color:#8097B3">No care events this month.</div>'}
     </div>`;
   }
 
@@ -9479,7 +9479,7 @@ function buildReportEmailText(){
   // ── DEFECT 3 FIX: INCIDENTS ────────────────────────────────────────────
   const inc = (D.incidents||[]).filter(i=>inMonth(i.dt?.split('T')[0]));
   if(inc.length){
-    lines.push('\n📋 INCIDENTS ('+inc.length+')');
+    lines.push('\n📋 CARE EVENTS ('+inc.length+')');
     lines.push(div);
     const bySev = {critical:0,moderate:0,minor:0};
     inc.forEach(i=>bySev[i.severity]=(bySev[i.severity]||0)+1);
@@ -10774,7 +10774,7 @@ function _residentStatusItems(p, todayISO, nowMin, GRACE){
     (!i.patientId || String(i.patientId) === pid));
   if(critInc.length){
     items.push({
-      dot:'#C0392B', label:`${critInc.length} critical incident${critInc.length>1?'s':''} today`,
+      dot:'#C0392B', label:`${critInc.length} critical care event${critInc.length>1?'s':''} today`,
       sub: critInc.map(i=>i.type).join(', '), nav:'incidents', priority:2
     });
   }
@@ -11011,7 +11011,7 @@ function renderCriticalAlerts(){
     alerts.push({
       level: 'red',
       icon:  '🚨',
-      title: `${critInc.length} critical incident${critInc.length>1?'s':''} logged today`,
+      title: `${critInc.length} critical care event${critInc.length>1?'s':''} logged today`,
       detail: critInc.map(i => i.type).join(', '),
       nav:   'incidents'
     });
@@ -12058,13 +12058,13 @@ function saveWandering(){
     if(idx !== -1) D.wandering[idx] = { ...D.wandering[idx], ...wdFields };
     _editWanderingId = null;
     const title = document.querySelector('#wandering-modal .modal-title');
-    if(title) title.textContent = '🚶 Log Wandering / Exit Incident';
+    if(title) title.textContent = '🚶 Log Wandering / Exit Event';
     const btn = document.querySelector('#wandering-modal .btn-teal');
-    if(btn) btn.textContent = 'Save Incident';
-    toast('✅ Wandering incident updated', 'var(--given)');
+    if(btn) btn.textContent = 'Save Event';
+    toast('✅ Wandering event updated', 'var(--given)');
   } else {
     D.wandering.push({ id: Date.now(), patientId: _globalPatientId || '', ...wdFields });
-    toast('✅ Wandering incident logged', 'var(--given)');
+    toast('✅ Wandering event logged', 'var(--given)');
   }
   D.wandering.sort((a,b) => (b.date+b.time).localeCompare(a.date+a.time));
   save(); closeModal('wandering-modal');
@@ -12234,7 +12234,7 @@ function renderWandering(){
   if(_wdPat) renderWanderingPredictionAlert(entries);
   else { const el = document.getElementById('wd-prediction-alert'); if(el) el.innerHTML = ''; }
   if(!entries.length){
-    el.innerHTML = '<div class="empty"><div class="empty-icon">🚶</div><div class="empty-text">No wandering incidents logged.<br>Tap + Log Incident to document an event.</div></div>';
+    el.innerHTML = '<div class="empty"><div class="empty-icon">🚶</div><div class="empty-text">No wandering events logged.<br>Tap + Log Event to document an event.</div></div>';
     return;
   }
   el.innerHTML = entries.map(e => `
@@ -12279,9 +12279,9 @@ function editWandering(id){
   });
   _editWanderingId = id;
   const title = document.querySelector('#wandering-modal .modal-title');
-  if(title) title.textContent = '✏️ Edit Wandering Incident';
+  if(title) title.textContent = '✏️ Edit Wandering Event';
   const btn = document.querySelector('#wandering-modal .btn-teal');
-  if(btn) btn.textContent = 'Update Incident';
+  if(btn) btn.textContent = 'Update Event';
   openModal('wandering-modal');
 }
 let _editWanderingId = null;
@@ -13287,8 +13287,8 @@ const ITM_SCENARIOS = {
       {text:'Do not move them until injury is assessed', sub:'Spinal or hip injury may be present'},
       {text:'Call for help immediately', sub:'You\'ll need a second person before helping them up'},
       {text:'Keep them warm and calm while waiting', sub:'"I\'m right here. Help is coming. You\'re safe."'},
-      {text:'Notify your supervisor immediately — this is mandatory', sub:'All falls require notification and an incident report'},
-      {text:'Document exact time, location, and what you witnessed', sub:'Complete the incident report within your shift'}
+      {text:'Notify your supervisor immediately — this is mandatory', sub:'All falls require notification and a care event report'},
+      {text:'Document exact time, location, and what you witnessed', sub:'Complete the care event log within your shift'}
     ]
   },
   medical: {
