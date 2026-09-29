@@ -1743,7 +1743,7 @@ body {
     </div>
     <div class="fg" style="margin-top:12px">
       <label>📝 Care Notes <span style="font-size:.72rem;font-weight:400;color:var(--slate-light)">(auto-loaded from Dashboard → Care Notes)</span></label>
-      <textarea id="ho-narrative" rows="3" placeholder="General shift narrative — care recipient mood, observations, anything beyond structured logs…" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.86rem;color:var(--text);resize:vertical"></textarea>
+      <textarea id="ho-narrative" rows="3" placeholder="General care notes — care recipient mood, observations, anything beyond structured logs…" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.86rem;color:var(--text);resize:vertical"></textarea>
     </div>
     <div class="fg" style="margin-top:8px;margin-bottom:0">
       <label>Additional Notes for Incoming Shift</label>
@@ -2885,7 +2885,7 @@ body {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:.84rem;color:var(--slate-mid)">
       <div style="padding:8px;background:var(--off-white);border-radius:var(--r)">📋 Incident description</div>
       <div style="padding:8px;background:var(--off-white);border-radius:var(--r)">🧠 ABC behavior fields</div>
-      <div style="padding:8px;background:var(--off-white);border-radius:var(--r)">🔄 Shift handoff notes</div>
+      <div style="padding:8px;background:var(--off-white);border-radius:var(--r)">🔄 Daily care summary notes</div>
       <div style="padding:8px;background:var(--off-white);border-radius:var(--r)">📌 Care plan instructions</div>
       <div style="padding:8px;background:var(--off-white);border-radius:var(--r)">🩹 Wound treatment notes</div>
       <div style="padding:8px;background:var(--off-white);border-radius:var(--r)">📞 Family log summary</div>
@@ -9261,7 +9261,7 @@ function renderReport(){
         <div style="padding:8px 0;border-bottom:1px solid #D8E2EE">
           <div style="font-size:.78rem;font-weight:700;color:#0B7A6E;margin-bottom:3px">${new Date(date+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'})}</div>
           <div style="font-size:.82rem;color:#526280;line-height:1.7;white-space:pre-wrap">${note}</div>
-        </div>`).join('') : '<div style="font-size:.84rem;color:#8097B3">No shift notes recorded this month.</div>'}
+        </div>`).join('') : '<div style="font-size:.84rem;color:#8097B3">No care notes recorded this month.</div>'}
     </div>`;
   }
 
@@ -9595,7 +9595,7 @@ function buildReportEmailText(){
     .filter(([date])=>date>=monthStart&&date<=monthEnd)
     .sort(([a],[b])=>a.localeCompare(b));
   if(monthNotes.length){
-    lines.push('\n📝 SHIFT NOTES ('+monthNotes.length+')');
+    lines.push('\n📝 CARE NOTES ('+monthNotes.length+')');
     lines.push(div);
     monthNotes.forEach(([date,note])=>{
       lines.push('  '+date+':');
