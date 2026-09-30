@@ -5787,6 +5787,19 @@ function renderMAR(){
           ${pt.allergies ? `<span class="pill pill-alert" style="font-size:.68rem">⚠️ ${pt.allergies.slice(0,40)}</span>` : ''}
         </div>`;
       })() : ''}
+      ${(() => {
+        const multiDoseMeds = sorted.filter(m => m.schedule && m.schedule.trim());
+        if(!multiDoseMeds.length) return '';
+        const medLines = multiDoseMeds.map(m =>
+          `<li style="margin:3px 0"><strong>${m.name}${m.dose?' '+m.dose:''}</strong> — ${m.schedule}</li>`
+        ).join('');
+        return `<div style="background:#FFF7ED;border:2px solid #F59E0B;border-radius:10px;padding:12px 14px;margin-bottom:10px">
+          <div style="font-weight:700;font-size:.84rem;color:#92400E;margin-bottom:6px">⚠️ Multi-Dose Medications — Verify Each Dose Separately</div>
+          <div style="font-size:.78rem;color:#78350F;line-height:1.6;margin-bottom:6px">The following medications are given more than once daily. The log tracks one status per medication — confirm each scheduled dose has been given before marking complete:</div>
+          <ul style="font-size:.78rem;color:#92400E;margin:0;padding-left:18px;line-height:1.8">${medLines}</ul>
+          <div style="font-size:.72rem;color:#B45309;margin-top:8px;padding-top:8px;border-top:1px solid #FCD34D">💡 Tip: Log each dose time in the Notes field below as confirmation until individual dose tracking is added.</div>
+        </div>`;
+      })()}
       ${sorted.map(m => {
         const key = dateVal + '|' + (patientId||'default') + '|' + m.id;
         const rec = D.mar[key] || { status:'pending', timeGiven:'', initials:'' };
