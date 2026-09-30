@@ -1242,12 +1242,51 @@ body {
         <div style="color:#7C3AED;grid-column:1/-1">💜 Memory care communication notes</div>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <button onclick="dismissWelcome()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--teal),var(--teal-mid));color:white;border:none;border-radius:10px;font-family:var(--font-body);font-size:.95rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+    <!-- Step 1 buttons -->
+    <div id="welcome-step1-btns" style="display:flex;flex-direction:column;gap:10px">
+      <button onclick="welcomeShowStep2()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--teal),var(--teal-mid));color:white;border:none;border-radius:10px;font-family:var(--font-body);font-size:.95rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
         🏡 Get Started — I'll set up my own loved one
       </button>
       <button onclick="loadSamplePatient()" style="width:100%;padding:12px;background:transparent;color:var(--slate-mid);border:1.5px solid var(--border);border-radius:10px;font-family:var(--font-body);font-size:.88rem;cursor:pointer">
         👀 Show me a sample first (Margaret Thompson)
+      </button>
+    </div>
+    <!-- Step 2: Feature selection -->
+    <div id="welcome-step2" style="display:none">
+      <div style="font-size:.8rem;font-weight:700;color:var(--navy);text-align:left;margin-bottom:4px">Choose what you need — you can change this any time in Settings:</div>
+      <div style="font-size:.74rem;color:var(--slate-light);text-align:left;margin-bottom:12px">Everything is checked by default. Uncheck features you don't need to keep things simple.</div>
+      <div id="welcome-feature-list" style="display:flex;flex-direction:column;gap:8px;text-align:left;margin-bottom:18px">
+        <label style="display:flex;align-items:center;gap:10px;background:var(--off-white);border-radius:8px;padding:10px 12px;cursor:pointer">
+          <input type="checkbox" id="wf-meds" checked style="width:18px;height:18px;accent-color:var(--teal);flex-shrink:0">
+          <span><strong style="color:var(--navy)">💊 Medications</strong><span style="display:block;font-size:.74rem;color:var(--slate-light)">Medication log, safety warnings, refusal tracking</span></span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;background:var(--off-white);border-radius:8px;padding:10px 12px;cursor:pointer">
+          <input type="checkbox" id="wf-events" checked style="width:18px;height:18px;accent-color:var(--teal);flex-shrink:0">
+          <span><strong style="color:var(--navy)">📋 Care Events</strong><span style="display:block;font-size:.74rem;color:var(--slate-light)">Incidents, falls, observations, daily handoff</span></span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;background:var(--off-white);border-radius:8px;padding:10px 12px;cursor:pointer">
+          <input type="checkbox" id="wf-vitals" checked style="width:18px;height:18px;accent-color:var(--teal);flex-shrink:0">
+          <span><strong style="color:var(--navy)">❤️ Vitals & Pain</strong><span style="display:block;font-size:.74rem;color:var(--slate-light)">Blood pressure, temperature, oxygen, pain scale</span></span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;background:var(--off-white);border-radius:8px;padding:10px 12px;cursor:pointer">
+          <input type="checkbox" id="wf-wounds" checked style="width:18px;height:18px;accent-color:var(--teal);flex-shrink:0">
+          <span><strong style="color:var(--navy)">🩹 Wound Tracker</strong><span style="display:block;font-size:.74rem;color:var(--slate-light)">Wound & skin care documentation with photo notes</span></span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;background:var(--off-white);border-radius:8px;padding:10px 12px;cursor:pointer">
+          <input type="checkbox" id="wf-nutrition" checked style="width:18px;height:18px;accent-color:var(--teal);flex-shrink:0">
+          <span><strong style="color:var(--navy)">🍽️ Nutrition & Hydration</strong><span style="display:block;font-size:.74rem;color:var(--slate-light)">Meal tracking, fluid intake, toileting log</span></span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;background:var(--off-white);border-radius:8px;padding:10px 12px;cursor:pointer">
+          <input type="checkbox" id="wf-memory" checked style="width:18px;height:18px;accent-color:var(--teal);flex-shrink:0">
+          <span><strong style="color:var(--navy)">💜 Memory Care</strong><span style="display:block;font-size:.74rem;color:var(--slate-light)">Sundowning, wandering, behavior tracking, In The Moment</span></span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;background:var(--off-white);border-radius:8px;padding:10px 12px;cursor:pointer">
+          <input type="checkbox" id="wf-wellness" checked style="width:18px;height:18px;accent-color:var(--teal);flex-shrink:0">
+          <span><strong style="color:var(--navy)">💚 Caregiver Wellness</strong><span style="display:block;font-size:.74rem;color:var(--slate-light)">Check-in for stress, burnout awareness, self-care prompts</span></span>
+        </label>
+      </div>
+      <button onclick="dismissWelcomeWithFeatures()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--teal),var(--teal-mid));color:white;border:none;border-radius:10px;font-family:var(--font-body);font-size:.95rem;font-weight:600;cursor:pointer">
+        ✅ Save My Setup &amp; Get Started
       </button>
     </div>
     <div style="margin-top:16px;font-size:.74rem;color:var(--slate-light)">⚕️ All data stays on your device only — no cloud, no login required</div>
@@ -1319,18 +1358,18 @@ body {
   <div class="nav-group">
     <div class="nav-label">Care Recipients</div>
     <button class="nav-btn" onclick="navTo('patients',this)"><span class="ni">👤</span> Care Recipients <span class="nav-badge" id="nb-patients"></span></button>
-    <button class="nav-btn" onclick="navTo('mar',this)"><span class="ni">💊</span> Medication Log</button>
-    <button class="nav-btn" onclick="navTo('incidents',this)"><span class="ni">📋</span> Care Events <span class="nav-badge" id="nb-incidents"></span></button>
+    <button id="snav-meds" class="nav-btn" onclick="navTo('mar',this)"><span class="ni">💊</span> Medication Log</button>
+    <button id="snav-events" class="nav-btn" onclick="navTo('incidents',this)"><span class="ni">📋</span> Care Events <span class="nav-badge" id="nb-incidents"></span></button>
     <button class="nav-btn" onclick="navTo('handoff',this)"><span class="ni">🔄</span> Daily Handoff</button>
   </div>
   <div class="nav-group">
     <div class="nav-label">Health &amp; Care Notes</div>
     <button class="nav-btn" onclick="navTo('careplan',this)"><span class="ni">📌</span> Care Preferences</button>
     <button class="nav-btn" onclick="navTo('comfortcare',this)"><span class="ni">🕊️</span> Comfort Care Log</button>
-    <button class="nav-btn" onclick="navTo('wounds',this)"><span class="ni">🩹</span> Wound &amp; Skin Care</button>
-    <button class="nav-btn" onclick="navTo('intake',this)"><span class="ni">🍽️</span> Diet & Fluids</button>
+    <button id="snav-wounds" class="nav-btn" onclick="navTo('wounds',this)"><span class="ni">🩹</span> Wound &amp; Skin Care</button>
+    <button id="snav-nutrition" class="nav-btn" onclick="navTo('intake',this)"><span class="ni">🍽️</span> Diet & Fluids</button>
     <button class="nav-btn" onclick="navTo('comms',this)"><span class="ni">📞</span> Family Log</button>
-    <button class="nav-btn" onclick="navTo('pain',this)"><span class="ni">😣</span> Pain Scale <span class="nav-badge" id="nb-pain"></span></button>
+    <button id="snav-vitals" class="nav-btn" onclick="navTo('pain',this)"><span class="ni">😣</span> Pain Scale <span class="nav-badge" id="nb-pain"></span></button>
   </div>
   <div class="nav-group">
     <div class="nav-label">Daily Behaviors</div>
@@ -1339,9 +1378,9 @@ body {
     <button class="nav-btn" onclick="navTo('behaviors',this)"><span class="ni">🧠</span> Behavior Patterns</button>
     <button class="nav-btn" onclick="navTo('toileting',this)"><span class="ni">🚻</span> Toileting</button>
     <button class="nav-btn" onclick="navTo('trends',this)"><span class="ni">📊</span> Weekly Trends</button>
-    <button class="nav-btn" onclick="navTo('vitals',this)"><span class="ni">🩺</span> Vital Signs <span class="nav-badge" id="nb-vitals"></span></button>
+    <button id="snav-vitals2" class="nav-btn" onclick="navTo('vitals',this)"><span class="ni">🩺</span> Vital Signs <span class="nav-badge" id="nb-vitals"></span></button>
   </div>
-  <div class="nav-group">
+  <div id="snav-memory-group" class="nav-group">
     <div class="nav-label">💜 Memory Care</div>
     <button class="nav-btn" onclick="navTo('itm',this)" style="color:rgba(255,150,150,.95)"><span class="ni">🫂</span> In The Moment</button>
     <button class="nav-btn" onclick="navTo('sundowning',this)"><span class="ni">🌅</span> Sundowning</button>
@@ -1358,7 +1397,7 @@ body {
     <button class="nav-btn" onclick="navTo('bbw',this)" style="color:rgba(255,200,50,.85)"><span class="ni">⚠️</span> Medication Warnings <span class="nav-badge" id="nb-bbw" style="background:#C9963A"></span></button>
     <button class="nav-btn" onclick="navTo('emergency',this)" style="color:rgba(255,120,120,.95)"><span class="ni">🚨</span> Emergency Mode</button>
   </div>
-  <div class="nav-group">
+  <div id="snav-wellness-group" class="nav-group">
     <div class="nav-label">💚 Caregiver Wellness</div>
     <button class="nav-btn" onclick="navTo('checkin',this)"><span class="ni">💚</span> Caregiver Check-In</button>
   </div>
@@ -2086,6 +2125,19 @@ body {
       <div id="settings-saved-msg" style="display:none;text-align:center;font-size:.78rem;color:var(--given);margin-top:8px">✅ Profile saved successfully</div>
     </div>
     <div>
+
+      <!-- ── Manage Features ─────────────────────────────── -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title">🎛️ Manage Features
+          <span style="font-size:.7rem;font-weight:400;color:var(--slate-light);margin-left:6px">Show / hide sections of the app</span>
+        </div>
+        <p style="font-size:.78rem;color:var(--slate-mid);line-height:1.6;margin-bottom:12px">
+          Turn off any feature you don't need — it disappears from the navigation until you turn it back on.
+          Your data is never deleted; the feature is simply hidden.
+        </p>
+        <div id="manage-features-list"></div>
+      </div>
+
       <div class="card">
         <div class="card-title">💾 Data Management</div>
 
@@ -3104,8 +3156,8 @@ body {
 <div class="bnav" id="bnav">
   <button class="bn-btn active" onclick="navTo('dashboard')"><span class="bn-icon">🏠</span>Home</button>
   <button class="bn-btn" onclick="navTo('patients')"><span class="bn-icon">👤</span>Recipients</button>
-  <button class="bn-btn" onclick="navTo('mar')"><span class="bn-icon">💊</span>Meds</button>
-  <button class="bn-btn" onclick="navTo('incidents')"><span class="bn-icon">📋</span>Care Events</button>
+  <button id="bnav-meds" class="bn-btn" onclick="navTo('mar')"><span class="bn-icon">💊</span>Meds</button>
+  <button id="bnav-events" class="bn-btn" onclick="navTo('incidents')"><span class="bn-icon">📋</span>Care Events</button>
   <button class="bn-btn" onclick="toggleMobileMore()"><span class="bn-icon">⋯</span>More</button>
 </div>
 
@@ -3115,26 +3167,26 @@ body {
     <button class="bn-btn" onclick="mobileNavTo('handoff')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🔄</span>Handoff</button>
     <button class="bn-btn" onclick="mobileNavTo('careplan')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📌</span>Care Prefs</button>
     <button class="bn-btn" onclick="mobileNavTo('comfortcare')" style="color:rgba(180,140,255,.9)"><span class="bn-icon">🕊️</span>Comfort Care</button>
-    <button class="bn-btn" onclick="mobileNavTo('wounds')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🩹</span>Wounds</button>
-    <button class="bn-btn" onclick="mobileNavTo('intake')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🍽️</span>Diet & Fluids</button>
+    <button id="bnav-wounds" class="bn-btn" onclick="mobileNavTo('wounds')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🩹</span>Wounds</button>
+    <button id="bnav-nutrition" class="bn-btn" onclick="mobileNavTo('intake')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🍽️</span>Diet & Fluids</button>
     <button class="bn-btn" onclick="mobileNavTo('comms')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📞</span>Family Log</button>
-    <button class="bn-btn" onclick="mobileNavTo('pain')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">😣</span>Pain</button>
+    <button id="bnav-vitals-pain" class="bn-btn" onclick="mobileNavTo('pain')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">😣</span>Pain</button>
     <button class="bn-btn" onclick="mobileNavTo('routines')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📅</span>Routines</button>
     <button class="bn-btn" onclick="mobileNavTo('triggers')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">⚡</span>Triggers</button>
     <button class="bn-btn" onclick="mobileNavTo('behaviors')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🧠</span>Behaviors</button>
     <button class="bn-btn" onclick="mobileNavTo('toileting')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🚻</span>Toileting</button>
     <button class="bn-btn" onclick="mobileNavTo('trends')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📊</span>Trends</button>
-    <button class="bn-btn" onclick="mobileNavTo('vitals')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🩺</span>Vitals</button>
-    <button class="bn-btn" onclick="mobileNavTo('itm')" style="color:rgba(255,150,150,.95)"><span class="bn-icon">🫂</span>In The Moment</button>
-    <button class="bn-btn" onclick="mobileNavTo('sundowning')" style="color:rgba(180,140,255,.9)"><span class="bn-icon">🌅</span>Sundowning</button>
-    <button class="bn-btn" onclick="mobileNavTo('wandering')" style="color:rgba(180,140,255,.9)"><span class="bn-icon">🚶</span>Wandering</button>
-    <button class="bn-btn" onclick="mobileNavTo('memorycare')" style="color:rgba(180,140,255,.9)"><span class="bn-icon">💬</span>Mem Care</button>
+    <button id="bnav-vitals" class="bn-btn" onclick="mobileNavTo('vitals')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🩺</span>Vitals</button>
+    <button id="bnav-itm" class="bn-btn" onclick="mobileNavTo('itm')" style="color:rgba(255,150,150,.95)"><span class="bn-icon">🫂</span>In The Moment</button>
+    <button id="bnav-sundowning" class="bn-btn" onclick="mobileNavTo('sundowning')" style="color:rgba(180,140,255,.9)"><span class="bn-icon">🌅</span>Sundowning</button>
+    <button id="bnav-wandering" class="bn-btn" onclick="mobileNavTo('wandering')" style="color:rgba(180,140,255,.9)"><span class="bn-icon">🚶</span>Wandering</button>
+    <button id="bnav-memorycare" class="bn-btn" onclick="mobileNavTo('memorycare')" style="color:rgba(180,140,255,.9)"><span class="bn-icon">💬</span>Mem Care</button>
     <button class="bn-btn" onclick="mobileNavTo('voice')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">🎤</span>Voice</button>
     <button class="bn-btn" onclick="mobileNavTo('report')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">📄</span>Report</button>
     <button class="bn-btn" onclick="mobileNavTo('bbw')" style="color:rgba(255,200,50,.85)"><span class="bn-icon">⚠️</span>BBW</button>
     <button class="bn-btn" onclick="mobileNavTo('emergency')" style="color:rgba(255,120,120,.95)"><span class="bn-icon">🚨</span>Emergency</button>
     <button class="bn-btn" onclick="mobileNavTo('settings')" style="color:rgba(255,255,255,.55)"><span class="bn-icon">⚙️</span>Settings</button>
-    <button class="bn-btn" onclick="mobileNavTo('checkin')" style="color:rgba(100,220,180,.9)"><span class="bn-icon">💚</span>Wellness</button>
+    <button id="bnav-wellness" class="bn-btn" onclick="mobileNavTo('checkin')" style="color:rgba(100,220,180,.9)"><span class="bn-icon">💚</span>Wellness</button>
     <button class="bn-btn" onclick="toggleMobileMore()" style="color:rgba(255,255,255,.4)"><span class="bn-icon">✕</span>Close</button>
   </div>
 </div>
@@ -3621,7 +3673,7 @@ let D = {
   wandering: [],
   memorycare:[],
   itmProgress: {},
-  settings:  { name:'', agency:'', role:'', initials:'', supervisor:'' },
+  settings:  { name:'', agency:'', role:'', initials:'', supervisor:'', features:{ meds:true, events:true, vitals:true, wounds:true, nutrition:true, memory:true, wellness:true } },
   _schemaVersion: 0
 };
 
@@ -3751,7 +3803,7 @@ function load(){
       comfortcare:[],
       pain:[], shifts:[], sundowning:[], wandering:[], memorycare:[],
       creds:[], billing:[], itmProgress:{},
-      settings:{ name:'', agency:'', role:'', initials:'', supervisor:'' },
+      settings:{ name:'', agency:'', role:'', initials:'', supervisor:'', features:{ meds:true, events:true, vitals:true, wounds:true, nutrition:true, memory:true, wellness:true } },
       _schemaVersion: 0
     }, JSON.parse(s));
     migrateData();
@@ -4454,6 +4506,7 @@ function renderDashboard(){
   const hasWounds      = activeWounds.length > 0;
   const woundChecked   = activeWounds.some(w => w.updatedAt && w.updatedAt.startsWith(todayISO));
 
+  const _feat = getFeatures();
   const checkItems = [
     {
       label: 'Care recipient added',
@@ -4461,7 +4514,7 @@ function renderDashboard(){
       sub:   activePats().length > 0 ? `${activePats().length} patient${activePats().length>1?'s':''} active` : 'Add patients to get started',
       nav:   'patients', icon: '👤'
     },
-    {
+    _feat.meds && {
       label: 'Medications logged',
       done:  givenCount > 0 && pendingCount === 0,
       partial: givenCount > 0 && pendingCount > 0,
@@ -4479,7 +4532,7 @@ function renderDashboard(){
            : `${morningDone}/${morningTotal} tasks done`,
       nav:   'routines', icon: '☀️'
     },
-    {
+    _feat.nutrition && {
       label: 'Meals & fluids logged',
       done:  todayIntake.length >= 2,
       partial: todayIntake.length === 1,
@@ -4487,7 +4540,7 @@ function renderDashboard(){
            : `${todayIntake.length} entr${todayIntake.length>1?'ies':'y'} logged`,
       nav:   'intake', icon: '🍽️'
     },
-    {
+    _feat.nutrition && {
       label: 'Toileting documented',
       done:  todayToilet.length >= 2,
       partial: todayToilet.length === 1,
@@ -4495,7 +4548,7 @@ function renderDashboard(){
            : `${todayToilet.length} entr${todayToilet.length>1?'ies':'y'} logged`,
       nav:   'toileting', icon: '🚻'
     },
-    {
+    _feat.wounds && {
       label: hasWounds ? 'Wound assessment done' : 'Wound tracker',
       done:  hasWounds && woundChecked,
       partial: hasWounds && !woundChecked,
@@ -4504,7 +4557,7 @@ function renderDashboard(){
            : `${activeWounds.filter(w=>!w.updatedAt||!w.updatedAt.startsWith(todayISO)).length} wound${activeWounds.filter(w=>!w.updatedAt||!w.updatedAt.startsWith(todayISO)).length>1?'s':''} need assessment`,
       nav:   'wounds', icon: '🩹'
     },
-    {
+    _feat.memory && {
       label: 'Memory care notes reviewed',
       done:  (D.memorycare||[]).length > 0,
       sub:   (D.memorycare||[]).length > 0
@@ -4512,7 +4565,7 @@ function renderDashboard(){
            : 'No memory care notes yet — tap to add',
       nav:   'memorycare', icon: '💬'
     },
-    {
+    _feat.memory && {
       label: 'Sundowning & wandering risk checked',
       done:  (D.sundowning||[]).filter(e => e.date === todayISO).length > 0 ||
              (D.wandering||[]).filter(e => e.date === todayISO).length > 0,
@@ -4556,7 +4609,7 @@ function renderDashboard(){
         nav: 'wandering', icon: '🚶'
       };
     })()
-  ];
+  ].filter(Boolean);
 
   const doneCount = checkItems.filter(i => i.done).length;
   const pct = Math.round(doneCount / checkItems.length * 100);
@@ -7056,11 +7109,42 @@ function loadSettings(){
   set('set-facility',     s.facility);
   if(typeof renderPremiumCard === 'function') renderPremiumCard();
   renderProfileCompletion();
+  renderManageFeatures();
   // Clear dirty state on load
   const unsaved = document.getElementById('settings-unsaved');
   if(unsaved) unsaved.style.display = 'none';
   const savedMsg = document.getElementById('settings-saved-msg');
   if(savedMsg) savedMsg.style.display = 'none';
+}
+
+function renderManageFeatures(){
+  const el = document.getElementById('manage-features-list');
+  if(!el) return;
+  const f = getFeatures();
+  const LABELS = {
+    meds:      { icon:'💊', name:'Medications',      desc:'Medication log, MAR, safety warnings' },
+    events:    { icon:'📋', name:'Care Events',      desc:'Daily care activities and shift notes' },
+    vitals:    { icon:'❤️', name:'Vitals & Pain',   desc:'Vital signs, pain scale monitoring' },
+    wounds:    { icon:'🩹', name:'Wound & Skin Care', desc:'Wound tracking and skin assessments' },
+    nutrition: { icon:'🥗', name:'Diet & Fluids',    desc:'Meals, hydration, and dietary tracking' },
+    memory:    { icon:'🧠', name:'Memory Care',      desc:'ITM log, sundowning, wandering safeguards' },
+    wellness:  { icon:'🌿', name:'Caregiver Wellness', desc:'Stress check-in and self-care tracking' }
+  };
+  el.innerHTML = Object.keys(LABELS).map(key => {
+    const L = LABELS[key];
+    const checked = f[key] !== false;
+    return `<label style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer">
+      <input type="checkbox" ${checked?'checked':''} onchange="setFeature('${key}',this.checked)"
+             style="width:18px;height:18px;accent-color:var(--teal);cursor:pointer;flex-shrink:0">
+      <span style="font-size:1.1rem;flex-shrink:0">${L.icon}</span>
+      <span style="flex:1;min-width:0">
+        <span style="font-weight:600;font-size:.86rem;color:var(--navy);display:block">${L.name}</span>
+        <span style="font-size:.74rem;color:var(--slate-light)">${L.desc}</span>
+      </span>
+    </label>`;
+  }).join('') + `<p style="font-size:.72rem;color:var(--slate-light);margin-top:10px;line-height:1.5">
+    💡 Hiding a feature never deletes its data — just toggle it back on to restore it.
+  </p>`;
 }
 
 function markSettingsDirty(){
@@ -7269,7 +7353,7 @@ function importData(input){
         careplan:{}, wounds:[], intake:[], comms:[],
         routines:{ morning:[], afternoon:[], evening:[] },
         triggers:[], behaviors:[], toileting:[], vitals:[], pain:[], shifts:[], sundowning:[], wandering:[], memorycare:[], creds:[], billing:[],
-        settings:{ name:'', agency:'', role:'', initials:'', supervisor:'' }
+        settings:{ name:'', agency:'', role:'', initials:'', supervisor:'', features:{ meds:true, events:true, vitals:true, wounds:true, nutrition:true, memory:true, wellness:true } }
       }, data);
       delete imported._meta;
       if(!imported.routines) imported.routines = { morning:[], afternoon:[], evening:[] };
@@ -10063,6 +10147,25 @@ function loadSamplePatient(){
   save();
   updateTopbar(); updateTopbarUser(); renderDashboard();
   toast('✅ Sample patient Margaret Thompson loaded!', 'var(--given)');
+}
+function welcomeShowStep2(){
+  _saveWelcomeCaregiver();
+  document.getElementById('welcome-step1-btns').style.display = 'none';
+  document.getElementById('welcome-step2').style.display = 'block';
+  // Scroll to top of overlay card
+  const card = document.querySelector('#welcome-overlay > div');
+  if(card) card.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+function dismissWelcomeWithFeatures(){
+  // Read feature checkboxes
+  const keys = ['meds','events','vitals','wounds','nutrition','memory','wellness'];
+  if(!D.settings.features) D.settings.features = {};
+  keys.forEach(k => {
+    const el = document.getElementById('wf-' + k);
+    D.settings.features[k] = el ? el.checked : true;
+  });
+  dismissWelcome();
+  applyFeatureVisibility();
 }
 function dismissWelcome(){
   _saveWelcomeCaregiver();
@@ -13097,11 +13200,44 @@ function _expandNavGroup(sectionId){
   try { localStorage.setItem('tendedPro_sidebarCollapsed', JSON.stringify(cur)); } catch(e){}
 }
 
+// ═══ FEATURE VISIBILITY ═══════════════════════════════════════════
+const FEATURE_NAV_IDS = {
+  meds:      ['snav-meds','bnav-meds'],
+  events:    ['snav-events','bnav-events'],
+  vitals:    ['snav-vitals','snav-vitals2','bnav-vitals','bnav-vitals-pain'],
+  wounds:    ['snav-wounds','bnav-wounds'],
+  nutrition: ['snav-nutrition','bnav-nutrition'],
+  memory:    ['snav-memory-group','bnav-itm','bnav-sundowning','bnav-wandering','bnav-memorycare'],
+  wellness:  ['snav-wellness-group','bnav-wellness']
+};
+function getFeatures(){
+  const defaults = { meds:true, events:true, vitals:true, wounds:true, nutrition:true, memory:true, wellness:true };
+  return Object.assign({}, defaults, D.settings?.features || {});
+}
+function applyFeatureVisibility(){
+  const f = getFeatures();
+  Object.keys(FEATURE_NAV_IDS).forEach(key => {
+    const on = f[key] !== false;
+    FEATURE_NAV_IDS[key].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.style.display = on ? '' : 'none';
+    });
+  });
+}
+function setFeature(key, val){
+  if(!D.settings.features) D.settings.features = {};
+  D.settings.features[key] = val;
+  save();
+  applyFeatureVisibility();
+}
+
 async function init(){
   // Try IndexedDB shadow restore first if localStorage is empty (post Clear-Data scenario)
   try { await _maybeRestoreFromShadow(); } catch(e){}
   try { await _rehydrateTrialFromIDB(); } catch(e){}
   load();
+  // Ensure features object exists for existing users (all default true = no visual change)
+  if(!D.settings.features) D.settings.features = { meds:true, events:true, vitals:true, wounds:true, nutrition:true, memory:true, wellness:true };
   _wireSidebarCollapse();
   // Auto-rehydrate premium from native Play Billing on every launch (BUG-004 mitigation)
   try {
@@ -13149,6 +13285,7 @@ async function init(){
   checkURLPremiumFlag();
   startTrialIfNew();
   updatePremiumUI();
+  applyFeatureVisibility();
   checkFirstLaunch();
 }
 
