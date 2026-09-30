@@ -1211,7 +1211,8 @@ body {
     <div style="width:64px;height:64px;background:linear-gradient(135deg,var(--teal-mid),var(--teal-bright));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 20px">🏡</div>
     <div style="font-family:var(--font-head);font-size:1.6rem;font-weight:700;color:var(--navy);margin-bottom:8px">Welcome to Tended Health Pro</div>
     <div style="font-size:.92rem;color:var(--slate-mid);line-height:1.7;margin-bottom:6px">Daily care tracking for <strong style="color:var(--navy)">family caregivers and care teams.</strong></div>
-    <div style="font-size:.84rem;color:var(--slate-light);line-height:1.6;margin-bottom:24px">Medication Log · Care Events · Vitals · Wound Tracker · Behavior Log · <strong style="color:#7C3AED">Memory Care</strong> · Monthly Report — all in one secure offline app.</div>
+    <div style="font-size:.84rem;color:var(--slate-light);line-height:1.6;margin-bottom:10px">Medication Log · Care Events · Vitals · Wound Tracker · Behavior Log · <strong style="color:#7C3AED">Memory Care</strong> · Monthly Report — all in one secure offline app.</div>
+    <div style="background:#F0FDF4;border:1.5px solid #A7F3D0;border-radius:10px;padding:10px 14px;margin-bottom:20px;font-size:.84rem;color:#065F46;line-height:1.6">💚 <strong>Use what helps. Ignore the rest.</strong> You can log one thing in under a minute — there's no pressure to fill everything in.</div>
     <!-- UX-001 — capture caregiver name/initials up front -->
     <div style="background:var(--off-white);border-radius:14px;padding:18px;margin-bottom:18px;text-align:left">
       <div style="font-size:.8rem;font-weight:600;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Your details (used on Medication Log and reports):</div>
@@ -1242,11 +1243,11 @@ body {
       </div>
     </div>
     <div style="display:flex;flex-direction:column;gap:10px">
-      <button onclick="loadSamplePatient()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--teal),var(--teal-mid));color:white;border:none;border-radius:10px;font-family:var(--font-body);font-size:.95rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
-        👴 Load Sample Care Recipient (Margaret Thompson)
+      <button onclick="dismissWelcome()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--teal),var(--teal-mid));color:white;border:none;border-radius:10px;font-family:var(--font-body);font-size:.95rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+        🏡 Get Started — I'll set up my own loved one
       </button>
-      <button onclick="dismissWelcome()" style="width:100%;padding:12px;background:transparent;color:var(--slate-mid);border:1.5px solid var(--border);border-radius:10px;font-family:var(--font-body);font-size:.88rem;cursor:pointer">
-        Start Fresh — I'll add my own care recipients
+      <button onclick="loadSamplePatient()" style="width:100%;padding:12px;background:transparent;color:var(--slate-mid);border:1.5px solid var(--border);border-radius:10px;font-family:var(--font-body);font-size:.88rem;cursor:pointer">
+        👀 Show me a sample first (Margaret Thompson)
       </button>
     </div>
     <div style="margin-top:16px;font-size:.74rem;color:var(--slate-light)">⚕️ All data stays on your device only — no cloud, no login required</div>
@@ -3348,6 +3349,7 @@ body {
 // ═══════════════════════════════════════════════════════════════
 // TENDED PRO — PHASE 1: COMPLETE JAVASCRIPT
 // ═══════════════════════════════════════════════════════════════
+const APP_VERSION = '4.5.2';
 
 // ── Data ──────────────────────────────────────────────────────
 const STORE          = 'tendedPro_v1';
@@ -6514,7 +6516,6 @@ if('serviceWorker' in navigator){
     const isRealHost = loc.protocol === 'https:' || loc.hostname === 'localhost' || loc.hostname === '127.0.0.1';
     if(!isRealHost) return;
 
-    const APP_VERSION = '4.5.2';
     const swCode = `
 const CACHE = 'tended-pro-v25';
 const APP_SHELL = [
@@ -10178,10 +10179,9 @@ function showLegalInfo(){
 function checkFirstLaunch(){
   const welcomed = localStorage.getItem('tendedPro_welcomed');
   if(!welcomed && !D.patients.length){
-    // Auto-seed Margaret on any fresh device — phone, tablet, desktop
-    loadSamplePatient();
-    // Ensure flag is always set even if welcome overlay is hidden
-    try{ localStorage.setItem('tendedPro_welcomed','1'); }catch(e){}
+    // Show welcome overlay for all new users on any device
+    const overlay = document.getElementById('welcome-overlay');
+    if(overlay) overlay.style.display = 'flex';
   }
 }
 // ═══════════════════════════════════════════════════════════════
