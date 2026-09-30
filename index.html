@@ -1454,7 +1454,9 @@ body {
     </div>
     <div class="stat-card" onclick="navTo('mar')">
       <div class="stat-icon" style="background:rgba(11,122,110,.1)">💊</div>
-      <div><div class="stat-val" id="ds-meds">0/0</div><div class="stat-lbl">Meds Given</div></div>
+      <div><div class="stat-val" id="ds-meds">0/0</div><div class="stat-lbl">Meds Given</div>
+      <div id="ds-meds-note" style="display:none;font-size:.62rem;color:#B45309;font-weight:600;margin-top:2px;line-height:1.3">⚠ Verify multi-dose meds</div>
+      </div>
     </div>
     <div class="stat-card" onclick="navTo('incidents')">
       <div class="stat-icon" style="background:rgba(192,57,43,.08)">📋</div>
@@ -4417,6 +4419,9 @@ function renderDashboard(){
   const totalMeds    = todayMARKeys.length || activeMedCount;
   document.getElementById('ds-meds').textContent    = givenCount + '/' + totalMeds;
   document.getElementById('ds-pending').textContent = todayMARKeys.length ? pendingCount : activeMedCount;
+  const multiDoseActive = (D.meds||[]).filter(m => !m.discontinued && m.schedule && m.schedule.trim());
+  const medsNoteEl = document.getElementById('ds-meds-note');
+  if(medsNoteEl) medsNoteEl.style.display = multiDoseActive.length ? 'block' : 'none';
 
   const todayInc = D.incidents.filter(i => i.dt.startsWith(todayISO));
   document.getElementById('ds-incidents').textContent = todayInc.length;
@@ -4462,6 +4467,7 @@ function renderDashboard(){
       partial: givenCount > 0 && pendingCount > 0,
       sub:   totalMeds === 0 ? 'Add medications in Settings first'
            : pendingCount > 0 ? `${pendingCount} med${pendingCount>1?'s':''} still pending`
+           : givenCount > 0 && multiDoseActive.length ? `${givenCount} logged — verify ${multiDoseActive.length} multi-dose med${multiDoseActive.length>1?'s':''} ⚠`
            : givenCount > 0 ? `All ${givenCount} meds documented ✓` : 'No meds logged yet today',
       nav:   'mar', icon: '💊'
     },
