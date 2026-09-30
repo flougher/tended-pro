@@ -1288,8 +1288,13 @@ body {
       <button onclick="dismissWelcomeWithFeatures()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--teal),var(--teal-mid));color:white;border:none;border-radius:10px;font-family:var(--font-body);font-size:.95rem;font-weight:600;cursor:pointer">
         ✅ Save My Setup &amp; Get Started
       </button>
+      <div style="margin-top:10px;font-size:.73rem;color:var(--slate-light);text-align:center;line-height:1.6">
+        🎛️ You can change your feature selections any time in <strong>Settings → Manage Features</strong>
+      </div>
     </div>
-    <div style="margin-top:16px;font-size:.74rem;color:var(--slate-light)">⚕️ All data stays on your device only — no cloud, no login required</div>
+    <div style="margin-top:14px;font-size:.74rem;color:var(--slate-light);line-height:1.7;text-align:center">
+      ✅ Works offline — all data saved on your device only &nbsp;·&nbsp; No cloud, no login required
+    </div>
   </div>
 </div>
 
@@ -1431,37 +1436,50 @@ body {
   <div id="dash-alerts-anchor" style="margin:0"></div>
 
   <!-- Getting Started card — shown to new users, dismissed via localStorage -->
-  <div id="getting-started-card" style="display:none;background:linear-gradient(135deg,#E8F5F3,#F0FAF9);border:1.5px solid #0C7A6E;border-radius:var(--r-lg);padding:16px 18px;margin-bottom:16px">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px">
+  <div id="getting-started-card" style="display:none;background:linear-gradient(135deg,#E8F5F3,#F0FAF9);border:2px solid #0C7A6E;border-radius:var(--r-lg);padding:16px 18px;margin-bottom:16px">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px">
       <div>
         <div style="font-family:var(--font-head);font-size:1rem;color:var(--navy);font-weight:700">👋 Welcome to Tended Health Pro</div>
-        <div style="font-size:.78rem;color:var(--slate-mid);margin-top:2px">Here are the best places to start as a family caregiver.</div>
+        <div style="font-size:.78rem;color:var(--slate-mid);margin-top:2px">Start here — takes about 2 minutes to set up.</div>
       </div>
       <button onclick="dismissGettingStarted()" aria-label="Dismiss" style="background:none;border:none;color:var(--slate-light);font-size:1.1rem;cursor:pointer;padding:2px 6px;line-height:1;flex-shrink:0">✕</button>
     </div>
+    <!-- Primary CTA -->
+    <button onclick="navTo('patients');dismissGettingStarted()"
+      style="display:flex;align-items:center;gap:12px;width:100%;background:var(--teal);border:none;border-radius:var(--r);padding:13px 16px;cursor:pointer;margin-bottom:10px;text-align:left">
+      <span style="font-size:1.4rem">👤</span>
+      <span style="flex:1">
+        <span style="display:block;font-weight:700;font-size:.9rem;color:white">Step 1 — Add Your Care Recipient</span>
+        <span style="display:block;font-size:.74rem;color:rgba(255,255,255,.8);margin-top:2px">Name, allergies, emergency contact, fall risk</span>
+      </span>
+      <span style="color:white;font-size:1rem;opacity:.8">→</span>
+    </button>
+    <!-- Secondary tiles -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-      <button onclick="navTo('patients');dismissGettingStarted()" style="background:white;border:1px solid #C8E6E3;border-radius:var(--r);padding:10px 12px;text-align:left;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow=''">
-        <div style="font-size:1.1rem;margin-bottom:4px">👤</div>
-        <div style="font-weight:700;font-size:.82rem;color:var(--navy)">Add Your Care Recipient</div>
-        <div style="font-size:.72rem;color:var(--slate-light);margin-top:2px;line-height:1.4">Set up your loved one's profile</div>
+      <button onclick="navTo('mar');dismissGettingStarted()" style="background:white;border:1px solid #C8E6E3;border-radius:var(--r);padding:10px 12px;text-align:left;cursor:pointer">
+        <div style="font-size:1rem;margin-bottom:3px">💊</div>
+        <div style="font-weight:700;font-size:.8rem;color:var(--navy)">Medication Log</div>
+        <div style="font-size:.71rem;color:var(--slate-light);margin-top:1px;line-height:1.4">Track daily medications</div>
       </button>
-      <button onclick="navTo('mar');dismissGettingStarted()" style="background:white;border:1px solid #C8E6E3;border-radius:var(--r);padding:10px 12px;text-align:left;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow=''">
-        <div style="font-size:1.1rem;margin-bottom:4px">💊</div>
-        <div style="font-weight:700;font-size:.82rem;color:var(--navy)">Medication Log</div>
-        <div style="font-size:.72rem;color:var(--slate-light);margin-top:2px;line-height:1.4">Track daily medications</div>
+      <button onclick="navTo('careplan');dismissGettingStarted()" style="background:white;border:1px solid #C8E6E3;border-radius:var(--r);padding:10px 12px;text-align:left;cursor:pointer">
+        <div style="font-size:1rem;margin-bottom:3px">📌</div>
+        <div style="font-weight:700;font-size:.8rem;color:var(--navy)">Care Preferences</div>
+        <div style="font-size:.71rem;color:var(--slate-light);margin-top:1px;line-height:1.4">Document what matters most</div>
       </button>
-      <button onclick="navTo('careplan');dismissGettingStarted()" style="background:white;border:1px solid #C8E6E3;border-radius:var(--r);padding:10px 12px;text-align:left;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow=''">
-        <div style="font-size:1.1rem;margin-bottom:4px">📌</div>
-        <div style="font-weight:700;font-size:.82rem;color:var(--navy)">Care Preferences</div>
-        <div style="font-size:.72rem;color:var(--slate-light);margin-top:2px;line-height:1.4">Document what matters most</div>
+      <button onclick="navTo('itm');dismissGettingStarted()" style="background:white;border:1px solid #C8E6E3;border-radius:var(--r);padding:10px 12px;text-align:left;cursor:pointer">
+        <div style="font-size:1rem;margin-bottom:3px">🫂</div>
+        <div style="font-weight:700;font-size:.8rem;color:var(--navy)">In The Moment</div>
+        <div style="font-size:.71rem;color:var(--slate-light);margin-top:1px;line-height:1.4">Quick help during hard moments</div>
       </button>
-      <button onclick="navTo('itm');dismissGettingStarted()" style="background:white;border:1px solid #C8E6E3;border-radius:var(--r);padding:10px 12px;text-align:left;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow=''">
-        <div style="font-size:1.1rem;margin-bottom:4px">🫂</div>
-        <div style="font-weight:700;font-size:.82rem;color:var(--navy)">In The Moment</div>
-        <div style="font-size:.72rem;color:var(--slate-light);margin-top:2px;line-height:1.4">Quick help during difficult moments</div>
+      <button onclick="navTo('settings');dismissGettingStarted()" style="background:white;border:1px solid #C8E6E3;border-radius:var(--r);padding:10px 12px;text-align:left;cursor:pointer">
+        <div style="font-size:1rem;margin-bottom:3px">🎛️</div>
+        <div style="font-weight:700;font-size:.8rem;color:var(--navy)">Manage Features</div>
+        <div style="font-size:.71rem;color:var(--slate-light);margin-top:1px;line-height:1.4">Hide sections you don't need</div>
       </button>
     </div>
-    <div style="margin-top:10px;font-size:.72rem;color:var(--slate-light);text-align:center">Tap any section in the menu to explore all features.</div>
+    <div style="margin-top:10px;font-size:.71rem;color:var(--slate-light);text-align:center;line-height:1.5">
+      ✅ Works offline — all data saved on this device &nbsp;·&nbsp; Tap ✕ to dismiss this card
+    </div>
   </div>
 
   <!-- Active Shift Timer -->
@@ -2059,6 +2077,10 @@ body {
   <div class="ph">
     <div><div class="ph-title">⚙️ Settings</div><div class="ph-sub">Caregiver profile and data management</div></div>
     <div style="font-size:.7rem;color:var(--slate-light);margin-top:4px">App version: <strong id="mar-app-version"></strong></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;background:#F0FDF4;border:1px solid #86EFAC;border-radius:8px;padding:9px 14px;margin-bottom:12px;font-size:.78rem;color:#166534">
+    <span style="font-size:1rem">✅</span>
+    <span><strong>Works offline</strong> — all your data is saved on this device only. No internet connection required after install. No cloud, no account, no subscription needed to use the app.</span>
   </div>
   
 
