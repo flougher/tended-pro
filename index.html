@@ -759,6 +759,30 @@ body {
   .section { display:block!important; }
 }
 
+/* ── Settings jump-nav tabs ───────────────────────────────── */
+.settings-tab-btn {
+  flex-shrink: 0;
+  background: var(--off-white);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-family: var(--font-body);
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--slate-mid);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.settings-tab-btn:hover,
+.settings-tab-btn.active {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: white;
+}
+/* Hide scrollbar on jump-nav row */
+#settings-jumpnav div::-webkit-scrollbar { display: none; }
+
 /* ══ PHASE 2 ═════════════════════════════════════════════════ */
 
 /* Care plan */
@@ -2078,37 +2102,20 @@ body {
     <div><div class="ph-title">⚙️ Settings</div><div class="ph-sub">Caregiver profile and data management</div></div>
     <div style="font-size:.7rem;color:var(--slate-light);margin-top:4px">App version: <strong id="mar-app-version"></strong></div>
   </div>
-  <div style="display:flex;align-items:center;gap:8px;background:#F0FDF4;border:1px solid #86EFAC;border-radius:8px;padding:9px 14px;margin-bottom:12px;font-size:.78rem;color:#166534">
-    <span style="font-size:1rem">✅</span>
-    <span><strong>Works offline</strong> — all your data is saved on this device only. No internet connection required after install. No cloud, no account, no subscription needed to use the app.</span>
-  </div>
-  
 
-  <!-- Early Adopter Offer -->
-  <div style="margin:16px 0 8px">
-    <div class="card" style="border:2px solid var(--teal);background:linear-gradient(135deg,#F0FDF4,#E6F7F4)">
-      <div class="card-title" style="color:var(--teal)">🎁 Free for Early Supporters — Offer Expires December 31, 2026</div>
-      <p style="font-size:.82rem;color:var(--slate-mid);line-height:1.7;margin:8px 0 12px">
-        Download Tended Health Pro before <strong>December 31, 2026</strong> and get a free
-        permanent unlock code — yours to keep forever, no subscription, no catch.
-        After December 31 the unlock is <strong>$14.99</strong> one time.
-      </p>
-      <p style="font-size:.82rem;color:var(--slate-mid);line-height:1.7;margin:0 0 14px">
-        To claim your free code, simply reach out directly:
-      </p>
-      <a href="mailto:tendedhealthapps@gmail.com?subject=Free%20Lifetime%20Code%20Request"
-         style="display:flex;align-items:center;gap:10px;padding:12px 14px;
-                background:var(--teal);border-radius:var(--r);text-decoration:none;
-                color:white;font-size:.86rem;font-weight:600;margin-bottom:8px">
-        <span style="font-size:1.1rem">✉️</span>
-        <span style="flex:1">Email Me for Your Free Code</span>
-        <span style="font-size:.7rem;opacity:.8">tendedhealthapps@gmail.com</span>
-      </a>
-      <p style="font-size:.72rem;color:var(--slate-light);margin:6px 0 0;line-height:1.5">
-        Offer valid for downloads before December 31, 2026. One code per person.
-        Code grants permanent access tied to your Google account.
-      </p>
+  <!-- ── Sticky jump-nav ── -->
+  <div id="settings-jumpnav" style="position:-webkit-sticky;position:sticky;top:0;z-index:50;background:var(--off-white);padding:8px 0 10px;margin-bottom:4px;border-bottom:1px solid var(--border)">
+    <div style="display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px">
+      <button onclick="scrollToSettingsAnchor('sa-profile')"  class="settings-tab-btn">🏥 Profile</button>
+      <button onclick="scrollToSettingsAnchor('sa-features')" class="settings-tab-btn">🎛️ Features</button>
+      <button onclick="scrollToSettingsAnchor('sa-data')"     class="settings-tab-btn">💾 Data</button>
+      <button onclick="scrollToSettingsAnchor('sa-about')"    class="settings-tab-btn">ℹ️ About</button>
     </div>
+  </div>
+
+  <!-- ══ SECTION: PROFILE ══════════════════════════════════ -->
+  <div id="sa-profile" style="scroll-margin-top:56px;scroll-snap-margin-top:56px">
+    <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--slate-light);padding:6px 0 8px">🏥 Caregiver Profile</div>
   </div>
 
 <div class="grid-2">
@@ -2148,6 +2155,11 @@ body {
     </div>
     <div>
 
+      <!-- ══ SECTION: FEATURES ══ -->
+      <div id="sa-features" style="scroll-margin-top:56px;scroll-snap-margin-top:56px">
+        <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--slate-light);padding:6px 0 8px">🎛️ Manage Features</div>
+      </div>
+
       <!-- ── Manage Features ─────────────────────────────── -->
       <div class="card" style="margin-bottom:14px">
         <div class="card-title">🎛️ Manage Features
@@ -2158,6 +2170,11 @@ body {
           Your data is never deleted; the feature is simply hidden.
         </p>
         <div id="manage-features-list"></div>
+      </div>
+
+      <!-- ══ SECTION: DATA ══ -->
+      <div id="sa-data" style="scroll-margin-top:56px;scroll-snap-margin-top:56px">
+        <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--slate-light);padding:6px 0 8px">💾 Data Management</div>
       </div>
 
       <div class="card">
@@ -2220,6 +2237,44 @@ body {
           ⚠️ <strong>Compliance Notice:</strong> Ensure device security meets your agency's HIPAA policies. This app stores data locally only — no cloud servers.
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION: ABOUT ══ -->
+  <div id="sa-about" style="scroll-margin-top:56px;scroll-snap-margin-top:56px">
+    <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--slate-light);padding:14px 0 8px">ℹ️ About &amp; Support</div>
+  </div>
+
+  <!-- Offline indicator -->
+  <div style="display:flex;align-items:center;gap:8px;background:#F0FDF4;border:1px solid #86EFAC;border-radius:8px;padding:9px 14px;margin-bottom:12px;font-size:.78rem;color:#166534">
+    <span style="font-size:1rem">✅</span>
+    <span><strong>Works offline</strong> — all your data is saved on this device only. No internet connection required after install. No cloud, no account, no subscription needed to use the app.</span>
+  </div>
+
+  <!-- Early Adopter Offer -->
+  <div style="margin:0 0 12px">
+    <div class="card" style="border:2px solid var(--teal);background:linear-gradient(135deg,#F0FDF4,#E6F7F4)">
+      <div class="card-title" style="color:var(--teal)">🎁 Free for Early Supporters — Offer Expires December 31, 2026</div>
+      <p style="font-size:.82rem;color:var(--slate-mid);line-height:1.7;margin:8px 0 12px">
+        Download Tended Health Pro before <strong>December 31, 2026</strong> and get a free
+        permanent unlock code — yours to keep forever, no subscription, no catch.
+        After December 31 the unlock is <strong>$14.99</strong> one time.
+      </p>
+      <p style="font-size:.82rem;color:var(--slate-mid);line-height:1.7;margin:0 0 14px">
+        To claim your free code, simply reach out directly:
+      </p>
+      <a href="mailto:tendedhealthapps@gmail.com?subject=Free%20Lifetime%20Code%20Request"
+         style="display:flex;align-items:center;gap:10px;padding:12px 14px;
+                background:var(--teal);border-radius:var(--r);text-decoration:none;
+                color:white;font-size:.86rem;font-weight:600;margin-bottom:8px">
+        <span style="font-size:1.1rem">✉️</span>
+        <span style="flex:1">Email Me for Your Free Code</span>
+        <span style="font-size:.7rem;opacity:.8">tendedhealthapps@gmail.com</span>
+      </a>
+      <p style="font-size:.72rem;color:var(--slate-light);margin:6px 0 0;line-height:1.5">
+        Offer valid for downloads before December 31, 2026. One code per person.
+        Code grants permanent access tied to your Google account.
+      </p>
     </div>
   </div>
 
@@ -7137,6 +7192,19 @@ function loadSettings(){
   if(unsaved) unsaved.style.display = 'none';
   const savedMsg = document.getElementById('settings-saved-msg');
   if(savedMsg) savedMsg.style.display = 'none';
+}
+
+function scrollToSettingsAnchor(id){
+  const target = document.getElementById(id);
+  if(!target) return;
+  // Works in both scroll contexts: mobile (.content fixed div) and desktop (.content overflow-y:auto)
+  target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Highlight active tab
+  document.querySelectorAll('.settings-tab-btn').forEach(btn => btn.classList.remove('active'));
+  const anchors = ['sa-profile','sa-features','sa-data','sa-about'];
+  const idx = anchors.indexOf(id);
+  const btns = document.querySelectorAll('.settings-tab-btn');
+  if(btns[idx]) btns[idx].classList.add('active');
 }
 
 function renderManageFeatures(){
