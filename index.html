@@ -4705,26 +4705,24 @@ function renderDashboard(){
     const partialItems = checkItems.filter(i => i.partial && !i.done);
     const todoItems    = checkItems.filter(i => !i.done && !i.partial);
 
+    const _newUser = isNewUser();
+
     const renderItem = item => {
-      const iconBg  = item.done    ? '#F0FDF4'
-                    : item.partial ? 'var(--held-bg)'
-                    : 'var(--off-white)';
-      const iconCol = item.done    ? '#16A34A'
-                    : item.partial ? 'var(--held)'
-                    : 'var(--slate-light)';
+      const isTodo  = !item.done && !item.partial;
+      // New users: incomplete items styled neutral/guiding, not failure-red
       const check   = item.done    ? '✅'
-                    : item.partial ? '◑' : '○';
-      // Done items: positive, green, no strikethrough
+                    : item.partial ? '◑'
+                    : _newUser     ? '→' : '○';
       const labelStyle = item.done
         ? 'font-size:.85rem;font-weight:600;color:#16A34A'
-        : item.partial
-        ? 'font-size:.85rem;font-weight:600;color:var(--navy)'
         : 'font-size:.85rem;font-weight:600;color:var(--navy)';
       const subCol  = item.done    ? '#16A34A'
-                    : item.partial ? 'var(--held)' : 'var(--slate-light)';
-      const rowBg   = item.done    ? 'background:linear-gradient(90deg,#F0FDF4 0%,transparent 100%)' : '';
+                    : item.partial ? 'var(--held)'
+                    : _newUser     ? 'var(--teal)' : 'var(--slate-light)';
+      const rowBg   = item.done    ? 'background:linear-gradient(90deg,#F0FDF4 0%,transparent 100%)'
+                    : _newUser && isTodo ? 'background:linear-gradient(90deg,#F0FAFA 0%,transparent 100%)' : '';
       return `<div style="display:flex;align-items:center;gap:10px;padding:9px 6px;border-bottom:1px solid var(--border);cursor:pointer;${rowBg};border-radius:6px;margin-bottom:1px" onclick="navTo('${item.nav}')">
-        <div style="font-size:${item.done?'1.1':'0.75'}rem;width:28px;text-align:center;flex-shrink:0">${check}</div>
+        <div style="font-size:${item.done?'1.1':'0.85'}rem;width:28px;text-align:center;flex-shrink:0;color:${item.done?'inherit':_newUser&&isTodo?'var(--teal)':'var(--slate-light)'}">${check}</div>
         <div style="flex:1;min-width:0">
           <div style="${labelStyle}">${item.done?'':item.icon+' '}${item.label}</div>
           <div style="font-size:.72rem;color:${subCol};margin-top:1px">${item.sub}</div>
@@ -4744,16 +4742,19 @@ function renderDashboard(){
         : '') + partialItems.map(renderItem).join('');
     }
     if(todoItems.length > 0){
-      sections += ((doneItems.length+partialItems.length) > 0
-        ? `<div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate-light);padding:10px 0 4px">Still To Do</div>`
-        : '') + todoItems.map(renderItem).join('');
+      const todoHeader = _newUser
+        ? `<div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);padding:10px 0 4px">✨ Fill these in as you go</div>`
+        : `<div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate-light);padding:10px 0 4px">Still To Do</div>`;
+      sections += ((doneItems.length+partialItems.length) > 0 ? todoHeader : '') + todoItems.map(renderItem).join('');
     }
 
-    // Footer — pct-aware celebration line
+    // Footer — new-user awareness + pct-aware celebration
     const footerMsg = pct === 100
       ? `<span style="font-size:.8rem;font-weight:700;color:#16A34A">🎉 All ${checkItems.length} tasks complete!</span>`
       : pct >= 80
       ? `<span style="font-size:.74rem;font-weight:600;color:#16A34A">🌟 ${doneCount}/${checkItems.length} done — almost there!</span>`
+      : _newUser
+      ? `<span style="font-size:.74rem;color:var(--teal)">🌱 Getting started — tap any item to begin</span>`
       : `<span style="font-size:.74rem;color:var(--slate-light)">${doneCount} of ${checkItems.length} complete</span>`;
 
     clEl.innerHTML = sections +
@@ -10395,11 +10396,31 @@ function showLegalInfo(){
 
 function checkFirstLaunch(){
   const welcomed = localStorage.getItem('tendedPro_welcomed');
+  // Stamp first-install date once, never overwrite
+  try {
+    if(!localStorage.getItem('tendedPro_installDate')){
+      localStorage.setItem('tendedPro_installDate', new Date().toISOString().split('T')[0]);
+    }
+  } catch(e){}
   if(!welcomed && !D.patients.length){
     // Show welcome overlay for all new users on any device
     const overlay = document.getElementById('welcome-overlay');
     if(overlay) overlay.style.display = 'flex';
   }
+}
+
+function isNewUser(){
+  // True if within 7 days of first install AND fewer than 3 checklist-relevant data points
+  try {
+    const installDate = localStorage.getItem('tendedPro_installDate');
+    if(!installDate) return false;
+    const daysSince = Math.floor((Date.now() - new Date(installDate).getTime()) / 86400000);
+    if(daysSince > 7) return false;
+    // Sparse data = no real patients and fewer than 3 meds
+    const realPats = (D.patients||[]).filter(p => !p.isSample).length;
+    const medCount = (D.meds||[]).length;
+    return realPats === 0 || (realPats <= 1 && medCount < 3);
+  } catch(e){ return false; }
 }
 // ═══════════════════════════════════════════════════════════════
 const PREMIUM_KEY          = 'tendedPro_premium';
