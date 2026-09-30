@@ -3333,6 +3333,7 @@ body {
       <div class="fg"><label>Prescribing Doctor</label><input id="mm-doctor" placeholder="Dr. Chen"></div>
       <div class="fg"><label>Refill Date</label><input type="date" id="mm-refill"></div>
     </div>
+    <div class="fg"><label>Dose Schedule <span style="font-weight:400;color:var(--slate-light);font-size:.8rem">(optional — list all times if given more than once)</span></label><input id="mm-schedule" placeholder="e.g. 8:00 AM · 12:00 PM · 6:00 PM"></div>
     <div class="fg"><label>Notes</label><input id="mm-notes" placeholder="Take with food, avoid grapefruit…"></div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('med-modal')">Cancel</button>
@@ -5147,6 +5148,7 @@ function openMedModal(editId){
   document.getElementById('mm-time').value   = m?.time   || '';
   document.getElementById('mm-doctor').value = m?.doctor || '';
   document.getElementById('mm-refill').value = m?.refill || '';
+  document.getElementById('mm-schedule').value = m?.schedule || '';
   document.getElementById('mm-notes').value  = m?.notes  || '';
   openModal('med-modal');
 }
@@ -5159,9 +5161,10 @@ function saveMed(){
     dose:   document.getElementById('mm-dose').value.trim(),
     freq:   document.getElementById('mm-freq').value,
     time:   document.getElementById('mm-time').value,
-    doctor: document.getElementById('mm-doctor').value.trim(),
-    refill: document.getElementById('mm-refill').value,
-    notes:  document.getElementById('mm-notes').value.trim()
+    doctor:    document.getElementById('mm-doctor').value.trim(),
+    refill:    document.getElementById('mm-refill').value,
+    schedule:  document.getElementById('mm-schedule').value.trim(),
+    notes:     document.getElementById('mm-notes').value.trim()
   };
   if(_editMedId !== null){
     const idx = D.meds.findIndex(x => x.id === _editMedId);
@@ -5215,6 +5218,7 @@ function renderMedList(){
           ${m.time ? `<span>⏰ ${fmtTime(m.time)}</span>` : ''}
           ${m.doctor ? `<span>Dr. ${m.doctor}</span>` : ''}
         </div>
+        ${m.schedule ? `<div style="font-size:.74rem;color:var(--teal);margin-top:3px">🕐 Dose times: ${m.schedule}</div>` : ''}
         ${bbw}
       </div>
       <div style="display:flex;gap:5px;flex-shrink:0">
@@ -5808,6 +5812,7 @@ function renderMAR(){
                 ${m.doctor ? `<span>Dr. ${m.doctor}</span>` : ''}
                 ${isOverdue_mar ? `<span style="font-weight:700;color:#856404;background:#FFF3CD;padding:1px 6px;border-radius:8px;border:1px solid #856404">OVERDUE</span>` : ''}
               </div>
+              ${m.schedule ? `<div style="font-size:.72rem;color:var(--teal);margin-top:3px">🕐 Dose times: ${m.schedule}</div>` : ''}
               ${hasBBW ? `<div style="font-size:.7rem;color:#7A4A00;margin-top:4px;line-height:1.5">⚠ ${getBBW(m.name).watch}</div>` : ''}
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
