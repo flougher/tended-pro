@@ -3280,7 +3280,7 @@ body {
 </div>
 
 <!-- Mobile More Menu -->
-<div id="mobile-more" style="display:none;position:fixed;top:0;bottom:calc(58px + env(safe-area-inset-bottom,12px));left:0;right:0;background:var(--navy-mid);border-top:1px solid rgba(255,255,255,.1);z-index:2999;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 -4px 20px rgba(12,27,51,.3)">
+<div id="mobile-more" style="display:none;position:fixed;top:0;bottom:calc(58px + env(safe-area-inset-bottom,12px));left:0;right:0;background:var(--navy-mid);border-top:1px solid rgba(255,255,255,.1);z-index:2999;overflow-y:scroll;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain;box-shadow:0 -4px 20px rgba(12,27,51,.3)">
 
   <!-- Header bar -->
   <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px 8px;border-bottom:1px solid rgba(255,255,255,.08)">
@@ -3336,7 +3336,7 @@ body {
     <button class="more-btn" onclick="mobileNavTo('settings')"><span class="more-icon">⚙️</span>Settings</button>
   </div>
 
-  <div style="height:12px"></div><!-- bottom breathing room -->
+  <div style="height:80px"></div><!-- bottom breathing room -->
 </div>
 
 </div><!-- shell -->
