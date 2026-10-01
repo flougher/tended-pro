@@ -789,7 +789,7 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .1em;
-  color: rgba(255,255,255,.38);
+  color: rgba(255,255,255,.65);
   padding: 10px 16px 4px;
 }
 .more-grid {
@@ -798,24 +798,31 @@ body {
   border-top: 1px solid rgba(255,255,255,.06);
 }
 .more-btn {
-  color: rgba(255,255,255,.62) !important;
-  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
   border-right: 1px solid rgba(255,255,255,.05);
   border-bottom: 1px solid rgba(255,255,255,.05);
-  padding: 10px 4px;
+  border-radius: 0;
+  padding: 12px 6px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: .82rem;
+  font-weight: 600;
+  color: rgba(255,255,255,.95);
+  letter-spacing: .01em;
+  text-transform: none;
+  line-height: 1.2;
+  text-align: center;
 }
-.more-btn:active {
-  background: rgba(255,255,255,.08);
-}
-.more-btn--memory {
-  color: rgba(180,140,255,.85) !important;
-}
-.more-btn--critical {
-  color: rgba(255,160,100,.9) !important;
-}
-.more-btn--wellness {
-  color: rgba(100,220,180,.9) !important;
-}
+.more-icon { font-size: 1.5rem; line-height: 1; }
+.more-btn:active { background: rgba(255,255,255,.1); }
+.more-btn--memory  { color: rgba(200,170,255,1); }
+.more-btn--critical{ color: rgba(255,180,120,1); }
+.more-btn--wellness{ color: rgba(120,235,195,1); }
 
 /* ══ PHASE 2 ═════════════════════════════════════════════════ */
 
@@ -3277,56 +3284,56 @@ body {
 
   <!-- Header bar -->
   <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px 8px;border-bottom:1px solid rgba(255,255,255,.08)">
-    <span style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.35)">All Sections</span>
+    <span style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.6)">All Sections</span>
     <button onclick="toggleMobileMore()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:4px 14px;color:rgba(255,255,255,.5);font-size:.74rem;font-weight:600;cursor:pointer;font-family:var(--font-body)">✕ Close</button>
   </div>
 
   <!-- ── Daily Care ─────────────────────────────────────────── -->
   <div class="more-group-label">📋 Daily Care</div>
   <div class="more-grid">
-    <button class="bn-btn more-btn" onclick="mobileNavTo('handoff')"><span class="bn-icon">🔄</span>Daily Handoff</button>
-    <button class="bn-btn more-btn" onclick="mobileNavTo('careplan')"><span class="bn-icon">📌</span>Care Prefs</button>
-    <button class="bn-btn more-btn" onclick="mobileNavTo('routines')"><span class="bn-icon">📅</span>Routines</button>
-    <button class="bn-btn more-btn" onclick="mobileNavTo('comms')"><span class="bn-icon">📞</span>Family Log</button>
-    <button id="bnav-nutrition" class="bn-btn more-btn" onclick="mobileNavTo('intake')"><span class="bn-icon">🍽️</span>Diet & Fluids</button>
-    <button class="bn-btn more-btn" onclick="mobileNavTo('toileting')"><span class="bn-icon">🚻</span>Toileting</button>
+    <button class="more-btn" onclick="mobileNavTo('handoff')"><span class="more-icon">🔄</span>Daily Handoff</button>
+    <button class="more-btn" onclick="mobileNavTo('careplan')"><span class="more-icon">📌</span>Care Prefs</button>
+    <button class="more-btn" onclick="mobileNavTo('routines')"><span class="more-icon">📅</span>Routines</button>
+    <button class="more-btn" onclick="mobileNavTo('comms')"><span class="more-icon">📞</span>Family Log</button>
+    <button id="bnav-nutrition" class="more-btn" onclick="mobileNavTo('intake')"><span class="more-icon">🍽️</span>Diet & Fluids</button>
+    <button class="more-btn" onclick="mobileNavTo('toileting')"><span class="more-icon">🚻</span>Toileting</button>
   </div>
 
   <!-- ── Clinical ───────────────────────────────────────────── -->
   <div class="more-group-label">🩺 Clinical</div>
   <div class="more-grid">
-    <button id="bnav-vitals" class="bn-btn more-btn" onclick="mobileNavTo('vitals')"><span class="bn-icon">🩺</span>Vitals</button>
-    <button id="bnav-vitals-pain" class="bn-btn more-btn" onclick="mobileNavTo('pain')"><span class="bn-icon">😣</span>Pain</button>
-    <button id="bnav-wounds" class="bn-btn more-btn" onclick="mobileNavTo('wounds')"><span class="bn-icon">🩹</span>Wounds</button>
-    <button class="bn-btn more-btn" onclick="mobileNavTo('trends')"><span class="bn-icon">📊</span>Trends</button>
-    <button class="bn-btn more-btn" onclick="mobileNavTo('report')"><span class="bn-icon">📄</span>Report</button>
+    <button id="bnav-vitals" class="more-btn" onclick="mobileNavTo('vitals')"><span class="more-icon">🩺</span>Vitals</button>
+    <button id="bnav-vitals-pain" class="more-btn" onclick="mobileNavTo('pain')"><span class="more-icon">😣</span>Pain</button>
+    <button id="bnav-wounds" class="more-btn" onclick="mobileNavTo('wounds')"><span class="more-icon">🩹</span>Wounds</button>
+    <button class="more-btn" onclick="mobileNavTo('trends')"><span class="more-icon">📊</span>Trends</button>
+    <button class="more-btn" onclick="mobileNavTo('report')"><span class="more-icon">📄</span>Report</button>
   </div>
 
   <!-- ── Memory Care ────────────────────────────────────────── -->
-  <div id="bnav-memory-group" class="more-group-label" style="color:rgba(180,140,255,.8)">🧠 Memory Care</div>
+  <div id="bnav-memory-group" class="more-group-label" style="color:rgba(200,170,255,1)">🧠 Memory Care</div>
   <div id="bnav-memory-grid" class="more-grid">
-    <button id="bnav-itm" class="bn-btn more-btn more-btn--memory" onclick="mobileNavTo('itm')"><span class="bn-icon">🫂</span>In The Moment</button>
-    <button class="bn-btn more-btn more-btn--memory" onclick="mobileNavTo('behaviors')"><span class="bn-icon">🧠</span>Behaviors</button>
-    <button class="bn-btn more-btn more-btn--memory" onclick="mobileNavTo('triggers')"><span class="bn-icon">⚡</span>Triggers</button>
-    <button id="bnav-sundowning" class="bn-btn more-btn more-btn--memory" onclick="mobileNavTo('sundowning')"><span class="bn-icon">🌅</span>Sundowning</button>
-    <button id="bnav-wandering" class="bn-btn more-btn more-btn--memory" onclick="mobileNavTo('wandering')"><span class="bn-icon">🚶</span>Wandering</button>
-    <button id="bnav-memorycare" class="bn-btn more-btn more-btn--memory" onclick="mobileNavTo('memorycare')"><span class="bn-icon">💬</span>Mem Care</button>
+    <button id="bnav-itm" class="more-btn more-btn--memory" onclick="mobileNavTo('itm')"><span class="more-icon">🫂</span>In The Moment</button>
+    <button class="more-btn more-btn--memory" onclick="mobileNavTo('behaviors')"><span class="more-icon">🧠</span>Behaviors</button>
+    <button class="more-btn more-btn--memory" onclick="mobileNavTo('triggers')"><span class="more-icon">⚡</span>Triggers</button>
+    <button id="bnav-sundowning" class="more-btn more-btn--memory" onclick="mobileNavTo('sundowning')"><span class="more-icon">🌅</span>Sundowning</button>
+    <button id="bnav-wandering" class="more-btn more-btn--memory" onclick="mobileNavTo('wandering')"><span class="more-icon">🚶</span>Wandering</button>
+    <button id="bnav-memorycare" class="more-btn more-btn--memory" onclick="mobileNavTo('memorycare')"><span class="more-icon">💬</span>Mem Care</button>
   </div>
 
   <!-- ── Critical ───────────────────────────────────────────── -->
-  <div class="more-group-label" style="color:rgba(255,160,100,.85)">⚠️ Critical</div>
+  <div class="more-group-label" style="color:rgba(255,180,120,1)">⚠️ Critical</div>
   <div class="more-grid">
-    <button class="bn-btn more-btn more-btn--critical" onclick="mobileNavTo('comfortcare')"><span class="bn-icon">🕊️</span>Comfort Care</button>
-    <button class="bn-btn more-btn more-btn--critical" onclick="mobileNavTo('bbw')"><span class="bn-icon">⚠️</span>Med Warnings</button>
-    <button class="bn-btn more-btn more-btn--critical" onclick="mobileNavTo('emergency')"><span class="bn-icon">🚨</span>Emergency</button>
+    <button class="more-btn more-btn--critical" onclick="mobileNavTo('comfortcare')"><span class="more-icon">🕊️</span>Comfort Care</button>
+    <button class="more-btn more-btn--critical" onclick="mobileNavTo('bbw')"><span class="more-icon">⚠️</span>Med Warnings</button>
+    <button class="more-btn more-btn--critical" onclick="mobileNavTo('emergency')"><span class="more-icon">🚨</span>Emergency</button>
   </div>
 
-  <!-- ── App ────────────────────────────────────────────────── -->
-  <div class="more-group-label">⚙️ App</div>
+  <!-- ── Tools & Settings ───────────────────────────────────── -->
+  <div class="more-group-label">⚙️ Tools & Settings</div>
   <div class="more-grid">
-    <button class="bn-btn more-btn" onclick="mobileNavTo('voice')"><span class="bn-icon">🎤</span>Voice</button>
-    <button id="bnav-wellness" class="bn-btn more-btn more-btn--wellness" onclick="mobileNavTo('checkin')"><span class="bn-icon">💚</span>Wellness</button>
-    <button class="bn-btn more-btn" onclick="mobileNavTo('settings')"><span class="bn-icon">⚙️</span>Settings</button>
+    <button class="more-btn" onclick="mobileNavTo('voice')"><span class="more-icon">🎤</span>Voice</button>
+    <button id="bnav-wellness" class="more-btn more-btn--wellness" onclick="mobileNavTo('checkin')"><span class="more-icon">💚</span>Wellness</button>
+    <button class="more-btn" onclick="mobileNavTo('settings')"><span class="more-icon">⚙️</span>Settings</button>
   </div>
 
   <div style="height:12px"></div><!-- bottom breathing room -->
