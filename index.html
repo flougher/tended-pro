@@ -4614,11 +4614,13 @@ function renderDashboard(){
 
   const todayMARKeys = Object.keys(D.mar).filter(k => k.startsWith(todayISO + '|'));
   const givenCount   = todayMARKeys.filter(k => D.mar[k]?.status === 'given').length;
-  const pendingCount = todayMARKeys.filter(k => D.mar[k]?.status === 'pending').length;
   const activeMedCount = (D.meds||[]).filter(m => !m.discontinued).length;
   const totalMeds    = activeMedCount;
+  // Pending = active meds minus those definitively handled (given/refused/held) today
+  const handledCount = todayMARKeys.filter(k => ['given','refused','held'].includes(D.mar[k]?.status)).length;
+  const pendingCount = Math.max(0, activeMedCount - handledCount);
   document.getElementById('ds-meds').textContent    = givenCount + '/' + totalMeds;
-  document.getElementById('ds-pending').textContent = todayMARKeys.length ? pendingCount : activeMedCount;
+  document.getElementById('ds-pending').textContent = pendingCount;
   const multiDoseActive = (D.meds||[]).filter(m => !m.discontinued && m.schedule && m.schedule.trim());
   const medsNoteEl = document.getElementById('ds-meds-note');
   if(medsNoteEl) medsNoteEl.style.display = multiDoseActive.length ? 'block' : 'none';
