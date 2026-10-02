@@ -4616,7 +4616,7 @@ function renderDashboard(){
   const givenCount   = todayMARKeys.filter(k => D.mar[k]?.status === 'given').length;
   const pendingCount = todayMARKeys.filter(k => D.mar[k]?.status === 'pending').length;
   const activeMedCount = (D.meds||[]).filter(m => !m.discontinued).length;
-  const totalMeds    = todayMARKeys.length || activeMedCount;
+  const totalMeds    = activeMedCount;
   document.getElementById('ds-meds').textContent    = givenCount + '/' + totalMeds;
   document.getElementById('ds-pending').textContent = todayMARKeys.length ? pendingCount : activeMedCount;
   const multiDoseActive = (D.meds||[]).filter(m => !m.discontinued && m.schedule && m.schedule.trim());
