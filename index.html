@@ -1504,8 +1504,8 @@ body {
     <button class="nav-btn" onclick="navTo('emergency',this)" style="color:rgba(255,120,120,.95)"><span class="ni">🚨</span> Emergency Mode</button>
   </div>
   <div id="snav-wellness-group" class="nav-group">
-    <div class="nav-label">💚 Caregiver Wellness</div>
-    <button class="nav-btn" onclick="navTo('checkin',this)"><span class="ni">💚</span> Caregiver Check-In</button>
+    <div class="nav-label">💚 Caregiver Burnout Check</div>
+    <button class="nav-btn" onclick="navTo('checkin',this)"><span class="ni">💚</span> Caregiver Burnout Check</button>
   </div>
   <div class="nav-group">
     <div class="nav-label">Account</div>
@@ -7328,7 +7328,7 @@ function renderManageFeatures(){
     wounds:    { icon:'🩹', name:'Wound & Skin Care', desc:'Wound tracking and skin assessments' },
     nutrition: { icon:'🥗', name:'Diet & Fluids',    desc:'Meals, hydration, and dietary tracking' },
     memory:    { icon:'🧠', name:'Memory Care',      desc:'ITM log, sundowning, wandering safeguards' },
-    wellness:  { icon:'🌿', name:'Caregiver Wellness', desc:'Stress check-in and self-care tracking' }
+    wellness:  { icon:'🌿', name:'Caregiver Burnout Check', desc:'Stress check-in and self-care tracking' }
   };
   el.innerHTML = Object.keys(LABELS).map(key => {
     const L = LABELS[key];
