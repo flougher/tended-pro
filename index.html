@@ -4649,8 +4649,13 @@ function renderDashboard(){
   document.getElementById('ds-patients').textContent = activePats().length;
 
   const todayMARKeys = Object.keys(D.mar).filter(k => k.startsWith(todayISO + '|'));
-  const givenCount   = todayMARKeys.filter(k => D.mar[k]?.status === 'given').length;
-  const activeMedCount = (D.meds||[]).filter(m => !m.discontinued).length;
+  const activeMeds     = (D.meds||[]).filter(m => !m.discontinued);
+  const activeMedIds   = new Set(activeMeds.map(m => String(m.id)));
+  const givenCount   = todayMARKeys.filter(k => {
+    const medId = k.split('|')[2];
+    return D.mar[k]?.status === 'given' && activeMedIds.has(medId);
+  }).length;
+  const activeMedCount = activeMeds.length;
   const totalMeds    = activeMedCount;
   // Pending = active meds minus those definitively handled (given/refused/held) today
   const handledCount = todayMARKeys.filter(k => ['given','refused','held'].includes(D.mar[k]?.status)).length;
