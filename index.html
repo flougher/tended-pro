@@ -11306,7 +11306,9 @@ function _residentStatusItems(p, todayISO, nowMin, GRACE){
     if(!m.time) return false;
     const [h, mn] = m.time.split(':').map(Number);
     if(nowMin < h*60+mn+GRACE) return false;
-    const key    = todayISO+'|'+p.id+'|'+m.id;
+    // Use same key logic as MAR: unassigned meds fall back to 'default'
+    const marPid = m.patientId ? pid : 'default';
+    const key    = todayISO+'|'+marPid+'|'+m.id;
     const status = (D.mar[key]?.status)||'pending';
     return status === 'pending';
   });
@@ -11401,7 +11403,8 @@ function _residentStatusItems(p, todayISO, nowMin, GRACE){
   // ── 🟢 All medications given ──────────────────────────────
   const allGiven = ptMeds.length > 0 &&
     ptMeds.every(m => {
-      const key = todayISO+'|'+p.id+'|'+m.id;
+      const marPid = m.patientId ? pid : 'default';
+      const key = todayISO+'|'+marPid+'|'+m.id;
       return ['given','held','refused'].includes(D.mar[key]?.status||'');
     });
   if(allGiven){
@@ -11535,7 +11538,9 @@ function renderCriticalAlerts(){
       const [h, min] = m.time.split(':').map(Number);
       const schedMin = h * 60 + min;
       if(nowMin < schedMin + GRACE) return false; // not past grace window yet
-      const key = todayISO + '|' + p.id + '|' + m.id;
+      // Use same key logic as MAR: unassigned meds fall back to 'default'
+      const marPid = m.patientId ? String(p.id) : 'default';
+      const key = todayISO + '|' + marPid + '|' + m.id;
       const status = (D.mar[key]?.status) || 'pending';
       return status === 'pending';
     });
