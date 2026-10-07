@@ -11325,7 +11325,7 @@ function _residentStatusItems(p, todayISO, nowMin, GRACE){
   // ── 🔴 Overdue medications ────────────────────────────────
   // Only check meds explicitly assigned to this patient
   const ptMeds = (D.meds||[]).filter(m =>
-    m.patientId && String(m.patientId) === pid);
+    m.patientId && String(m.patientId) === pid && !m.discontinued);
   const overdueMeds = ptMeds.filter(m => {
     if(!m.time) return false;
     const [h, mn] = m.time.split(':').map(Number);
@@ -11555,7 +11555,7 @@ function renderCriticalAlerts(){
     // Only include meds explicitly assigned to this patient — skip unassigned
     // (unassigned meds use key 'default' and are not tied to any specific patient)
     const ptMeds = (D.meds||[]).filter(m =>
-      m.patientId && String(m.patientId) === String(p.id));
+      m.patientId && String(m.patientId) === String(p.id) && !m.discontinued);
     const overdueMeds = ptMeds.filter(m => {
       if(!m.time) return false; // no scheduled time — can't determine
       const [h, min] = m.time.split(':').map(Number);
