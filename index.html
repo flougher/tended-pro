@@ -4153,6 +4153,18 @@ async function _idbGet(key){
   });
 }
 
+// TEMP DEBUG — remove before release
+function debugMAR(){
+  const todayISO = new Date().toISOString().split('T')[0];
+  const todayKeys = Object.keys(D.mar).filter(k => k.startsWith(todayISO));
+  const meds = (D.meds||[]).map(m => ({id:m.id, name:m.name, patientId:m.patientId, time:m.time}));
+  const patients = (D.patients||[]).map(p => ({id:p.id, name:p.fname+' '+p.lname}));
+  const info = 'PATIENTS:\n' + JSON.stringify(patients,null,2)
+    + '\n\nMEDS:\n' + JSON.stringify(meds,null,2)
+    + '\n\nMAR TODAY:\n' + JSON.stringify(Object.fromEntries(todayKeys.map(k=>[k,D.mar[k]])),null,2);
+  alert(info);
+}
+
 let _saveDebounce = null;
 let _saveErrorShown = false;     // avoid toast spam on every save attempt
 let _quotaWarningShown = false;  // show once per session
