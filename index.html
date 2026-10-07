@@ -4158,12 +4158,22 @@ async function _idbGet(key){
 function debugMAR(){
   const todayISO = new Date().toISOString().split('T')[0];
   const todayKeys = Object.keys(D.mar).filter(k => k.startsWith(todayISO));
-  const meds = (D.meds||[]).map(m => ({id:m.id, name:m.name, patientId:m.patientId, time:m.time}));
-  const patients = (D.patients||[]).map(p => ({id:p.id, name:p.fname+' '+p.lname}));
-  const info = 'PATIENTS:\n' + JSON.stringify(patients,null,2)
-    + '\n\nMEDS:\n' + JSON.stringify(meds,null,2)
-    + '\n\nMAR TODAY:\n' + JSON.stringify(Object.fromEntries(todayKeys.map(k=>[k,D.mar[k]])),null,2);
-  alert(info);
+  const patients = (D.patients||[]).map(p => p.fname+' '+p.lname+' [id:'+p.id+']').join('\n');
+  const meds = (D.meds||[]).map(m => m.name+' [pid:'+m.patientId+']').join('\n');
+  const marKeys = todayKeys.map(k => k+' = '+(D.mar[k]?.status||'?')).join('\n');
+
+  const el = document.getElementById('debug-mar-output');
+  if(el){ el.remove(); return; } // tap again to dismiss
+
+  const div = document.createElement('div');
+  div.id = 'debug-mar-output';
+  div.style.cssText = 'position:fixed;top:60px;left:10px;right:10px;z-index:9999;background:white;border:2px solid #374151;border-radius:12px;padding:16px;font-family:monospace;font-size:.72rem;line-height:1.8;color:#111;box-shadow:0 4px 24px rgba(0,0,0,.3);overflow-y:auto;max-height:80vh';
+  div.innerHTML =
+    '<div style="font-weight:700;font-size:.85rem;margin-bottom:8px;color:#C0392B">🔧 Debug Info — tap button again to close</div>'
+    + '<div style="font-weight:700;color:#0C7A6E">PATIENTS:</div><div style="margin-bottom:10px;white-space:pre">'+patients+'</div>'
+    + '<div style="font-weight:700;color:#0C7A6E">MEDS (name [patientId]):</div><div style="margin-bottom:10px;white-space:pre">'+meds+'</div>'
+    + '<div style="font-weight:700;color:#0C7A6E">MAR TODAY (key = status):</div><div style="white-space:pre">'+(marKeys||'(none)'  )+'</div>';
+  document.body.appendChild(div);
 }
 
 let _saveDebounce = null;
