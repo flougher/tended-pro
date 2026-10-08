@@ -6728,7 +6728,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v27';
+const CACHE = 'tended-pro-v28';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -10514,6 +10514,7 @@ function gwFinish(){
   save();
   renderPatients();
   renderMedList();
+  renderDashboard();
   updateTopbarUser();
 
   // ── Item 4: Set flag and close ────────────────────────────
