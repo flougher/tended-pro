@@ -4617,7 +4617,7 @@ function renderDashboard(){
   const nbP = document.getElementById('nb-patients');
   if(nbP){ nbP.textContent = activePats().length; nbP.classList.toggle('show', activePats().length > 0); }
   // BBW badge + dashboard alert
-  const flaggedMeds = (D.meds||[]).filter(m => getBBW(m.name));
+  const flaggedMeds = (D.meds||[]).filter(m => !m.discontinued && getBBW(m.name));
   const nbBBW = document.getElementById('nb-bbw');
   if(nbBBW){ nbBBW.textContent = flaggedMeds.length; nbBBW.classList.toggle('show', flaggedMeds.length > 0); }
   renderResidentRows();
@@ -6728,7 +6728,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v28';
+const CACHE = 'tended-pro-v29';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -11632,8 +11632,8 @@ function renderCriticalAlerts(){
 function renderBBWDashboardAlert(){
   const existing = document.getElementById('dash-bbw-alert');
   const _dashMeds = _globalPatientId
-    ? (D.meds||[]).filter(m => String(m.patientId) === String(_globalPatientId))
-    : (D.meds||[]);
+    ? (D.meds||[]).filter(m => !m.discontinued && String(m.patientId) === String(_globalPatientId))
+    : (D.meds||[]).filter(m => !m.discontinued);
   const flagged  = _dashMeds.filter(m => getBBW(m.name));
   const bbwAnchor = document.getElementById('dash-vitals-alert')
                  || document.getElementById('dash-critical-alerts')
