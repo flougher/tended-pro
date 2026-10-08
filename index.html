@@ -1675,66 +1675,8 @@ body {
   </div>
 
 
-  <!-- Patient Roster + Incidents -->
-  <div class="grid-2" style="margin-bottom:20px">
-    <div class="card">
-      <div class="card-title">👤 Care Recipients</div>
-      <div id="dash-patients"></div>
-      <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:10px" onclick="navTo('patients')">View All Care Recipients →</button>
-    </div>
-    <div class="card">
-      <div class="card-title">📋 Today's Care Events</div>
-      <div id="dash-incidents"></div>
-      <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:10px" onclick="navTo('incidents')">View All Care Events →</button>
-    </div>
-  </div>
-
-  <!-- Shift Notes -->
-  <div class="card" style="margin-bottom:20px">
-    <div class="card-title">📝 Today's Care Notes
-      <span style="font-size:.7rem;font-weight:400;color:var(--slate-light);margin-left:8px">Separate from the care events log</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-      <label style="font-size:.78rem;color:var(--slate-mid);font-weight:600;flex-shrink:0">Date:</label>
-      <input type="date" id="shift-notes-date"
-        style="border:1.5px solid var(--border);border-radius:var(--r);padding:6px 10px;font-family:var(--font-body);font-size:.82rem;background:white;color:var(--text)"
-        onchange="loadShiftNotesByDate()">
-      <span id="shift-notes-date-label" style="font-size:.74rem;color:var(--slate-light)"></span>
-    </div>
-    <textarea id="shift-notes-text" rows="4"
-      placeholder="Write your care notes here — how your loved one is doing, mood, observations, anything worth remembering from today…"
-      onblur="saveShiftNotes()"
-      style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:10px 12px;font-family:var(--font-body);font-size:.86rem;color:var(--text);resize:vertical;line-height:1.6;background:var(--off-white)"></textarea>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-      <span style="font-size:.72rem;color:var(--slate-light)" id="shift-notes-saved"></span>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn btn-secondary btn-sm" onclick="navTo('handoff')" style="font-size:.74rem">📋 Daily Care Summary</button>
-        <button class="btn btn-teal btn-sm" onclick="saveShiftNotes()">💾 Save Notes</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Trigger Reminder + Sensory Profile -->
   <div id="dash-trigger-reminder" style="display:none;margin-bottom:20px"></div>
-
-  <!-- Daily Summary Export — prominent dashboard card -->
-  <div class="card" style="margin-bottom:20px;border:2px solid var(--teal);background:linear-gradient(135deg,#F0FDFB,white)">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-      <div style="display:flex;align-items:center;gap:14px">
-        <div style="width:44px;height:44px;background:var(--teal);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">📋</div>
-        <div>
-          <div style="font-weight:700;font-size:.95rem;color:var(--navy)">Daily Care Summary</div>
-          <div style="font-size:.78rem;color:var(--slate-mid);margin-top:2px">Export a complete PDF report — medications, vitals, care events, meals, behaviors & more</div>
-        </div>
-      </div>
-      <button class="btn btn-teal" onclick="exportAgencySummary()" style="white-space:nowrap;flex-shrink:0">
-        📋 Export PDF Summary
-      </button>
-    </div>
-    <div style="margin-top:10px;font-size:.7rem;color:var(--slate-light);padding-top:8px;border-top:1px solid var(--border)">
-      🔒 Contains personal health information — share only with trusted family members or healthcare providers.
-    </div>
-  </div>
 
 
 </div>
@@ -6786,7 +6728,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v26';
+const CACHE = 'tended-pro-v27';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
