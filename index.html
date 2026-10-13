@@ -3051,12 +3051,13 @@ body {
 <div id="section-report" class="section">
   <div class="ph">
     <div><div class="ph-title">📄 Monthly Report</div>
-    <div class="ph-sub">Auto-generates a complete clinical summary from all logged data</div></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-secondary" onclick="renderReport()">🔄 Refresh</button>
-      <button class="btn btn-teal" onclick="printReport()">📄 Save PDF</button>
-      <button class="btn btn-secondary" onclick="shareReport()">📤 Share</button>
-    </div>
+    <div class="ph-sub">Complete clinical summary from all logged data</div></div>
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+    <button class="btn btn-secondary" onclick="renderReport()">🔄 Refresh</button>
+    <button class="btn btn-teal" onclick="printReport()">📄 Save PDF</button>
+    <button class="btn btn-secondary" onclick="shareReport()">📤 Share</button>
   </div>
 
   <div class="card" style="margin-bottom:16px">
@@ -5760,7 +5761,7 @@ function exportAgencySummary(){
         </tr>`;
       }).join('');
       behaviorsHTML = `<h4>Behavior Log</h4>
-        <table><thead><tr><th>Time</th><th>Antecedent</th><th>Behavior</th><th>Consequence</th><th>Intervention</th></tr></thead>
+        <table><thead><tr><th>Time</th><th>Trigger</th><th>Behavior</th><th>Outcome</th><th>Intervention</th></tr></thead>
         <tbody>${rows}</tbody></table>`;
     }
 
@@ -6627,13 +6628,13 @@ function printMAR(){
         <option value="">— Not linked to a known trigger —</option>
       </select>
     </div>
-    <div class="fg"><label>A — Antecedent (what happened before?)</label>
+    <div class="fg"><label>A — Trigger (what happened before?)</label>
       <textarea id="bm-antecedent" rows="2" placeholder="What was happening immediately before the behavior? What triggered it?"></textarea>
     </div>
     <div class="fg"><label>B — Behavior (what happened?)</label>
       <textarea id="bm-behavior" rows="2" placeholder="Describe the behavior specifically — what did the person do or say?"></textarea>
     </div>
-    <div class="fg"><label>C — Consequence (what happened after?)</label>
+    <div class="fg"><label>C — Outcome (what happened after?)</label>
       <textarea id="bm-consequence" rows="2" placeholder="What was done in response? What was the outcome?"></textarea>
     </div>
     <div class="fg"><label>Duration</label>
@@ -8590,7 +8591,7 @@ function renderBehaviorLog(){
       </div>` : ''}
       <div class="abc-grid">
         <div>
-          <div class="abc-label">A — Antecedent</div>
+          <div class="abc-label">A — Trigger</div>
           <div class="abc-val">${b.antecedent || '<span style="color:var(--slate-light);font-style:italic">Not recorded</span>'}</div>
         </div>
         <div>
@@ -8598,7 +8599,7 @@ function renderBehaviorLog(){
           <div class="abc-val">${b.behavior}</div>
         </div>
         <div>
-          <div class="abc-label">C — Consequence</div>
+          <div class="abc-label">C — Outcome</div>
           <div class="abc-val">${b.consequence || '<span style="color:var(--slate-light);font-style:italic">Not recorded</span>'}</div>
         </div>
       </div>
@@ -13965,7 +13966,7 @@ function itmBuildTips(key, data){
       }
     }
     const recentWithConsequence = data.entries.find(e => e.consequence);
-    if(recentWithConsequence) tips.push('Last time, what followed: ' + recentWithConsequence.consequence);
+    if(recentWithConsequence) tips.push('Last time, outcome: ' + recentWithConsequence.consequence);
     const sevCounts = { mild:0, moderate:0, severe:0 };
     data.entries.forEach(e => { if(sevCounts[e.severity] !== undefined) sevCounts[e.severity]++; });
     const dominant = Object.entries(sevCounts).sort((a,b)=>b[1]-a[1])[0];
