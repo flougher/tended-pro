@@ -2720,7 +2720,7 @@ body {
   <div class="ph">
     <div><div class="ph-title">🧠 Behavior Patterns</div>
     <div class="ph-sub">Track what triggers behaviors and what helps — builds patterns over time</div></div>
-    <button class="btn btn-teal" onclick="openModal('behavior-modal')">+ Log Behavior</button>
+    <button class="btn btn-teal" onclick="openModal('behavior-modal')">+ Log Behavior Episode</button>
   </div>
 
   <!-- Behavior guidance -->
@@ -2737,7 +2737,7 @@ body {
 
   <div class="p3-panel active" id="behavior-panel-log">
     <div id="behavior-list">
-      <div class="empty"><div class="empty-icon">🧠</div><div class="empty-text">No behaviors logged yet.<br>Tap + Log Behavior to start ABC tracking.</div></div>
+      <div class="empty"><div class="empty-icon">🧠</div><div class="empty-text">No behaviors logged yet.<br>Tap + Log Behavior Episode to start tracking.</div></div>
     </div>
   </div>
   <div class="p3-panel" id="behavior-panel-summary">
@@ -4339,7 +4339,7 @@ function closeModal(id){
   if(el) el.classList.remove('open');
   // Reset edit IDs when modal is closed
   const resetMap = {
-    'behavior-modal':   () => { _editBehaviorId   = null; const t=document.querySelector('#behavior-modal .modal-title');   if(t) t.textContent='Log Behavior'; },
+    'behavior-modal':   () => { _editBehaviorId   = null; const t=document.querySelector('#behavior-modal .modal-title');   if(t) t.textContent='Log a Behavior Episode'; },
     'toilet-modal':     () => { _editToiletId      = null; const t=document.querySelector('#toilet-modal .modal-title');     if(t) t.textContent='Log Toileting'; },
     'vitals-modal':     () => { _editVitalsId      = null; const t=document.querySelector('#vitals-modal .modal-title');     if(t) t.textContent='Log Vital Signs'; const b=document.getElementById('vm-save-btn'); if(b) b.textContent='Save Vitals'; },
     'sundowning-modal': () => { _editSundownId     = null; const t=document.querySelector('#sundowning-modal .modal-title'); if(t) t.textContent='🌅 Log Sundowning Episode'; const b=document.querySelector('#sundowning-modal .btn-teal'); if(b) b.textContent='Save Episode'; },
@@ -6592,7 +6592,7 @@ function printMAR(){
 <!-- ══ ABC BEHAVIOR MODAL ════════════════════════════════════ -->
 <div class="overlay" id="behavior-modal">
   <div class="modal">
-    <div class="modal-title">Log ABC Behavior</div>
+    <div class="modal-title">Log a Behavior Episode</div>
     <div class="form-row">
       <div class="fg"><label>Date & Time</label><input type="datetime-local" id="bm-dt"></div>
       <div class="fg"><label>Severity</label>
@@ -8541,7 +8541,7 @@ function saveBehavior(){
   document.getElementById('bm-dt').value = '';
   const tl = document.getElementById('bm-trigger-link'); if(tl) tl.value = '';
   const title = document.querySelector('#behavior-modal .modal-title');
-  if(title) title.textContent = 'Log Behavior';
+  if(title) title.textContent = 'Log a Behavior Episode';
   if(_qlReturnIfQuickLog('Behavior logged')) return;
   renderBehaviorLog();
 }
@@ -8565,7 +8565,7 @@ function renderBehaviorLog(){
   let _behaviorsFiltered = D.behaviors||[];
   if(_patFilter) _behaviorsFiltered = _behaviorsFiltered.filter(b => String(b.patientId) === String(_patFilter));
   if(!_behaviorsFiltered.length){
-    el.innerHTML = '<div class="empty"><div class="empty-icon">🧠</div><div class="empty-text">No behaviors logged yet.<br>Tap + Log Behavior to start ABC tracking.</div></div>';
+    el.innerHTML = '<div class="empty"><div class="empty-icon">🧠</div><div class="empty-text">No behaviors logged yet.<br>Tap + Log Behavior Episode to start tracking.</div></div>';
     return;
   }
   el.innerHTML = (_behaviorsFiltered||[]).map(b => {
