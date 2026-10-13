@@ -1488,7 +1488,7 @@ body {
   </div>
   <div id="snav-memory-group" class="nav-group">
     <div class="nav-label">💜 Memory Care</div>
-    <button class="nav-btn" onclick="navTo('itm',this)" style="color:rgba(255,150,150,.95)"><span class="ni">🫂</span> In The Moment</button>
+    <button class="nav-btn" onclick="navTo('itm',this)" style="color:rgba(255,150,150,.95)"><span class="ni">🫂</span> Help Me Now</button>
     <button class="nav-btn" onclick="navTo('sundowning',this)"><span class="ni">🌅</span> Sundowning</button>
     <button class="nav-btn" onclick="navTo('wandering',this)"><span class="ni">🚶</span> Wandering & Exits</button>
     <button class="nav-btn" onclick="navTo('memorycare',this)"><span class="ni">💬</span> Memory Care Notes</button>
@@ -1496,7 +1496,7 @@ body {
   <div class="nav-group">
     <div class="nav-label">Additional Tools</div>
     <button class="nav-btn" onclick="navTo('voice',this)"><span class="ni">🎤</span> Voice to Text</button>
-    <button class="nav-btn" onclick="navTo('report',this)"><span class="ni">📄</span> Monthly Report</button>
+    <button class="nav-btn" onclick="navTo('report',this)"><span class="ni">📄</span> Monthly Care Summary Report</button>
   </div>
   <div class="nav-group">
     <div class="nav-label">Safety</div>
@@ -3050,7 +3050,7 @@ body {
 <!-- ═══ MONTHLY REPORT ════════════════════════════════════════ -->
 <div id="section-report" class="section">
   <div class="ph">
-    <div><div class="ph-title">📄 Monthly Report</div>
+    <div><div class="ph-title">📄 Monthly Care Summary Report</div>
     <div class="ph-sub">Complete clinical summary from all logged data</div></div>
   </div>
 
@@ -3285,18 +3285,18 @@ body {
     <button id="bnav-vitals-pain" class="more-btn" onclick="mobileNavTo('pain')"><span class="more-icon">😣</span>Pain</button>
     <button id="bnav-wounds" class="more-btn" onclick="mobileNavTo('wounds')"><span class="more-icon">🩹</span>Wounds</button>
     <button class="more-btn" onclick="mobileNavTo('trends')"><span class="more-icon">📊</span>Trends</button>
-    <button class="more-btn" onclick="mobileNavTo('report')"><span class="more-icon">📄</span>Report</button>
+    <button class="more-btn" onclick="mobileNavTo('report')"><span class="more-icon">📄</span>Care Summary</button>
   </div>
 
   <!-- ── Memory Care ────────────────────────────────────────── -->
   <div id="bnav-memory-group" class="more-group-label" style="color:rgba(200,170,255,1)">🧠 Memory Care</div>
   <div id="bnav-memory-grid" class="more-grid">
-    <button id="bnav-itm" class="more-btn more-btn--memory" onclick="mobileNavTo('itm')"><span class="more-icon">🫂</span>In The Moment</button>
-    <button class="more-btn more-btn--memory" onclick="mobileNavTo('behaviors')"><span class="more-icon">🧠</span>Behaviors</button>
+    <button id="bnav-itm" class="more-btn more-btn--memory" onclick="mobileNavTo('itm')"><span class="more-icon">🫂</span>Help Me Now</button>
+    <button class="more-btn more-btn--memory" onclick="mobileNavTo('behaviors')"><span class="more-icon">🧠</span>Behavior Patterns</button>
     <button class="more-btn more-btn--memory" onclick="mobileNavTo('triggers')"><span class="more-icon">⚡</span>Triggers</button>
     <button id="bnav-sundowning" class="more-btn more-btn--memory" onclick="mobileNavTo('sundowning')"><span class="more-icon">🌅</span>Sundowning</button>
     <button id="bnav-wandering" class="more-btn more-btn--memory" onclick="mobileNavTo('wandering')"><span class="more-icon">🚶</span>Wandering</button>
-    <button id="bnav-memorycare" class="more-btn more-btn--memory" onclick="mobileNavTo('memorycare')"><span class="more-icon">💬</span>Mem Care</button>
+    <button id="bnav-memorycare" class="more-btn more-btn--memory" onclick="mobileNavTo('memorycare')"><span class="more-icon">💬</span>Calm Guide</button>
   </div>
 
   <!-- ── Critical ───────────────────────────────────────────── -->
@@ -14056,7 +14056,7 @@ function itmRenderEntry(root){
   const patients = D.patients || [];
 
   if(!patients.length){
-    root.innerHTML = '<div class="ph"><div><div class="ph-title">🫂 In The Moment</div><div class="ph-sub">In-the-moment guidance for behavior and crisis situations</div></div></div>' +
+    root.innerHTML = '<div class="ph"><div><div class="ph-title">🫂 Help Me Now</div><div class="ph-sub">Step-by-step guidance for whatever is happening right now</div></div></div>' +
       '<div class="empty"><div class="empty-icon">🫂</div><div class="empty-text">Add a patient first to use In The Moment.<br><br>Guidance is built from that patient\'s documented history — triggers, behaviors, and what has worked before.</div></div>';
     return;
   }
@@ -14069,7 +14069,7 @@ function itmRenderEntry(root){
 
   root.innerHTML = `
     <div class="ph">
-      <div><div class="ph-title">🫂 In The Moment</div><div class="ph-sub">Tap the situation closest to what you're seeing right now</div></div>
+      <div><div class="ph-title">🫂 Help Me Now</div><div class="ph-sub">Tap the situation closest to what you're seeing right now</div></div>
     </div>
     <div id="itm-patient-bar" style="margin-bottom:12px"></div>
     <div style="background:linear-gradient(135deg,var(--teal) 0%,var(--navy) 100%);border-radius:var(--r-lg);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
