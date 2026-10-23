@@ -6764,7 +6764,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v31';
+const CACHE = 'tended-pro-v32';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -14033,8 +14033,8 @@ function itmCommitEpisode(key, stepsCompletedCount, totalSteps, escalated){
   const now = new Date();
   const dateStr = now.toISOString().split('T')[0];
   const timeStr = now.toTimeString().slice(0,5);
-  const stepsNote = 'Guided via In The Moment — ' + stepsCompletedCount + '/' + totalSteps + ' steps completed';
-  const escalationNote = escalated ? 'Marked as escalated via In The Moment — confirm supervisor was contacted directly' : '';
+  const stepsNote = 'Guided via Help Me Now — ' + stepsCompletedCount + '/' + totalSteps + ' steps completed';
+  const escalationNote = escalated ? 'Marked as escalated via Help Me Now — confirm supervisor was contacted directly' : '';
 
   if(cfg.target === 'sundowning'){
     if(!D.sundowning) D.sundowning = [];
@@ -14092,7 +14092,7 @@ function itmRenderEntry(root){
 
   if(!patients.length){
     root.innerHTML = '<div class="ph"><div><div class="ph-title">🫂 Help Me Now</div><div class="ph-sub">Step-by-step guidance for whatever is happening right now</div></div></div>' +
-      '<div class="empty"><div class="empty-icon">🫂</div><div class="empty-text">Add a patient first to use In The Moment.<br><br>Guidance is built from that patient\'s documented history — triggers, behaviors, and what has worked before.</div></div>';
+      '<div class="empty"><div class="empty-icon">🫂</div><div class="empty-text">Add a patient first to use Help Me Now.<br><br>Guidance is built from that patient\'s documented history — triggers, behaviors, and what has worked before.</div></div>';
     return;
   }
 
