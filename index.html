@@ -6764,7 +6764,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v30';
+const CACHE = 'tended-pro-v31';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -14153,14 +14153,21 @@ function itmStepsHtml(key, progress){
   const cfg = ITM_SCENARIOS[key];
   return cfg.steps.map((step,i) => {
     const done = progress.includes(i);
-    return `<div style="background:white;border:1.5px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:8px">
+    const isMedStep0 = (key === 'medical' && i === 0);
+    const actionBtns = isMedStep0 ? `
+      <div style="display:flex;gap:8px;flex-wrap:wrap;padding:0 14px 12px">
+        <button onclick="dialPhone('911')" style="flex:1;min-width:120px;background:#C0392B;color:white;border:none;border-radius:var(--r);padding:10px 12px;font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">📞 Call 911 Now</button>
+        <button onclick="navTo('emergency')" style="flex:1;min-width:140px;background:var(--navy);color:white;border:none;border-radius:var(--r);padding:10px 12px;font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">📋 Emergency Info</button>
+      </div>` : '';
+    return `<div style="background:white;border:1.5px solid ${isMedStep0?'#C0392B':'var(--border)'};border-radius:var(--r-lg);overflow:hidden;margin-bottom:8px">
       <div onclick="itmToggleStep(${i})" style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;cursor:pointer;${done?'background:var(--given-bg)':''}">
-        <div style="width:28px;height:28px;border-radius:50%;background:${done?'var(--given)':'var(--off-white)'};border:2px solid ${done?'var(--given)':'var(--border)'};color:${done?'white':'var(--slate-mid)'};display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:1px">${done?'✓':(i+1)}</div>
+        <div style="width:28px;height:28px;border-radius:50%;background:${done?'var(--given)':isMedStep0?'#C0392B':'var(--off-white)'};border:2px solid ${done?'var(--given)':isMedStep0?'#C0392B':'var(--border)'};color:${done||isMedStep0?'white':'var(--slate-mid)'};display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:1px">${done?'✓':(i+1)}</div>
         <div style="flex:1">
-          <div style="font-size:.82rem;font-weight:600;color:${done?'var(--given)':'var(--navy)'};line-height:1.4;margin-bottom:2px">${emEsc(step.text)}</div>
+          <div style="font-size:.82rem;font-weight:600;color:${done?'var(--given)':isMedStep0?'#C0392B':'var(--navy)'};line-height:1.4;margin-bottom:2px">${emEsc(step.text)}</div>
           <div style="font-size:.74rem;color:var(--slate-mid);line-height:1.4">${emEsc(step.sub||'')}</div>
         </div>
       </div>
+      ${actionBtns}
     </div>`;
   }).join('');
 }
