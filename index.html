@@ -3027,9 +3027,10 @@ body {
 
   <!-- Browser compatibility warning -->
   <div id="voice-browser-warn" style="display:none;background:var(--held-bg);border:1.5px solid var(--held);border-radius:var(--r-lg);padding:14px 18px;margin-bottom:16px">
-    <div style="font-weight:700;font-size:.88rem;color:var(--held);margin-bottom:6px">⚠️ Voice to Text Not Supported</div>
-    <div style="font-size:.82rem;color:var(--slate-mid);line-height:1.6">Your current browser does not support Voice to Text. This feature requires <strong>Google Chrome</strong> on Android.<br><br>
-    To use Voice to Text: open this app in <strong>Chrome</strong> (not Samsung Browser, Firefox, or other browsers).</div>
+    <div style="font-weight:700;font-size:.88rem;color:var(--held);margin-bottom:6px">⚠️ Voice to Text Not Available Here</div>
+    <div style="font-size:.82rem;color:var(--slate-mid);line-height:1.6">Voice to Text is not supported in the installed app or your current browser. This is a known limitation — Android's WebView (used by the installed app) does not expose the microphone API that Chrome uses.<br><br>
+    <strong>To use Voice to Text:</strong> open Tended Health Pro directly in <strong>Google Chrome</strong> on your Android device. The microphone buttons throughout the app will work there.<br><br>
+    <strong>Tip:</strong> Your Android keyboard's built-in 🎤 microphone key also works in any field — tap it on the keyboard to dictate text without opening Chrome.</div>
   </div>
 
   <div class="card" style="margin-bottom:16px">
@@ -3048,7 +3049,7 @@ body {
       </div>
     </div>
     <div style="background:var(--held-bg);border:1px solid #FCD34D;border-radius:var(--r);padding:10px 14px;font-size:.8rem;color:var(--held);line-height:1.6">
-      ⚠️ Voice to text uses your device's built-in speech recognition (Chrome on Android). Requires microphone permission when first used. Not available in all browsers — works best in Chrome on Android.
+      ⚠️ Voice to Text works in <strong>Google Chrome on Android only</strong> — not in the installed app. If you are using the installed app, use your keyboard's built-in 🎤 mic key instead, or open Tended Health Pro in Chrome. Microphone permission is required on first use.
     </div>
   </div>
 
@@ -6764,7 +6765,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v32';
+const CACHE = 'tended-pro-v33';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
