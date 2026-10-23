@@ -672,8 +672,10 @@ body {
   border-top: 1px solid rgba(255,255,255,.1);
   padding: 8px 0 calc(8px + env(safe-area-inset-bottom, 12px));
   justify-content: space-around;
+  align-items: flex-end;
   z-index: 3000;
   box-shadow: 0 -4px 20px rgba(12,27,51,.25);
+  overflow: visible;
 }
 .bn-btn {
   display: flex;
@@ -696,6 +698,35 @@ body {
 .bn-btn .bn-icon { font-size: 1.3rem; }
 .bn-btn.active { color: var(--teal-bright); }
 .bn-btn.active .bn-icon { filter: drop-shadow(0 0 6px rgba(20,196,178,.4)); }
+
+/* ── Help Me Now center nav button ── */
+.bn-btn.bn-help {
+  margin-top: -20px;
+  color: rgba(255,255,255,.75);
+  font-size: .58rem;
+  padding: 0 8px 4px;
+}
+.bn-btn.bn-help .bn-icon {
+  background: linear-gradient(145deg, #14C4B2, #0C7A6E);
+  border-radius: 50%;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.45rem;
+  box-shadow: 0 -3px 14px rgba(20,196,178,.55), 0 4px 10px rgba(0,0,0,.35);
+  border: 3px solid var(--navy);
+  margin-bottom: 4px;
+  transition: transform .15s, box-shadow .15s;
+}
+.bn-btn.bn-help:active .bn-icon { transform: scale(.93); }
+.bn-btn.bn-help.active { color: white; }
+.bn-btn.bn-help.active .bn-icon {
+  background: linear-gradient(145deg, #1ADBC8, #0e8f80);
+  box-shadow: 0 -3px 18px rgba(20,196,178,.8), 0 4px 10px rgba(0,0,0,.3);
+  filter: none;
+}
 
 /* ── RESPONSIVE ───────────────────────────────────────────── */
 @media(max-width: 768px) {
@@ -3255,8 +3286,8 @@ body {
 <!-- Bottom nav (mobile) -->
 <div class="bnav" id="bnav">
   <button class="bn-btn active" onclick="navTo('dashboard')"><span class="bn-icon">🏠</span>Home</button>
-  <button class="bn-btn" onclick="navTo('patients')"><span class="bn-icon">👤</span>Loved One</button>
   <button id="bnav-meds" class="bn-btn" onclick="navTo('mar')"><span class="bn-icon">💊</span>Meds</button>
+  <button class="bn-btn bn-help" onclick="navTo('itm')"><span class="bn-icon">🫂</span>Help Me Now</button>
   <button id="bnav-events" class="bn-btn" onclick="navTo('incidents')"><span class="bn-icon">📋</span>Care Events</button>
   <button class="bn-btn" onclick="toggleMobileMore()"><span class="bn-icon">⋯</span>More</button>
 </div>
@@ -3273,6 +3304,7 @@ body {
   <!-- ── Daily Care ─────────────────────────────────────────── -->
   <div class="more-group-label">📋 Daily Care</div>
   <div class="more-grid">
+    <button class="more-btn" onclick="mobileNavTo('patients')"><span class="more-icon">👤</span>Loved One</button>
     <button class="more-btn" onclick="mobileNavTo('handoff')"><span class="more-icon">🔄</span>Daily Handoff</button>
     <button class="more-btn" onclick="mobileNavTo('careplan')"><span class="more-icon">📌</span>Care Prefs</button>
     <button class="more-btn" onclick="mobileNavTo('routines')"><span class="more-icon">📅</span>Routines</button>
@@ -6732,7 +6764,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v29';
+const CACHE = 'tended-pro-v30';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
