@@ -1772,6 +1772,39 @@ body {
   <!-- Support & Planning card -->
   <div id="dash-planning-card" style="margin-bottom:20px"></div>
 
+  <!-- Resources card -->
+  <div class="card" style="margin-bottom:20px;padding:0;overflow:hidden">
+    <div style="padding:10px 14px 8px;border-bottom:1px solid var(--border)">
+      <div class="card-title" style="margin-bottom:0">📞 Free Caregiver Support Lines</div>
+    </div>
+    <div style="padding:10px 14px">
+      <div onclick="dialPhone('18002723900')" style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer">
+        <div style="font-size:1.1rem;width:28px;text-align:center">🟦</div>
+        <div style="flex:1">
+          <div style="font-size:.82rem;font-weight:700;color:var(--navy)">Alzheimer's Association</div>
+          <div style="font-size:.72rem;color:var(--slate-mid)">1-800-272-3900 · 24/7 · 200+ languages</div>
+        </div>
+        <div style="font-size:.7rem;color:var(--slate-light)">call</div>
+      </div>
+      <div onclick="dialPhone('18662328484')" style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer">
+        <div style="font-size:1.1rem;width:28px;text-align:center">🟣</div>
+        <div style="flex:1">
+          <div style="font-size:.82rem;font-weight:700;color:var(--navy)">Alzheimer's Foundation of America</div>
+          <div style="font-size:.72rem;color:var(--slate-mid)">1-866-232-8484 · Licensed social workers · 7 days</div>
+        </div>
+        <div style="font-size:.7rem;color:var(--slate-light)">call</div>
+      </div>
+      <div onclick="dialPhone('18552273640')" style="display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer">
+        <div style="font-size:1.1rem;width:28px;text-align:center">🟩</div>
+        <div style="flex:1">
+          <div style="font-size:.82rem;font-weight:700;color:var(--navy)">Caregiver Action Network</div>
+          <div style="font-size:.72rem;color:var(--slate-mid)">1-855-227-3640 · Mon–Fri 8am–7pm ET</div>
+        </div>
+        <div style="font-size:.7rem;color:var(--slate-light)">call</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 <div id="section-patients" class="section">
   <div class="ph">
@@ -1865,7 +1898,7 @@ body {
   <div class="card">
     <div class="card-title">📝 MAR Notes — <span id="mar-notes-date"></span></div>
     <div style="background:#F0F9FF;border:1.5px solid #0EA5E9;border-radius:var(--r);padding:10px 14px;margin-bottom:10px;font-size:.74rem;color:#0C4A6E;line-height:1.65">
-      <strong>⚕️ Side Effect Guidance:</strong> Include the medication name, specific symptom, when it started, and duration. Side effects from Donepezil, Memantine, Seroquel, and Depakote can overlap with dementia symptoms and may be expected and temporary. Always report to the supervising nurse or physician. <strong>Never adjust or discontinue any medication without physician guidance.</strong>
+      <strong>💊 Side Effect Tip:</strong> Include the medication name, the symptom you noticed, when it started, and how long it lasted. Side effects from Donepezil, Memantine, Seroquel, and Depakote can sometimes look like dementia symptoms and may be temporary. If you're unsure whether what you're seeing is a side effect, call the doctor — it's always okay to ask.
     </div>
     <div class="fg" style="margin-bottom:10px">
       <textarea id="mar-notes" rows="2" placeholder="Medication refusals, side effects observed, notable reactions…"></textarea>
@@ -1967,7 +2000,7 @@ body {
     <div>
       <div style="font-weight:700;font-size:.84rem;color:#7A4A00;margin-bottom:4px">Medical Disclaimer</div>
       <div style="font-size:.79rem;color:#92400E;line-height:1.7">
-        Medication warnings in Tended Health Pro are sourced from <strong>FDA drug label data</strong> and are for <strong>informational reference only</strong>. They do not constitute medical advice. Tended Health Pro is a documentation tool — not a medical device. <strong>Always follow your agency's protocols and physician orders.</strong> Never adjust, withhold, or administer medication outside of a physician's order.
+        These warnings come from <strong>FDA drug label information</strong> and are here to help you know what to watch for. If something concerns you, a quick call to the doctor or pharmacist is always the right move.
       </div>
     </div>
   </div>
@@ -1982,8 +2015,8 @@ body {
   </div>
   <div class="card" style="margin-top:4px">
     <div class="card-title">ℹ️ About Safety Warnings</div>
-    <p style="font-size:.84rem;color:var(--slate-mid);line-height:1.7;margin-bottom:0">A <strong style="color:var(--navy)">Safety Warning</strong> (also called an FDA boxed warning) is the FDA's most serious drug safety alert. It means the medication has a known risk of serious or life-threatening side effects. As a caregiver, your role is to <strong style="color:var(--navy)">watch for the listed symptoms</strong> and <strong style="color:var(--navy)">report them immediately</strong> to your doctor or pharmacist — never adjust or stop medication without medical guidance.</p>
-      <p style="font-size:.82rem;color:var(--slate-light);line-height:1.6;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">⚕️ <strong style="color:var(--navy)">Disclaimer:</strong> Medication warnings in Tended Health Pro are sourced from FDA drug label data and are for <strong style="color:var(--navy)">informational reference only</strong>. They do not constitute medical advice. Tended Health Pro is a documentation tool — not a medical device. Always follow your agency's protocols and physician orders.</p>
+    <p style="font-size:.84rem;color:var(--slate-mid);line-height:1.7;margin-bottom:0">A <strong style="color:var(--navy)">Safety Warning</strong> (also called an FDA boxed warning) is the FDA's most serious drug safety alert. It means the medication has a known risk of serious or life-threatening side effects. Your job as a caregiver is to <strong style="color:var(--navy)">know what to watch for</strong> — if you notice any of the listed symptoms in your loved one, <strong style="color:var(--navy)">call their doctor or pharmacist</strong>. You don't need to have all the answers — that's what the care team is there for.</p>
+      <p style="font-size:.82rem;color:var(--slate-light);line-height:1.6;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">⚕️ These warnings come from FDA drug label information and are here to help you know what to watch for. If something concerns you, reach out to the doctor or pharmacist — they're your best resource.</p>
   </div>
 </div>
 
@@ -2448,7 +2481,7 @@ body {
     <div style="font-size:.82rem;color:var(--slate-mid);line-height:1.8">
       <p style="margin-bottom:10px">Tended Health Pro is a <strong style="color:var(--navy)">personal caregiving tool</strong> designed for family caregivers and private individuals caring for a loved one at home. It is not a medical device and does not provide clinical diagnoses.</p>
       <p style="margin-bottom:10px">Tended Health Pro is <strong style="color:var(--navy)">not a HIPAA-covered service</strong> and is not intended for use by healthcare covered entities or business associates under HIPAA. If you are a home health agency or healthcare provider please consult your compliance officer before use.</p>
-      <p style="margin-bottom:10px"><strong style="color:var(--navy)">Medication warnings</strong> displayed in this app are sourced from FDA drug label data and are for <strong style="color:var(--navy)">informational reference only</strong>. They do not constitute medical advice. Never adjust, withhold, or administer medication outside of a physician's order.</p>
+      <p style="margin-bottom:10px"><strong style="color:var(--navy)">Medication warnings</strong> in this app come from FDA drug label information and are here to help you know what to watch for. If something concerns you, reach out to the doctor or pharmacist — they're your best resource.</p>
       <p style="margin-bottom:0;color:var(--slate-light);font-size:.76rem">Tended Health Pro · Personal Caregiving Tool</p>
     </div>
   </div>
@@ -3467,6 +3500,17 @@ body {
           <option value="">Unknown</option>
           <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
           <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+        </select>
+      </div>
+      <div class="fg"><label>Dementia Type</label>
+        <select id="pm-dem-type" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+          <option value="">— Not specified —</option>
+          <option value="alzheimers">Alzheimer's Disease</option>
+          <option value="lewy">Lewy Body Dementia</option>
+          <option value="frontotemporal">Frontotemporal (FTD)</option>
+          <option value="vascular">Vascular Dementia</option>
+          <option value="mixed">Mixed Dementia</option>
+          <option value="other">Other / Unknown</option>
         </select>
       </div>
     </div>
@@ -4648,7 +4692,7 @@ function renderPlanningCard(){
   // Read legal checklist progress
   let checks = {};
   try { checks = JSON.parse(localStorage.getItem('tendedPro_lfChecks')||'{}'); } catch(e){}
-  const LF_TOTAL = 30;
+  const LF_TOTAL = 40;
   const lfDone = Object.values(checks).filter(Boolean).length;
   const lfPct  = Math.round(lfDone / LF_TOTAL * 100);
 
@@ -5069,6 +5113,7 @@ function openPatientModal(editId){
   pmRenderContacts(_pmContacts);
   const frEl = document.getElementById('pm-fall-risk');  if(frEl) frEl.value = p?.fallRisk  || '';
   const plEl = document.getElementById('pm-pain-level'); if(plEl) plEl.value = p?.painLevel || '';
+  const dtEl = document.getElementById('pm-dem-type');   if(dtEl) dtEl.value = p?.demType   || '';
   openModal('patient-modal');
 }
 
@@ -5160,6 +5205,7 @@ function savePatient(){
     notes:      document.getElementById('pm-notes').value.trim(),
     fallRisk:   document.getElementById('pm-fall-risk')?.value  || '',
     painLevel:  document.getElementById('pm-pain-level')?.value || '',
+    demType:    document.getElementById('pm-dem-type')?.value   || '',
     ...getEOLFields()
   };
 
@@ -6898,7 +6944,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v38';
+const CACHE = 'tended-pro-v43';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -11096,9 +11142,19 @@ function renderBBWSection(){
   }
   if(emptyEl) emptyEl.style.display = 'none';
 
+  const _activePat = _globalPatientId ? (D.patients||[]).find(p => String(p.id)===String(_globalPatientId)) : null;
+  const _isLewy = _activePat?.demType === 'lewy';
+
   listEl.innerHTML = flagged.map(m => {
     const w = getBBW(m.name);
-    return `<div style="background:white;border:2px solid #C9963A;border-radius:var(--r-lg);padding:18px 20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(201,150,58,.15)">
+    const isAntipsychotic = w.short.includes('mortality in elderly dementia');
+    const lewyBanner = (_isLewy && isAntipsychotic) ? `
+      <div style="background:#4C1D95;border-radius:var(--r);padding:10px 14px;margin-bottom:10px">
+        <div style="font-size:.73rem;font-weight:700;color:#EDE9FE;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">⚠️ Lewy Body Dementia — Talk to the Doctor</div>
+        <div style="font-size:.82rem;color:#F5F3FF;line-height:1.6">People with Lewy body dementia can have strong reactions to some antipsychotic medications. Let the prescribing doctor know about this diagnosis if they aren't already aware.</div>
+      </div>` : '';
+    return `<div style="background:white;border:2px solid ${_isLewy && isAntipsychotic ? '#4C1D95' : '#C9963A'};border-radius:var(--r-lg);padding:18px 20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(${_isLewy && isAntipsychotic ? '76,29,149' : '201,150,58'},.15)">
+      ${lewyBanner}
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:12px">
         <div style="display:flex;align-items:center;gap:10px">
           <div style="width:38px;height:38px;background:#FFF3CD;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">⚠️</div>
@@ -11114,14 +11170,14 @@ function renderBBWSection(){
         <div style="font-size:.84rem;color:#5A3A00;line-height:1.7">${w.watch}</div>
       </div>
       <div style="margin-top:10px;padding-top:10px;border-top:1px solid #F0D9A0;display:flex;align-items:center;gap:6px;font-size:.74rem;color:var(--slate-mid)">
-        <span style="color:#C9963A;font-weight:700">Action:</span> Monitor for symptoms above. Report immediately to supervising nurse or physician if observed. Never adjust or withhold without an order.
+        <span style="color:#C9963A;font-weight:700">What to do:</span> If you notice any of these symptoms in your loved one, call their doctor or pharmacist. You know them best — trust your instincts.
       </div>
     </div>`;
   }).join('') +
   `<div style="background:#FFF8ED;border-radius:var(--r);padding:12px 16px;font-size:.78rem;color:#7A4A00;line-height:1.6;border:1.5px solid #C9963A">
     ⚕️ <strong>${flagged.length} of ${_bbwMeds.length} active medication${_bbwMeds.length!==1?'s':''} carry FDA black box warnings.</strong>
     These warnings are for <strong>informational reference only and do not constitute medical advice.</strong>
-    Never adjust, withhold, or administer medication outside of a physician's order. Always follow your agency's medication administration policies.
+    Have questions about any of these medications? Your loved one's doctor or pharmacist is always the best person to ask.
   </div>`;
 }
 
@@ -11841,7 +11897,7 @@ function renderBBWDashboardAlert(){
       </div>
       <div style="background:#FFFDF5;border-top:1px solid #E8C97A;padding-top:8px;
         font-size:.72rem;color:#92400E;line-height:1.6">
-        ⚕️ <strong>Reference only.</strong> Always follow physician orders and agency protocols.
+        ⚕️ <strong>For reference.</strong> Questions about these medications? Your loved one's doctor or pharmacist is the best person to ask.
       </div>
     </div>`;
 
@@ -14450,7 +14506,17 @@ function renderLegalFin(){
     'lf-cpa':   'Consult CPA or financial planner with elder care experience',
     'lf-mplnr': 'Engage a Medicaid planner if facility care is foreseeable',
     'lf-gcm':   'Consider a Geriatric Care Manager for care coordination',
-    'lf-aaa':   'Contact Area Agency on Aging — free local resource navigation (eldercare.acl.gov)'
+    'lf-aaa':   'Contact Area Agency on Aging — free local resource navigation (eldercare.acl.gov)',
+    'lf-ex-bank':  'Set up bank account alerts for withdrawals over a set threshold',
+    'lf-ex-stmt':  'Review bank and credit card statements monthly — look for unfamiliar payees',
+    'lf-ex-cred':  'Freeze credit at all three bureaus (Equifax, Experian, TransUnion) — free',
+    'lf-ex-sig':   'Remove your loved one as an authorized signer on accounts they no longer manage',
+    'lf-ex-new':   'Be alert to new "friends" or helpers who appear after diagnosis',
+    'lf-ex-gifts': 'Watch for sudden large gifts, loans, or changes to the will or beneficiaries',
+    'lf-ex-phone': 'Block unknown callers and register on the Do Not Call list (donotcall.gov)',
+    'lf-ex-mail':  'Redirect mail or review it regularly — scammers target vulnerable seniors by mail',
+    'lf-ex-poa':   'Confirm POA agent is trustworthy — review agent\'s transactions periodically',
+    'lf-ex-aps':   'Know your Adult Protective Services number — exploitation is reportable and investigated'
   };
   const TABS = [
     { label:'📋 Legal Docs',   keys:['lf-poa','lf-hpoa','lf-lwill','lf-polst','lf-will','lf-trust','lf-guard'],
@@ -14461,7 +14527,9 @@ function renderLegalFin(){
     { label:'🏠 Care Costs',  keys:['lf-hcost','lf-adcst','lf-alcst','lf-spend','lf-pool','lf-bridg'],
       tip:'<strong>💡 Medicaid planning:</strong> Asset transfers within 5 years of a Medicaid application trigger a penalty period. Planning 5+ years ahead dramatically expands your options.' },
     { label:'📞 Contacts',   keys:['lf-eldry','lf-cpa','lf-mplnr','lf-gcm','lf-aaa'],
-      tip:'<strong>💡 Elder law attorney</strong> is the single highest-value professional for dementia families. One appointment can save tens of thousands of dollars.' }
+      tip:'<strong>💡 Elder law attorney</strong> is the single highest-value professional for dementia families. One appointment can save tens of thousands of dollars.' },
+    { label:'🛡️ Exploitation', keys:['lf-ex-bank','lf-ex-stmt','lf-ex-cred','lf-ex-sig','lf-ex-new','lf-ex-gifts','lf-ex-phone','lf-ex-mail','lf-ex-poa','lf-ex-aps'],
+      tip:'<strong>⚠️ 1 in 5 dementia patients is financially exploited</strong> — often by family members or new acquaintances. Freezing credit and setting bank alerts are the two highest-impact steps and take less than 30 minutes.' }
   ];
   let activeTab = 0;
   function totalDone(){ return Object.values(checks).filter(Boolean).length; }
@@ -14569,8 +14637,14 @@ function renderJourney(){
         <li>Repetitive behaviors or statements</li>
         </ul></div>`,
         `<div class="jrny-card"><div class="jrny-card-title">🛡️ Safety Must-Dos</div><ul class="jrny-checklist">
-        ${[['Register with Safe Return or GPS tracking','sf-gps'],['Secure medications in locked cabinet','sf-meds'],['Remove or lock car keys if driving is unsafe','sf-car'],['Install door alarms and knob covers','sf-door'],['Use ID bracelet with name and contact info','sf-id'],['Set water heater to 120°F to prevent burns','sf-water']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        ${[['Register with Safe Return or GPS tracking','sf-gps'],['Secure medications in locked cabinet','sf-meds'],['Install door alarms and knob covers','sf-door'],['Use ID bracelet with name and contact info','sf-id'],['Set water heater to 120°F to prevent burns','sf-water']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
         </ul></div>
+        <div class="jrny-card"><div class="jrny-card-title">🚗 Driving Cessation</div><div class="jrny-card-body">Stopping driving is one of the hardest transitions in dementia caregiving — and one of the most important safety decisions you will make. Most families wait too long.</div>
+        <ul class="jrny-checklist">
+        ${[['Have a driving conversation early — ideally with the doctor\'s support','drv-talk'],['Ask the physician to issue a written "do not drive" recommendation','drv-md'],['Contact your state DMV — doctors can file a confidential report in most states','drv-dmv'],['Remove the car from the property or disable it (disconnect battery, remove distributor cap)','drv-remove'],['Arrange alternative transportation before taking keys — reduce the loss','drv-alt'],['Contact Area Agency on Aging for local ride programs for seniors','drv-aaa']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        </ul>
+        <div class="jrny-tip">💡 Having the doctor deliver the news — not you — preserves the relationship. "Your doctor says you can't drive" lands differently than "I'm taking your keys."</div>
+        <div class="jrny-warn">⚠️ If your loved one drives over your objection, contact the DMV directly. You are not overreacting — this is a public safety issue.</div></div>
         <div class="jrny-card"><div class="jrny-card-title">😤 Managing Difficult Behaviors</div><div class="jrny-card-body">Aggression, paranoia, and agitation often have triggers. Log behaviors in Behavior Patterns to find patterns.</div><div class="jrny-tip">DICE approach: <strong>D</strong>escribe → <strong>I</strong>nvestigate → <strong>C</strong>reate plan → <strong>E</strong>valuate results</div></div>`,
         `<div class="jrny-card"><div class="jrny-card-title">⚕️ Medical Management</div><ul class="jrny-checklist">
         ${[['Schedule regular neurology or geriatric specialist visits','med-neuro'],['Review all medications for appropriateness','med-meds'],['Address pain proactively — many can\'t report it','med-pain'],['Monitor for UTIs — cause sudden confusion spikes','med-uti'],['Maintain dental care — affects behavior and eating','med-dent'],['Vision and hearing checks — uncorrected loss worsens confusion','med-vh']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
@@ -14598,6 +14672,12 @@ function renderJourney(){
         `<div class="jrny-card"><div class="jrny-card-title">🕊️ Hospice and Palliative Care</div><div class="jrny-card-body">Hospice is a philosophy of care, not giving up. It focuses on comfort, dignity, and family support rather than curative treatment.</div><ul class="jrny-checklist">
         ${[['Ask the doctor about hospice eligibility','ho-ask'],['Request a hospice evaluation (Medicare covers it)','ho-eval'],['Understand what hospice provides: nurses, aides, chaplain, social worker','ho-what'],['Ask about palliative care if not yet hospice-eligible','ho-pall']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
         </ul><div class="jrny-tip">Families who choose hospice earlier report better quality of life for patient and caregiver. There is no benefit to waiting.</div></div>
+        <div class="jrny-card"><div class="jrny-card-title">🏡 Where Hospice Happens</div><div class="jrny-card-body">Hospice is not one-size-fits-all. There are two delivery models — and most families don't know both options exist.</div>
+        <ul class="jrny-checklist" style="list-style:none;padding-left:0">
+          <li style="margin-bottom:10px"><strong>🏠 At home or in a care facility</strong><br><span style="font-size:.8rem;opacity:.85">The hospice team visits regularly — nurse, aide, chaplain, social worker. You remain the primary caregiver day to day. Hospice supports you; it doesn't replace you.</span></li>
+          <li><strong>🏥 Inpatient hospice facility</strong><br><span style="font-size:.8rem;opacity:.85">Your loved one lives at the facility. Appropriate when home care is no longer safe or sustainable, or for the final days. Medicare covers short inpatient stays; longer stays may be private pay.</span></li>
+        </ul>
+        <div class="jrny-tip">Ask the hospice agency specifically about inpatient options. Many families don't know to ask — and don't have to go through the final weeks alone at home if it's become too much.</div></div>
         <div class="jrny-card"><div class="jrny-card-title">💆 Comfort Measures</div><ul class="jrny-checklist">
         ${[['Keep mouth moist — swabs, lip balm, ice chips if able','cm-mouth'],['Reposition every 2 hours to prevent pressure sores','cm-repos'],['Play familiar music softly','cm-music'],['Speak in calm, low tones — use their name','cm-speak'],['Offer gentle touch — hold hands, stroke hair','cm-touch'],['Control pain proactively','cm-pain']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
         </ul></div>`,
