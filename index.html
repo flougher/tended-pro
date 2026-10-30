@@ -5292,9 +5292,10 @@ function openPatientDetail(id){
       ${p.dob    ? `<div><strong style="color:var(--slate)">DOB:</strong> ${p.dob}</div>` : ''}
       ${p.room   ? `<div><strong style="color:var(--slate)">Address:</strong> ${p.room}</div>` : ''}
       ${p.doctor ? `<div><strong style="color:var(--slate)">Doctor:</strong> ${p.doctor}</div>` : ''}
-      ${p.blood  ? `<div><strong style="color:var(--slate)">Blood Type:</strong> <span style="font-family:var(--font-mono);font-weight:700">${p.blood}</span></div>` : ''}
-      ${p.notes  ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-style:italic;color:var(--slate-light);font-size:.82rem">${p.notes}</div>` : ''}
-      ${!p.dob && !p.room && !p.doctor && !p.blood && !p.notes ? '<div style="color:var(--slate-light);font-size:.84rem">No additional information recorded.</div>' : ''}
+      ${p.blood   ? `<div><strong style="color:var(--slate)">Blood Type:</strong> <span style="font-family:var(--font-mono);font-weight:700">${p.blood}</span></div>` : ''}
+      ${p.demType ? `<div><strong style="color:var(--slate)">Dementia Type:</strong> ${{alzheimers:"Alzheimer's Disease",lewy:"Lewy Body Dementia",frontotemporal:"Frontotemporal (FTD)",vascular:"Vascular Dementia",mixed:"Mixed Dementia",other:"Other / Unknown"}[p.demType]||p.demType}</div>` : ''}
+      ${p.notes   ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-style:italic;color:var(--slate-light);font-size:.82rem">${p.notes}</div>` : ''}
+      ${!p.dob && !p.room && !p.doctor && !p.blood && !p.demType && !p.notes ? '<div style="color:var(--slate-light);font-size:.84rem">No additional information recorded.</div>' : ''}
     </div>`;
 
   document.getElementById('detail-medical').innerHTML =
@@ -6944,7 +6945,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v43';
+const CACHE = 'tended-pro-v44';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -10170,7 +10171,7 @@ function buildSampleData(){
   const pid = 1700000001;
   const patients = [{
     id:pid, color:'#0C7A6E', fname:'Margaret', lname:'Thompson', dob:'1942-03-14', isSample:true,
-    room:'', doctor:'Dr. Evelyn Marks, MD', blood:'A+',
+    room:'', doctor:'Dr. Evelyn Marks, MD', blood:'A+', demType:'vascular',
     allergies:'Penicillin (rash/hives), Sulfa drugs (severe), Codeine (nausea)',
     conditions:'Type 2 Diabetes, Hypertension, Mild Vascular Dementia, Osteoarthritis (bilateral knees), Hypothyroidism, CKD Stage 2',
     emergency:'Daughter — Linda Flores · 702-555-0182',
