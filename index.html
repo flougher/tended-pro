@@ -3785,9 +3785,9 @@ const BBW_DB = {
   'coumadin':      { short:'Bleeding risk', watch:'Monitor for unusual bruising, blood in urine/stool, prolonged bleeding. Report immediately.' },
   'heparin':       { short:'Severe bleeding risk', watch:'Monitor for unusual bleeding or bruising. Emergency risk if overdosed.' },
   'apixaban':      { short:'Bleeding & spinal risk', watch:'Premature discontinuation increases stroke risk. Monitor for bleeding.' },
-  'rivaroxaban':   { short:'Bleeding & spinal risk', watch:'Do not discontinue without physician order. Monitor for bleeding.' },
+  'rivaroxaban':   { short:'Bleeding & spinal risk', watch:'Stopping this medication without guidance can increase stroke risk — always consult their doctor before any change. Monitor for bleeding.' },
   'eliquis':       { short:'Bleeding & spinal risk', watch:'Premature discontinuation increases stroke risk. Monitor for bleeding.' },
-  'xarelto':       { short:'Bleeding & spinal risk', watch:'Do not discontinue without physician order. Monitor for bleeding.' },
+  'xarelto':       { short:'Bleeding & spinal risk', watch:'Stopping this medication without guidance can increase stroke risk — always consult their doctor before any change. Monitor for bleeding.' },
   'dabigatran':    { short:'Bleeding & spinal risk', watch:'Monitor for bleeding. Do not crush capsules.' },
   'pradaxa':       { short:'Bleeding & spinal risk', watch:'Monitor for bleeding. Do not crush capsules.' },
   // Dementia / CNS
@@ -3818,7 +3818,7 @@ const BBW_DB = {
   'citalopram':    { short:'Suicidality & QT prolongation', watch:'Monitor for irregular heartbeat, dizziness. Report mood changes or self-harm ideation.' },
   'celexa':        { short:'Suicidality & QT prolongation', watch:'Monitor for irregular heartbeat, dizziness, mood changes.' },
   'venlafaxine':   { short:'Suicidality risk', watch:'Monitor for worsening depression, unusual behavior. Do not abruptly discontinue.' },
-  'effexor':       { short:'Suicidality risk', watch:'Monitor for mood changes. Do not abruptly stop without physician order.' },
+  'effexor':       { short:'Suicidality risk', watch:'Monitor for mood changes. Stopping this medication abruptly can cause serious effects — always consult their doctor before any change.' },
   'duloxetine':    { short:'Suicidality risk', watch:'Monitor for worsening depression, unusual behavior changes. Report immediately.' },
   'cymbalta':      { short:'Suicidality risk', watch:'Monitor for mood changes, unusual behavior. Report self-harm ideation immediately.' },
   'amitriptyline': { short:'Cardiac risk & suicidality', watch:'Monitor for irregular heartbeat, dizziness, sedation. Fall risk especially in elderly.' },
@@ -3830,15 +3830,15 @@ const BBW_DB = {
   'tramadol':      { short:'Addiction & respiratory depression', watch:'Monitor for seizures, difficulty breathing. Interaction risk with other CNS medications.' },
   'ultram':        { short:'Addiction & respiratory depression', watch:'Monitor for seizures, breathing difficulty. Serotonin syndrome risk.' },
   'fentanyl':      { short:'Extreme respiratory depression risk', watch:'Potentially fatal. Monitor breathing constantly. Never apply more than one patch.' },
-  'methadone':     { short:'Fatal respiratory depression & QT risk', watch:'Monitor breathing and heart rhythm. Dangerous drug interactions. Never adjust dose without order.' },
-  'buprenorphine': { short:'Respiratory depression risk', watch:'Monitor breathing. Do not combine with other CNS depressants without physician order.' },
+  'methadone':     { short:'Fatal respiratory depression & QT risk', watch:'Monitor breathing and heart rhythm. Dangerous drug interactions — contact their doctor before adding or changing any medications.' },
+  'buprenorphine': { short:'Respiratory depression risk', watch:'Monitor breathing. Combining with other CNS depressants is dangerous — contact their doctor before adding any medications.' },
   // Diabetes
   'metformin':     { short:'Lactic acidosis risk', watch:'Monitor for muscle pain, weakness, difficulty breathing, stomach pain, dizziness. Stop and call physician if these occur.' },
   'glucophage':    { short:'Lactic acidosis risk', watch:'Monitor for muscle pain, weakness, breathing difficulty, stomach pain, dizziness.' },
-  'insulin':       { short:'Hypoglycemia risk', watch:'Monitor blood glucose. Signs of low BG: shakiness, sweating, confusion, pale skin. Give glucose source immediately if BG < 70.' },
-  'glipizide':     { short:'Hypoglycemia & cardiac risk', watch:'Monitor blood glucose. Signs of low BG: shakiness, sweating, confusion. Give glucose if BG < 70.' },
-  'glyburide':     { short:'Hypoglycemia & cardiac risk', watch:'Monitor blood glucose. Higher hypoglycemia risk than other sulfonylureas. Give glucose if BG < 70.' },
-  'glimepiride':   { short:'Hypoglycemia risk', watch:'Monitor blood glucose. Give glucose source if BG < 70 and patient is symptomatic.' },
+  'insulin':       { short:'Hypoglycemia risk', watch:'Monitor blood glucose. Signs of low blood sugar include shakiness, sweating, confusion, pale skin. Contact their doctor or call 911 for severe symptoms.' },
+  'glipizide':     { short:'Hypoglycemia & cardiac risk', watch:'Monitor blood glucose. Signs of low blood sugar include shakiness, sweating, confusion. Contact their doctor if blood sugar drops.' },
+  'glyburide':     { short:'Hypoglycemia & cardiac risk', watch:'Monitor blood glucose. Higher hypoglycemia risk than other sulfonylureas. Contact their doctor if blood sugar drops.' },
+  'glimepiride':   { short:'Hypoglycemia risk', watch:'Monitor blood glucose. Contact their doctor if blood sugar drops or your loved one shows signs of low blood sugar.' },
   'pioglitazone':  { short:'Bladder cancer & heart failure risk', watch:'Monitor for fluid retention, weight gain, swelling, blood in urine. Report immediately.' },
   'actos':         { short:'Bladder cancer & heart failure risk', watch:'Monitor for fluid retention, swelling, blood in urine.' },
   // Cardiovascular
@@ -6947,7 +6947,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v47';
+const CACHE = 'tended-pro-v48';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -10332,7 +10332,7 @@ function buildSampleData(){
   // Sample vitals
   const dStr2 = d => { const dt = new Date(); dt.setDate(dt.getDate()+d); return dt.toISOString().split('T')[0]; };
   const vitals = [
-    { id:13001, date:todayISO, time:'07:10', patientId:pid, bpSys:138, bpDia:84, pulse:74, resp:16, temp:98.4, spo2:96, glucose:68,  weight:null, position:'Sitting',         notes:'Pre-breakfast. BG low — OJ given. Physician notified.', alerts:[{level:'high',msg:'Glucose 68 mg/dL — Hypoglycemia. Give 15g carbs, recheck in 15 min.'}] },
+    { id:13001, date:todayISO, time:'07:10', patientId:pid, bpSys:138, bpDia:84, pulse:74, resp:16, temp:98.4, spo2:96, glucose:68,  weight:null, position:'Sitting',         notes:'Pre-breakfast. BG low — OJ given. Physician notified.', alerts:[{level:'high',msg:'Glucose 68 mg/dL — Lower than normal. Monitor closely and contact their doctor.'}] },
     { id:13002, date:todayISO, time:'09:30', patientId:pid, bpSys:132, bpDia:80, pulse:72, resp:16, temp:98.6, spo2:97, glucose:94,  weight:null, position:'Sitting',         notes:'Post-OJ recheck. BG normalized.', alerts:[] },
     { id:13003, date:dStr2(-1), time:'08:00', patientId:pid, bpSys:142, bpDia:88, pulse:78, resp:18, temp:98.8, spo2:96, glucose:112, weight:143.5, position:'Sitting',       notes:'Morning vitals. BP slightly elevated.', alerts:[{level:'high',msg:'BP 142/88 — Stage 2 hypertension. Let their doctor know.'}] },
     { id:13004, date:dStr2(-1), time:'14:00', patientId:pid, bpSys:128, bpDia:78, pulse:70, resp:16, temp:98.4, spo2:97, glucose:105, weight:null,  position:'Post-medication',notes:'Post-afternoon meds. BP improved.', alerts:[] },
@@ -11180,6 +11180,7 @@ function renderBBWSection(){
   `<div style="background:#FFF8ED;border-radius:var(--r);padding:12px 16px;font-size:.78rem;color:#7A4A00;line-height:1.6;border:1.5px solid #C9963A">
     ⚕️ <strong>${flagged.length} of ${_bbwMeds.length} active medication${_bbwMeds.length!==1?'s':''} carry FDA black box warnings.</strong>
     These warnings are for <strong>informational reference only and do not constitute medical advice.</strong>
+    Drug information reflects FDA labeling and may change. Always verify with the prescribing physician or pharmacist before making any medication decisions.
     Have questions about any of these medications? Your loved one's doctor or pharmacist is always the best person to ask.
   </div>`;
 }
@@ -12049,8 +12050,8 @@ function vitalsAlerts(v){
     else if(v.spo2 < 94) alerts.push({ level:'high',  msg:`SpO2 ${v.spo2}% — Lower than normal. Reposition and call their doctor.` });
   }
   if(v.glucose !== null){
-    if(v.glucose < 60)   alerts.push({ level:'critical', msg:`Glucose ${v.glucose} mg/dL — Dangerously low. Give fast sugar now and call 911 if unresponsive.` });
-    else if(v.glucose < 70)  alerts.push({ level:'high', msg:`Glucose ${v.glucose} mg/dL — Low blood sugar. Give 15g of fast carbs and recheck in 15 min.` });
+    if(v.glucose < 60)   alerts.push({ level:'critical', msg:`Glucose ${v.glucose} mg/dL — Critically low. This may be a medical emergency — call 911 or their doctor now.` });
+    else if(v.glucose < 70)  alerts.push({ level:'high', msg:`Glucose ${v.glucose} mg/dL — Lower than normal. Monitor closely and contact their doctor.` });
     else if(v.glucose > 300) alerts.push({ level:'critical', msg:`Glucose ${v.glucose} mg/dL — Very high. Call their doctor now.` });
     else if(v.glucose > 180) alerts.push({ level:'high',    msg:`Glucose ${v.glucose} mg/dL — Elevated. Document and mention at their next doctor visit.` });
   }
@@ -14404,6 +14405,7 @@ function itmRenderGuidance(root){
       <button class="btn btn-secondary" onclick="itmBackToEntry()">← Different scenario</button>
     </div>
     <span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:700;margin-bottom:12px;background:${uc.bg};color:${uc.fg}">${urgLabels[cfg.urgency]}${emEsc(cfg.label)}</span>
+    ${cfg.urgency === 'urgent' ? `<div style="background:#FEF2F2;border:2px solid #C0392B;border-radius:var(--r-lg);padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px"><span style="font-size:1.3rem;flex-shrink:0">🚨</span><div style="font-size:.82rem;color:#7F1D1D;font-weight:600;line-height:1.4">If you think this is a medical emergency, <strong>call 911 first</strong> — then come back to these steps.</div></div>` : ''}
     ${(key === 'medical' || key === 'eol') ? itmDnrBannerHtml(patId) : ''}
     <div style="background:var(--off-white);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:14px;margin-bottom:14px">
       <div style="font-size:.68rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">💡 What this may mean</div>
