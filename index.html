@@ -4659,8 +4659,8 @@ function renderPlanningCard(){
       <div style="padding:12px 14px 8px;border-bottom:1px solid var(--border)">
         <div class="card-title" style="margin-bottom:0">🗺️ Support & Planning</div>
       </div>
-      <div onclick="navTo('journey')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;background:${stageLabel?'linear-gradient(90deg,#F0F8F4 0%,transparent 100%)':''}">
-        <div style="width:36px;height:36px;border-radius:10px;background:${stageLabel?'#E8F5EF':'var(--off-white)'};display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">${stageLabel?stageLabel.split(' ')[0]:'🗺️'}</div>
+      <div onclick="navTo('journey')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;background:${stageLabel?'var(--green-tint, rgba(34,197,94,.08))':''}">
+        <div style="width:36px;height:36px;border-radius:10px;background:${stageLabel?'var(--green-tint, rgba(34,197,94,.1))':'var(--off-white)'};display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">${stageLabel?stageLabel.split(' ')[0]:'🗺️'}</div>
         <div style="flex:1;min-width:0">
           <div style="font-size:.83rem;font-weight:700;color:var(--navy)">Your Journey</div>
           <div style="font-size:.72rem;color:${stageLabel?'#16A34A':'var(--slate-light)'};margin-top:1px">
@@ -4670,7 +4670,7 @@ function renderPlanningCard(){
         <div style="font-size:.7rem;color:var(--slate-light)">→</div>
       </div>
       <div onclick="navTo('legalfin')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer">
-        <div style="width:36px;height:36px;border-radius:10px;background:${lfDone>0?'#EEF2FF':'var(--off-white)'};display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">⚖️</div>
+        <div style="width:36px;height:36px;border-radius:10px;background:${lfDone>0?'var(--blue-tint, rgba(99,102,241,.1))':'var(--off-white)'};display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">⚖️</div>
         <div style="flex:1;min-width:0">
           <div style="font-size:.83rem;font-weight:700;color:var(--navy)">Legal & Financial</div>
           ${lfDone > 0
@@ -6898,7 +6898,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v37';
+const CACHE = 'tended-pro-v38';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -14514,7 +14514,8 @@ function renderJourney(){
   if(!root) return;
   const STAGE_KEY = 'tendedPro_journeyStage';
   const CHECK_KEY = 'tendedPro_journeyChecks';
-  let stage = localStorage.getItem(STAGE_KEY) || 'early';
+  let stage = 'early';
+  try { stage = localStorage.getItem(STAGE_KEY) || 'early'; } catch(e){}
   let checks = {};
   try { checks = JSON.parse(localStorage.getItem(CHECK_KEY)||'{}'); } catch(e){}
   function saveChecks(){ try{ localStorage.setItem(CHECK_KEY, JSON.stringify(checks)); }catch(e){} }
@@ -14602,7 +14603,12 @@ function renderJourney(){
         </ul></div>`,
         `<div class="jrny-card"><div class="jrny-card-title">👨‍👩‍👧 Anticipatory Grief</div><div class="jrny-card-body">Grief in dementia begins long before death — at each lost ability, each change in recognition, each goodbye. This is called anticipatory grief and it is real and valid.</div><div class="jrny-tip">You may grieve the person while they are still here. This does not mean you love them less — it means you love them deeply.</div></div>
         <div class="jrny-card"><div class="jrny-card-title">🌊 Signs of Approaching Death</div><ul class="jrny-checklist">
-        ${[['Increased sleep — hours to all-day','eol-sleep'],['Mottled or bluish skin, especially on legs','eol-skin'],['Irregular or labored breathing','eol-brth'],['Cooling of hands and feet','eol-cool'],['Jaw relaxation, mouth breathing','eol-jaw'],['No response to touch or voice','eol-nrsp']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        <li>Increased sleep — hours to all-day</li>
+        <li>Mottled or bluish skin, especially on legs</li>
+        <li>Irregular or labored breathing</li>
+        <li>Cooling of hands and feet</li>
+        <li>Jaw relaxation, mouth breathing</li>
+        <li>No response to touch or voice</li>
         </ul><div class="jrny-warn">⚠️ If enrolled in hospice, call the hospice nurse — not 911 — when death appears near.</div></div>`,
         `<div class="jrny-card"><div class="jrny-card-title">📋 Prepare These Documents Now</div><ul class="jrny-checklist">
         ${[['Confirm DNR / POLST is signed and accessible','pr-dnr'],['Know where death certificate originals will come from','pr-dc'],['Have funeral home contact information ready','pr-fun'],['Know the financial accounts and how to access them','pr-accts'],['Locate the will and estate attorney contact','pr-will'],['Notify Social Security promptly after death (benefits stop)','pr-ss']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
