@@ -6898,7 +6898,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v36';
+const CACHE = 'tended-pro-v37';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -14491,6 +14491,7 @@ function renderLegalFin(){
     <div class="lf-header">
       <div class="lf-header-title">⚖️ Legal & Financial</div>
       <div class="lf-header-sub">Everything families with a dementia diagnosis need to handle — legal authority, finances, benefits, and care costs.</div>
+      <div style="margin-top:9px;font-size:.71rem;opacity:.6;line-height:1.4;font-style:italic">Educational information only — not legal or financial advice. Consult an elder law attorney and financial advisor for decisions specific to your situation.</div>
       <div class="lf-urgent">⚠️ Legal documents must be completed while your loved one still has capacity to sign. Don't wait.</div>
     </div>
     <div style="padding:10px 14px 8px;background:var(--off-white);border-bottom:1px solid var(--border)">
@@ -14528,7 +14529,11 @@ function renderJourney(){
       panels: [
         `<div class="jrny-card"><div class="jrny-card-title">🌱 Early Stage Overview</div><div class="jrny-card-body">Early-stage dementia brings noticeable but manageable changes. Your loved one can still participate in decisions and enjoy meaningful daily life with some support.</div><div class="jrny-tip">This is the best time to plan together — while your loved one can voice their wishes.</div></div>
         <div class="jrny-card"><div class="jrny-card-title">🔍 Common Signs</div><ul class="jrny-checklist">
-        ${[['Forgetting recent conversations or appointments','sym-e1'],['Difficulty finding words or names','sym-e2'],['Getting confused in familiar places','sym-e3'],['Repeating questions or stories','sym-e4'],['Trouble with finances or bills','sym-e5']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        <li>Forgetting recent conversations or appointments</li>
+        <li>Difficulty finding words or names</li>
+        <li>Getting confused in familiar places</li>
+        <li>Repeating questions or stories</li>
+        <li>Trouble with finances or bills</li>
         </ul></div>
         <div class="jrny-card"><div class="jrny-card-title">📅 Typical Timeline</div><div class="jrny-card-body">Early stage typically lasts <strong>2–4 years</strong>. Every person progresses differently — focus on quality of life, not the clock.</div></div>`,
         `<div class="jrny-card"><div class="jrny-card-title">⚖️ Legal Documents — Do These Now</div><div class="jrny-card-body">While your loved one has legal capacity, complete these documents. Waiting until later may require court proceedings.</div><ul class="jrny-checklist">
@@ -14554,7 +14559,13 @@ function renderJourney(){
       panels: [
         `<div class="jrny-card"><div class="jrny-card-title">🌿 Middle Stage Overview</div><div class="jrny-card-body">Middle stage brings greater need for hands-on help. Memory loss deepens, behaviors become more challenging, and your role as a caregiver intensifies significantly.</div><div class="jrny-tip">This is often the longest stage — typically <strong>2–10 years</strong>. Pacing yourself is essential.</div></div>
         <div class="jrny-card"><div class="jrny-card-title">🔍 What You May See</div><ul class="jrny-checklist">
-        ${[['Increased confusion about time and place','ms-conf'],['Difficulty recognizing family members','ms-recog'],['Sundowning — increased agitation late afternoon','ms-sun'],['Wandering or attempting to leave','ms-wand'],['Help needed with bathing, dressing, toileting','ms-adl'],['Sleep disturbances','ms-sleep'],['Repetitive behaviors or statements','ms-rep']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        <li>Increased confusion about time and place</li>
+        <li>Difficulty recognizing family members</li>
+        <li>Sundowning — increased agitation late afternoon</li>
+        <li>Wandering or attempting to leave</li>
+        <li>Help needed with bathing, dressing, toileting</li>
+        <li>Sleep disturbances</li>
+        <li>Repetitive behaviors or statements</li>
         </ul></div>`,
         `<div class="jrny-card"><div class="jrny-card-title">🛡️ Safety Must-Dos</div><ul class="jrny-checklist">
         ${[['Register with Safe Return or GPS tracking','sf-gps'],['Secure medications in locked cabinet','sf-meds'],['Remove or lock car keys if driving is unsafe','sf-car'],['Install door alarms and knob covers','sf-door'],['Use ID bracelet with name and contact info','sf-id'],['Set water heater to 120°F to prevent burns','sf-water']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
@@ -14575,7 +14586,13 @@ function renderJourney(){
       panels: [
         `<div class="jrny-card"><div class="jrny-card-title">🍂 Late Stage Overview</div><div class="jrny-card-body">Late-stage dementia requires round-the-clock care. Your loved one is fully dependent. The focus shifts to comfort, dignity, and quality of life.</div><div class="jrny-tip">Your presence, voice, and touch still matter — even when they can no longer respond. Hearing is often the last sense to fade.</div></div>
         <div class="jrny-card"><div class="jrny-card-title">🔍 What You May See</div><ul class="jrny-checklist">
-        ${[['Minimal or no verbal communication','ls-verb'],['Difficulty swallowing (dysphagia)','ls-swall'],['Unable to walk or sit without support','ls-walk'],['Incontinence (bladder and bowel)','ls-incon'],['Weight loss despite nutrition attempts','ls-wt'],['Skin fragility and pressure sore risk','ls-skin'],['Increased sleep, unresponsive periods','ls-sleep']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        <li>Minimal or no verbal communication</li>
+        <li>Difficulty swallowing (dysphagia)</li>
+        <li>Unable to walk or sit without support</li>
+        <li>Incontinence (bladder and bowel)</li>
+        <li>Weight loss despite nutrition attempts</li>
+        <li>Skin fragility and pressure sore risk</li>
+        <li>Increased sleep, unresponsive periods</li>
         </ul><div class="jrny-tip">These signs are part of the disease process — not failure of your care.</div></div>`,
         `<div class="jrny-card"><div class="jrny-card-title">🕊️ Hospice and Palliative Care</div><div class="jrny-card-body">Hospice is a philosophy of care, not giving up. It focuses on comfort, dignity, and family support rather than curative treatment.</div><ul class="jrny-checklist">
         ${[['Ask the doctor about hospice eligibility','ho-ask'],['Request a hospice evaluation (Medicare covers it)','ho-eval'],['Understand what hospice provides: nurses, aides, chaplain, social worker','ho-what'],['Ask about palliative care if not yet hospice-eligible','ho-pall']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
@@ -14607,6 +14624,7 @@ function renderJourney(){
       <div class="jrny-hero">
         <div class="jrny-hero-title">🗺️ Your Journey</div>
         <div class="jrny-hero-sub">A stage-by-stage guide through dementia caregiving — from diagnosis to end of life.</div>
+        <div style="margin-top:9px;font-size:.71rem;opacity:.6;line-height:1.4;font-style:italic">Educational guidance only — not medical advice. Every person's journey is different. Work with your care team for decisions specific to your situation.</div>
         <div class="jrny-stage-row">
           ${stageKeys.map(sk=>`<div class="jrny-stage-card${sk===stage?' active':''}" data-stage="${sk}" onclick="jrnySetStage('${sk}')"><div class="jrny-stage-icon">${STAGES[sk].icon}</div><div class="jrny-stage-label">${STAGES[sk].label}</div><div class="jrny-stage-desc">${STAGES[sk].desc}</div></div>`).join('')}
         </div>
