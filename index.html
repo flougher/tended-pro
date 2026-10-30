@@ -5260,7 +5260,7 @@ function renderPatients(){
           ${!isInactive && p.fallRisk ? ' ' + fallRiskBadge(p.fallRisk, false) : ''}
           ${p.painLevel !== undefined && p.painLevel !== '' ? ' ' + painFaceHtml(p.painLevel) : ''}
         </div>
-        <div class="patient-meta">${[p.room && '🏠 '+p.room, p.dob && 'DOB: '+p.dob].filter(Boolean).join(' · ') || 'No additional info'}</div>
+        <div class="patient-meta">${[p.room && '🏠 '+p.room, p.dob && 'DOB: '+p.dob, p.demType && ({alzheimers:"Alzheimer's",lewy:"Lewy Body",frontotemporal:"Frontotemporal",vascular:"Vascular",mixed:"Mixed",other:"Other"}[p.demType]||p.demType)+' Dementia'].filter(Boolean).join(' · ') || 'No additional info'}</div>
         ${p.doctor ? `<div style="margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span style="font-weight:700;font-size:.86rem;color:var(--navy)">👨‍⚕️ ${p.doctor}</span>
           ${p.doctorPhone ? `<span style="font-weight:700;font-size:.84rem;color:var(--teal)">${p.doctorPhone}</span>
@@ -6945,7 +6945,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v44';
+const CACHE = 'tended-pro-v45';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
