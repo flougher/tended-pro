@@ -2139,23 +2139,22 @@ body {
     </div>
     <div class="fg"><label>Event Type *</label>
       <select id="wd-type" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
-        <option>Wandering — within facility</option>
-        <option>Wandering — entered restricted area</option>
+        <option>Wandering — within the home</option>
+        <option>Wandering — entered unsafe area</option>
         <option>Unsupervised exit attempt (elopement) — intercepted</option>
         <option>Left home unaccompanied (elopement)</option>
         <option>Night-time wandering</option>
-        <option>Wandering — entered another resident's room</option>
       </select>
     </div>
     <div class="fg"><label>Location Found</label>
-      <input id="wd-location" placeholder="e.g. Hallway near exit, parking lot, another resident's room…"></div>
+      <input id="wd-location" placeholder="e.g. Backyard near fence, front door, street, neighbor's yard…"></div>
     <div class="fg"><label>Duration Missing / Unaccounted</label>
       <input id="wd-duration" placeholder="e.g. Approximately 5 minutes, 20 minutes…"></div>
     <div class="fg"><label>Care Recipient Condition When Found</label>
       <textarea id="wd-condition" rows="2" placeholder="e.g. Calm and cooperative, confused but uninjured, distressed, fell while wandering…"></textarea>
     </div>
     <div class="fg"><label>Action Taken</label>
-      <textarea id="wd-action" rows="2" placeholder="e.g. Escorted back to room, reassured, offered snack, applied door alarm, notified charge nurse…"></textarea>
+      <textarea id="wd-action" rows="2" placeholder="e.g. Guided them back inside, reassured, offered a snack, applied door alarm, called family…"></textarea>
     </div>
     <div class="fg"><label>Supervisor / Family Notified *</label>
       <input id="wd-notified" placeholder="Names of all persons notified"></div>
@@ -2587,6 +2586,9 @@ body {
     <div class="card" style="border-color:#8B5CF6;border-width:2px">
       <div class="card-title" style="color:#6D28D9">🕊️ End of Life Planning</div>
       <p style="font-size:.78rem;color:var(--slate-mid);margin:-4px 0 14px">Important documents and wishes — have these ready before they are needed.</p>
+      <div style="background:#FDF4FF;border:1.5px solid #C4B5FD;border-radius:var(--r);padding:10px 14px;font-size:.78rem;color:#5B21B6;line-height:1.6;margin-bottom:14px">
+        📋 <strong>Reference only.</strong> What you enter here is a personal reminder for caregivers — it has no legal weight. The physical POLST or Advance Directive must be present and accessible for emergency responders to honor it. Know where it is and make sure all caregivers do too.
+      </div>
       <div class="fg"><label>Advance Directive / POLST Status</label>
         <select id="cp-polst" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
           <option value="">-- Not specified --</option>
@@ -6945,7 +6947,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v46';
+const CACHE = 'tended-pro-v47';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -14240,7 +14242,7 @@ function itmCommitEpisode(key, stepsCompletedCount, totalSteps, escalated){
     if(!D.wandering) D.wandering = [];
     D.wandering.push({
       id: Date.now(), patientId: patId, date: dateStr, time: timeStr,
-      type:'Wandering — within facility', isElopement:false,
+      type:'Night-time wandering', isElopement:false,
       location:'', duration:'', condition:'',
       action: stepsNote,
       notified: escalationNote || 'Not yet confirmed — follow up with family or care team',
