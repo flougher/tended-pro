@@ -6947,7 +6947,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v48';
+const CACHE = 'tended-pro-v49';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -10864,7 +10864,7 @@ function acceptLegalTerms(){
     localStorage.setItem('tendedPro_legalAccepted', JSON.stringify({
       accepted: true,
       date: new Date().toISOString(),
-      version: '1.0'
+      version: '2.0'
     }));
   }catch(e){}
   const overlay = document.getElementById('legal-overlay');
