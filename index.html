@@ -1296,6 +1296,58 @@ body {
 #section-emergency .em-share{width:100%;background:#1D4ED8;color:#fff;border:none;border-radius:14px;padding:15px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:10px}
 #section-emergency .em-911{width:100%;background:#DC2626;color:#fff;border:none;border-radius:14px;padding:16px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px}
 #section-emergency .em-911:active,#section-emergency .em-share:active{transform:scale(.99)}
+/* ── Your Journey ────────────────────────────────────────── */
+#section-journey{padding:0}
+/* ── Legal & Financial ───────────────────────────────────── */
+#section-legalfin{padding:0}
+.lf-header{background:linear-gradient(135deg,#1A2E4A 0%,#14213D 100%);padding:22px 18px 16px;color:#fff}
+.lf-header-title{font-size:1.15rem;font-weight:800;margin-bottom:4px}
+.lf-header-sub{font-size:.78rem;opacity:.8;line-height:1.5}
+.lf-urgent{background:#C0392B;border-radius:10px;padding:11px 14px;margin-top:14px;font-size:.76rem;line-height:1.5;font-weight:600;color:#fff;display:flex;align-items:flex-start;gap:8px}
+.lf-tabs{display:flex;background:var(--off-white);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0}
+.lf-tab{flex:1;min-width:70px;padding:10px 5px;text-align:center;font-size:.68rem;font-weight:700;color:var(--slate-mid);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .18s;line-height:1.3}
+.lf-tab.active{color:var(--navy);border-bottom-color:var(--navy);background:#fff}
+.lf-body{overflow-y:auto;flex:1;padding:14px}
+.lf-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.lf-card-title{font-size:.85rem;font-weight:700;color:var(--navy);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.lf-card-body{font-size:.78rem;color:var(--slate);line-height:1.6}
+.lf-list{list-style:none;padding:0;margin:8px 0 0}
+.lf-list li{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--off-white)}
+.lf-list li:last-child{border-bottom:none}
+.lf-list input[type=checkbox]{width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:var(--navy)}
+.lf-list label{font-size:.78rem;color:var(--slate);line-height:1.5;cursor:pointer}
+.lf-tip{background:rgba(26,46,74,.07);border-left:3px solid var(--navy);border-radius:0 8px 8px 0;padding:10px 12px;margin-top:8px;font-size:.76rem;color:var(--slate);line-height:1.5}
+.lf-warn{background:rgba(192,57,43,.07);border-left:3px solid #C0392B;border-radius:0 8px 8px 0;padding:10px 12px;margin-top:8px;font-size:.76rem;color:var(--slate);line-height:1.5}
+.lf-prog-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.lf-prog-bar{flex:1;height:8px;background:var(--off-white);border-radius:10px;overflow:hidden}
+.lf-prog-fill{height:100%;background:var(--navy);border-radius:10px;transition:width .3s}
+.jrny-hero{background:linear-gradient(135deg,var(--navy) 0%,#1e3a5f 100%);padding:28px 20px 20px;color:#fff}
+.jrny-hero-title{font-size:1.3rem;font-weight:800;margin-bottom:4px}
+.jrny-hero-sub{font-size:.82rem;opacity:.8;line-height:1.5}
+.jrny-stage-row{display:flex;gap:10px;margin:18px 0 0;overflow-x:auto;padding-bottom:4px}
+.jrny-stage-card{flex:1;min-width:90px;background:rgba(255,255,255,.12);border:2px solid transparent;border-radius:14px;padding:12px 10px;text-align:center;cursor:pointer;transition:all .18s}
+.jrny-stage-card.active{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.6)}
+.jrny-stage-icon{font-size:1.5rem;margin-bottom:4px}
+.jrny-stage-label{font-size:.72rem;font-weight:700;letter-spacing:.02em}
+.jrny-stage-desc{font-size:.64rem;opacity:.75;margin-top:2px;line-height:1.4}
+.jrny-tabs{display:flex;background:var(--off-white);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0}
+.jrny-tab{flex:1;min-width:72px;padding:11px 6px;text-align:center;font-size:.7rem;font-weight:700;color:var(--slate-mid);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .18s}
+.jrny-tab.active{color:var(--teal);border-bottom-color:var(--teal);background:#fff}
+.jrny-body{padding:16px;overflow-y:auto;flex:1}
+.jrny-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.jrny-card-title{font-size:.85rem;font-weight:700;color:var(--navy);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.jrny-card-body{font-size:.78rem;color:var(--slate);line-height:1.6}
+.jrny-checklist{list-style:none;padding:0;margin:8px 0 0}
+.jrny-checklist li{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--off-white)}
+.jrny-checklist li:last-child{border-bottom:none}
+.jrny-checklist input[type=checkbox]{width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:var(--teal)}
+.jrny-checklist label{font-size:.78rem;color:var(--slate);line-height:1.5;cursor:pointer}
+.jrny-pill{display:inline-block;background:var(--teal);color:#fff;border-radius:20px;padding:3px 10px;font-size:.68rem;font-weight:700;margin:2px 2px 0 0}
+.jrny-pill.orange{background:#E67E22}
+.jrny-pill.red{background:#C0392B}
+.jrny-pill.purple{background:#7B4EAB}
+.jrny-tip{background:rgba(0,168,143,.08);border-left:3px solid var(--teal);border-radius:0 8px 8px 0;padding:10px 12px;margin-top:8px;font-size:.76rem;color:var(--slate);line-height:1.5}
+.jrny-warn{background:rgba(192,57,43,.07);border-left:3px solid #C0392B;border-radius:0 8px 8px 0;padding:10px 12px;margin-top:8px;font-size:.76rem;color:var(--slate);line-height:1.5}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -1525,6 +1577,11 @@ body {
     <button class="nav-btn" onclick="navTo('memorycare',this)"><span class="ni">💬</span> Memory Care Notes</button>
   </div>
   <div class="nav-group">
+    <div class="nav-label">🗺️ Support & Planning</div>
+    <button class="nav-btn" onclick="navTo('journey',this)"><span class="ni">🗺️</span> Your Journey</button>
+    <button class="nav-btn" onclick="navTo('legalfin',this)"><span class="ni">⚖️</span> Legal & Financial</button>
+  </div>
+  <div class="nav-group">
     <div class="nav-label">Additional Tools</div>
     <button class="nav-btn" onclick="navTo('voice',this)"><span class="ni">🎤</span> Voice to Text</button>
     <button class="nav-btn" onclick="navTo('report',this)"><span class="ni">📄</span> Monthly Care Summary Report</button>
@@ -1712,6 +1769,8 @@ body {
   <!-- Trigger Reminder + Sensory Profile -->
   <div id="dash-trigger-reminder" style="display:none;margin-bottom:20px"></div>
 
+  <!-- Support & Planning card -->
+  <div id="dash-planning-card" style="margin-bottom:20px"></div>
 
 </div>
 <div id="section-patients" class="section">
@@ -3281,6 +3340,18 @@ body {
   <div id="itm-root"></div>
 </div>
 
+<!-- ═══ LEGAL & FINANCIAL ════════════════════════════════════ -->
+<div id="section-legalfin" class="section" style="display:flex;flex-direction:column;height:calc(100vh - 56px)">
+  <div id="legalfin-root" style="display:flex;flex-direction:column;height:100%;overflow:hidden"></div>
+</div>
+
+<!-- ═══ YOUR JOURNEY ════════════════════════════════════════ -->
+<div id="section-journey" class="section" style="display:flex;flex-direction:column;height:calc(100vh - 56px)">
+  <div id="journey-root" style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+    <!-- filled by renderJourney() -->
+  </div>
+</div>
+
 </main><!-- content -->
 </div><!-- body-area -->
 
@@ -3333,6 +3404,13 @@ body {
     <button id="bnav-sundowning" class="more-btn more-btn--memory" onclick="mobileNavTo('sundowning')"><span class="more-icon">🌅</span>Sundowning</button>
     <button id="bnav-wandering" class="more-btn more-btn--memory" onclick="mobileNavTo('wandering')"><span class="more-icon">🚶</span>Wandering</button>
     <button id="bnav-memorycare" class="more-btn more-btn--memory" onclick="mobileNavTo('memorycare')"><span class="more-icon">💬</span>Calm Guide</button>
+  </div>
+
+  <!-- ── Support & Planning ────────────────────────────────── -->
+  <div class="more-group-label" style="color:rgba(180,210,255,1)">🗺️ Support & Planning</div>
+  <div class="more-grid">
+    <button class="more-btn" style="color:rgba(180,210,255,1)" onclick="mobileNavTo('journey')"><span class="more-icon">🗺️</span>Your Journey</button>
+    <button class="more-btn" style="color:rgba(180,210,255,1)" onclick="mobileNavTo('legalfin')"><span class="more-icon">⚖️</span>Legal & Financial</button>
   </div>
 
   <!-- ── Critical ───────────────────────────────────────────── -->
@@ -4467,7 +4545,9 @@ function navTo(id, btn){
     memorycare: initMemoryCare,
     emergency:  renderEmergency,
     checkin:    renderCheckin,
-    itm:        renderITM
+    itm:        renderITM,
+    journey:    renderJourney,
+    legalfin:   renderLegalFin
   };
   if(renders[id]) renders[id]();
 }
@@ -4553,6 +4633,58 @@ function _showGettingStartedIfNew(){
   // Show only if not dismissed AND user has no real patients (or only the sample patient)
   const realPatients = (D.patients || []).filter(p => !p.isSample);
   card.style.display = (!dismissed && realPatients.length === 0) ? 'block' : 'none';
+}
+
+function renderPlanningCard(){
+  const el = document.getElementById('dash-planning-card');
+  if(!el) return;
+
+  // Read stage
+  let stage = '';
+  try { stage = localStorage.getItem('tendedPro_journeyStage') || ''; } catch(e){}
+  const STAGE_LABELS = { early:'🌱 Early Stage', middle:'🌿 Middle Stage', late:'🍂 Late Stage' };
+  const stageLabel = STAGE_LABELS[stage] || null;
+
+  // Read legal checklist progress
+  let checks = {};
+  try { checks = JSON.parse(localStorage.getItem('tendedPro_lfChecks')||'{}'); } catch(e){}
+  const LF_TOTAL = 30;
+  const lfDone = Object.values(checks).filter(Boolean).length;
+  const lfPct  = Math.round(lfDone / LF_TOTAL * 100);
+
+  const neitherStarted = !stageLabel && lfDone === 0;
+
+  el.innerHTML = `
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:12px 14px 8px;border-bottom:1px solid var(--border)">
+        <div class="card-title" style="margin-bottom:0">🗺️ Support & Planning</div>
+      </div>
+      <div onclick="navTo('journey')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;background:${stageLabel?'linear-gradient(90deg,#F0F8F4 0%,transparent 100%)':''}">
+        <div style="width:36px;height:36px;border-radius:10px;background:${stageLabel?'#E8F5EF':'var(--off-white)'};display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">${stageLabel?stageLabel.split(' ')[0]:'🗺️'}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.83rem;font-weight:700;color:var(--navy)">Your Journey</div>
+          <div style="font-size:.72rem;color:${stageLabel?'#16A34A':'var(--slate-light)'};margin-top:1px">
+            ${stageLabel ? stageLabel.slice(2)+' selected' : 'Tap to select your care stage →'}
+          </div>
+        </div>
+        <div style="font-size:.7rem;color:var(--slate-light)">→</div>
+      </div>
+      <div onclick="navTo('legalfin')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer">
+        <div style="width:36px;height:36px;border-radius:10px;background:${lfDone>0?'#EEF2FF':'var(--off-white)'};display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">⚖️</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.83rem;font-weight:700;color:var(--navy)">Legal & Financial</div>
+          ${lfDone > 0
+            ? `<div style="margin-top:4px;display:flex;align-items:center;gap:8px">
+                <div style="flex:1;height:5px;background:var(--off-white);border-radius:10px;overflow:hidden"><div style="height:100%;width:${lfPct}%;background:#1A2E4A;border-radius:10px"></div></div>
+                <div style="font-size:.7rem;color:var(--slate-mid);white-space:nowrap">${lfDone}/${LF_TOTAL}</div>
+               </div>`
+            : `<div style="font-size:.72rem;color:var(--slate-light);margin-top:1px">Tap to start your legal checklist →</div>`
+          }
+        </div>
+        <div style="font-size:.7rem;color:var(--slate-light)">→</div>
+      </div>
+      ${neitherStarted ? `<div style="padding:8px 14px 12px;font-size:.72rem;color:var(--teal);font-weight:600">⚡ Start here — legal docs must be done while your loved one has legal capacity</div>` : ''}
+    </div>`;
 }
 
 function renderDashboard(){
@@ -4664,6 +4796,7 @@ function renderDashboard(){
   renderVitalsDashboardAlert();
   renderCriticalAlerts();        // inserts after banner last → appears on top
   loadShiftNotes();
+  renderPlanningCard();
 
   // ── Shift Checklist ────────────────────────────────────────
   const todayIntake    = (D.intake||[]).filter(e => e.date === todayISO);
@@ -6765,7 +6898,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v33';
+const CACHE = 'tended-pro-v36';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -14277,6 +14410,216 @@ function itmRenderResolved(root){
       <button class="btn btn-secondary" style="width:100%" onclick="navTo('dashboard')">← Back to dashboard</button>
     </div>
   `;
+}
+
+// ── Legal & Financial ─────────────────────────────────────────
+function renderLegalFin(){
+  const root = document.getElementById('legalfin-root');
+  if(!root) return;
+  const CHECK_KEY = 'tendedPro_lfChecks';
+  let checks = {};
+  try { checks = JSON.parse(localStorage.getItem(CHECK_KEY)||'{}'); } catch(e){}
+  function saveChecks(){ try{ localStorage.setItem(CHECK_KEY,JSON.stringify(checks)); }catch(e){} }
+  const ALL_ITEMS = {
+    'lf-poa':   'Durable Power of Attorney — finances (must be done while person has legal capacity)',
+    'lf-hpoa':  'Healthcare Proxy / Medical Power of Attorney',
+    'lf-lwill': 'Living Will / Advance Directive — states wishes on life-sustaining treatment',
+    'lf-polst': 'POLST or MOLST — physician-signed, posted on fridge or front door',
+    'lf-will':  'Last Will and Testament — updated and signed',
+    'lf-trust': 'Revocable Living Trust — avoids probate, simplifies asset transfer',
+    'lf-guard': 'Guardianship / Conservatorship — court order if capacity already lost',
+    'lf-accts': 'Locate all checking, savings, investment and retirement accounts',
+    'lf-bene':  'Review and update beneficiary designations on all accounts',
+    'lf-auto':  'Set up automatic bill pay for recurring expenses',
+    'lf-deed':  'Review home deed — consider adding co-owner or placing in trust',
+    'lf-safe':  'Locate safe deposit box and confirm authorized access',
+    'lf-debts': 'Inventory all debts: mortgage, credit cards, loans',
+    'lf-mcare': 'Confirm Medicare Parts A, B, D enrollment and supplement coverage',
+    'lf-ltc':   'Locate long-term care insurance policy — read benefit triggers carefully',
+    'lf-va':    'Check VA benefits eligibility if veteran (Aid & Attendance benefit)',
+    'lf-ssdi':  'Understand Social Security benefit amount and survivor rules',
+    'lf-medi':  'Research Medicaid eligibility — asset limits vary by state',
+    'lf-life':  'Review life insurance policies — locate originals, confirm beneficiaries',
+    'lf-hcost': 'Get in-home care cost estimates in your area (national avg: $25–35/hr)',
+    'lf-adcst': 'Research adult day program costs (avg: $70–100/day)',
+    'lf-alcst': 'Tour and price assisted living / memory care facilities',
+    'lf-spend': 'Understand Medicaid spend-down rules — consult elder law attorney',
+    'lf-pool':  'Research pooled or special needs trust for Medicaid planning',
+    'lf-bridg': 'Understand bridge loans or annuities for facility cost transitions',
+    'lf-eldry': 'Hire elder law attorney — complete all legal documents in one appointment',
+    'lf-cpa':   'Consult CPA or financial planner with elder care experience',
+    'lf-mplnr': 'Engage a Medicaid planner if facility care is foreseeable',
+    'lf-gcm':   'Consider a Geriatric Care Manager for care coordination',
+    'lf-aaa':   'Contact Area Agency on Aging — free local resource navigation (eldercare.acl.gov)'
+  };
+  const TABS = [
+    { label:'📋 Legal Docs',   keys:['lf-poa','lf-hpoa','lf-lwill','lf-polst','lf-will','lf-trust','lf-guard'],
+      tip:'<strong>⚠️ Act now.</strong> Legal documents MUST be completed while your loved one has legal capacity. If capacity is lost, a court must appoint a guardian — expensive, slow, and stressful.' },
+    { label:'💰 Finances',    keys:['lf-accts','lf-bene','lf-auto','lf-deed','lf-safe','lf-debts'], tip:null },
+    { label:'🏥 Benefits',    keys:['lf-mcare','lf-ltc','lf-va','lf-ssdi','lf-medi','lf-life'],
+      tip:'<strong>💡 VA Aid & Attendance</strong> can pay $1,000–$2,700/month toward care for eligible veterans and surviving spouses. Many families never know it exists.' },
+    { label:'🏠 Care Costs',  keys:['lf-hcost','lf-adcst','lf-alcst','lf-spend','lf-pool','lf-bridg'],
+      tip:'<strong>💡 Medicaid planning:</strong> Asset transfers within 5 years of a Medicaid application trigger a penalty period. Planning 5+ years ahead dramatically expands your options.' },
+    { label:'📞 Contacts',   keys:['lf-eldry','lf-cpa','lf-mplnr','lf-gcm','lf-aaa'],
+      tip:'<strong>💡 Elder law attorney</strong> is the single highest-value professional for dementia families. One appointment can save tens of thousands of dollars.' }
+  ];
+  let activeTab = 0;
+  function totalDone(){ return Object.values(checks).filter(Boolean).length; }
+  function totalAll(){ return Object.keys(ALL_ITEMS).length; }
+  window.lfCheck = function(k,v){ checks[k]=v; saveChecks();
+    const fill=document.getElementById('lf-pfill'); const pct=document.getElementById('lf-ppct');
+    const d=totalDone(),tot=totalAll();
+    if(fill) fill.style.width=Math.round(d/tot*100)+'%';
+    if(pct)  pct.textContent=d+' of '+tot+' completed';
+    TABS.forEach((tb,i)=>{ const b=document.getElementById('lf-b'+i); if(b){ const n=tb.keys.filter(k2=>checks[k2]).length; b.textContent=n?'  '+n+'/'+tb.keys.length:''; } });
+  };
+  window.lfTab = function(t){ activeTab=t;
+    const panel=document.getElementById('lf-panel'); if(!panel) return;
+    panel.innerHTML=panelHtml(t);
+    Object.keys(checks).forEach(k=>{ const el=document.getElementById(k); if(el) el.checked=!!checks[k]; });
+    document.querySelectorAll('.lf-tab').forEach((el,i)=>el.classList.toggle('active',i===t));
+  };
+  function panelHtml(t){
+    const tb=TABS[t];
+    return (tb.tip?`<div class="lf-tip">${tb.tip}</div>`:'')
+      +'<div class="lf-card"><ul class="lf-list">'
+      +tb.keys.map(k=>`<li><input type="checkbox" id="${k}" ${checks[k]?'checked':''} onchange="lfCheck('${k}',this.checked)"><label for="${k}">${ALL_ITEMS[k]}</label></li>`).join('')
+      +'</ul></div>';
+  }
+  const d=totalDone(), tot=totalAll();
+  root.innerHTML=`
+    <div class="lf-header">
+      <div class="lf-header-title">⚖️ Legal & Financial</div>
+      <div class="lf-header-sub">Everything families with a dementia diagnosis need to handle — legal authority, finances, benefits, and care costs.</div>
+      <div class="lf-urgent">⚠️ Legal documents must be completed while your loved one still has capacity to sign. Don't wait.</div>
+    </div>
+    <div style="padding:10px 14px 8px;background:var(--off-white);border-bottom:1px solid var(--border)">
+      <div class="lf-prog-row">
+        <div class="lf-prog-bar"><div class="lf-prog-fill" id="lf-pfill" style="width:${Math.round(d/tot*100)}%"></div></div>
+        <div style="font-size:.72rem;color:var(--slate-mid);white-space:nowrap" id="lf-ppct">${d} of ${tot} completed</div>
+      </div>
+    </div>
+    <div class="lf-tabs">
+      ${TABS.map((tb,i)=>`<div class="lf-tab${i===activeTab?' active':''}" onclick="lfTab(${i})">${tb.label}<span id="lf-b${i}" style="font-size:.62rem;opacity:.65"></span></div>`).join('')}
+    </div>
+    <div class="lf-body" id="lf-panel">${panelHtml(activeTab)}</div>`;
+  Object.keys(checks).forEach(k=>{ const el=document.getElementById(k); if(el) el.checked=!!checks[k]; });
+  TABS.forEach((tb,i)=>{ const b=document.getElementById('lf-b'+i); if(b){ const n=tb.keys.filter(k=>checks[k]).length; b.textContent=n?'  '+n+'/'+tb.keys.length:''; } });
+}
+
+// ── Your Journey ──────────────────────────────────────────────
+function renderJourney(){
+  const root = document.getElementById('journey-root');
+  if(!root) return;
+  const STAGE_KEY = 'tendedPro_journeyStage';
+  const CHECK_KEY = 'tendedPro_journeyChecks';
+  let stage = localStorage.getItem(STAGE_KEY) || 'early';
+  let checks = {};
+  try { checks = JSON.parse(localStorage.getItem(CHECK_KEY)||'{}'); } catch(e){}
+  function saveChecks(){ try{ localStorage.setItem(CHECK_KEY, JSON.stringify(checks)); }catch(e){} }
+  const STAGES = {
+    early:  { icon:'🌱', label:'Early Stage', desc:'Mild memory loss' },
+    middle: { icon:'🌿', label:'Middle Stage', desc:'Moderate decline' },
+    late:   { icon:'🍂', label:'Late Stage', desc:'Advanced care' }
+  };
+  const CONTENT = {
+    early: {
+      tabs: ['📖 What to Expect','⚖️ Legal & Finance','🤝 Getting Help','🧠 Care Tips'],
+      panels: [
+        `<div class="jrny-card"><div class="jrny-card-title">🌱 Early Stage Overview</div><div class="jrny-card-body">Early-stage dementia brings noticeable but manageable changes. Your loved one can still participate in decisions and enjoy meaningful daily life with some support.</div><div class="jrny-tip">This is the best time to plan together — while your loved one can voice their wishes.</div></div>
+        <div class="jrny-card"><div class="jrny-card-title">🔍 Common Signs</div><ul class="jrny-checklist">
+        ${[['Forgetting recent conversations or appointments','sym-e1'],['Difficulty finding words or names','sym-e2'],['Getting confused in familiar places','sym-e3'],['Repeating questions or stories','sym-e4'],['Trouble with finances or bills','sym-e5']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        </ul></div>
+        <div class="jrny-card"><div class="jrny-card-title">📅 Typical Timeline</div><div class="jrny-card-body">Early stage typically lasts <strong>2–4 years</strong>. Every person progresses differently — focus on quality of life, not the clock.</div></div>`,
+        `<div class="jrny-card"><div class="jrny-card-title">⚖️ Legal Documents — Do These Now</div><div class="jrny-card-body">While your loved one has legal capacity, complete these documents. Waiting until later may require court proceedings.</div><ul class="jrny-checklist">
+        ${[['Durable Power of Attorney (finances)','leg-poa'],['Healthcare Proxy / Medical POA','leg-hpoa'],['Living Will / Advance Directive','leg-lwill'],['POLST or MOLST form (with doctor)','leg-polst'],['Updated Will or Trust','leg-will'],['Beneficiary designations reviewed','leg-bene']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        </ul><div class="jrny-warn">⚠️ An elder law attorney can prepare all documents in one appointment. Many offer sliding-scale fees.</div></div>
+        <div class="jrny-card"><div class="jrny-card-title">💰 Financial Planning Checklist</div><ul class="jrny-checklist">
+        ${[['Locate all bank, investment, and retirement accounts','fin-accts'],['Review insurance: health, long-term care, life','fin-ins'],['Set up automatic bill pay','fin-auto'],['Check Social Security and Medicare enrollment','fin-ss'],['Research Medicaid eligibility rules in your state','fin-med'],['Consider a special needs or pooled trust','fin-trust']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        </ul></div>`,
+        `<div class="jrny-card"><div class="jrny-card-title">🤝 Build Your Care Team Now</div><div class="jrny-card-body">Don't wait until crisis to find support. The best time to identify resources is before you desperately need them.</div><ul class="jrny-checklist">
+        ${[['Contact your local Area Agency on Aging','hlp-aaa'],['Find an Alzheimer\'s Association chapter near you','hlp-alz'],['Identify adult day programs in your area','hlp-day'],['Look into respite care options','hlp-resp'],['Join a caregiver support group','hlp-grp'],['Ask about a Geriatric Care Manager','hlp-gcm']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        </ul><div class="jrny-tip">💡 Alzheimer's Association 24/7 Helpline: <strong>800-272-3900</strong></div></div>
+        <div class="jrny-card"><div class="jrny-card-title">🏡 Home Safety Preparation</div><ul class="jrny-checklist">
+        ${[['Install grab bars in bathroom','hom-grab'],['Remove tripping hazards (rugs, cords)','hom-rugs'],['Set up medication management system','hom-meds'],['Secure stove and sharp objects if needed','hom-stove'],['Consider door alarms for wandering prevention','hom-door']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        </ul></div>`,
+        `<div class="jrny-card"><div class="jrny-card-title">🧠 Communication Strategies</div><ul class="jrny-checklist">
+        ${[['Use simple, short sentences','tip-short'],['Give one instruction at a time','tip-one'],['Allow extra time for responses','tip-time'],['Use their name to get attention','tip-name'],['Avoid arguing — redirect instead','tip-redir']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        </ul></div>
+        <div class="jrny-card"><div class="jrny-card-title">💛 Caregiver Self-Care</div><div class="jrny-card-body">You cannot pour from an empty cup. Early-stage caregiving can feel "not serious enough" to justify help — resist that thinking.</div><div class="jrny-tip">Schedule at least 2 hours per week that are just for you. Put it on the calendar like an appointment.</div></div>`
+      ]
+    },
+    middle: {
+      tabs: ['📖 What to Expect','🛡️ Safety & Behavior','⚕️ Medical Care','🔄 Planning Ahead'],
+      panels: [
+        `<div class="jrny-card"><div class="jrny-card-title">🌿 Middle Stage Overview</div><div class="jrny-card-body">Middle stage brings greater need for hands-on help. Memory loss deepens, behaviors become more challenging, and your role as a caregiver intensifies significantly.</div><div class="jrny-tip">This is often the longest stage — typically <strong>2–10 years</strong>. Pacing yourself is essential.</div></div>
+        <div class="jrny-card"><div class="jrny-card-title">🔍 What You May See</div><ul class="jrny-checklist">
+        ${[['Increased confusion about time and place','ms-conf'],['Difficulty recognizing family members','ms-recog'],['Sundowning — increased agitation late afternoon','ms-sun'],['Wandering or attempting to leave','ms-wand'],['Help needed with bathing, dressing, toileting','ms-adl'],['Sleep disturbances','ms-sleep'],['Repetitive behaviors or statements','ms-rep']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        </ul></div>`,
+        `<div class="jrny-card"><div class="jrny-card-title">🛡️ Safety Must-Dos</div><ul class="jrny-checklist">
+        ${[['Register with Safe Return or GPS tracking','sf-gps'],['Secure medications in locked cabinet','sf-meds'],['Remove or lock car keys if driving is unsafe','sf-car'],['Install door alarms and knob covers','sf-door'],['Use ID bracelet with name and contact info','sf-id'],['Set water heater to 120°F to prevent burns','sf-water']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        </ul></div>
+        <div class="jrny-card"><div class="jrny-card-title">😤 Managing Difficult Behaviors</div><div class="jrny-card-body">Aggression, paranoia, and agitation often have triggers. Log behaviors in Behavior Patterns to find patterns.</div><div class="jrny-tip">DICE approach: <strong>D</strong>escribe → <strong>I</strong>nvestigate → <strong>C</strong>reate plan → <strong>E</strong>valuate results</div></div>`,
+        `<div class="jrny-card"><div class="jrny-card-title">⚕️ Medical Management</div><ul class="jrny-checklist">
+        ${[['Schedule regular neurology or geriatric specialist visits','med-neuro'],['Review all medications for appropriateness','med-meds'],['Address pain proactively — many can\'t report it','med-pain'],['Monitor for UTIs — cause sudden confusion spikes','med-uti'],['Maintain dental care — affects behavior and eating','med-dent'],['Vision and hearing checks — uncorrected loss worsens confusion','med-vh']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        </ul><div class="jrny-warn">⚠️ Sudden behavioral changes usually mean a medical cause — UTI, pain, medication side effect. Always investigate first.</div></div>
+        <div class="jrny-card"><div class="jrny-card-title">💊 Medication Red Flags</div><div style="margin-top:8px"><span class="jrny-pill red">Anticholinergics</span><span class="jrny-pill red">Benzodiazepines</span><span class="jrny-pill orange">Sleep aids</span><span class="jrny-pill orange">Antihistamines</span><span class="jrny-pill purple">Antipsychotics</span></div><div class="jrny-tip">Use the Med Warnings section to track risky medications with the care team.</div></div>`,
+        `<div class="jrny-card"><div class="jrny-card-title">🔄 Transition Planning — Start Now</div><div class="jrny-card-body">Middle stage is the time to research memory care options — not at crisis. Touring facilities and getting on waitlists takes months.</div><ul class="jrny-checklist">
+        ${[['Tour at least 3 memory care communities','tr-tour'],['Understand difference: AL, memory care, nursing home','tr-types'],['Get on waitlists at preferred facilities now','tr-wait'],['Understand Medicaid spend-down rules in your state','tr-med'],['Discuss placement openly with family — reach consensus early','tr-fam'],['Know your loved one\'s wishes about placement','tr-wish']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        </ul></div>
+        <div class="jrny-card"><div class="jrny-card-title">💛 Caregiver Burnout — Middle Stage Risk</div><div class="jrny-warn">⚠️ If you experience depression, physical decline, or thoughts of harm to yourself or your loved one — seek help immediately. This is a medical emergency, not a moral failure.</div><div class="jrny-tip">Respite care is not abandonment. Taking breaks makes you a better caregiver.</div></div>`
+      ]
+    },
+    late: {
+      tabs: ['📖 What to Expect','🕊️ Comfort Care','👨‍👩‍👧 Family & Grief','📋 Practical Steps'],
+      panels: [
+        `<div class="jrny-card"><div class="jrny-card-title">🍂 Late Stage Overview</div><div class="jrny-card-body">Late-stage dementia requires round-the-clock care. Your loved one is fully dependent. The focus shifts to comfort, dignity, and quality of life.</div><div class="jrny-tip">Your presence, voice, and touch still matter — even when they can no longer respond. Hearing is often the last sense to fade.</div></div>
+        <div class="jrny-card"><div class="jrny-card-title">🔍 What You May See</div><ul class="jrny-checklist">
+        ${[['Minimal or no verbal communication','ls-verb'],['Difficulty swallowing (dysphagia)','ls-swall'],['Unable to walk or sit without support','ls-walk'],['Incontinence (bladder and bowel)','ls-incon'],['Weight loss despite nutrition attempts','ls-wt'],['Skin fragility and pressure sore risk','ls-skin'],['Increased sleep, unresponsive periods','ls-sleep']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        </ul><div class="jrny-tip">These signs are part of the disease process — not failure of your care.</div></div>`,
+        `<div class="jrny-card"><div class="jrny-card-title">🕊️ Hospice and Palliative Care</div><div class="jrny-card-body">Hospice is a philosophy of care, not giving up. It focuses on comfort, dignity, and family support rather than curative treatment.</div><ul class="jrny-checklist">
+        ${[['Ask the doctor about hospice eligibility','ho-ask'],['Request a hospice evaluation (Medicare covers it)','ho-eval'],['Understand what hospice provides: nurses, aides, chaplain, social worker','ho-what'],['Ask about palliative care if not yet hospice-eligible','ho-pall']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        </ul><div class="jrny-tip">Families who choose hospice earlier report better quality of life for patient and caregiver. There is no benefit to waiting.</div></div>
+        <div class="jrny-card"><div class="jrny-card-title">💆 Comfort Measures</div><ul class="jrny-checklist">
+        ${[['Keep mouth moist — swabs, lip balm, ice chips if able','cm-mouth'],['Reposition every 2 hours to prevent pressure sores','cm-repos'],['Play familiar music softly','cm-music'],['Speak in calm, low tones — use their name','cm-speak'],['Offer gentle touch — hold hands, stroke hair','cm-touch'],['Control pain proactively','cm-pain']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        </ul></div>`,
+        `<div class="jrny-card"><div class="jrny-card-title">👨‍👩‍👧 Anticipatory Grief</div><div class="jrny-card-body">Grief in dementia begins long before death — at each lost ability, each change in recognition, each goodbye. This is called anticipatory grief and it is real and valid.</div><div class="jrny-tip">You may grieve the person while they are still here. This does not mean you love them less — it means you love them deeply.</div></div>
+        <div class="jrny-card"><div class="jrny-card-title">🌊 Signs of Approaching Death</div><ul class="jrny-checklist">
+        ${[['Increased sleep — hours to all-day','eol-sleep'],['Mottled or bluish skin, especially on legs','eol-skin'],['Irregular or labored breathing','eol-brth'],['Cooling of hands and feet','eol-cool'],['Jaw relaxation, mouth breathing','eol-jaw'],['No response to touch or voice','eol-nrsp']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        </ul><div class="jrny-warn">⚠️ If enrolled in hospice, call the hospice nurse — not 911 — when death appears near.</div></div>`,
+        `<div class="jrny-card"><div class="jrny-card-title">📋 Prepare These Documents Now</div><ul class="jrny-checklist">
+        ${[['Confirm DNR / POLST is signed and accessible','pr-dnr'],['Know where death certificate originals will come from','pr-dc'],['Have funeral home contact information ready','pr-fun'],['Know the financial accounts and how to access them','pr-accts'],['Locate the will and estate attorney contact','pr-will'],['Notify Social Security promptly after death (benefits stop)','pr-ss']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        </ul></div>
+        <div class="jrny-card"><div class="jrny-card-title">💛 After: Caregiver Grief</div><div class="jrny-card-body">After years of intensive caregiving, grief is complex — often mixed with relief, guilt about that relief, and loss of identity and purpose.</div><div class="jrny-tip">Relief is a normal response after a long illness. It does not mean you didn't love them. Give yourself the same compassion you gave your loved one.</div></div>`
+      ]
+    }
+  };
+  const tabState = {};
+  function getTab(s){ return tabState[s]||0; }
+  window.jrnyCheck = function(k,val){ checks[k]=val; saveChecks(); };
+  window.jrnySetStage = function(s){ stage=s; try{localStorage.setItem(STAGE_KEY,s);}catch(e){} buildJourney(); };
+  window.jrnySetTab = function(s,t){ tabState[s]=t; buildJourney(); };
+  function buildJourney(){
+    const cfg = CONTENT[stage];
+    const t = getTab(stage);
+    const stageKeys = Object.keys(STAGES);
+    root.innerHTML = `
+      <div class="jrny-hero">
+        <div class="jrny-hero-title">🗺️ Your Journey</div>
+        <div class="jrny-hero-sub">A stage-by-stage guide through dementia caregiving — from diagnosis to end of life.</div>
+        <div class="jrny-stage-row">
+          ${stageKeys.map(sk=>`<div class="jrny-stage-card${sk===stage?' active':''}" data-stage="${sk}" onclick="jrnySetStage('${sk}')"><div class="jrny-stage-icon">${STAGES[sk].icon}</div><div class="jrny-stage-label">${STAGES[sk].label}</div><div class="jrny-stage-desc">${STAGES[sk].desc}</div></div>`).join('')}
+        </div>
+      </div>
+      <div class="jrny-tabs">
+        ${cfg.tabs.map((tab,i)=>`<div class="jrny-tab${i===t?' active':''}" onclick="jrnySetTab('${stage}',${i})">${tab}</div>`).join('')}
+      </div>
+      <div class="jrny-body" id="jrny-body" style="overflow-y:auto;flex:1;padding:14px">
+        ${cfg.panels[t]||''}
+      </div>`;
+    Object.keys(checks).forEach(k=>{ const el=document.getElementById(k); if(el) el.checked=!!checks[k]; });
+  }
+  buildJourney();
 }
 
 function renderEmergency(){
