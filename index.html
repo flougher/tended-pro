@@ -814,7 +814,15 @@ body {
   }
   .ph-title { font-size: 1.25rem; }
   .ph { flex-wrap: wrap; gap: 10px; }
-  #section-journey { margin: -16px -14px 0; width: calc(100% + 28px); }
+  #journey-root {
+    position: fixed !important;
+    top: 46px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    height: auto !important;
+  }
+  #jrny-body { padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important; }
 }
 @media(max-width: 480px) {
   .grid-3 { grid-template-columns: 1fr; }
