@@ -4502,6 +4502,8 @@ function navTo(id, btn){
     _pushHistory({ section: id });
     _currentSection = id;
   }
+  // Persist section so orientation-change reloads can restore it
+  try { localStorage.setItem('tendedPro_lastSection', id); } catch(e){}
 
   // Sync bottom nav
   document.querySelectorAll('.bn-btn').forEach(b => {
@@ -13801,6 +13803,17 @@ async function init(){
   updateTopbarUser();
   renderDashboard();
   setInterval(updateTopbar, 60000);
+  // Restore last section after orientation-change reload
+  try {
+    const lastSec = localStorage.getItem('tendedPro_lastSection');
+    const FREE_SECTIONS_RESTORE = ['dashboard','patients','settings','emergency','checkin','itm','journey','legalfin'];
+    if(lastSec && lastSec !== 'dashboard'){
+      // Only restore free sections or if user has premium
+      if(FREE_SECTIONS_RESTORE.includes(lastSec) || isPremium()){
+        navTo(lastSec);
+      }
+    }
+  } catch(e){}
   // Auto-hide disclaimer if previously dismissed
   try {
     if(localStorage.getItem('disclaimerDismissed') === '1'){
