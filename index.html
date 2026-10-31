@@ -1330,23 +1330,23 @@ body {
 .jrny-stage-label{font-size:.72rem;font-weight:700;letter-spacing:.02em}
 .jrny-stage-desc{font-size:.64rem;opacity:.75;margin-top:2px;line-height:1.4}
 .jrny-tabs{display:flex;background:var(--off-white);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;position:sticky;top:-16px;z-index:10}
-.jrny-tab{flex:1;min-width:72px;padding:11px 6px;text-align:center;font-size:.7rem;font-weight:700;color:var(--slate-mid);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .18s}
+.jrny-tab{flex:1;min-width:72px;padding:11px 6px;text-align:center;font-size:.75rem;font-weight:700;color:var(--slate-mid);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .18s}
 .jrny-tab.active{color:var(--teal);border-bottom-color:var(--teal);background:#fff}
 .jrny-body{padding:16px}
-.jrny-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.jrny-card-title{font-size:.85rem;font-weight:700;color:var(--navy);margin-bottom:8px;display:flex;align-items:center;gap:7px}
-.jrny-card-body{font-size:.78rem;color:var(--slate);line-height:1.6}
-.jrny-checklist{list-style:none;padding:0;margin:8px 0 0}
-.jrny-checklist li{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--off-white)}
+.jrny-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.jrny-card-title{font-size:.95rem;font-weight:700;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.jrny-card-body{font-size:.88rem;color:var(--slate);line-height:1.65}
+.jrny-checklist{list-style:none;padding:0;margin:10px 0 0}
+.jrny-checklist li{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--off-white);font-size:.88rem;color:var(--slate)}
 .jrny-checklist li:last-child{border-bottom:none}
-.jrny-checklist input[type=checkbox]{width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:var(--teal)}
-.jrny-checklist label{font-size:.78rem;color:var(--slate);line-height:1.5;cursor:pointer}
-.jrny-pill{display:inline-block;background:var(--teal);color:#fff;border-radius:20px;padding:3px 10px;font-size:.68rem;font-weight:700;margin:2px 2px 0 0}
+.jrny-checklist input[type=checkbox]{width:20px;height:20px;flex-shrink:0;margin-top:1px;accent-color:var(--teal)}
+.jrny-checklist label{font-size:.88rem;color:var(--slate);line-height:1.5;cursor:pointer}
+.jrny-pill{display:inline-block;background:var(--teal);color:#fff;border-radius:20px;padding:4px 11px;font-size:.75rem;font-weight:700;margin:2px 2px 0 0}
 .jrny-pill.orange{background:#E67E22}
 .jrny-pill.red{background:#C0392B}
 .jrny-pill.purple{background:#7B4EAB}
-.jrny-tip{background:rgba(0,168,143,.08);border-left:3px solid var(--teal);border-radius:0 8px 8px 0;padding:10px 12px;margin-top:8px;font-size:.76rem;color:var(--slate);line-height:1.5}
-.jrny-warn{background:rgba(192,57,43,.07);border-left:3px solid #C0392B;border-radius:0 8px 8px 0;padding:10px 12px;margin-top:8px;font-size:.76rem;color:var(--slate);line-height:1.5}
+.jrny-tip{background:rgba(0,168,143,.08);border-left:3px solid var(--teal);border-radius:0 8px 8px 0;padding:12px 14px;margin-top:10px;font-size:.86rem;color:var(--slate);line-height:1.6}
+.jrny-warn{background:rgba(192,57,43,.07);border-left:3px solid #C0392B;border-radius:0 8px 8px 0;padding:12px 14px;margin-top:10px;font-size:.86rem;color:var(--slate);line-height:1.6}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -4296,7 +4296,9 @@ var _qlReturning = false; // set by Quick Log to intercept history.back()
 window.addEventListener('popstate', e => {
   // Quick Log return — redirect popstate navigation to dashboard
   if(_qlReturning){ _qlReturning = false; navTo('dashboard'); return; }
-  const state = e.state || {};
+  // Ignore popstate with no state (fired by Android on orientation change / keyboard show)
+  if(!e.state) return;
+  const state = e.state;
   // Close any open modals first
   const openModalEl = document.querySelector('.modal.open');
   if(openModalEl){
@@ -4305,8 +4307,8 @@ window.addEventListener('popstate', e => {
     _suppressHistoryPush = false;
     return;
   }
-  // Navigate to the state's section (or dashboard fallback)
-  const target = (state && state.section) ? state.section : 'dashboard';
+  // Navigate to the state's section only if state explicitly names one
+  const target = state.section;
   if(target && target !== _currentSection){
     _suppressHistoryPush = true;
     navTo(target);
