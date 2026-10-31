@@ -755,8 +755,7 @@ body {
     touch-action: pan-y;
     z-index: 1;
   }
-  .section { 
-    min-height: 100%;
+  .section {
     padding-bottom: 20px;
   }
   .form-row { grid-template-columns: 1fr; }
@@ -14644,6 +14643,25 @@ function renderJourney(){
     Object.keys(checks).forEach(k=>{ const el=document.getElementById(k); if(el) el.checked=!!checks[k]; });
   }
   buildJourney();
+
+  // Size jrny-body to fill the screen below the hero and tabs
+  setTimeout(function(){
+    var root2 = document.getElementById('journey-root');
+    var body2 = document.getElementById('jrny-body');
+    if(!root2 || !body2) return;
+    var hero2 = root2.querySelector('.jrny-hero');
+    var tabs2 = root2.querySelector('.jrny-tabs');
+    var bnavEl = document.querySelector('.bnav');
+    var bnavH  = bnavEl ? bnavEl.offsetHeight : 72;
+    var heroH  = hero2 ? hero2.offsetHeight : 0;
+    var tabsH  = tabs2 ? tabs2.offsetHeight : 0;
+    var bodyH  = window.innerHeight - 46 - heroH - tabsH - bnavH;
+    root2.style.overflow = 'visible';
+    body2.style.flex     = 'none';
+    body2.style.height   = Math.max(bodyH, 80) + 'px';
+    body2.style.overflowY = 'auto';
+    body2.style.paddingBottom = '20px';
+  }, 50);
 }
 
 function renderEmergency(){
