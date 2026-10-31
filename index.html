@@ -1329,10 +1329,10 @@ body {
 .jrny-stage-icon{font-size:1.5rem;margin-bottom:4px}
 .jrny-stage-label{font-size:.72rem;font-weight:700;letter-spacing:.02em}
 .jrny-stage-desc{font-size:.64rem;opacity:.75;margin-top:2px;line-height:1.4}
-.jrny-tabs{display:flex;background:var(--off-white);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0}
+.jrny-tabs{display:flex;background:var(--off-white);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;position:sticky;top:-16px;z-index:10}
 .jrny-tab{flex:1;min-width:72px;padding:11px 6px;text-align:center;font-size:.7rem;font-weight:700;color:var(--slate-mid);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .18s}
 .jrny-tab.active{color:var(--teal);border-bottom-color:var(--teal);background:#fff}
-.jrny-body{padding:16px;overflow-y:auto;flex:1}
+.jrny-body{padding:16px}
 .jrny-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
 .jrny-card-title{font-size:.85rem;font-weight:700;color:var(--navy);margin-bottom:8px;display:flex;align-items:center;gap:7px}
 .jrny-card-body{font-size:.78rem;color:var(--slate);line-height:1.6}
@@ -3346,7 +3346,7 @@ body {
 
 <!-- ═══ YOUR JOURNEY ════════════════════════════════════════ -->
 <div id="section-journey" class="section">
-  <div id="journey-root" style="display:flex;flex-direction:column;overflow:hidden">
+  <div id="journey-root">
     <!-- filled by renderJourney() -->
   </div>
 </div>
@@ -14637,31 +14637,13 @@ function renderJourney(){
       <div class="jrny-tabs">
         ${cfg.tabs.map((tab,i)=>`<div class="jrny-tab${i===t?' active':''}" onclick="jrnySetTab('${stage}',${i})">${tab}</div>`).join('')}
       </div>
-      <div class="jrny-body" id="jrny-body" style="overflow-y:auto;flex:1;padding:14px">
+      <div class="jrny-body" id="jrny-body" style="padding:14px">
         ${cfg.panels[t]||''}
       </div>`;
     Object.keys(checks).forEach(k=>{ const el=document.getElementById(k); if(el) el.checked=!!checks[k]; });
   }
   buildJourney();
 
-  // Size jrny-body to fill the screen below the hero and tabs
-  setTimeout(function(){
-    var root2 = document.getElementById('journey-root');
-    var body2 = document.getElementById('jrny-body');
-    if(!root2 || !body2) return;
-    var hero2 = root2.querySelector('.jrny-hero');
-    var tabs2 = root2.querySelector('.jrny-tabs');
-    var bnavEl = document.querySelector('.bnav');
-    var bnavH  = bnavEl ? bnavEl.offsetHeight : 72;
-    var heroH  = hero2 ? hero2.offsetHeight : 0;
-    var tabsH  = tabs2 ? tabs2.offsetHeight : 0;
-    var bodyH  = window.innerHeight - 46 - heroH - tabsH - bnavH;
-    root2.style.overflow = 'visible';
-    body2.style.flex     = 'none';
-    body2.style.height   = Math.max(bodyH, 80) + 'px';
-    body2.style.overflowY = 'auto';
-    body2.style.paddingBottom = '20px';
-  }, 50);
 }
 
 function renderEmergency(){
