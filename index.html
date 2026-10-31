@@ -16,42 +16,6 @@
 <link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABYUlEQVR42s2XO27CQBCG2YEGKYWbVGkofIOUtKmQcgIOkQOgVFEOwCE4AVIqWkpuQOHGFY0LS6kgaSBZjedpzJrtPDue/5vxrncnDIjx8PT8M7jBqMtdwLaQQlgCgdTiWAtSi2OIUZuX4WOecXOn91XliRU82UvCbUFMAB5hL4gKwIkf90Uj8DCfZF4IEYASj4Xrz+X/olq8iSAcBFjFj/uiorLmqoN9uUqCNSC2jWcv4jP3nglAW3SUmGSX4oI3e00Ez2tVAE/2mrjFD8cHa/ZWccpfqoL6K463mjQO09em8WyLt2irXXDL0TuA+gku5aPWQFz2x+26Mf/9tbmuAvEv1RKME+fOCBJAOjisEJIfjq+uAUyvQeB5KXsWQDvDOQgNjopr2gVUFliMEteyFwEw7TCfZJaAnC9X1fu+ESW5E3r6gq5vxXW5Cy6ArvuCP4A+uqNLfwhS55qiOQ19t+e/EcHH9FL45AEAAAAASUVORK5CYII=">
 <title>Tended Health Pro — Medication &amp; Daily Care Log for Families</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<!-- ═══ AGENCY WHITE-LABEL CONFIG ═══════════════════════════
-     Default values. Agencies override via config.js next to index.html.
-     config.js sets window.AGENCY_CONFIG before this page renders.
-     If config.js is absent, defaults below apply (standard Tended branding).
-═══════════════════════════════════════════════════════════ -->
-<script>
-window.AGENCY_CONFIG = {
-  appName:       'Tended Health Pro',   // Short name for topbar + home screen
-  agencyName:    null,                  // e.g. 'Sunrise Home Care' — shown as "Powered by …"
-  primaryColor:  '#0B7A6E',            // --teal
-  primaryMid:    '#0E9E8E',            // --teal-mid
-  primaryBright: '#14C4B2',            // --teal-bright
-  primaryPale:   '#D1F2EF',            // --teal-pale
-  logoEmoji:     '🏡',                 // Topbar icon (emoji or leave null for default)
-  supportEmail:  null,                  // e.g. 'families@sunrisehomecare.com'
-  supportPhone:  null                   // e.g. '775-555-0100'
-};
-</script>
-<script src="config.js" onerror="void(0)"></script>
-<script>
-// Apply agency config immediately — before CSS paint — to avoid flash of default colors
-(function(){
-  var cfg = window.AGENCY_CONFIG;
-  if(!cfg) return;
-  var r = document.documentElement;
-  if(cfg.primaryColor)  r.style.setProperty('--teal',        cfg.primaryColor);
-  if(cfg.primaryMid)    r.style.setProperty('--teal-mid',    cfg.primaryMid);
-  if(cfg.primaryBright) r.style.setProperty('--teal-bright', cfg.primaryBright);
-  if(cfg.primaryPale)   r.style.setProperty('--teal-pale',   cfg.primaryPale);
-  if(cfg.appName){
-    document.title = cfg.appName + ' — Care Log';
-    var m = document.querySelector('meta[name="apple-mobile-web-app-title"]');
-    if(m) m.setAttribute('content', cfg.appName);
-  }
-})();
-</script>
 <style>
 /* ═══════════════════════════════════════════════════════════
    TENDED PRO — DESIGN SYSTEM
@@ -814,15 +778,6 @@ body {
   }
   .ph-title { font-size: 1.25rem; }
   .ph { flex-wrap: wrap; gap: 10px; }
-  #journey-root {
-    position: fixed !important;
-    top: 46px !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    height: auto !important;
-  }
-  #jrny-body { padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important; }
 }
 @media(max-width: 480px) {
   .grid-3 { grid-template-columns: 1fr; }
@@ -1402,7 +1357,7 @@ body {
 <div id="welcome-overlay" style="display:none;position:fixed;inset:0;background:rgba(12,27,51,.92);z-index:9999;align-items:flex-start;justify-content:center;padding:20px;padding-bottom:max(20px,env(safe-area-inset-bottom));overflow-y:auto;-webkit-overflow-scrolling:touch;backdrop-filter:blur(6px)">
   <div style="background:var(--white);border-radius:20px;padding:40px 36px;max-width:540px;width:100%;box-shadow:0 24px 64px rgba(12,27,51,.4);text-align:center;animation:welcomeFadeIn .4s ease;margin:auto 0">
     <div style="width:64px;height:64px;background:linear-gradient(135deg,var(--teal-mid),var(--teal-bright));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 20px">🏡</div>
-    <div id="welcome-app-name" style="font-family:var(--font-head);font-size:1.6rem;font-weight:700;color:var(--navy);margin-bottom:8px">Welcome to Tended Health Pro</div>
+    <div style="font-family:var(--font-head);font-size:1.6rem;font-weight:700;color:var(--navy);margin-bottom:8px">Welcome to Tended Health Pro</div>
     <div style="font-size:.92rem;color:var(--slate-mid);line-height:1.7;margin-bottom:10px">Daily care tracking for <strong style="color:var(--navy)">family caregivers.</strong> No training needed.</div>
     <div style="background:#F0FDF4;border:1.5px solid #A7F3D0;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:.84rem;color:#065F46;line-height:1.6">💚 <strong>If you can send a text, you can use this app.</strong> Use what helps. Ignore the rest. Most caregivers start with the medication log and nothing else.</div>
     <div style="font-size:.84rem;color:var(--slate-light);line-height:1.6;margin-bottom:6px">Medications · Care Notes · Vitals · Wound Care · Behavior Log · <strong style="color:#7C3AED">Memory Care</strong> · Monthly Summary</div>
@@ -1553,10 +1508,9 @@ body {
 
 <!-- ═══ TOP BAR ═══════════════════════════════════════════ -->
 <div class="topbar">
-  <div class="topbar-logo" id="topbar-logo">🏡</div>
+  <div class="topbar-logo">🏡</div>
   <div>
-    <div class="topbar-brand" id="topbar-brand">Tended Health Pro</div>
-    <div id="topbar-agency" style="font-size:.65rem;color:var(--teal-bright);font-weight:500;display:none"></div>
+    <div class="topbar-brand">Tended Health Pro</div>
   </div>
   <span class="premium-badge" id="premium-badge">⭐ Pro</span>
   <span id="topbar-patient-indicator" style="display:none;align-items:center;background:var(--teal);color:white;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
@@ -1818,39 +1772,6 @@ body {
   <!-- Support & Planning card -->
   <div id="dash-planning-card" style="margin-bottom:20px"></div>
 
-  <!-- Resources card -->
-  <div class="card" style="margin-bottom:20px;padding:0;overflow:hidden">
-    <div style="padding:10px 14px 8px;border-bottom:1px solid var(--border)">
-      <div class="card-title" style="margin-bottom:0">📞 Free Caregiver Support Lines</div>
-    </div>
-    <div style="padding:10px 14px">
-      <div onclick="dialPhone('18002723900')" style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer">
-        <div style="font-size:1.1rem;width:28px;text-align:center">🟦</div>
-        <div style="flex:1">
-          <div style="font-size:.82rem;font-weight:700;color:var(--navy)">Alzheimer's Association</div>
-          <div style="font-size:.72rem;color:var(--slate-mid)">1-800-272-3900 · 24/7 · 200+ languages</div>
-        </div>
-        <div style="font-size:.7rem;color:var(--slate-light)">call</div>
-      </div>
-      <div onclick="dialPhone('18662328484')" style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer">
-        <div style="font-size:1.1rem;width:28px;text-align:center">🟣</div>
-        <div style="flex:1">
-          <div style="font-size:.82rem;font-weight:700;color:var(--navy)">Alzheimer's Foundation of America</div>
-          <div style="font-size:.72rem;color:var(--slate-mid)">1-866-232-8484 · Licensed social workers · 7 days</div>
-        </div>
-        <div style="font-size:.7rem;color:var(--slate-light)">call</div>
-      </div>
-      <div onclick="dialPhone('18552273640')" style="display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer">
-        <div style="font-size:1.1rem;width:28px;text-align:center">🟩</div>
-        <div style="flex:1">
-          <div style="font-size:.82rem;font-weight:700;color:var(--navy)">Caregiver Action Network</div>
-          <div style="font-size:.72rem;color:var(--slate-mid)">1-855-227-3640 · Mon–Fri 8am–7pm ET</div>
-        </div>
-        <div style="font-size:.7rem;color:var(--slate-light)">call</div>
-      </div>
-    </div>
-  </div>
-
 </div>
 <div id="section-patients" class="section">
   <div class="ph">
@@ -1942,9 +1863,9 @@ body {
   </div>
 
   <div class="card">
-    <div class="card-title">📝 Medication Notes — <span id="mar-notes-date"></span></div>
+    <div class="card-title">📝 MAR Notes — <span id="mar-notes-date"></span></div>
     <div style="background:#F0F9FF;border:1.5px solid #0EA5E9;border-radius:var(--r);padding:10px 14px;margin-bottom:10px;font-size:.74rem;color:#0C4A6E;line-height:1.65">
-      <strong>💊 Side Effect Tip:</strong> Include the medication name, the symptom you noticed, when it started, and how long it lasted. Side effects from Donepezil, Memantine, Seroquel, and Depakote can sometimes look like dementia symptoms and may be temporary. If you're unsure whether what you're seeing is a side effect, call the doctor — it's always okay to ask.
+      <strong>⚕️ Side Effect Guidance:</strong> Include the medication name, specific symptom, when it started, and duration. Side effects from Donepezil, Memantine, Seroquel, and Depakote can overlap with dementia symptoms and may be expected and temporary. Always report to the supervising nurse or physician. <strong>Never adjust or discontinue any medication without physician guidance.</strong>
     </div>
     <div class="fg" style="margin-bottom:10px">
       <textarea id="mar-notes" rows="2" placeholder="Medication refusals, side effects observed, notable reactions…"></textarea>
@@ -2046,7 +1967,7 @@ body {
     <div>
       <div style="font-weight:700;font-size:.84rem;color:#7A4A00;margin-bottom:4px">Medical Disclaimer</div>
       <div style="font-size:.79rem;color:#92400E;line-height:1.7">
-        These warnings come from <strong>FDA drug label information</strong> and are here to help you know what to watch for. If something concerns you, a quick call to the doctor or pharmacist is always the right move.
+        Medication warnings in Tended Health Pro are sourced from <strong>FDA drug label data</strong> and are for <strong>informational reference only</strong>. They do not constitute medical advice. Tended Health Pro is a documentation tool — not a medical device. <strong>Always follow your agency's protocols and physician orders.</strong> Never adjust, withhold, or administer medication outside of a physician's order.
       </div>
     </div>
   </div>
@@ -2061,8 +1982,8 @@ body {
   </div>
   <div class="card" style="margin-top:4px">
     <div class="card-title">ℹ️ About Safety Warnings</div>
-    <p style="font-size:.84rem;color:var(--slate-mid);line-height:1.7;margin-bottom:0">A <strong style="color:var(--navy)">Safety Warning</strong> (also called an FDA boxed warning) is the FDA's most serious drug safety alert. It means the medication has a known risk of serious or life-threatening side effects. Your job as a caregiver is to <strong style="color:var(--navy)">know what to watch for</strong> — if you notice any of the listed symptoms in your loved one, <strong style="color:var(--navy)">call their doctor or pharmacist</strong>. You don't need to have all the answers — that's what the care team is there for.</p>
-      <p style="font-size:.82rem;color:var(--slate-light);line-height:1.6;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">⚕️ These warnings come from FDA drug label information and are here to help you know what to watch for. If something concerns you, reach out to the doctor or pharmacist — they're your best resource.</p>
+    <p style="font-size:.84rem;color:var(--slate-mid);line-height:1.7;margin-bottom:0">A <strong style="color:var(--navy)">Safety Warning</strong> (also called an FDA boxed warning) is the FDA's most serious drug safety alert. It means the medication has a known risk of serious or life-threatening side effects. As a caregiver, your role is to <strong style="color:var(--navy)">watch for the listed symptoms</strong> and <strong style="color:var(--navy)">report them immediately</strong> to your doctor or pharmacist — never adjust or stop medication without medical guidance.</p>
+      <p style="font-size:.82rem;color:var(--slate-light);line-height:1.6;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">⚕️ <strong style="color:var(--navy)">Disclaimer:</strong> Medication warnings in Tended Health Pro are sourced from FDA drug label data and are for <strong style="color:var(--navy)">informational reference only</strong>. They do not constitute medical advice. Tended Health Pro is a documentation tool — not a medical device. Always follow your agency's protocols and physician orders.</p>
   </div>
 </div>
 
@@ -2132,7 +2053,7 @@ body {
       </select>
     </div>
     <div class="fg"><label>Supervisor Notified</label>
-      <input id="sd-notified" placeholder="Family member or doctor notified (if applicable)"></div>
+      <input id="sd-notified" placeholder="Name of supervisor notified (if applicable)"></div>
     <div class="fg"><label>Environmental Factors <span style="font-size:.7rem;color:var(--slate-light)">(select all that apply)</span></label>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px" id="sd-env-factors">
         <label style="display:flex;align-items:center;gap:4px;font-size:.8rem;cursor:pointer"><input type="checkbox" value="low-light"> 🌑 Low / dim light</label>
@@ -2167,7 +2088,7 @@ body {
   <div id="wd-prediction-alert"></div>
   <div style="background:var(--refused-bg);border:1.5px solid var(--refused);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:16px;font-size:.78rem;color:#7A2020;line-height:1.7">
     <div style="font-weight:700;margin-bottom:6px;color:var(--refused)">⚠️ Wandering & Unsupervised Exits — Safety Guidance</div>
-    <p style="margin-bottom:8px"><strong>Document every event immediately.</strong> A wandering log is only useful when entries are consistent and complete. Time of incident, duration, location found, and what your loved one was doing are all essential.</p>
+    <p style="margin-bottom:8px"><strong>Document every event immediately.</strong> A wandering log is only clinically useful when entries are consistent and complete. Time of incident, duration, location found, and what your loved one was doing are all essential.</p>
     <p style="margin-bottom:8px"><strong>Wandering vs. Leaving Unsupervised:</strong> Wandering is movement within a supervised space. Leaving unsupervised — clinically called elopement — means your loved one has left or attempted to leave without authorization. This is a medical emergency. If your loved one leaves or attempts to leave, <strong>call 911 immediately</strong>, then notify the family and physician.</p>
     <p style="margin-bottom:8px"><strong>Before logging, verify safeguards are in place:</strong> door alarms active, bed sensor functioning, ID bracelet on your loved one, family notified of risk level.</p>
     <p style="margin-bottom:0"><strong>Call the physician if:</strong> wandering episodes are new or suddenly increasing in frequency, your loved one appears in pain or distressed during episodes, or your loved one is found in an unsafe location. A sudden increase in wandering behavior can signal a UTI, pain, medication reaction, or disease progression.</p>
@@ -2185,22 +2106,23 @@ body {
     </div>
     <div class="fg"><label>Event Type *</label>
       <select id="wd-type" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
-        <option>Wandering — within the home</option>
-        <option>Wandering — entered unsafe area</option>
+        <option>Wandering — within facility</option>
+        <option>Wandering — entered restricted area</option>
         <option>Unsupervised exit attempt (elopement) — intercepted</option>
         <option>Left home unaccompanied (elopement)</option>
         <option>Night-time wandering</option>
+        <option>Wandering — entered another resident's room</option>
       </select>
     </div>
     <div class="fg"><label>Location Found</label>
-      <input id="wd-location" placeholder="e.g. Backyard near fence, front door, street, neighbor's yard…"></div>
+      <input id="wd-location" placeholder="e.g. Hallway near exit, parking lot, another resident's room…"></div>
     <div class="fg"><label>Duration Missing / Unaccounted</label>
       <input id="wd-duration" placeholder="e.g. Approximately 5 minutes, 20 minutes…"></div>
     <div class="fg"><label>Care Recipient Condition When Found</label>
       <textarea id="wd-condition" rows="2" placeholder="e.g. Calm and cooperative, confused but uninjured, distressed, fell while wandering…"></textarea>
     </div>
     <div class="fg"><label>Action Taken</label>
-      <textarea id="wd-action" rows="2" placeholder="e.g. Guided them back inside, reassured, offered a snack, applied door alarm, called family…"></textarea>
+      <textarea id="wd-action" rows="2" placeholder="e.g. Escorted back to room, reassured, offered snack, applied door alarm, notified charge nurse…"></textarea>
     </div>
     <div class="fg"><label>Supervisor / Family Notified *</label>
       <input id="wd-notified" placeholder="Names of all persons notified"></div>
@@ -2424,7 +2346,7 @@ body {
         </div>
 
         <div style="margin-top:14px;background:var(--held-bg);border:1px solid #FCD34D;border-radius:var(--r);padding:10px 12px;font-size:.76rem;color:var(--held);line-height:1.6">
-          🔒 <strong>Keep it private:</strong> All your data is stored on this device only. Keep your phone locked to protect your loved one's information.
+          ⚠️ <strong>Compliance Notice:</strong> Ensure device security meets your agency's HIPAA policies. This app stores data locally only — no cloud servers.
         </div>
       </div>
     </div>
@@ -2526,7 +2448,7 @@ body {
     <div style="font-size:.82rem;color:var(--slate-mid);line-height:1.8">
       <p style="margin-bottom:10px">Tended Health Pro is a <strong style="color:var(--navy)">personal caregiving tool</strong> designed for family caregivers and private individuals caring for a loved one at home. It is not a medical device and does not provide clinical diagnoses.</p>
       <p style="margin-bottom:10px">Tended Health Pro is <strong style="color:var(--navy)">not a HIPAA-covered service</strong> and is not intended for use by healthcare covered entities or business associates under HIPAA. If you are a home health agency or healthcare provider please consult your compliance officer before use.</p>
-      <p style="margin-bottom:10px"><strong style="color:var(--navy)">Medication warnings</strong> in this app come from FDA drug label information and are here to help you know what to watch for. If something concerns you, reach out to the doctor or pharmacist — they're your best resource.</p>
+      <p style="margin-bottom:10px"><strong style="color:var(--navy)">Medication warnings</strong> displayed in this app are sourced from FDA drug label data and are for <strong style="color:var(--navy)">informational reference only</strong>. They do not constitute medical advice. Never adjust, withhold, or administer medication outside of a physician's order.</p>
       <p style="margin-bottom:0;color:var(--slate-light);font-size:.76rem">Tended Health Pro · Personal Caregiving Tool</p>
     </div>
   </div>
@@ -2632,9 +2554,6 @@ body {
     <div class="card" style="border-color:#8B5CF6;border-width:2px">
       <div class="card-title" style="color:#6D28D9">🕊️ End of Life Planning</div>
       <p style="font-size:.78rem;color:var(--slate-mid);margin:-4px 0 14px">Important documents and wishes — have these ready before they are needed.</p>
-      <div style="background:#FDF4FF;border:1.5px solid #C4B5FD;border-radius:var(--r);padding:10px 14px;font-size:.78rem;color:#5B21B6;line-height:1.6;margin-bottom:14px">
-        📋 <strong>Reference only.</strong> What you enter here is a personal reminder for caregivers — it has no legal weight. The physical POLST or Advance Directive must be present and accessible for emergency responders to honor it. Know where it is and make sure all caregivers do too.
-      </div>
       <div class="fg"><label>Advance Directive / POLST Status</label>
         <select id="cp-polst" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
           <option value="">-- Not specified --</option>
@@ -2738,7 +2657,7 @@ body {
   <!-- Privacy note re: no photos -->
   <div style="display:flex;align-items:flex-start;gap:10px;background:#F0F4F8;border-radius:var(--r);padding:10px 14px;margin-bottom:14px;font-size:.76rem;color:var(--slate-mid);line-height:1.6">
     <span style="font-size:1rem;flex-shrink:0">🔒</span>
-    <span><strong style="color:var(--navy)">Photo documentation is not included in this app.</strong> To protect care recipient privacy, wound status should be documented using detailed written descriptions, measurements, and staging notes. This app is a personal caregiving tool and is not a HIPAA-covered service.</span>
+    <span><strong style="color:var(--navy)">Photo documentation is not included in this app.</strong> To protect care recipient privacy, wound status should be documented using detailed written descriptions, measurements, and staging notes. Professional caregivers should follow their agency's protocol for clinical photography. This app is a personal caregiving tool and is not a HIPAA-covered service.</span>
   </div>
 
   <div id="wound-list">
@@ -3022,7 +2941,7 @@ body {
   <div id="trends-patient-bar" style="margin-bottom:0"></div>
   <div class="ph">
     <div><div class="ph-title">📊 Weekly Trends</div>
-    <div class="ph-sub">Behavior frequency, patterns, and trends over time</div></div>
+    <div class="ph-sub">Behavior frequency, patterns, and clinical insights</div></div>
     <button class="btn btn-secondary" onclick="renderTrends()">🔄 Refresh</button>
   </div>
 
@@ -3153,7 +3072,7 @@ body {
         <div style="color:var(--refused);font-size:.78rem">Tachypnea: &gt;20/min</div>
       </div>
     </div>
-    <div style="margin-top:10px;font-size:.72rem;color:var(--slate-light);line-height:1.5">⚕️ Reference ranges are general guidelines for adults. Always follow your loved one's doctor-ordered target ranges, which may differ. If a reading looks unusual, call their doctor or pharmacist — it's always okay to reach out.</div>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--slate-light);line-height:1.5">⚕️ Reference ranges are general guidelines for adults. Always follow your care recipient's physician-ordered target ranges, which may differ. Report out-of-range values to your supervisor immediately.</div>
   </div>
 </div>
 
@@ -3195,7 +3114,7 @@ body {
 
   <div class="card">
     <div class="card-title">🧪 Try Voice to Text Here</div>
-    <div style="font-size:.84rem;color:var(--slate-mid);margin-bottom:14px">Test the microphone here before using it in the app.</div>
+    <div style="font-size:.84rem;color:var(--slate-mid);margin-bottom:14px">Test the microphone before using it in clinical documentation.</div>
     <div class="fg">
       <label>Speak your test note below</label>
       <div class="voice-field-wrap">
@@ -3226,7 +3145,7 @@ body {
 <div id="section-report" class="section">
   <div class="ph">
     <div><div class="ph-title">📄 Monthly Care Summary Report</div>
-    <div class="ph-sub">A summary of your loved one's care — useful for doctor visits or sharing with family</div></div>
+    <div class="ph-sub">Complete clinical summary from all logged data</div></div>
   </div>
 
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
@@ -3248,11 +3167,11 @@ body {
       </div>
     </div>
     <div class="form-row">
-      <div class="fg"><label>Prepared By / Organization (optional)</label>
-        <input id="report-provider" placeholder="e.g. Your name, family group, or support organization">
+      <div class="fg"><label>Provider / Agency</label>
+        <input id="report-provider" placeholder="Your agency or practice name">
       </div>
       <div class="fg"><label>Reporting Caregiver</label>
-        <input id="report-caregiver" placeholder="Your full name">
+        <input id="report-caregiver" placeholder="Your full name and credentials">
       </div>
     </div>
     <div class="fg" style="margin-bottom:0"><label>Include Sections</label>
@@ -3550,17 +3469,6 @@ body {
           <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
         </select>
       </div>
-      <div class="fg"><label>Dementia Type</label>
-        <select id="pm-dem-type" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
-          <option value="">— Not specified —</option>
-          <option value="alzheimers">Alzheimer's Disease</option>
-          <option value="lewy">Lewy Body Dementia</option>
-          <option value="frontotemporal">Frontotemporal (FTD)</option>
-          <option value="vascular">Vascular Dementia</option>
-          <option value="mixed">Mixed Dementia</option>
-          <option value="other">Other / Unknown</option>
-        </select>
-      </div>
     </div>
     <div class="fg"><label>⚠️ Allergies</label><input id="pm-allergies" placeholder="Penicillin, Sulfa drugs, Latex…"></div>
     <div class="fg"><label>Medical Conditions</label><textarea id="pm-conditions" rows="2" placeholder="Type 2 Diabetes, Hypertension, Dementia…"></textarea></div>
@@ -3674,7 +3582,7 @@ body {
       <textarea id="inc-desc" rows="3" placeholder="Describe exactly what happened, what you observed, and the circumstances…"></textarea>
     </div>
     <div class="fg"><label>Action Taken</label>
-      <textarea id="inc-action" rows="2" placeholder="e.g. Helped them to the chair, applied ice pack, called the doctor, called 911…"></textarea>
+      <textarea id="inc-action" rows="2" placeholder="e.g. Assisted to chair, applied ice pack, notified supervisor, called 911…"></textarea>
     </div>
     <div class="fg"><label>Follow-Up Status</label>
       <select id="inc-status" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
@@ -3831,9 +3739,9 @@ const BBW_DB = {
   'coumadin':      { short:'Bleeding risk', watch:'Monitor for unusual bruising, blood in urine/stool, prolonged bleeding. Report immediately.' },
   'heparin':       { short:'Severe bleeding risk', watch:'Monitor for unusual bleeding or bruising. Emergency risk if overdosed.' },
   'apixaban':      { short:'Bleeding & spinal risk', watch:'Premature discontinuation increases stroke risk. Monitor for bleeding.' },
-  'rivaroxaban':   { short:'Bleeding & spinal risk', watch:'Stopping this medication without guidance can increase stroke risk — always consult their doctor before any change. Monitor for bleeding.' },
+  'rivaroxaban':   { short:'Bleeding & spinal risk', watch:'Do not discontinue without physician order. Monitor for bleeding.' },
   'eliquis':       { short:'Bleeding & spinal risk', watch:'Premature discontinuation increases stroke risk. Monitor for bleeding.' },
-  'xarelto':       { short:'Bleeding & spinal risk', watch:'Stopping this medication without guidance can increase stroke risk — always consult their doctor before any change. Monitor for bleeding.' },
+  'xarelto':       { short:'Bleeding & spinal risk', watch:'Do not discontinue without physician order. Monitor for bleeding.' },
   'dabigatran':    { short:'Bleeding & spinal risk', watch:'Monitor for bleeding. Do not crush capsules.' },
   'pradaxa':       { short:'Bleeding & spinal risk', watch:'Monitor for bleeding. Do not crush capsules.' },
   // Dementia / CNS
@@ -3864,7 +3772,7 @@ const BBW_DB = {
   'citalopram':    { short:'Suicidality & QT prolongation', watch:'Monitor for irregular heartbeat, dizziness. Report mood changes or self-harm ideation.' },
   'celexa':        { short:'Suicidality & QT prolongation', watch:'Monitor for irregular heartbeat, dizziness, mood changes.' },
   'venlafaxine':   { short:'Suicidality risk', watch:'Monitor for worsening depression, unusual behavior. Do not abruptly discontinue.' },
-  'effexor':       { short:'Suicidality risk', watch:'Monitor for mood changes. Stopping this medication abruptly can cause serious effects — always consult their doctor before any change.' },
+  'effexor':       { short:'Suicidality risk', watch:'Monitor for mood changes. Do not abruptly stop without physician order.' },
   'duloxetine':    { short:'Suicidality risk', watch:'Monitor for worsening depression, unusual behavior changes. Report immediately.' },
   'cymbalta':      { short:'Suicidality risk', watch:'Monitor for mood changes, unusual behavior. Report self-harm ideation immediately.' },
   'amitriptyline': { short:'Cardiac risk & suicidality', watch:'Monitor for irregular heartbeat, dizziness, sedation. Fall risk especially in elderly.' },
@@ -3876,15 +3784,15 @@ const BBW_DB = {
   'tramadol':      { short:'Addiction & respiratory depression', watch:'Monitor for seizures, difficulty breathing. Interaction risk with other CNS medications.' },
   'ultram':        { short:'Addiction & respiratory depression', watch:'Monitor for seizures, breathing difficulty. Serotonin syndrome risk.' },
   'fentanyl':      { short:'Extreme respiratory depression risk', watch:'Potentially fatal. Monitor breathing constantly. Never apply more than one patch.' },
-  'methadone':     { short:'Fatal respiratory depression & QT risk', watch:'Monitor breathing and heart rhythm. Dangerous drug interactions — contact their doctor before adding or changing any medications.' },
-  'buprenorphine': { short:'Respiratory depression risk', watch:'Monitor breathing. Combining with other CNS depressants is dangerous — contact their doctor before adding any medications.' },
+  'methadone':     { short:'Fatal respiratory depression & QT risk', watch:'Monitor breathing and heart rhythm. Dangerous drug interactions. Never adjust dose without order.' },
+  'buprenorphine': { short:'Respiratory depression risk', watch:'Monitor breathing. Do not combine with other CNS depressants without physician order.' },
   // Diabetes
   'metformin':     { short:'Lactic acidosis risk', watch:'Monitor for muscle pain, weakness, difficulty breathing, stomach pain, dizziness. Stop and call physician if these occur.' },
   'glucophage':    { short:'Lactic acidosis risk', watch:'Monitor for muscle pain, weakness, breathing difficulty, stomach pain, dizziness.' },
-  'insulin':       { short:'Hypoglycemia risk', watch:'Monitor blood glucose. Signs of low blood sugar include shakiness, sweating, confusion, pale skin. Contact their doctor or call 911 for severe symptoms.' },
-  'glipizide':     { short:'Hypoglycemia & cardiac risk', watch:'Monitor blood glucose. Signs of low blood sugar include shakiness, sweating, confusion. Contact their doctor if blood sugar drops.' },
-  'glyburide':     { short:'Hypoglycemia & cardiac risk', watch:'Monitor blood glucose. Higher hypoglycemia risk than other sulfonylureas. Contact their doctor if blood sugar drops.' },
-  'glimepiride':   { short:'Hypoglycemia risk', watch:'Monitor blood glucose. Contact their doctor if blood sugar drops or your loved one shows signs of low blood sugar.' },
+  'insulin':       { short:'Hypoglycemia risk', watch:'Monitor blood glucose. Signs of low BG: shakiness, sweating, confusion, pale skin. Give glucose source immediately if BG < 70.' },
+  'glipizide':     { short:'Hypoglycemia & cardiac risk', watch:'Monitor blood glucose. Signs of low BG: shakiness, sweating, confusion. Give glucose if BG < 70.' },
+  'glyburide':     { short:'Hypoglycemia & cardiac risk', watch:'Monitor blood glucose. Higher hypoglycemia risk than other sulfonylureas. Give glucose if BG < 70.' },
+  'glimepiride':   { short:'Hypoglycemia risk', watch:'Monitor blood glucose. Give glucose source if BG < 70 and patient is symptomatic.' },
   'pioglitazone':  { short:'Bladder cancer & heart failure risk', watch:'Monitor for fluid retention, weight gain, swelling, blood in urine. Report immediately.' },
   'actos':         { short:'Bladder cancer & heart failure risk', watch:'Monitor for fluid retention, swelling, blood in urine.' },
   // Cardiovascular
@@ -4586,10 +4494,6 @@ function navTo(id, btn){
   const sec = document.getElementById('section-' + id);
   if(sec) sec.classList.add('active');
   if(btn) btn.classList.add('active');
-
-  // Reset scroll position so every section starts at the top
-  const contentEl = document.querySelector('.content');
-  if(contentEl) contentEl.scrollTop = 0;
   _expandNavGroup(id); // ensure sidebar group is visible for this section
 
   // Push history entry for back-button support — skipped when triggered by popstate
@@ -4744,7 +4648,7 @@ function renderPlanningCard(){
   // Read legal checklist progress
   let checks = {};
   try { checks = JSON.parse(localStorage.getItem('tendedPro_lfChecks')||'{}'); } catch(e){}
-  const LF_TOTAL = 40;
+  const LF_TOTAL = 30;
   const lfDone = Object.values(checks).filter(Boolean).length;
   const lfPct  = Math.round(lfDone / LF_TOTAL * 100);
 
@@ -5165,7 +5069,6 @@ function openPatientModal(editId){
   pmRenderContacts(_pmContacts);
   const frEl = document.getElementById('pm-fall-risk');  if(frEl) frEl.value = p?.fallRisk  || '';
   const plEl = document.getElementById('pm-pain-level'); if(plEl) plEl.value = p?.painLevel || '';
-  const dtEl = document.getElementById('pm-dem-type');   if(dtEl) dtEl.value = p?.demType   || '';
   openModal('patient-modal');
 }
 
@@ -5257,7 +5160,6 @@ function savePatient(){
     notes:      document.getElementById('pm-notes').value.trim(),
     fallRisk:   document.getElementById('pm-fall-risk')?.value  || '',
     painLevel:  document.getElementById('pm-pain-level')?.value || '',
-    demType:    document.getElementById('pm-dem-type')?.value   || '',
     ...getEOLFields()
   };
 
@@ -5312,7 +5214,7 @@ function renderPatients(){
           ${!isInactive && p.fallRisk ? ' ' + fallRiskBadge(p.fallRisk, false) : ''}
           ${p.painLevel !== undefined && p.painLevel !== '' ? ' ' + painFaceHtml(p.painLevel) : ''}
         </div>
-        <div class="patient-meta">${[p.room && '🏠 '+p.room, p.dob && 'DOB: '+p.dob, p.demType && ({alzheimers:"Alzheimer's",lewy:"Lewy Body",frontotemporal:"Frontotemporal",vascular:"Vascular",mixed:"Mixed",other:"Other"}[p.demType]||p.demType)+' Dementia'].filter(Boolean).join(' · ') || 'No additional info'}</div>
+        <div class="patient-meta">${[p.room && '🏠 '+p.room, p.dob && 'DOB: '+p.dob].filter(Boolean).join(' · ') || 'No additional info'}</div>
         ${p.doctor ? `<div style="margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span style="font-weight:700;font-size:.86rem;color:var(--navy)">👨‍⚕️ ${p.doctor}</span>
           ${p.doctorPhone ? `<span style="font-weight:700;font-size:.84rem;color:var(--teal)">${p.doctorPhone}</span>
@@ -5344,10 +5246,9 @@ function openPatientDetail(id){
       ${p.dob    ? `<div><strong style="color:var(--slate)">DOB:</strong> ${p.dob}</div>` : ''}
       ${p.room   ? `<div><strong style="color:var(--slate)">Address:</strong> ${p.room}</div>` : ''}
       ${p.doctor ? `<div><strong style="color:var(--slate)">Doctor:</strong> ${p.doctor}</div>` : ''}
-      ${p.blood   ? `<div><strong style="color:var(--slate)">Blood Type:</strong> <span style="font-family:var(--font-mono);font-weight:700">${p.blood}</span></div>` : ''}
-      ${p.demType ? `<div><strong style="color:var(--slate)">Dementia Type:</strong> ${{alzheimers:"Alzheimer's Disease",lewy:"Lewy Body Dementia",frontotemporal:"Frontotemporal (FTD)",vascular:"Vascular Dementia",mixed:"Mixed Dementia",other:"Other / Unknown"}[p.demType]||p.demType}</div>` : ''}
-      ${p.notes   ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-style:italic;color:var(--slate-light);font-size:.82rem">${p.notes}</div>` : ''}
-      ${!p.dob && !p.room && !p.doctor && !p.blood && !p.demType && !p.notes ? '<div style="color:var(--slate-light);font-size:.84rem">No additional information recorded.</div>' : ''}
+      ${p.blood  ? `<div><strong style="color:var(--slate)">Blood Type:</strong> <span style="font-family:var(--font-mono);font-weight:700">${p.blood}</span></div>` : ''}
+      ${p.notes  ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-style:italic;color:var(--slate-light);font-size:.82rem">${p.notes}</div>` : ''}
+      ${!p.dob && !p.room && !p.doctor && !p.blood && !p.notes ? '<div style="color:var(--slate-light);font-size:.84rem">No additional information recorded.</div>' : ''}
     </div>`;
 
   document.getElementById('detail-medical').innerHTML =
@@ -6498,9 +6399,9 @@ function printMAR(){
     <div class="fg"><label>Who Was Notified</label>
       <select id="refusal-notified" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
         <option value="">— Select —</option>
-        <option>Doctor or nurse notified</option>
-        <option>Family member notified</option>
-        <option>Emergency contact notified</option>
+        <option>Nurse / supervisor notified</option>
+        <option>Physician notified</option>
+        <option>Family / emergency contact notified</option>
         <option>No notification required</option>
         <option>Left message — awaiting callback</option>
       </select>
@@ -6541,7 +6442,7 @@ function printMAR(){
       <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--slate-light);margin-top:4px;font-weight:600">
         <span style="color:#16A34A">0–2 Minimal</span>
         <span style="color:#C47A00">3–5 Moderate</span>
-        <span style="color:#C0392B">7–10 Severe — call their doctor</span>
+        <span style="color:#C0392B">7–10 Severe — notify physician</span>
       </div>
     </div>
     <div class="fg"><label>Pain Location</label>
@@ -6564,10 +6465,10 @@ function printMAR(){
     <div class="fg"><label>Action Taken</label>
       <select id="pain-action" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
         <option value="">— Select —</option>
-        <option>Repositioned them</option>
-        <option>Medication given (per log)</option>
+        <option>Repositioned patient</option>
+        <option>Medication administered (per log)</option>
         <option>Applied heat/cold pack</option>
-        <option>Called doctor or nurse</option>
+        <option>Notified nurse / supervisor</option>
         <option>Distraction / comfort measures</option>
         <option>Care recipient declined intervention</option>
         <option>No action — monitoring</option>
@@ -6997,7 +6898,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v50';
+const CACHE = 'tended-pro-v38';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -10223,7 +10124,7 @@ function buildSampleData(){
   const pid = 1700000001;
   const patients = [{
     id:pid, color:'#0C7A6E', fname:'Margaret', lname:'Thompson', dob:'1942-03-14', isSample:true,
-    room:'', doctor:'Dr. Evelyn Marks, MD', blood:'A+', demType:'vascular',
+    room:'', doctor:'Dr. Evelyn Marks, MD', blood:'A+',
     allergies:'Penicillin (rash/hives), Sulfa drugs (severe), Codeine (nausea)',
     conditions:'Type 2 Diabetes, Hypertension, Mild Vascular Dementia, Osteoarthritis (bilateral knees), Hypothyroidism, CKD Stage 2',
     emergency:'Daughter — Linda Flores · 702-555-0182',
@@ -10255,11 +10156,11 @@ function buildSampleData(){
     { id:3002, patientId:pid, severity:'minor', type:'Behavioral — Agitation', dt:dtAt(-1,'17:45'),
       desc:'Sundowning episode. Asked to "go home." Verbal agitation, no aggression.',
       action:'Redirected with family photos and music. Resolved in 20 min.',
-      reported:'Documented.' },
+      reported:'Documented per protocol.' },
     { id:3003, patientId:pid, severity:'critical', type:'Skin Integrity — Wound Worsening', dt:dtAt(-3,'09:00'),
       desc:'Sacral pressure ulcer progressed from Stage 2 to Stage 3.',
-      action:'Wound care applied. Doctor and family notified immediately.',
-      reported:'Dr. Marks, daughter Linda' }
+      action:'Wound care per protocol. Physician and family notified immediately.',
+      reported:'Dr. Marks, Wound Care Nurse, daughter Linda, DON' }
   ];
   const careplan = {
     goals:'1) Maintain mobility. 2) BG 80-140 mg/dL. 3) Prevent pressure injury progression. 4) Reduce sundowning.',
@@ -10382,17 +10283,17 @@ function buildSampleData(){
   // Sample vitals
   const dStr2 = d => { const dt = new Date(); dt.setDate(dt.getDate()+d); return dt.toISOString().split('T')[0]; };
   const vitals = [
-    { id:13001, date:todayISO, time:'07:10', patientId:pid, bpSys:138, bpDia:84, pulse:74, resp:16, temp:98.4, spo2:96, glucose:68,  weight:null, position:'Sitting',         notes:'Pre-breakfast. BG low — OJ given. Physician notified.', alerts:[{level:'high',msg:'Glucose 68 mg/dL — Lower than normal. Monitor closely and contact their doctor.'}] },
+    { id:13001, date:todayISO, time:'07:10', patientId:pid, bpSys:138, bpDia:84, pulse:74, resp:16, temp:98.4, spo2:96, glucose:68,  weight:null, position:'Sitting',         notes:'Pre-breakfast. BG low — OJ given. Physician notified.', alerts:[{level:'high',msg:'Glucose 68 mg/dL — Hypoglycemia. Give 15g carbs, recheck in 15 min.'}] },
     { id:13002, date:todayISO, time:'09:30', patientId:pid, bpSys:132, bpDia:80, pulse:72, resp:16, temp:98.6, spo2:97, glucose:94,  weight:null, position:'Sitting',         notes:'Post-OJ recheck. BG normalized.', alerts:[] },
-    { id:13003, date:dStr2(-1), time:'08:00', patientId:pid, bpSys:142, bpDia:88, pulse:78, resp:18, temp:98.8, spo2:96, glucose:112, weight:143.5, position:'Sitting',       notes:'Morning vitals. BP slightly elevated.', alerts:[{level:'high',msg:'BP 142/88 — Stage 2 hypertension. Let their doctor know.'}] },
+    { id:13003, date:dStr2(-1), time:'08:00', patientId:pid, bpSys:142, bpDia:88, pulse:78, resp:18, temp:98.8, spo2:96, glucose:112, weight:143.5, position:'Sitting',       notes:'Morning vitals. BP slightly elevated.', alerts:[{level:'high',msg:'BP 142/88 — Stage 2 hypertension. Report to supervisor.'}] },
     { id:13004, date:dStr2(-1), time:'14:00', patientId:pid, bpSys:128, bpDia:78, pulse:70, resp:16, temp:98.4, spo2:97, glucose:105, weight:null,  position:'Post-medication',notes:'Post-afternoon meds. BP improved.', alerts:[] },
     { id:13005, date:dStr2(-2), time:'08:15', patientId:pid, bpSys:135, bpDia:82, pulse:76, resp:16, temp:98.6, spo2:97, glucose:108, weight:null,  position:'Sitting',        notes:'', alerts:[] },
   ];
   // Sample pain assessments
   const pain = [
-    { id:14001, date:todayISO,    time:'07:30', patientId:pid, score:4, location:'Bilateral knees', quality:'Aching',         action:'Repositioned them',                       notes:'Knees worse in morning. Helped to chair with blanket support.' },
+    { id:14001, date:todayISO,    time:'07:30', patientId:pid, score:4, location:'Bilateral knees', quality:'Aching',         action:'Repositioned patient',                    notes:'Patient reports knees worse in morning. Helped to chair with blanket support.' },
     { id:14002, date:todayISO,    time:'12:00', patientId:pid, score:2, location:'Bilateral knees', quality:'Aching',         action:'No action — monitoring',                  notes:'Post-morning activity. Improved after movement.' },
-    { id:14003, date:dStr2(-1),   time:'08:15', patientId:pid, score:6, location:'Lower back',      quality:'Sharp / stabbing',action:'Called doctor or nurse',                  notes:'Complained of sharp pain when turning in bed. Nurse called.' },
+    { id:14003, date:dStr2(-1),   time:'08:15', patientId:pid, score:6, location:'Lower back',      quality:'Sharp / stabbing',action:'Notified nurse / supervisor',             notes:'Patient complained of sharp pain when turning in bed. Nurse called.' },
     { id:14004, date:dStr2(-1),   time:'14:30', patientId:pid, score:3, location:'Lower back',      quality:'Aching',         action:'Applied heat/cold pack',                  notes:'Warm pack applied. Patient reports improvement.' },
     { id:14005, date:dStr2(-2),   time:'09:00', patientId:pid, score:3, location:'Bilateral knees', quality:'Aching',         action:'Medication administered (per log)',        notes:'Acetaminophen given per PRN order.' },
   ];
@@ -10914,7 +10815,7 @@ function acceptLegalTerms(){
     localStorage.setItem('tendedPro_legalAccepted', JSON.stringify({
       accepted: true,
       date: new Date().toISOString(),
-      version: '2.0'
+      version: '1.0'
     }));
   }catch(e){}
   const overlay = document.getElementById('legal-overlay');
@@ -11195,19 +11096,9 @@ function renderBBWSection(){
   }
   if(emptyEl) emptyEl.style.display = 'none';
 
-  const _activePat = _globalPatientId ? (D.patients||[]).find(p => String(p.id)===String(_globalPatientId)) : null;
-  const _isLewy = _activePat?.demType === 'lewy';
-
   listEl.innerHTML = flagged.map(m => {
     const w = getBBW(m.name);
-    const isAntipsychotic = w.short.includes('mortality in elderly dementia');
-    const lewyBanner = (_isLewy && isAntipsychotic) ? `
-      <div style="background:#4C1D95;border-radius:var(--r);padding:10px 14px;margin-bottom:10px">
-        <div style="font-size:.73rem;font-weight:700;color:#EDE9FE;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">⚠️ Lewy Body Dementia — Talk to the Doctor</div>
-        <div style="font-size:.82rem;color:#F5F3FF;line-height:1.6">People with Lewy body dementia can have strong reactions to some antipsychotic medications. Let the prescribing doctor know about this diagnosis if they aren't already aware.</div>
-      </div>` : '';
-    return `<div style="background:white;border:2px solid ${_isLewy && isAntipsychotic ? '#4C1D95' : '#C9963A'};border-radius:var(--r-lg);padding:18px 20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(${_isLewy && isAntipsychotic ? '76,29,149' : '201,150,58'},.15)">
-      ${lewyBanner}
+    return `<div style="background:white;border:2px solid #C9963A;border-radius:var(--r-lg);padding:18px 20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(201,150,58,.15)">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:12px">
         <div style="display:flex;align-items:center;gap:10px">
           <div style="width:38px;height:38px;background:#FFF3CD;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">⚠️</div>
@@ -11223,15 +11114,14 @@ function renderBBWSection(){
         <div style="font-size:.84rem;color:#5A3A00;line-height:1.7">${w.watch}</div>
       </div>
       <div style="margin-top:10px;padding-top:10px;border-top:1px solid #F0D9A0;display:flex;align-items:center;gap:6px;font-size:.74rem;color:var(--slate-mid)">
-        <span style="color:#C9963A;font-weight:700">What to do:</span> If you notice any of these symptoms in your loved one, call their doctor or pharmacist. You know them best — trust your instincts.
+        <span style="color:#C9963A;font-weight:700">Action:</span> Monitor for symptoms above. Report immediately to supervising nurse or physician if observed. Never adjust or withhold without an order.
       </div>
     </div>`;
   }).join('') +
   `<div style="background:#FFF8ED;border-radius:var(--r);padding:12px 16px;font-size:.78rem;color:#7A4A00;line-height:1.6;border:1.5px solid #C9963A">
     ⚕️ <strong>${flagged.length} of ${_bbwMeds.length} active medication${_bbwMeds.length!==1?'s':''} carry FDA black box warnings.</strong>
     These warnings are for <strong>informational reference only and do not constitute medical advice.</strong>
-    Drug information reflects FDA labeling and may change. Always verify with the prescribing physician or pharmacist before making any medication decisions.
-    Have questions about any of these medications? Your loved one's doctor or pharmacist is always the best person to ask.
+    Never adjust, withhold, or administer medication outside of a physician's order. Always follow your agency's medication administration policies.
   </div>`;
 }
 
@@ -11951,7 +11841,7 @@ function renderBBWDashboardAlert(){
       </div>
       <div style="background:#FFFDF5;border-top:1px solid #E8C97A;padding-top:8px;
         font-size:.72rem;color:#92400E;line-height:1.6">
-        ⚕️ <strong>For reference.</strong> Questions about these medications? Your loved one's doctor or pharmacist is the best person to ask.
+        ⚕️ <strong>Reference only.</strong> Always follow physician orders and agency protocols.
       </div>
     </div>`;
 
@@ -12083,30 +11973,30 @@ function vitalsAlerts(v){
   const alerts = [];
   if(v.bpSys !== null && v.bpDia !== null){
     if(v.bpSys > 180 || v.bpDia > 120)  alerts.push({ level:'critical', msg:`BP ${v.bpSys}/${v.bpDia} — Hypertensive crisis. Notify physician immediately.` });
-    else if(v.bpSys > 160 || v.bpDia > 100) alerts.push({ level:'high', msg:`BP ${v.bpSys}/${v.bpDia} — Stage 2 hypertension. Let their doctor know.` });
-    else if(v.bpSys < 90)                alerts.push({ level:'high', msg:`BP ${v.bpSys}/${v.bpDia} — Low blood pressure. Monitor for dizziness and falls.` });
+    else if(v.bpSys > 160 || v.bpDia > 100) alerts.push({ level:'high', msg:`BP ${v.bpSys}/${v.bpDia} — Stage 2 hypertension. Report to supervisor.` });
+    else if(v.bpSys < 90)                alerts.push({ level:'high', msg:`BP ${v.bpSys}/${v.bpDia} — Low blood pressure. Monitor for dizziness, falls.` });
   }
   if(v.pulse !== null){
-    if(v.pulse > 120)  alerts.push({ level:'high',    msg:`Pulse ${v.pulse} bpm — Higher than normal. Call their doctor if this continues.` });
-    else if(v.pulse < 50) alerts.push({ level:'high', msg:`Pulse ${v.pulse} bpm — Lower than normal. Call their doctor if this continues.` });
+    if(v.pulse > 120)  alerts.push({ level:'high',    msg:`Pulse ${v.pulse} bpm — Tachycardia. Report to supervisor.` });
+    else if(v.pulse < 50) alerts.push({ level:'high', msg:`Pulse ${v.pulse} bpm — Bradycardia. Report to supervisor.` });
   }
   if(v.temp !== null){
-    if(v.temp >= 103)  alerts.push({ level:'critical', msg:`Temp ${v.temp}°F — High fever. Call their doctor now.` });
-    else if(v.temp >= 100.4) alerts.push({ level:'high', msg:`Temp ${v.temp}°F — Fever present. Monitor closely and call their doctor if it rises.` });
-    else if(v.temp < 95)     alerts.push({ level:'high', msg:`Temp ${v.temp}°F — Hypothermia risk. Keep them warm and call their doctor.` });
+    if(v.temp >= 103)  alerts.push({ level:'critical', msg:`Temp ${v.temp}°F — High fever. Notify physician immediately.` });
+    else if(v.temp >= 100.4) alerts.push({ level:'high', msg:`Temp ${v.temp}°F — Fever present. Report to supervisor.` });
+    else if(v.temp < 95)     alerts.push({ level:'high', msg:`Temp ${v.temp}°F — Hypothermia risk. Warm patient, notify supervisor.` });
   }
   if(v.spo2 !== null){
-    if(v.spo2 < 90)   alerts.push({ level:'critical', msg:`SpO2 ${v.spo2}% — Very low oxygen. Call 911 now.` });
-    else if(v.spo2 < 94) alerts.push({ level:'high',  msg:`SpO2 ${v.spo2}% — Lower than normal. Reposition and call their doctor.` });
+    if(v.spo2 < 90)   alerts.push({ level:'critical', msg:`SpO2 ${v.spo2}% — Critical hypoxia. Notify physician immediately.` });
+    else if(v.spo2 < 94) alerts.push({ level:'high',  msg:`SpO2 ${v.spo2}% — Low oxygen saturation. Reposition, notify supervisor.` });
   }
   if(v.glucose !== null){
-    if(v.glucose < 60)   alerts.push({ level:'critical', msg:`Glucose ${v.glucose} mg/dL — Critically low. This may be a medical emergency — call 911 or their doctor now.` });
-    else if(v.glucose < 70)  alerts.push({ level:'high', msg:`Glucose ${v.glucose} mg/dL — Lower than normal. Monitor closely and contact their doctor.` });
-    else if(v.glucose > 300) alerts.push({ level:'critical', msg:`Glucose ${v.glucose} mg/dL — Very high. Call their doctor now.` });
-    else if(v.glucose > 180) alerts.push({ level:'high',    msg:`Glucose ${v.glucose} mg/dL — Elevated. Document and mention at their next doctor visit.` });
+    if(v.glucose < 60)   alerts.push({ level:'critical', msg:`Glucose ${v.glucose} mg/dL — Severe hypoglycemia. Give glucose, notify physician.` });
+    else if(v.glucose < 70)  alerts.push({ level:'high', msg:`Glucose ${v.glucose} mg/dL — Hypoglycemia. Give 15g carbs, recheck in 15 min.` });
+    else if(v.glucose > 300) alerts.push({ level:'critical', msg:`Glucose ${v.glucose} mg/dL — Severe hyperglycemia. Notify physician immediately.` });
+    else if(v.glucose > 180) alerts.push({ level:'high',    msg:`Glucose ${v.glucose} mg/dL — Elevated. Document and report per agency protocol.` });
   }
   if(v.resp !== null){
-    if(v.resp > 24 || v.resp < 10) alerts.push({ level:'high', msg:`Respirations ${v.resp}/min — Outside normal range. Call their doctor if this doesn't resolve.` });
+    if(v.resp > 24 || v.resp < 10) alerts.push({ level:'high', msg:`Respirations ${v.resp}/min — Abnormal. Report to supervisor.` });
   }
   return alerts;
 }
@@ -13638,7 +13528,7 @@ function savePain(){
       ...fields
     });
     const sc = parseInt(score);
-    if(sc >= 7) toast(`⚠️ Pain score ${sc}/10 — consider calling their doctor`,'var(--refused)');
+    if(sc >= 7) toast(`⚠️ Pain score ${sc}/10 — notify supervisor`,'var(--refused)');
     else toast('✅ Pain assessment saved','var(--given)');
   }
   save(); closeModal('pain-modal');
@@ -13906,7 +13796,6 @@ async function init(){
       window.Android.restorePurchases();
     }
   } catch(e){}
-  applyAgencyBranding();
   updateTopbar();
   updateTopbarUser();
   renderDashboard();
@@ -13949,31 +13838,6 @@ async function init(){
   updatePremiumUI();
   applyFeatureVisibility();
   checkFirstLaunch();
-}
-
-// ═══════════════════════════════════════════════════════════════
-// AGENCY WHITE-LABEL BRANDING — applies config.js values to the DOM
-// ═══════════════════════════════════════════════════════════════
-function applyAgencyBranding(){
-  const cfg = window.AGENCY_CONFIG;
-  if(!cfg) return;
-  // Topbar brand name
-  const brand = document.getElementById('topbar-brand');
-  if(brand && cfg.appName) brand.textContent = cfg.appName;
-  // Topbar logo emoji
-  const logo = document.getElementById('topbar-logo');
-  if(logo && cfg.logoEmoji) logo.textContent = cfg.logoEmoji;
-  // "Powered by Agency" sub-line in topbar
-  const agencyEl = document.getElementById('topbar-agency');
-  if(agencyEl && cfg.agencyName){
-    agencyEl.textContent = 'Powered by ' + cfg.agencyName;
-    agencyEl.style.display = 'block';
-  }
-  // Welcome overlay headline
-  const welcomeH = document.getElementById('welcome-app-name');
-  if(welcomeH && cfg.appName) welcomeH.textContent = 'Welcome to ' + cfg.appName;
-  // Page title (belt + suspenders — CSS block already set it, but DOM may have loaded)
-  if(cfg.appName) document.title = cfg.appName + ' — Care Log';
 }
 
 init().catch(e => console.error('init failed', e));
@@ -14073,7 +13937,7 @@ const ITM_SCENARIOS = {
       {text:'Step back and give space for a few minutes', sub:'Removing pressure can reset the refusal'},
       {text:'Return with a choice, not a yes/no question', sub:'"Now, or after we sit together for a bit?"'},
       {text:'Frame the task as familiar routine', sub:'"This is what we do every morning."'},
-      {text:'If medication is refused, never force it', sub:'Document it and let their doctor know if refusals keep happening'},
+      {text:'If medication is refused, never force it', sub:'Document and notify your supervisor per protocol'},
       {text:'Try again in 15–20 minutes with a different approach', sub:'Short-term memory means the refusal may not persist'}
     ]
   },
@@ -14086,8 +13950,8 @@ const ITM_SCENARIOS = {
       {text:'Check positioning before offering food', sub:'Upright positioning reduces aspiration risk'},
       {text:'Offer small portions of a preferred food', sub:'Familiarity increases acceptance'},
       {text:'Try calm, simple reassurance', sub:'"Take your time — I\'m not in a rush."'},
-      {text:'Stop and call their doctor right away if you notice swallowing difficulty', sub:'Trouble swallowing can be a safety risk — don\'t wait on this one'},
-      {text:'Document exactly what was offered, refused, and why', sub:'Two or more consecutive refusals should be mentioned to their doctor'}
+      {text:'Stop and notify your supervisor if swallowing difficulty is observed', sub:'Aspiration risk needs prompt clinical assessment'},
+      {text:'Document exactly what was offered, refused, and why', sub:'Two or more consecutive refusals should be flagged to your supervisor'}
     ]
   },
   sundowning: {
@@ -14100,7 +13964,7 @@ const ITM_SCENARIOS = {
       {text:'Keep the routine calm and predictable', sub:'Avoid sudden changes during this window'},
       {text:'Offer a small familiar snack', sub:'Can help during the peak risk window'},
       {text:'Try a known calming activity — music, a familiar object', sub:'See patient-specific tips below if available'},
-      {text:'Call family or their doctor if it escalates beyond mild agitation', sub:''}
+      {text:'Notify your supervisor if it escalates beyond mild agitation', sub:''}
     ]
   },
   wandering: {
@@ -14113,7 +13977,7 @@ const ITM_SCENARIOS = {
       {text:'Ask where they\'re going and validate the answer', sub:'"Of course, let me help you get ready."'},
       {text:'Create a brief task that delays departure', sub:'"First, let me show you something."'},
       {text:'Walk with them away from the exit toward a comfortable area', sub:'Moving together is safer than them moving alone'},
-      {text:'Let family know and document this now', sub:'Exit-seeking events should be shared with anyone else involved in their care'}
+      {text:'Notify your supervisor and document this now', sub:'Exit-seeking events require prompt supervisor notification'}
     ]
   },
   combative: {
@@ -14126,7 +13990,7 @@ const ITM_SCENARIOS = {
       {text:'Lower your body — crouch or sit if it\'s safe to do so', sub:'Standing over someone can feel threatening'},
       {text:'Speak slowly and calmly', sub:'"I\'m not going to hurt you. You\'re safe."'},
       {text:'Leave the room briefly if it\'s safe to do so', sub:'Removing yourself can remove the perceived threat'},
-      {text:'Let family know and document the episode', sub:'Anyone else involved in their care should know about combative episodes'}
+      {text:'Notify your supervisor now and document the episode', sub:'Combative episodes require prompt notification per protocol'}
     ]
   },
   fall: {
@@ -14138,8 +14002,8 @@ const ITM_SCENARIOS = {
       {text:'Do not move them until injury is assessed', sub:'Spinal or hip injury may be present'},
       {text:'Call for help immediately', sub:'You\'ll need a second person before helping them up'},
       {text:'Keep them warm and calm while waiting', sub:'"I\'m right here. Help is coming. You\'re safe."'},
-      {text:'Let family and backup caregivers know what happened', sub:'Anyone who helps care for your loved one should know about falls'},
-      {text:'Document exact time, location, and what you witnessed', sub:'Log the care event as soon as you can'}
+      {text:'Notify your supervisor immediately — this is mandatory', sub:'All falls require notification and a care event report'},
+      {text:'Document exact time, location, and what you witnessed', sub:'Complete the care event log within your shift'}
     ]
   },
   medical: {
@@ -14148,7 +14012,7 @@ const ITM_SCENARIOS = {
     translation:'This is a medical emergency. Follow the sequence below immediately — document afterward, not during.',
     steps:[
       {text:'Call 911 immediately if life-threatening', sub:'Chest pain, difficulty breathing, unresponsive, seizure — call now'},
-      {text:'Let family members know at the same time', sub:'Don\'t wait — call or text anyone else involved in their care'},
+      {text:'Notify your supervisor at the same time, not after', sub:'Both need to know immediately — don\'t wait'},
       {text:'Do not leave them alone', sub:'Stay present and keep talking to them calmly'},
       {text:'Check DNR status in the care plan before beginning CPR', sub:'Confirm status — don\'t assume'},
       {text:'Note exactly when symptoms began and what you observed', sub:'Critical information for emergency responders'},
@@ -14174,7 +14038,7 @@ const ITM_SCENARIOS = {
     translation:'Changes in breathing, mottling, unresponsiveness, or withdrawal from food and fluids may indicate the final stage of life. Calm, compassionate presence is the most important thing you can offer right now.',
     steps:[
       {text:'Stay with them — do not leave them alone', sub:'Your presence is the most important thing you can give right now'},
-      {text:'Contact the hospice team or care provider right away', sub:'End-of-life changes should be reported to their care team promptly'},
+      {text:'Notify your supervisor immediately', sub:'End-of-life changes require prompt clinical and family notification'},
       {text:'Contact the emergency/family contact on file', sub:'Family has the right to be present — notify promptly'},
       {text:'Ensure they\'re comfortable — reposition if needed', sub:'Assess for pain even if they can\'t communicate'},
       {text:'Speak gently even if they seem unresponsive', sub:'Hearing is often the last sense to fade'},
@@ -14304,7 +14168,7 @@ function itmCommitEpisode(key, stepsCompletedCount, totalSteps, escalated){
   const dateStr = now.toISOString().split('T')[0];
   const timeStr = now.toTimeString().slice(0,5);
   const stepsNote = 'Guided via Help Me Now — ' + stepsCompletedCount + '/' + totalSteps + ' steps completed';
-  const escalationNote = escalated ? 'Marked as escalated via Help Me Now — confirm family or doctor was contacted directly' : '';
+  const escalationNote = escalated ? 'Marked as escalated via Help Me Now — confirm supervisor was contacted directly' : '';
 
   if(cfg.target === 'sundowning'){
     if(!D.sundowning) D.sundowning = [];
@@ -14319,10 +14183,10 @@ function itmCommitEpisode(key, stepsCompletedCount, totalSteps, escalated){
     if(!D.wandering) D.wandering = [];
     D.wandering.push({
       id: Date.now(), patientId: patId, date: dateStr, time: timeStr,
-      type:'Night-time wandering', isElopement:false,
+      type:'Wandering — within facility', isElopement:false,
       location:'', duration:'', condition:'',
       action: stepsNote,
-      notified: escalationNote || 'Not yet confirmed — follow up with family or care team',
+      notified: escalationNote || 'Not yet confirmed — follow up with supervisor',
       prevention:'', triggers:[], whatWorked:'',
       source:'itm'
     });
@@ -14405,7 +14269,7 @@ function itmRenderEntry(root){
         </button>`;
       }).join('')}
     </div>
-    <div style="font-size:.72rem;color:var(--slate-light);text-align:center;line-height:1.5">General caregiving guidance, not medical advice. When in doubt, call their doctor — it's always okay to ask.</div>
+    <div style="font-size:.72rem;color:var(--slate-light);text-align:center;line-height:1.5">General caregiving guidance, not medical advice. Always follow your facility's protocols and your supervisor's direction.</div>
   `;
 
   const bar = document.getElementById('itm-patient-bar');
@@ -14481,7 +14345,6 @@ function itmRenderGuidance(root){
       <button class="btn btn-secondary" onclick="itmBackToEntry()">← Different scenario</button>
     </div>
     <span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:700;margin-bottom:12px;background:${uc.bg};color:${uc.fg}">${urgLabels[cfg.urgency]}${emEsc(cfg.label)}</span>
-    ${cfg.urgency === 'urgent' ? `<div style="background:#FEF2F2;border:2px solid #C0392B;border-radius:var(--r-lg);padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px"><span style="font-size:1.3rem;flex-shrink:0">🚨</span><div style="font-size:.82rem;color:#7F1D1D;font-weight:600;line-height:1.4">If you think this is a medical emergency, <strong>call 911 first</strong> — then come back to these steps.</div></div>` : ''}
     ${(key === 'medical' || key === 'eol') ? itmDnrBannerHtml(patId) : ''}
     <div style="background:var(--off-white);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:14px;margin-bottom:14px">
       <div style="font-size:.68rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">💡 What this may mean</div>
@@ -14496,10 +14359,10 @@ function itmRenderGuidance(root){
     <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
       <button class="btn btn-teal" style="width:100%;margin-bottom:8px" onclick="itmResolve(false)">✅ Episode resolved</button>
       <button class="btn btn-danger" style="width:100%;margin-bottom:8px" onclick="itmResolve(true)">📞 Mark as escalated</button>
-      <div style="font-size:.7rem;color:var(--slate-light);text-align:center;margin-bottom:12px">Marking as escalated documents this step — it does not notify anyone. You still need to call family or their doctor directly.</div>
+      <div style="font-size:.7rem;color:var(--slate-light);text-align:center;margin-bottom:12px">Marking as escalated documents this step — it does not notify anyone. You must still contact your supervisor directly.</div>
       <button class="btn btn-secondary" style="width:100%" onclick="itmBackToEntry()">← Different scenario</button>
     </div>
-    <div style="font-size:.7rem;color:var(--slate-light);text-align:center;line-height:1.5;margin-top:14px">General caregiving guidance, not medical advice. When in doubt, call their doctor — it's always okay to ask.</div>
+    <div style="font-size:.7rem;color:var(--slate-light);text-align:center;line-height:1.5;margin-top:14px">General caregiving guidance, not medical advice. Always follow your facility's protocols and your supervisor's direction.</div>
   `;
 }
 
@@ -14525,7 +14388,7 @@ function itmResolve(escalated){
   _itmLastResolved = { key, cfg, stepsCompleted: progress.length, total, escalated, time: new Date() };
   _itmScreen = 'resolved';
   renderITM();
-  toast(escalated ? 'Marked as escalated — call family or their doctor now' : '✅ Episode logged', escalated ? 'var(--refused)' : 'var(--given)');
+  toast(escalated ? 'Marked as escalated — contact your supervisor directly' : '✅ Episode logged', escalated ? 'var(--refused)' : 'var(--given)');
 }
 
 function itmRenderResolved(root){
@@ -14536,7 +14399,7 @@ function itmRenderResolved(root){
     <div style="padding:20px 0;text-align:center">
       <div style="font-size:2.8rem;margin-bottom:10px">${r.escalated ? '📞' : '✅'}</div>
       <div style="font-size:1.1rem;font-weight:800;color:var(--navy);margin-bottom:6px">${r.escalated ? 'Marked as escalated' : 'Episode logged'}</div>
-      <div style="font-size:.82rem;color:var(--slate-mid);margin-bottom:20px">${r.escalated ? 'Remember to call family or their doctor directly — this only documents the step.' : 'This has been added to this patient\u2019s history and will inform future guidance.'}</div>
+      <div style="font-size:.82rem;color:var(--slate-mid);margin-bottom:20px">${r.escalated ? 'Remember to contact your supervisor directly — this only documents the step.' : 'This has been added to this patient\u2019s history and will inform future guidance.'}</div>
       <div style="background:var(--given-bg);border:1.5px solid var(--given);border-radius:var(--r-lg);padding:14px;margin-bottom:16px;text-align:left">
         <div style="font-size:.68rem;font-weight:700;color:var(--given);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Summary</div>
         <div style="font-size:.8rem;color:var(--slate);padding:2px 0"><strong>Time:</strong> ${timeStr}</div>
@@ -14587,17 +14450,7 @@ function renderLegalFin(){
     'lf-cpa':   'Consult CPA or financial planner with elder care experience',
     'lf-mplnr': 'Engage a Medicaid planner if facility care is foreseeable',
     'lf-gcm':   'Consider a Geriatric Care Manager for care coordination',
-    'lf-aaa':   'Contact Area Agency on Aging — free local resource navigation (eldercare.acl.gov)',
-    'lf-ex-bank':  'Set up bank account alerts for withdrawals over a set threshold',
-    'lf-ex-stmt':  'Review bank and credit card statements monthly — look for unfamiliar payees',
-    'lf-ex-cred':  'Freeze credit at all three bureaus (Equifax, Experian, TransUnion) — free',
-    'lf-ex-sig':   'Remove your loved one as an authorized signer on accounts they no longer manage',
-    'lf-ex-new':   'Be alert to new "friends" or helpers who appear after diagnosis',
-    'lf-ex-gifts': 'Watch for sudden large gifts, loans, or changes to the will or beneficiaries',
-    'lf-ex-phone': 'Block unknown callers and register on the Do Not Call list (donotcall.gov)',
-    'lf-ex-mail':  'Redirect mail or review it regularly — scammers target vulnerable seniors by mail',
-    'lf-ex-poa':   'Confirm POA agent is trustworthy — review agent\'s transactions periodically',
-    'lf-ex-aps':   'Know your Adult Protective Services number — exploitation is reportable and investigated'
+    'lf-aaa':   'Contact Area Agency on Aging — free local resource navigation (eldercare.acl.gov)'
   };
   const TABS = [
     { label:'📋 Legal Docs',   keys:['lf-poa','lf-hpoa','lf-lwill','lf-polst','lf-will','lf-trust','lf-guard'],
@@ -14608,9 +14461,7 @@ function renderLegalFin(){
     { label:'🏠 Care Costs',  keys:['lf-hcost','lf-adcst','lf-alcst','lf-spend','lf-pool','lf-bridg'],
       tip:'<strong>💡 Medicaid planning:</strong> Asset transfers within 5 years of a Medicaid application trigger a penalty period. Planning 5+ years ahead dramatically expands your options.' },
     { label:'📞 Contacts',   keys:['lf-eldry','lf-cpa','lf-mplnr','lf-gcm','lf-aaa'],
-      tip:'<strong>💡 Elder law attorney</strong> is the single highest-value professional for dementia families. One appointment can save tens of thousands of dollars.' },
-    { label:'🛡️ Exploitation', keys:['lf-ex-bank','lf-ex-stmt','lf-ex-cred','lf-ex-sig','lf-ex-new','lf-ex-gifts','lf-ex-phone','lf-ex-mail','lf-ex-poa','lf-ex-aps'],
-      tip:'<strong>⚠️ 1 in 5 dementia patients is financially exploited</strong> — often by family members or new acquaintances. Freezing credit and setting bank alerts are the two highest-impact steps and take less than 30 minutes.' }
+      tip:'<strong>💡 Elder law attorney</strong> is the single highest-value professional for dementia families. One appointment can save tens of thousands of dollars.' }
   ];
   let activeTab = 0;
   function totalDone(){ return Object.values(checks).filter(Boolean).length; }
@@ -14718,14 +14569,8 @@ function renderJourney(){
         <li>Repetitive behaviors or statements</li>
         </ul></div>`,
         `<div class="jrny-card"><div class="jrny-card-title">🛡️ Safety Must-Dos</div><ul class="jrny-checklist">
-        ${[['Register with Safe Return or GPS tracking','sf-gps'],['Secure medications in locked cabinet','sf-meds'],['Install door alarms and knob covers','sf-door'],['Use ID bracelet with name and contact info','sf-id'],['Set water heater to 120°F to prevent burns','sf-water']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
+        ${[['Register with Safe Return or GPS tracking','sf-gps'],['Secure medications in locked cabinet','sf-meds'],['Remove or lock car keys if driving is unsafe','sf-car'],['Install door alarms and knob covers','sf-door'],['Use ID bracelet with name and contact info','sf-id'],['Set water heater to 120°F to prevent burns','sf-water']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
         </ul></div>
-        <div class="jrny-card"><div class="jrny-card-title">🚗 Driving Cessation</div><div class="jrny-card-body">Stopping driving is one of the hardest transitions in dementia caregiving — and one of the most important safety decisions you will make. Most families wait too long.</div>
-        <ul class="jrny-checklist">
-        ${[['Have a driving conversation early — ideally with the doctor\'s support','drv-talk'],['Ask the physician to issue a written "do not drive" recommendation','drv-md'],['Contact your state DMV — doctors can file a confidential report in most states','drv-dmv'],['Remove the car from the property or disable it (disconnect battery, remove distributor cap)','drv-remove'],['Arrange alternative transportation before taking keys — reduce the loss','drv-alt'],['Contact Area Agency on Aging for local ride programs for seniors','drv-aaa']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
-        </ul>
-        <div class="jrny-tip">💡 Having the doctor deliver the news — not you — preserves the relationship. "Your doctor says you can't drive" lands differently than "I'm taking your keys."</div>
-        <div class="jrny-warn">⚠️ If your loved one drives over your objection, contact the DMV directly. You are not overreacting — this is a public safety issue.</div></div>
         <div class="jrny-card"><div class="jrny-card-title">😤 Managing Difficult Behaviors</div><div class="jrny-card-body">Aggression, paranoia, and agitation often have triggers. Log behaviors in Behavior Patterns to find patterns.</div><div class="jrny-tip">DICE approach: <strong>D</strong>escribe → <strong>I</strong>nvestigate → <strong>C</strong>reate plan → <strong>E</strong>valuate results</div></div>`,
         `<div class="jrny-card"><div class="jrny-card-title">⚕️ Medical Management</div><ul class="jrny-checklist">
         ${[['Schedule regular neurology or geriatric specialist visits','med-neuro'],['Review all medications for appropriateness','med-meds'],['Address pain proactively — many can\'t report it','med-pain'],['Monitor for UTIs — cause sudden confusion spikes','med-uti'],['Maintain dental care — affects behavior and eating','med-dent'],['Vision and hearing checks — uncorrected loss worsens confusion','med-vh']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
@@ -14753,12 +14598,6 @@ function renderJourney(){
         `<div class="jrny-card"><div class="jrny-card-title">🕊️ Hospice and Palliative Care</div><div class="jrny-card-body">Hospice is a philosophy of care, not giving up. It focuses on comfort, dignity, and family support rather than curative treatment.</div><ul class="jrny-checklist">
         ${[['Ask the doctor about hospice eligibility','ho-ask'],['Request a hospice evaluation (Medicare covers it)','ho-eval'],['Understand what hospice provides: nurses, aides, chaplain, social worker','ho-what'],['Ask about palliative care if not yet hospice-eligible','ho-pall']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
         </ul><div class="jrny-tip">Families who choose hospice earlier report better quality of life for patient and caregiver. There is no benefit to waiting.</div></div>
-        <div class="jrny-card"><div class="jrny-card-title">🏡 Where Hospice Happens</div><div class="jrny-card-body">Hospice is not one-size-fits-all. There are two delivery models — and most families don't know both options exist.</div>
-        <ul class="jrny-checklist" style="list-style:none;padding-left:0">
-          <li style="margin-bottom:10px"><strong>🏠 At home or in a care facility</strong><br><span style="font-size:.8rem;opacity:.85">The hospice team visits regularly — nurse, aide, chaplain, social worker. You remain the primary caregiver day to day. Hospice supports you; it doesn't replace you.</span></li>
-          <li><strong>🏥 Inpatient hospice facility</strong><br><span style="font-size:.8rem;opacity:.85">Your loved one lives at the facility. Appropriate when home care is no longer safe or sustainable, or for the final days. Medicare covers short inpatient stays; longer stays may be private pay.</span></li>
-        </ul>
-        <div class="jrny-tip">Ask the hospice agency specifically about inpatient options. Many families don't know to ask — and don't have to go through the final weeks alone at home if it's become too much.</div></div>
         <div class="jrny-card"><div class="jrny-card-title">💆 Comfort Measures</div><ul class="jrny-checklist">
         ${[['Keep mouth moist — swabs, lip balm, ice chips if able','cm-mouth'],['Reposition every 2 hours to prevent pressure sores','cm-repos'],['Play familiar music softly','cm-music'],['Speak in calm, low tones — use their name','cm-speak'],['Offer gentle touch — hold hands, stroke hair','cm-touch'],['Control pain proactively','cm-pain']].map(([t,k])=>`<li><input type="checkbox" id="${k}" onchange="jrnyCheck('${k}',this.checked)"><label for="${k}">${t}</label></li>`).join('')}
         </ul></div>`,
@@ -14799,7 +14638,7 @@ function renderJourney(){
       <div class="jrny-tabs">
         ${cfg.tabs.map((tab,i)=>`<div class="jrny-tab${i===t?' active':''}" onclick="jrnySetTab('${stage}',${i})">${tab}</div>`).join('')}
       </div>
-      <div class="jrny-body" id="jrny-body" style="overflow-y:auto;flex:1;padding:6px 12px 14px">
+      <div class="jrny-body" id="jrny-body" style="overflow-y:auto;flex:1;padding:14px">
         ${cfg.panels[t]||''}
       </div>`;
     Object.keys(checks).forEach(k=>{ const el=document.getElementById(k); if(el) el.checked=!!checks[k]; });
