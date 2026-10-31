@@ -16,6 +16,42 @@
 <link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABYUlEQVR42s2XO27CQBCG2YEGKYWbVGkofIOUtKmQcgIOkQOgVFEOwCE4AVIqWkpuQOHGFY0LS6kgaSBZjedpzJrtPDue/5vxrncnDIjx8PT8M7jBqMtdwLaQQlgCgdTiWAtSi2OIUZuX4WOecXOn91XliRU82UvCbUFMAB5hL4gKwIkf90Uj8DCfZF4IEYASj4Xrz+X/olq8iSAcBFjFj/uiorLmqoN9uUqCNSC2jWcv4jP3nglAW3SUmGSX4oI3e00Ez2tVAE/2mrjFD8cHa/ZWccpfqoL6K463mjQO09em8WyLt2irXXDL0TuA+gku5aPWQFz2x+26Mf/9tbmuAvEv1RKME+fOCBJAOjisEJIfjq+uAUyvQeB5KXsWQDvDOQgNjopr2gVUFliMEteyFwEw7TCfZJaAnC9X1fu+ESW5E3r6gq5vxXW5Cy6ArvuCP4A+uqNLfwhS55qiOQ19t+e/EcHH9FL45AEAAAAASUVORK5CYII=">
 <title>Tended Health Pro — Medication &amp; Daily Care Log for Families</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- ═══ AGENCY WHITE-LABEL CONFIG ═══════════════════════════
+     Default values. Agencies override via config.js next to index.html.
+     config.js sets window.AGENCY_CONFIG before this page renders.
+     If config.js is absent, defaults below apply (standard Tended branding).
+═══════════════════════════════════════════════════════════ -->
+<script>
+window.AGENCY_CONFIG = {
+  appName:       'Tended Health Pro',   // Short name for topbar + home screen
+  agencyName:    null,                  // e.g. 'Sunrise Home Care' — shown as "Powered by …"
+  primaryColor:  '#0B7A6E',            // --teal
+  primaryMid:    '#0E9E8E',            // --teal-mid
+  primaryBright: '#14C4B2',            // --teal-bright
+  primaryPale:   '#D1F2EF',            // --teal-pale
+  logoEmoji:     '🏡',                 // Topbar icon (emoji or leave null for default)
+  supportEmail:  null,                  // e.g. 'families@sunrisehomecare.com'
+  supportPhone:  null                   // e.g. '775-555-0100'
+};
+</script>
+<script src="config.js" onerror="void(0)"></script>
+<script>
+// Apply agency config immediately — before CSS paint — to avoid flash of default colors
+(function(){
+  var cfg = window.AGENCY_CONFIG;
+  if(!cfg) return;
+  var r = document.documentElement;
+  if(cfg.primaryColor)  r.style.setProperty('--teal',        cfg.primaryColor);
+  if(cfg.primaryMid)    r.style.setProperty('--teal-mid',    cfg.primaryMid);
+  if(cfg.primaryBright) r.style.setProperty('--teal-bright', cfg.primaryBright);
+  if(cfg.primaryPale)   r.style.setProperty('--teal-pale',   cfg.primaryPale);
+  if(cfg.appName){
+    document.title = cfg.appName + ' — Care Log';
+    var m = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+    if(m) m.setAttribute('content', cfg.appName);
+  }
+})();
+</script>
 <style>
 /* ═══════════════════════════════════════════════════════════
    TENDED PRO — DESIGN SYSTEM
@@ -778,6 +814,7 @@ body {
   }
   .ph-title { font-size: 1.25rem; }
   .ph { flex-wrap: wrap; gap: 10px; }
+  #section-journey { margin: -16px -14px 0; width: calc(100% + 28px); }
 }
 @media(max-width: 480px) {
   .grid-3 { grid-template-columns: 1fr; }
@@ -1357,7 +1394,7 @@ body {
 <div id="welcome-overlay" style="display:none;position:fixed;inset:0;background:rgba(12,27,51,.92);z-index:9999;align-items:flex-start;justify-content:center;padding:20px;padding-bottom:max(20px,env(safe-area-inset-bottom));overflow-y:auto;-webkit-overflow-scrolling:touch;backdrop-filter:blur(6px)">
   <div style="background:var(--white);border-radius:20px;padding:40px 36px;max-width:540px;width:100%;box-shadow:0 24px 64px rgba(12,27,51,.4);text-align:center;animation:welcomeFadeIn .4s ease;margin:auto 0">
     <div style="width:64px;height:64px;background:linear-gradient(135deg,var(--teal-mid),var(--teal-bright));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 20px">🏡</div>
-    <div style="font-family:var(--font-head);font-size:1.6rem;font-weight:700;color:var(--navy);margin-bottom:8px">Welcome to Tended Health Pro</div>
+    <div id="welcome-app-name" style="font-family:var(--font-head);font-size:1.6rem;font-weight:700;color:var(--navy);margin-bottom:8px">Welcome to Tended Health Pro</div>
     <div style="font-size:.92rem;color:var(--slate-mid);line-height:1.7;margin-bottom:10px">Daily care tracking for <strong style="color:var(--navy)">family caregivers.</strong> No training needed.</div>
     <div style="background:#F0FDF4;border:1.5px solid #A7F3D0;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:.84rem;color:#065F46;line-height:1.6">💚 <strong>If you can send a text, you can use this app.</strong> Use what helps. Ignore the rest. Most caregivers start with the medication log and nothing else.</div>
     <div style="font-size:.84rem;color:var(--slate-light);line-height:1.6;margin-bottom:6px">Medications · Care Notes · Vitals · Wound Care · Behavior Log · <strong style="color:#7C3AED">Memory Care</strong> · Monthly Summary</div>
@@ -1508,9 +1545,10 @@ body {
 
 <!-- ═══ TOP BAR ═══════════════════════════════════════════ -->
 <div class="topbar">
-  <div class="topbar-logo">🏡</div>
+  <div class="topbar-logo" id="topbar-logo">🏡</div>
   <div>
-    <div class="topbar-brand">Tended Health Pro</div>
+    <div class="topbar-brand" id="topbar-brand">Tended Health Pro</div>
+    <div id="topbar-agency" style="font-size:.65rem;color:var(--teal-bright);font-weight:500;display:none"></div>
   </div>
   <span class="premium-badge" id="premium-badge">⭐ Pro</span>
   <span id="topbar-patient-indicator" style="display:none;align-items:center;background:var(--teal);color:white;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
@@ -4540,6 +4578,10 @@ function navTo(id, btn){
   const sec = document.getElementById('section-' + id);
   if(sec) sec.classList.add('active');
   if(btn) btn.classList.add('active');
+
+  // Reset scroll position so every section starts at the top
+  const contentEl = document.querySelector('.content');
+  if(contentEl) contentEl.scrollTop = 0;
   _expandNavGroup(id); // ensure sidebar group is visible for this section
 
   // Push history entry for back-button support — skipped when triggered by popstate
@@ -6947,7 +6989,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v49';
+const CACHE = 'tended-pro-v50';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -13856,6 +13898,7 @@ async function init(){
       window.Android.restorePurchases();
     }
   } catch(e){}
+  applyAgencyBranding();
   updateTopbar();
   updateTopbarUser();
   renderDashboard();
@@ -13898,6 +13941,31 @@ async function init(){
   updatePremiumUI();
   applyFeatureVisibility();
   checkFirstLaunch();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// AGENCY WHITE-LABEL BRANDING — applies config.js values to the DOM
+// ═══════════════════════════════════════════════════════════════
+function applyAgencyBranding(){
+  const cfg = window.AGENCY_CONFIG;
+  if(!cfg) return;
+  // Topbar brand name
+  const brand = document.getElementById('topbar-brand');
+  if(brand && cfg.appName) brand.textContent = cfg.appName;
+  // Topbar logo emoji
+  const logo = document.getElementById('topbar-logo');
+  if(logo && cfg.logoEmoji) logo.textContent = cfg.logoEmoji;
+  // "Powered by Agency" sub-line in topbar
+  const agencyEl = document.getElementById('topbar-agency');
+  if(agencyEl && cfg.agencyName){
+    agencyEl.textContent = 'Powered by ' + cfg.agencyName;
+    agencyEl.style.display = 'block';
+  }
+  // Welcome overlay headline
+  const welcomeH = document.getElementById('welcome-app-name');
+  if(welcomeH && cfg.appName) welcomeH.textContent = 'Welcome to ' + cfg.appName;
+  // Page title (belt + suspenders — CSS block already set it, but DOM may have loaded)
+  if(cfg.appName) document.title = cfg.appName + ' — Care Log';
 }
 
 init().catch(e => console.error('init failed', e));
@@ -14723,7 +14791,7 @@ function renderJourney(){
       <div class="jrny-tabs">
         ${cfg.tabs.map((tab,i)=>`<div class="jrny-tab${i===t?' active':''}" onclick="jrnySetTab('${stage}',${i})">${tab}</div>`).join('')}
       </div>
-      <div class="jrny-body" id="jrny-body" style="overflow-y:auto;flex:1;padding:14px">
+      <div class="jrny-body" id="jrny-body" style="overflow-y:auto;flex:1;padding:6px 12px 14px">
         ${cfg.panels[t]||''}
       </div>`;
     Object.keys(checks).forEach(k=>{ const el=document.getElementById(k); if(el) el.checked=!!checks[k]; });
