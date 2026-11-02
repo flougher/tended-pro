@@ -4294,6 +4294,25 @@ function _pushHistory(state){
 
 var _qlReturning = false; // set by Quick Log to intercept history.back()
 
+// ── Orientation-change handler ──────────────────────────────────
+// Android TWA behaves two ways on rotation:
+//   A) Page RELOADS — init()'s setTimeout restore handles it (see bottom of init)
+//   B) Page does NOT reload — Android fires a popstate (null state, handled below)
+//      and re-evaluates CSS, but position:fixed content doesn't always repaint.
+//      We force a re-render by re-calling navTo(_currentSection).
+// Using 'orientationchange' rather than 'resize' avoids false triggers from
+// the software keyboard appearing/disappearing.
+let _orientationTimer = null;
+window.addEventListener('orientationchange', () => {
+  clearTimeout(_orientationTimer);
+  _orientationTimer = setTimeout(() => {
+    // Only act if we're NOT on dashboard — dashboard never goes missing
+    if(_currentSection && _currentSection !== 'dashboard'){
+      navTo(_currentSection);
+    }
+  }, 350);
+});
+
 window.addEventListener('popstate', e => {
   // Quick Log return — redirect popstate navigation to dashboard
   if(_qlReturning){ _qlReturning = false; navTo('dashboard'); return; }
@@ -13804,17 +13823,6 @@ async function init(){
   updateTopbarUser();
   renderDashboard();
   setInterval(updateTopbar, 60000);
-  // Restore last section after orientation-change reload
-  try {
-    const lastSec = localStorage.getItem('tendedPro_lastSection');
-    const FREE_SECTIONS_RESTORE = ['dashboard','patients','settings','emergency','checkin','itm','journey','legalfin'];
-    if(lastSec && lastSec !== 'dashboard'){
-      // Only restore free sections or if user has premium
-      if(FREE_SECTIONS_RESTORE.includes(lastSec) || isPremium()){
-        navTo(lastSec);
-      }
-    }
-  } catch(e){}
   // Auto-hide disclaimer if previously dismissed
   try {
     if(localStorage.getItem('disclaimerDismissed') === '1'){
@@ -13853,6 +13861,21 @@ async function init(){
   updatePremiumUI();
   applyFeatureVisibility();
   checkFirstLaunch();
+  // Restore last section AFTER all startup — trial state must be initialized
+  // before navTo's paywall check runs for journey/legalfin (not in FREE_SECTIONS).
+  // On Android TWA, orientation change reloads the page; this restores where the
+  // user was. setTimeout ensures async startTrialIfNew/updatePremiumUI have settled.
+  setTimeout(() => {
+    try {
+      const lastSec = localStorage.getItem('tendedPro_lastSection');
+      const FREE_SECTIONS_RESTORE = ['dashboard','patients','settings','emergency','checkin','itm','journey','legalfin'];
+      if(lastSec && lastSec !== 'dashboard'){
+        if(FREE_SECTIONS_RESTORE.includes(lastSec) || isPremium()){
+          navTo(lastSec);
+        }
+      }
+    } catch(e){}
+  }, 150);
 }
 
 init().catch(e => console.error('init failed', e));
