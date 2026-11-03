@@ -4526,7 +4526,7 @@ function navTo(id, btn){
     _currentSection = id;
   }
   // Persist section so orientation-change reloads can restore it
-  try { sessionStorage.setItem('tendedPro_lastSection', id); } catch(e){}
+  try { localStorage.setItem('tendedPro_lastSection', id); } catch(e){}
 
   // Sync bottom nav
   document.querySelectorAll('.bn-btn').forEach(b => {
@@ -13870,7 +13870,7 @@ async function init(){
   // user was. setTimeout ensures async startTrialIfNew/updatePremiumUI have settled.
   setTimeout(() => {
     try {
-      const lastSec = sessionStorage.getItem('tendedPro_lastSection');
+      const lastSec = localStorage.getItem('tendedPro_lastSection');
       const FREE_SECTIONS_RESTORE = ['dashboard','patients','settings','emergency','checkin','itm','journey','legalfin'];
       if(lastSec && lastSec !== 'dashboard'){
         if(FREE_SECTIONS_RESTORE.includes(lastSec) || isPremium()){
