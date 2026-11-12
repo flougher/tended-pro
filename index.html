@@ -1303,6 +1303,66 @@ body {
 #section-journey{padding:0}
 /* ── Legal & Financial ───────────────────────────────────── */
 #section-legalfin{padding:0}
+
+/* ═══ ADL Tracker (section-adl) ═══ */
+#section-adl .adl-wrap{max-width:560px;margin:0 auto}
+#section-adl .adl-header{background:var(--navy);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+#section-adl .adl-header-title{color:#fff;font-size:1.05rem;font-weight:800}
+#section-adl .adl-header-sub{color:var(--teal-bright);font-size:.75rem;margin-top:3px}
+#section-adl .adl-action-row{display:flex;gap:10px;margin-bottom:18px}
+#section-adl .adl-btn-full{flex:1;background:var(--teal);color:#fff;border:none;border-radius:var(--r);padding:13px 10px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;text-align:center;line-height:1.4}
+#section-adl .adl-btn-spot{flex:1;background:#fff;color:var(--navy);border:2px solid var(--border);border-radius:var(--r);padding:13px 10px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;text-align:center;line-height:1.4}
+#section-adl .adl-status-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+#section-adl .adl-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--r);padding:14px 14px 10px;cursor:pointer;transition:border-color .15s}
+#section-adl .adl-card:hover{border-color:var(--teal-mid)}
+#section-adl .adl-card-icon{font-size:1.4rem;margin-bottom:6px}
+#section-adl .adl-card-name{font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:4px}
+#section-adl .adl-card-level{font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:20px;display:inline-block}
+#section-adl .adl-card-date{font-size:.68rem;color:var(--slate-light);margin-top:4px}
+.adl-level-0{background:#D1F5E8;color:#0A7A4A}
+.adl-level-1{background:#EAF4FF;color:#1D5FA8}
+.adl-level-2{background:#FFF3D0;color:#C47A00}
+.adl-level-3{background:#FFE4E4;color:#C0392B}
+#section-adl .adl-history-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate-mid);margin-bottom:8px}
+#section-adl .adl-hist-row{background:#fff;border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;margin-bottom:6px;display:flex;align-items:flex-start;gap:10px}
+#section-adl .adl-hist-date{font-size:.7rem;color:var(--slate-light);min-width:68px;flex-shrink:0;padding-top:1px}
+#section-adl .adl-hist-body{flex:1}
+#section-adl .adl-hist-name{font-size:.82rem;font-weight:700;color:var(--navy)}
+#section-adl .adl-hist-level{font-size:.72rem;font-weight:700;padding:2px 7px;border-radius:20px;display:inline-block;margin-top:3px}
+#section-adl .adl-hist-note{font-size:.74rem;color:var(--slate-mid);margin-top:4px;line-height:1.5}
+#adl-assess-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(12,27,51,.55);z-index:3100;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#adl-assess-overlay.open{display:flex;align-items:flex-start;justify-content:center;padding:20px 12px 40px}
+.adl-assess-panel{background:#fff;border-radius:var(--r-lg);width:100%;max-width:520px;overflow:hidden;box-shadow:var(--sh-lg)}
+.adl-assess-head{background:var(--navy);padding:16px 18px;display:flex;align-items:center;justify-content:space-between}
+.adl-assess-title{color:#fff;font-size:1rem;font-weight:800}
+.adl-assess-close{background:rgba(255,255,255,.12);border:none;border-radius:20px;color:#fff;font-size:.8rem;padding:5px 14px;cursor:pointer;font-family:inherit}
+.adl-assess-body{padding:16px 18px}
+.adl-assess-adl{margin-bottom:20px}
+.adl-assess-adl-label{font-size:.86rem;font-weight:700;color:var(--navy);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.adl-level-btn{display:block;width:100%;background:var(--off-white);border:2px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;text-align:left;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;color:var(--slate);margin-bottom:6px;transition:all .12s}
+.adl-level-btn.selected{border-color:var(--teal-mid);background:var(--teal-pale);color:var(--teal)}
+.adl-level-btn:active{transform:scale(.99)}
+.adl-assess-note{width:100%;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-family:inherit;font-size:.84rem;color:var(--text);resize:none;margin-top:4px}
+.adl-assess-note:focus{outline:none;border-color:var(--teal-mid)}
+.adl-assess-save{width:100%;background:var(--teal);color:#fff;border:none;border-radius:var(--r);padding:14px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:6px}
+.adl-assess-save:active{transform:scale(.99)}
+/* ADL Chart overlay */
+#adl-chart-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(12,27,51,.55);z-index:3100;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#adl-chart-overlay.open{display:flex;align-items:flex-start;justify-content:center;padding:20px 12px 40px}
+.adl-chart-panel{background:#fff;border-radius:var(--r-lg);width:100%;max-width:520px;overflow:hidden;box-shadow:var(--sh-lg)}
+.adl-chart-head{background:var(--navy);padding:16px 18px;display:flex;align-items:center;justify-content:space-between}
+.adl-chart-title{color:#fff;font-size:.95rem;font-weight:800}
+.adl-chart-close{background:rgba(255,255,255,.12);border:none;border-radius:20px;color:#fff;font-size:.8rem;padding:5px 14px;cursor:pointer;font-family:inherit}
+.adl-chart-body{padding:16px 18px}
+.adl-chart-svg-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--r-sm);background:var(--off-white);padding:8px}
+.adl-chart-legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:12px}
+.adl-chart-legend-item{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--slate-mid)}
+.adl-chart-legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+#section-adl .adl-sparkline{margin-top:5px;line-height:0}
+#section-adl .adl-card-chart-btn{background:none;border:none;color:var(--teal);font-size:.62rem;cursor:pointer;padding:3px 0 0;line-height:1;font-family:inherit;display:block;width:100%;text-align:right}
+.adl-hist-edit-btn{background:none;border:1px solid var(--border);border-radius:var(--r-sm);color:var(--slate-mid);font-size:.65rem;cursor:pointer;padding:2px 8px;font-family:inherit;line-height:1.4;white-space:nowrap;flex-shrink:0;margin-left:8px}
+.adl-hist-edit-btn:active{background:var(--off-white)}
+
 .lf-header{background:linear-gradient(135deg,#1A2E4A 0%,#14213D 100%);padding:22px 18px 16px;color:#fff}
 .lf-header-title{font-size:1.15rem;font-weight:800;margin-bottom:4px}
 .lf-header-sub{font-size:.78rem;opacity:.8;line-height:1.5}
@@ -3150,6 +3210,13 @@ body {
     <div class="ph-sub">Complete clinical summary from all logged data</div></div>
   </div>
 
+  <div style="background:#EFF6FF;border:2px solid #BFDBFE;border-radius:var(--r);padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div>
+      <div style="font-size:.88rem;font-weight:800;color:#1D4ED8;margin-bottom:2px">👨‍⚕️ Doctor Summary PDF</div>
+      <div style="font-size:.76rem;color:#3B82F6;line-height:1.4">ADL status · trend direction · medications · patient info — ready to share with a physician</div>
+    </div>
+    <button class="btn btn-teal" style="background:#1D4ED8;border-color:#1D4ED8;white-space:nowrap" onclick="generateDoctorSummaryPDF()">📄 Download PDF</button>
+  </div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
     <button class="btn btn-secondary" onclick="renderReport()">🔄 Refresh</button>
     <button class="btn btn-teal" onclick="printReport()">📄 Save PDF</button>
@@ -3354,6 +3421,11 @@ body {
   </div>
 </div>
 
+<!-- ═══ ADL TRACKER ═════════════════════════════════════════ -->
+<div id="section-adl" class="section">
+  <div id="adl-root"></div>
+</div>
+
 </main><!-- content -->
 </div><!-- body-area -->
 
@@ -3385,6 +3457,7 @@ body {
     <button class="more-btn" onclick="mobileNavTo('comms')"><span class="more-icon">📞</span>Family Log</button>
     <button id="bnav-nutrition" class="more-btn" onclick="mobileNavTo('intake')"><span class="more-icon">🍽️</span>Diet & Fluids</button>
     <button class="more-btn" onclick="mobileNavTo('toileting')"><span class="more-icon">🚻</span>Toileting</button>
+    <button class="more-btn" onclick="mobileNavTo('adl')"><span class="more-icon">🏃</span>ADL Tracker</button>
   </div>
 
   <!-- ── Clinical ───────────────────────────────────────────── -->
@@ -4522,6 +4595,8 @@ function navTo(id, btn){
   // Push history entry for back-button support — skipped when triggered by popstate
   if(id !== _currentSection){
     _pushHistory({ section: id });
+    // Clear ADL recent-edit IDs when navigating away from the ADL section
+    if(_currentSection === 'adl' && id !== 'adl' && typeof _adlRecentIds !== 'undefined') _adlRecentIds = [];
     _currentSection = id;
     if(typeof trackEvent === 'function') trackEvent('screen_view', { screen_name: id });
   }
@@ -4573,7 +4648,8 @@ function navTo(id, btn){
     checkin:    renderCheckin,
     itm:        renderITM,
     journey:    renderJourney,
-    legalfin:   renderLegalFin
+    legalfin:   renderLegalFin,
+    adl:        renderADL
   };
   if(renders[id]) renders[id]();
 }
@@ -9752,6 +9828,160 @@ function renderReport(){
     toast('✅ Report generated', 'var(--given)');
     _bindReportButtons();
   }
+}
+
+// ── Doctor Summary PDF ────────────────────────────────────────
+function generateDoctorSummaryPDF(){
+  // Gather patient
+  var pid = _globalPatientId;
+  var pat = pid ? (D.patients||[]).find(function(p){ return String(p.id)===String(pid); }) : null;
+  if(!pat){ toast('Select a care recipient first.','var(--held)'); return; }
+
+  // Gather ADL data
+  var allHist = getADLHistory().filter(function(e){ return !pid || !e.patientId || String(e.patientId)===String(pid); });
+  var adlRows = ADL_DEFS.map(function(d){
+    var entries = allHist.filter(function(e){ return e.adl===d.key; }).sort(function(a,b){ return a.date.localeCompare(b.date); });
+    var last = entries.length ? entries[entries.length-1] : null;
+    var prev = entries.length>1 ? entries[entries.length-2] : null;
+    var trend = '—';
+    if(last && prev){
+      if(last.level < prev.level) trend = '▼ Declining';
+      else if(last.level > prev.level) trend = '▲ Improving';
+      else trend = '● Stable';
+    } else if(last){ trend = '● Stable'; }
+    var levelLabel = last ? (ADL_LEVELS[last.level]||ADL_LEVELS[0]).label : 'Not assessed';
+    var lastDate = last ? new Date(last.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+    var note = last && last.note ? last.note : '';
+    return { label: d.icon+' '+d.label, level: levelLabel, trend: trend, date: lastDate, note: note };
+  });
+
+  // Gather active meds for this patient
+  var meds = (D.meds||[]).filter(function(m){ return !m.discontinued && (!m.patientId || String(m.patientId)===String(pid)); });
+
+  // Build PDF
+  var jsPDFClass = null;
+  try {
+    if(window.jspdf && typeof window.jspdf.jsPDF==='function') jsPDFClass = window.jspdf.jsPDF;
+    else if(typeof window.jsPDF==='function') jsPDFClass = window.jsPDF;
+  } catch(e){}
+
+  if(!jsPDFClass){
+    toast('PDF library not loaded yet — try again in a moment.','var(--held)');
+    return;
+  }
+
+  var doc = new jsPDFClass({unit:'mm', format:'a4', orientation:'portrait'});
+  var pW = doc.internal.pageSize.getWidth();
+  var pH = doc.internal.pageSize.getHeight();
+  var ml = 15, mr = 15, y = 15;
+  var cw = pW - ml - mr;
+
+  function checkPage(need){
+    if(y + need > pH - 15){ doc.addPage(); y = 15; }
+  }
+  function hline(col){ doc.setDrawColor(col||180,col?col:180,col?col:180); doc.line(ml,y,pW-mr,y); y+=4; }
+  function txt(str, size, bold, color){
+    doc.setFontSize(size||9);
+    doc.setFont('helvetica', bold?'bold':'normal');
+    if(color) doc.setTextColor(color[0],color[1],color[2]); else doc.setTextColor(50,50,50);
+    var lines = doc.splitTextToSize(str, cw);
+    lines.forEach(function(l){
+      checkPage(doc.getFontSize()*0.45+1);
+      doc.text(l, ml, y);
+      y += doc.getFontSize()*0.45;
+    });
+  }
+
+  // ── Header block ──
+  var today = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  var patName = (pat.fname||'') + ' ' + (pat.lname||'');
+  var age = pat.dob ? Math.floor((Date.now()-new Date(pat.dob))/(365.25*24*3600*1000)) : null;
+  var dobStr = pat.dob ? new Date(pat.dob+'T00:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '';
+
+  doc.setFillColor(12,27,51);
+  doc.rect(0,0,pW,28,'F');
+  doc.setFontSize(14); doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255);
+  doc.text('Doctor Summary — Tended Health Pro', ml, 11);
+  doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(180,200,230);
+  doc.text('Prepared by family caregiver  ·  '+today, ml, 18);
+  doc.text('For informational purposes only — not an official medical record', ml, 24);
+  y = 34;
+
+  // Patient info
+  txt('CARE RECIPIENT', 10, true, [12,27,51]); y+=1; hline(200);
+  txt(patName+(age?' (Age '+age+')':''), 11, true, [12,27,51]); y+=1;
+  if(dobStr) txt('Date of Birth: '+dobStr, 9, false);
+  if(pat.doctor) txt('Primary Physician: '+pat.doctor+(pat.doctorPhone?' — '+pat.doctorPhone:''), 9, false);
+  if(pat.room) txt('Address: '+pat.room, 9, false);
+  y+=3;
+
+  // ADL Status Table
+  checkPage(20);
+  txt('ACTIVITIES OF DAILY LIVING (ADL) STATUS', 10, true, [12,27,51]); y+=1; hline(200);
+  txt('Level scale: Independent  ·  Minimal Support  ·  Moderate Support  ·  Full Support', 7.5, false, [120,130,145]); y+=2;
+
+  adlRows.forEach(function(r){
+    checkPage(10);
+    // Row background alternating
+    var rowH = r.note ? 14 : 10;
+    doc.setFillColor(248,250,252);
+    doc.rect(ml, y-3.5, cw, rowH, 'F');
+    // ADL name
+    doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(12,27,51);
+    doc.text(r.label, ml+2, y);
+    // Level
+    doc.setFont('helvetica','normal'); doc.setTextColor(50,50,50);
+    doc.text(r.level, ml+58, y);
+    // Trend
+    var tCol = [80,80,80];
+    if(r.trend.indexOf('Declin')>-1) tCol=[192,57,43];
+    else if(r.trend.indexOf('Improv')>-1) tCol=[10,122,74];
+    doc.setTextColor(tCol[0],tCol[1],tCol[2]);
+    doc.text(r.trend, ml+105, y);
+    // Date
+    doc.setTextColor(120,130,145);
+    doc.text(r.date, ml+140, y);
+    y+=5;
+    if(r.note){
+      doc.setFontSize(8); doc.setFont('helvetica','italic'); doc.setTextColor(80,90,105);
+      var noteLines = doc.splitTextToSize('Note: '+r.note, cw-6);
+      noteLines.forEach(function(l){ checkPage(4); doc.text(l, ml+4, y); y+=4; });
+    }
+    y+=2;
+  });
+  y+=2;
+
+  // Medications
+  checkPage(20);
+  txt('CURRENT MEDICATIONS', 10, true, [12,27,51]); y+=1; hline(200);
+  if(!meds.length){
+    txt('No active medications on record.', 9, false, [120,130,145]);
+  } else {
+    meds.forEach(function(m){
+      checkPage(8);
+      doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(12,27,51);
+      doc.text((m.name||'Unknown')+(m.dose?' — '+m.dose:''), ml+2, y);
+      if(m.schedule){
+        doc.setFont('helvetica','normal'); doc.setTextColor(80,90,105);
+        doc.setFontSize(8);
+        var schLines = doc.splitTextToSize(m.schedule, cw-6);
+        y+=4;
+        schLines.forEach(function(l){ checkPage(4); doc.text(l, ml+4, y); y+=4; });
+      } else { y+=5; }
+    });
+  }
+  y+=4;
+
+  // Footer disclaimer
+  checkPage(12);
+  doc.setFontSize(7.5); doc.setFont('helvetica','italic'); doc.setTextColor(140,150,165);
+  var disc = 'This document is a family caregiving record generated by Tended Health Pro. It is not a clinical document, official medical record, or substitute for professional medical advice. Consult a qualified healthcare provider for all medical decisions.';
+  var dLines = doc.splitTextToSize(disc, cw);
+  dLines.forEach(function(l){ doc.text(l, ml, y); y+=4; });
+
+  var fname = patName.replace(/\s+/g,'-') + '-Doctor-Summary-' + new Date().toISOString().split('T')[0] + '.pdf';
+  doc.save(fname);
+  toast('📄 Doctor Summary PDF downloaded.','var(--given)');
 }
 
 function printReport(){
@@ -15289,5 +15519,426 @@ function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
     </div>
   </div>
 </div>
+
+<!-- ADL Assessment Overlay -->
+<div id="adl-assess-overlay"></div>
+<!-- ADL Chart Overlay -->
+<div id="adl-chart-overlay"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// ADL TRACKER
+// ═══════════════════════════════════════════════════════════════
+const ADL_DEFS = [
+  { key:'bathing',    icon:'🚿', label:'Bathing' },
+  { key:'dressing',   icon:'👕', label:'Dressing' },
+  { key:'toileting',  icon:'🚻', label:'Toileting' },
+  { key:'continence', icon:'💧', label:'Continence' },
+  { key:'mobility',   icon:'🚶', label:'Mobility / Transfers' },
+  { key:'eating',     icon:'🍽️', label:'Eating / Feeding' },
+  { key:'hygiene',    icon:'🪥', label:'Personal Hygiene' }
+];
+
+const ADL_LEVELS = [
+  { value:0, label:'Independent',           short:'Independent' },
+  { value:1, label:'With Reminder',         short:'With Reminder' },
+  { value:2, label:'Minimum Assistance',    short:'Min Assistance' },
+  { value:3, label:'Full Physical Support', short:'Full Support' }
+];
+
+function getADLHistory(){
+  try { return JSON.parse(localStorage.getItem('tendedPro_adlHistory') || '[]'); } catch(e){ return []; }
+}
+function saveADLHistory(arr){
+  try { localStorage.setItem('tendedPro_adlHistory', JSON.stringify(arr)); } catch(e){}
+}
+
+function getADLCurrentStatus(){
+  const hist = getADLHistory();
+  const status = {};
+  ADL_DEFS.forEach(d => { status[d.key] = null; });
+  for(let i = hist.length - 1; i >= 0; i--){
+    const e = hist[i];
+    if(e && status.hasOwnProperty(e.adl) && status[e.adl] === null) status[e.adl] = e;
+    if(Object.values(status).every(v => v !== null)) break;
+  }
+  return status;
+}
+
+function renderADL(){
+  const root = document.getElementById('adl-root');
+  if(!root) return;
+  const status = getADLCurrentStatus();
+  const hist   = getADLHistory().slice().reverse();
+
+  root.innerHTML = '<div class="adl-wrap">'
+    + '<div class="adl-header">'
+    + '<div><div class="adl-header-title">🏃 ADL Tracker</div>'
+    + '<div class="adl-header-sub">Activities of Daily Living — Katz Index</div></div>'
+    + '</div>'
+    + '<div class="adl-action-row">'
+    + '<button class="adl-btn-full" onclick="openADLAssess(\'full\',null)">📋 Full Assessment<br><span style="font-size:.72rem;font-weight:400;opacity:.85">All 7 ADLs</span></button>'
+    + '<button class="adl-btn-spot" onclick="openADLAssess(\'spot\',null)">✏️ Spot Update<br><span style="font-size:.72rem;font-weight:400;opacity:.7">Single ADL</span></button>'
+    + '</div>'
+    + '<div class="adl-history-label">Current Status</div>'
+    + '<div class="adl-status-grid">'
+    + ADL_DEFS.map(d => {
+        const e   = status[d.key];
+        const lvl = e != null ? e.level : null;
+        const cls = lvl !== null ? 'adl-level-' + lvl : '';
+        const lbl = lvl !== null ? ADL_LEVELS[lvl].short : 'Not assessed';
+        const dt  = e ? new Date(e.date + 'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+        var sparkline = _adlSparklineSVG(d.key, 60, 24);
+        return '<div class="adl-card" onclick="openADLAssess(\'spot\',\'' + d.key + '\')">'
+          + '<div class="adl-card-icon">' + d.icon + '</div>'
+          + '<div class="adl-card-name">' + d.label + '</div>'
+          + '<span class="adl-card-level ' + cls + '">' + lbl + '</span>'
+          + (dt ? '<div class="adl-card-date">Last: ' + dt + '</div>' : '')
+          + (sparkline ? '<div class="adl-sparkline">' + sparkline + '</div>' : '')
+          + (lvl !== null ? '<button class="adl-card-chart-btn" onclick="event.stopPropagation();openADLChart(\'' + d.key + '\')">📈 Trend</button>' : '')
+          + '</div>';
+      }).join('')
+    + '</div>'
+    + '<div class="adl-history-label" style="margin-top:8px">Recent History</div>'
+    + (hist.length === 0
+        ? '<div style="text-align:center;color:var(--slate-light);font-size:.85rem;padding:24px 0 16px">No assessments yet.<br>Tap <b>Full Assessment</b> to get started.</div>'
+        : (function(){
+            return hist.slice(0,20).map(function(e){
+              const def = ADL_DEFS.find(d => d.key === e.adl) || {icon:'•', label: e.adl};
+              const lv  = ADL_LEVELS[e.level] || ADL_LEVELS[0];
+              const dt  = new Date(e.date + 'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+              var isEditable = _adlRecentIds.indexOf(e.id) !== -1;
+              return '<div class="adl-hist-row">'
+                + '<div class="adl-hist-date">' + dt + '</div>'
+                + '<div class="adl-hist-body" style="flex:1;min-width:0">'
+                + '<div style="display:flex;align-items:center;justify-content:space-between;gap:4px">'
+                + '<div class="adl-hist-name">' + def.icon + ' ' + def.label + '</div>'
+                + (isEditable ? '<button class="adl-hist-edit-btn" onclick="event.stopPropagation();openADLEdit(\'' + e.id + '\')">✏️ Edit</button>' : '')
+                + '</div>'
+                + '<span class="adl-hist-level adl-level-' + e.level + '">' + lv.label + '</span>'
+                + (e.note ? '<div class="adl-hist-note">' + e.note + '</div>' : '')
+                + '</div></div>';
+            }).join('');
+          })()
+      )
+    + '</div>';
+}
+
+// ── Sparkline (mini trend on status cards) ──────────────────────
+function _adlSparklineSVG(key, w, h){
+  var hist = getADLHistory().filter(function(e){ return e.adl === key; }).slice(-10);
+  if(hist.length < 2) return '';
+  var n = hist.length;
+  var CLR = ['#0A7A4A','#1D5FA8','#C47A00','#C0392B'];
+  var pts = hist.map(function(e,i){
+    var x = Math.round(2 + (i/(n-1))*(w-4));
+    var y = Math.round((h-2) - (e.level/3)*(h-4));
+    return x+','+y;
+  }).join(' ');
+  var c = CLR[hist[n-1].level] || '#888';
+  var dots = hist.map(function(e,i){
+    var x = Math.round(2+(i/(n-1))*(w-4));
+    var y = Math.round((h-2)-(e.level/3)*(h-4));
+    return '<circle cx="'+x+'" cy="'+y+'" r="2" fill="'+(CLR[e.level]||'#888')+'"/>';
+  }).join('');
+  return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" style="display:block">'
+    +'<polyline points="'+pts+'" fill="none" stroke="'+c+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>'
+    +dots+'</svg>';
+}
+
+// ── Full trend chart overlay ─────────────────────────────────────
+function openADLChart(key){
+  var ov = document.getElementById('adl-chart-overlay');
+  if(!ov) return;
+  var def = ADL_DEFS.find(function(d){ return d.key===key; });
+  if(!def) return;
+  var hist = getADLHistory().filter(function(e){ return e.adl===key; });
+  var CLR = ['#0A7A4A','#1D5FA8','#C47A00','#C0392B'];
+  var W=460,H=170,PL=92,PR=14,PT=14,PB=38;
+  var cW=W-PL-PR, cH=H-PT-PB;
+  var svg = '';
+  // Grid lines + Y labels
+  for(var lv=0;lv<=3;lv++){
+    var gy = Math.round(PT+cH-(lv/3)*cH);
+    svg+='<line x1="'+PL+'" y1="'+gy+'" x2="'+(PL+cW)+'" y2="'+gy+'" stroke="#e4e8ef" stroke-width="1"/>';
+    svg+='<text x="'+(PL-5)+'" y="'+(gy+4)+'" text-anchor="end" font-size="9" fill="#7a8899" font-family="system-ui,sans-serif">'+ADL_LEVELS[lv].short+'</text>';
+  }
+  if(hist.length===0){
+    svg+='<text x="'+(PL+cW/2)+'" y="'+(PT+cH/2)+'" text-anchor="middle" font-size="12" fill="#94a3b8" font-family="system-ui,sans-serif">No entries yet</text>';
+  } else {
+    var n=hist.length;
+    // Connecting line
+    if(n>=2){
+      var lpts=hist.map(function(e,i){
+        var x=Math.round(n>1?PL+(i/(n-1))*cW:PL+cW/2);
+        var y=Math.round(PT+cH-(e.level/3)*cH);
+        return x+','+y;
+      }).join(' ');
+      svg+='<polyline points="'+lpts+'" fill="none" stroke="#b0bec8" stroke-width="1.5"/>';
+    }
+    // Dots + date labels
+    var step=Math.max(1,Math.ceil(n/6));
+    hist.forEach(function(e,i){
+      var x=Math.round(n>1?PL+(i/(n-1))*cW:PL+cW/2);
+      var y=Math.round(PT+cH-(e.level/3)*cH);
+      svg+='<circle cx="'+x+'" cy="'+y+'" r="5" fill="'+(CLR[e.level]||'#888')+'" stroke="#fff" stroke-width="1.5"/>';
+      if(i===0||i===n-1||i%step===0){
+        var dt=new Date(e.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+        svg+='<text x="'+x+'" y="'+(H-6)+'" text-anchor="middle" font-size="8" fill="#7a8899" font-family="system-ui,sans-serif">'+dt+'</text>';
+      }
+    });
+  }
+  svg='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" style="display:block;min-width:'+W+'px">'+svg+'</svg>';
+
+  var legend = ADL_LEVELS.map(function(lv){
+    return '<div class="adl-chart-legend-item">'
+      +'<div class="adl-chart-legend-dot" style="background:'+CLR[lv.value]+'"></div>'+lv.label+'</div>';
+  }).join('');
+
+  var lastEntry = hist.length ? new Date(hist[hist.length-1].date+'T00:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '';
+
+  ov.innerHTML='<div class="adl-chart-panel">'
+    +'<div class="adl-chart-head">'
+    +'<span class="adl-chart-title">'+def.icon+' '+def.label+' — Trend</span>'
+    +'<button class="adl-chart-close" onclick="closeADLChart()">✕ Close</button>'
+    +'</div>'
+    +'<div class="adl-chart-body">'
+    +'<div class="adl-chart-svg-wrap">'+svg+'</div>'
+    +'<div class="adl-chart-legend">'+legend+'</div>'
+    +(hist.length?'<div style="font-size:.7rem;color:var(--slate-light);margin-top:10px;text-align:center">'+hist.length+' entr'+(hist.length===1?'y':'ies')+' · most recent: '+lastEntry+'</div>':'')
+    +'<button onclick="closeADLChart();openADLAssess(\'spot\',\''+key+'\')" style="display:block;width:100%;margin-top:14px;padding:12px;background:var(--teal);color:#fff;border:none;border-radius:var(--r-sm);font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit">✏️ Update '+def.label+'</button>'
+    +'</div></div>';
+  ov.classList.add('open');
+}
+function closeADLChart(){
+  var ov=document.getElementById('adl-chart-overlay');
+  if(ov){ov.classList.remove('open');ov.innerHTML='';}
+}
+
+function openADLEdit(entryId){
+  var hist = getADLHistory();
+  var entry = hist.find(function(e){ return e.id === entryId; });
+  if(!entry) return;
+  var def = ADL_DEFS.find(function(d){ return d.key === entry.adl; });
+  if(!def) return;
+  _adlEditId = entryId;
+  var overlay = document.getElementById('adl-assess-overlay');
+  if(!overlay) return;
+  _adlSelections = {};
+  _adlNotes = {};
+  _adlSelections[entry.adl] = entry.level;
+  _adlNotes[entry.adl] = entry.note || '';
+  var levelsHTML = ADL_LEVELS.map(function(lv){
+    var sel = (entry.level === lv.value) ? ' adl-level-btn-sel' : '';
+    return '<button class="adl-level-btn'+sel+'" onclick="'
+      +'_adlSelections[\''+entry.adl+'\']='+lv.value+';'
+      +'this.closest(\'.adl-assess-item\').querySelectorAll(\'.adl-level-btn\').forEach(function(b){b.classList.remove(\'adl-level-btn-sel\')});'
+      +'this.classList.add(\'adl-level-btn-sel\')">'
+      +lv.short+'</button>';
+  }).join('');
+  overlay.innerHTML = '<div class="adl-assess-panel">'
+    +'<div class="adl-assess-head">'
+    +'<span class="adl-assess-title">✏️ Edit Entry — '+def.icon+' '+def.label+'</span>'
+    +'<button class="adl-assess-close" onclick="closeADLEdit()">✕</button>'
+    +'</div>'
+    +'<div class="adl-assess-body">'
+    +'<div class="adl-assess-item">'
+    +'<div class="adl-assess-item-head"><span class="adl-assess-item-icon">'+def.icon+'</span><span class="adl-assess-item-name">'+def.label+'</span></div>'
+    +'<div class="adl-assess-levels">'+levelsHTML+'</div>'
+    +'<textarea id="adl-edit-note" class="adl-assess-note" placeholder="Note (optional)" rows="2">'+(entry.note||'')+'</textarea>'
+    +'</div>'
+    +'<div style="margin-bottom:14px">'
+    +'<label style="font-size:.74rem;font-weight:700;color:var(--slate-mid);display:block;margin-bottom:4px">Entry Date</label>'
+    +'<input type="date" id="adl-edit-date" value="'+entry.date+'"'
+    +' style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:.88rem;background:#fff;color:var(--navy);box-sizing:border-box">'
+    +'</div>'
+    +'<button class="adl-assess-save" ontouchstart="if(document.activeElement)document.activeElement.blur()" onclick="saveADLEdit()">💾 Save Changes</button>'
+    +'<button onclick="closeADLEdit()" style="display:block;width:100%;margin-top:8px;padding:10px;background:none;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:.85rem;color:var(--slate-mid);cursor:pointer;font-family:inherit">Cancel</button>'
+    +'</div></div>';
+  overlay.classList.add('open');
+  var ta = document.getElementById('adl-edit-note');
+  if(ta) ta.addEventListener('input', function(){ _adlNotes[entry.adl] = this.value; });
+}
+function saveADLEdit(){
+  if(!_adlEditId) return;
+  var ta = document.getElementById('adl-edit-note');
+  var note = ta ? ta.value.trim() : '';
+  var dateEl = document.getElementById('adl-edit-date');
+  var date = (dateEl && dateEl.value) ? dateEl.value : new Date().toISOString().split('T')[0];
+  var hist = getADLHistory();
+  var idx = hist.findIndex(function(e){ return e.id === _adlEditId; });
+  if(idx === -1){ toast('Entry not found.','var(--held)'); return; }
+  var adlKey = hist[idx].adl;
+  var level = (_adlSelections[adlKey] !== undefined) ? _adlSelections[adlKey] : hist[idx].level;
+  hist[idx] = { id: hist[idx].id, date: date, adl: adlKey, level: level, note: note };
+  saveADLHistory(hist);
+  closeADLEdit();
+  renderADL();
+  toast('Entry updated.','var(--given)');
+}
+function closeADLEdit(){
+  _adlEditId = null;
+  var overlay = document.getElementById('adl-assess-overlay');
+  if(overlay){ overlay.classList.remove('open'); overlay.innerHTML=''; }
+}
+
+let _adlAssessMode = 'full';
+let _adlSpotKey    = null;
+let _adlSelections = {};
+let _adlNotes      = {};
+let _adlNotesTimer = null;
+let _adlEditId     = null;
+let _adlRecentIds  = [];
+function setADLNote(key, val){ _adlNotes[key] = val; }
+function _adlStartNotePolling(){
+  if(_adlNotesTimer) clearInterval(_adlNotesTimer);
+  _adlNotesTimer = setInterval(function(){
+    var ov = document.getElementById('adl-assess-overlay');
+    if(!ov || !ov.classList.contains('open')){ clearInterval(_adlNotesTimer); _adlNotesTimer = null; return; }
+    ov.querySelectorAll('textarea.adl-assess-note').forEach(function(ta){
+      var key = ta.id ? ta.id.replace('adl-note-','') : '';
+      if(key) _adlNotes[key] = ta.value;
+    });
+  }, 200);
+}
+
+function openADLAssess(mode, spotKey){
+  _adlAssessMode = mode || 'full';
+  _adlSpotKey    = spotKey || null;
+  _adlSelections = {};
+  _adlNotes      = {};
+
+  if(_adlAssessMode === 'spot' && !_adlSpotKey){
+    _showADLPicker();
+    return;
+  }
+
+  const adlsToShow = (_adlAssessMode === 'spot' && _adlSpotKey)
+    ? ADL_DEFS.filter(d => d.key === _adlSpotKey)
+    : ADL_DEFS;
+
+  const status = getADLCurrentStatus();
+  adlsToShow.forEach(d => {
+    const e = status[d.key];
+    if(e) _adlSelections[d.key] = e.level;
+  });
+
+  const overlay = document.getElementById('adl-assess-overlay');
+  if(!overlay) return;
+  const title = (_adlAssessMode === 'full')
+    ? 'Full Assessment — All 7 ADLs'
+    : 'Update — ' + (ADL_DEFS.find(d => d.key === _adlSpotKey) || {label:_adlSpotKey}).label;
+
+  overlay.innerHTML = '<div class="adl-assess-panel">'
+    + '<div class="adl-assess-head">'
+    + '<span class="adl-assess-title">' + title + '</span>'
+    + '<button class="adl-assess-close" onclick="closeADLAssess()">✕ Cancel</button>'
+    + '</div>'
+    + '<div class="adl-assess-body">'
+    + '<div style="font-size:.78rem;color:var(--slate-mid);margin-bottom:16px;line-height:1.5">Select the level that best describes current functional ability.</div>'
+    + adlsToShow.map(d =>
+        '<div class="adl-assess-adl" id="adl-block-' + d.key + '">'
+        + '<div class="adl-assess-adl-label">' + d.icon + ' ' + d.label + '</div>'
+        + ADL_LEVELS.map(lv =>
+            '<button class="adl-level-btn' + (_adlSelections[d.key] === lv.value ? ' selected' : '') + '"'
+            + ' onclick="selectADLLevel(\'' + d.key + '\',' + lv.value + ',this)">'
+            + lv.label + '</button>'
+          ).join('')
+        + '<textarea class="adl-assess-note" id="adl-note-' + d.key + '" rows="2"'
+        + ' placeholder="Optional note (e.g. needed verbal prompts for sequence)…"></textarea>'
+        + '</div>'
+      ).join('')
+    + '<div style="margin-bottom:14px">'
+    + '<label style="font-size:.74rem;font-weight:700;color:var(--slate-mid);display:block;margin-bottom:4px">Assessment Date</label>'
+    + '<input type="date" id="adl-assess-date" value="' + new Date().toISOString().split('T')[0] + '"'
+    + ' style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:.88rem;background:#fff;color:var(--navy);box-sizing:border-box">'
+    + '</div>'
+    + '<button class="adl-assess-save" ontouchstart="if(document.activeElement)document.activeElement.blur()" onclick="saveADLAssess()">💾 Save Assessment</button>'
+    + '</div></div>';
+
+  overlay.classList.add('open');
+
+  // Attach input listeners + start polling for Android TWA timing reliability
+  adlsToShow.forEach(function(d){
+    var ta = document.getElementById('adl-note-' + d.key);
+    if(ta) ta.addEventListener('input', function(){ _adlNotes[d.key] = this.value; });
+  });
+  _adlStartNotePolling();
+}
+
+function _showADLPicker(){
+  const overlay = document.getElementById('adl-assess-overlay');
+  if(!overlay) return;
+  overlay.innerHTML = '<div class="adl-assess-panel">'
+    + '<div class="adl-assess-head">'
+    + '<span class="adl-assess-title">Spot Update — Choose an ADL</span>'
+    + '<button class="adl-assess-close" onclick="closeADLAssess()">✕ Cancel</button>'
+    + '</div>'
+    + '<div class="adl-assess-body">'
+    + ADL_DEFS.map(d =>
+        '<button class="adl-level-btn" style="font-size:.88rem;padding:12px 14px" onclick="openADLAssess(\'spot\',\'' + d.key + '\')">'
+        + d.icon + ' ' + d.label + '</button>'
+      ).join('')
+    + '</div></div>';
+  overlay.classList.add('open');
+}
+
+function selectADLLevel(key, value, btn){
+  _adlSelections[key] = value;
+  const block = document.getElementById('adl-block-' + key);
+  if(!block) return;
+  block.querySelectorAll('.adl-level-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function closeADLAssess(){
+  if(_adlNotesTimer){ clearInterval(_adlNotesTimer); _adlNotesTimer = null; }
+  const overlay = document.getElementById('adl-assess-overlay');
+  if(overlay){ overlay.classList.remove('open'); overlay.innerHTML = ''; }
+}
+
+function saveADLAssess(){
+  // Read note textareas directly from DOM — search within overlay
+  var overlay = document.getElementById('adl-assess-overlay');
+  if(overlay){
+    overlay.querySelectorAll('textarea.adl-assess-note').forEach(function(ta){
+      var key = ta.id ? ta.id.replace('adl-note-','') : '';
+      if(key) _adlNotes[key] = ta.value;
+    });
+  }
+
+  const adlsToSave = (_adlAssessMode === 'spot' && _adlSpotKey)
+    ? ADL_DEFS.filter(d => d.key === _adlSpotKey)
+    : ADL_DEFS;
+
+  var dateEl = document.getElementById('adl-assess-date');
+  const today = (dateEl && dateEl.value) ? dateEl.value : new Date().toISOString().split('T')[0];
+  const hist  = getADLHistory();
+  let saved   = 0;
+
+  var newIds = [];
+  adlsToSave.forEach(d => {
+    if(_adlSelections[d.key] === undefined) return;
+    const note = (_adlNotes[d.key] || '').trim();
+    var newId = Date.now() + '_' + d.key;
+    hist.push({ id: newId, date: today, adl: d.key, level: _adlSelections[d.key], note: note });
+    newIds.push(newId);
+    saved++;
+  });
+
+  if(saved === 0){
+    if(typeof toast === 'function') toast('Select at least one level before saving.', 'var(--held)');
+    return;
+  }
+
+  _adlRecentIds = newIds;
+  saveADLHistory(hist);
+  closeADLAssess();
+  renderADL();
+  var notesCaptured = Object.values(_adlNotes).filter(function(v){ return v && v.trim(); }).length;
+  if(typeof toast === 'function') toast('ADL assessment saved (' + saved + ' item' + (saved > 1 ? 's' : '') + (notesCaptured ? ' + note' : '') + ').', 'var(--given)');
+}
+</script>
+
 </body>
 </html>
