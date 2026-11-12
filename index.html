@@ -1346,6 +1346,20 @@ body {
 .adl-assess-note:focus{outline:none;border-color:var(--teal-mid)}
 .adl-assess-save{width:100%;background:var(--teal);color:#fff;border:none;border-radius:var(--r);padding:14px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:6px}
 .adl-assess-save:active{transform:scale(.99)}
+/* ADL Chart overlay */
+#adl-chart-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(12,27,51,.55);z-index:3100;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#adl-chart-overlay.open{display:flex;align-items:flex-start;justify-content:center;padding:20px 12px 40px}
+.adl-chart-panel{background:#fff;border-radius:var(--r-lg);width:100%;max-width:520px;overflow:hidden;box-shadow:var(--sh-lg)}
+.adl-chart-head{background:var(--navy);padding:16px 18px;display:flex;align-items:center;justify-content:space-between}
+.adl-chart-title{color:#fff;font-size:.95rem;font-weight:800}
+.adl-chart-close{background:rgba(255,255,255,.12);border:none;border-radius:20px;color:#fff;font-size:.8rem;padding:5px 14px;cursor:pointer;font-family:inherit}
+.adl-chart-body{padding:16px 18px}
+.adl-chart-svg-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--r-sm);background:var(--off-white);padding:8px}
+.adl-chart-legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:12px}
+.adl-chart-legend-item{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--slate-mid)}
+.adl-chart-legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+#section-adl .adl-sparkline{margin-top:5px;line-height:0}
+#section-adl .adl-card-chart-btn{background:none;border:none;color:var(--teal);font-size:.62rem;cursor:pointer;padding:3px 0 0;line-height:1;font-family:inherit;display:block;width:100%;text-align:right}
 
 .lf-header{background:linear-gradient(135deg,#1A2E4A 0%,#14213D 100%);padding:22px 18px 16px;color:#fff}
 .lf-header-title{font-size:1.15rem;font-weight:800;margin-bottom:4px}
@@ -15291,6 +15305,8 @@ function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
 
 <!-- ADL Assessment Overlay -->
 <div id="adl-assess-overlay"></div>
+<!-- ADL Chart Overlay -->
+<div id="adl-chart-overlay"></div>
 
 <script>
 // ═══════════════════════════════════════════════════════════════
@@ -15355,11 +15371,14 @@ function renderADL(){
         const cls = lvl !== null ? 'adl-level-' + lvl : '';
         const lbl = lvl !== null ? ADL_LEVELS[lvl].short : 'Not assessed';
         const dt  = e ? new Date(e.date + 'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+        var sparkline = _adlSparklineSVG(d.key, 60, 24);
         return '<div class="adl-card" onclick="openADLAssess(\'spot\',\'' + d.key + '\')">'
           + '<div class="adl-card-icon">' + d.icon + '</div>'
           + '<div class="adl-card-name">' + d.label + '</div>'
           + '<span class="adl-card-level ' + cls + '">' + lbl + '</span>'
           + (dt ? '<div class="adl-card-date">Last: ' + dt + '</div>' : '')
+          + (sparkline ? '<div class="adl-sparkline">' + sparkline + '</div>' : '')
+          + (lvl !== null ? '<button class="adl-card-chart-btn" onclick="event.stopPropagation();openADLChart(\'' + d.key + '\')">📈 Trend</button>' : '')
           + '</div>';
       }).join('')
     + '</div>'
@@ -15380,6 +15399,97 @@ function renderADL(){
           }).join('')
       )
     + '</div>';
+}
+
+// ── Sparkline (mini trend on status cards) ──────────────────────
+function _adlSparklineSVG(key, w, h){
+  var hist = getADLHistory().filter(function(e){ return e.adl === key; }).slice(-10);
+  if(hist.length < 2) return '';
+  var n = hist.length;
+  var CLR = ['#0A7A4A','#1D5FA8','#C47A00','#C0392B'];
+  var pts = hist.map(function(e,i){
+    var x = Math.round(2 + (i/(n-1))*(w-4));
+    var y = Math.round((h-2) - (e.level/3)*(h-4));
+    return x+','+y;
+  }).join(' ');
+  var c = CLR[hist[n-1].level] || '#888';
+  var dots = hist.map(function(e,i){
+    var x = Math.round(2+(i/(n-1))*(w-4));
+    var y = Math.round((h-2)-(e.level/3)*(h-4));
+    return '<circle cx="'+x+'" cy="'+y+'" r="2" fill="'+(CLR[e.level]||'#888')+'"/>';
+  }).join('');
+  return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" style="display:block">'
+    +'<polyline points="'+pts+'" fill="none" stroke="'+c+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>'
+    +dots+'</svg>';
+}
+
+// ── Full trend chart overlay ─────────────────────────────────────
+function openADLChart(key){
+  var ov = document.getElementById('adl-chart-overlay');
+  if(!ov) return;
+  var def = ADL_DEFS.find(function(d){ return d.key===key; });
+  if(!def) return;
+  var hist = getADLHistory().filter(function(e){ return e.adl===key; });
+  var CLR = ['#0A7A4A','#1D5FA8','#C47A00','#C0392B'];
+  var W=460,H=170,PL=92,PR=14,PT=14,PB=38;
+  var cW=W-PL-PR, cH=H-PT-PB;
+  var svg = '';
+  // Grid lines + Y labels
+  for(var lv=0;lv<=3;lv++){
+    var gy = Math.round(PT+cH-(lv/3)*cH);
+    svg+='<line x1="'+PL+'" y1="'+gy+'" x2="'+(PL+cW)+'" y2="'+gy+'" stroke="#e4e8ef" stroke-width="1"/>';
+    svg+='<text x="'+(PL-5)+'" y="'+(gy+4)+'" text-anchor="end" font-size="9" fill="#7a8899" font-family="system-ui,sans-serif">'+ADL_LEVELS[lv].short+'</text>';
+  }
+  if(hist.length===0){
+    svg+='<text x="'+(PL+cW/2)+'" y="'+(PT+cH/2)+'" text-anchor="middle" font-size="12" fill="#94a3b8" font-family="system-ui,sans-serif">No entries yet</text>';
+  } else {
+    var n=hist.length;
+    // Connecting line
+    if(n>=2){
+      var lpts=hist.map(function(e,i){
+        var x=Math.round(n>1?PL+(i/(n-1))*cW:PL+cW/2);
+        var y=Math.round(PT+cH-(e.level/3)*cH);
+        return x+','+y;
+      }).join(' ');
+      svg+='<polyline points="'+lpts+'" fill="none" stroke="#b0bec8" stroke-width="1.5"/>';
+    }
+    // Dots + date labels
+    var step=Math.max(1,Math.ceil(n/6));
+    hist.forEach(function(e,i){
+      var x=Math.round(n>1?PL+(i/(n-1))*cW:PL+cW/2);
+      var y=Math.round(PT+cH-(e.level/3)*cH);
+      svg+='<circle cx="'+x+'" cy="'+y+'" r="5" fill="'+(CLR[e.level]||'#888')+'" stroke="#fff" stroke-width="1.5"/>';
+      if(i===0||i===n-1||i%step===0){
+        var dt=new Date(e.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+        svg+='<text x="'+x+'" y="'+(H-6)+'" text-anchor="middle" font-size="8" fill="#7a8899" font-family="system-ui,sans-serif">'+dt+'</text>';
+      }
+    });
+  }
+  svg='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" style="display:block;min-width:'+W+'px">'+svg+'</svg>';
+
+  var legend = ADL_LEVELS.map(function(lv){
+    return '<div class="adl-chart-legend-item">'
+      +'<div class="adl-chart-legend-dot" style="background:'+CLR[lv.value]+'"></div>'+lv.label+'</div>';
+  }).join('');
+
+  var lastEntry = hist.length ? new Date(hist[hist.length-1].date+'T00:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '';
+
+  ov.innerHTML='<div class="adl-chart-panel">'
+    +'<div class="adl-chart-head">'
+    +'<span class="adl-chart-title">'+def.icon+' '+def.label+' — Trend</span>'
+    +'<button class="adl-chart-close" onclick="closeADLChart()">✕ Close</button>'
+    +'</div>'
+    +'<div class="adl-chart-body">'
+    +'<div class="adl-chart-svg-wrap">'+svg+'</div>'
+    +'<div class="adl-chart-legend">'+legend+'</div>'
+    +(hist.length?'<div style="font-size:.7rem;color:var(--slate-light);margin-top:10px;text-align:center">'+hist.length+' entr'+(hist.length===1?'y':'ies')+' · most recent: '+lastEntry+'</div>':'')
+    +'<button onclick="closeADLChart();openADLAssess(\'spot\',\''+key+'\')" style="display:block;width:100%;margin-top:14px;padding:12px;background:var(--teal);color:#fff;border:none;border-radius:var(--r-sm);font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit">✏️ Update '+def.label+'</button>'
+    +'</div></div>';
+  ov.classList.add('open');
+}
+function closeADLChart(){
+  var ov=document.getElementById('adl-chart-overlay');
+  if(ov){ov.classList.remove('open');ov.innerHTML='';}
 }
 
 let _adlAssessMode = 'full';
