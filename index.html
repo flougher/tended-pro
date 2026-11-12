@@ -15480,11 +15480,14 @@ function closeADLAssess(){
 }
 
 function saveADLAssess(){
-  // Read note textareas directly from DOM right now — no event timing dependency
-  ADL_DEFS.forEach(function(d){
-    var ta = document.getElementById('adl-note-' + d.key);
-    if(ta) _adlNotes[d.key] = ta.value;
-  });
+  // Read note textareas directly from DOM — search within overlay
+  var overlay = document.getElementById('adl-assess-overlay');
+  if(overlay){
+    overlay.querySelectorAll('textarea.adl-assess-note').forEach(function(ta){
+      var key = ta.id ? ta.id.replace('adl-note-','') : '';
+      if(key) _adlNotes[key] = ta.value;
+    });
+  }
 
   const adlsToSave = (_adlAssessMode === 'spot' && _adlSpotKey)
     ? ADL_DEFS.filter(d => d.key === _adlSpotKey)
@@ -15509,7 +15512,8 @@ function saveADLAssess(){
   saveADLHistory(hist);
   closeADLAssess();
   renderADL();
-  if(typeof toast === 'function') toast('ADL assessment saved (' + saved + ' item' + (saved > 1 ? 's' : '') + ').', 'var(--given)');
+  var notesCaptured = Object.values(_adlNotes).filter(function(v){ return v && v.trim(); }).length;
+  if(typeof toast === 'function') toast('ADL assessment saved (' + saved + ' item' + (saved > 1 ? 's' : '') + (notesCaptured ? ' + note' : '') + ').', 'var(--given)');
 }
 </script>
 
