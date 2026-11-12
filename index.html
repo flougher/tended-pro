@@ -15446,8 +15446,10 @@ function openADLAssess(mode, spotKey){
         + ' placeholder="Optional note (e.g. needed verbal prompts for sequence)…"></textarea>'
         + '</div>'
       ).join('')
-    + '<div style="font-size:.74rem;color:var(--slate-light);margin-bottom:12px;text-align:center">'
-    + 'Date: ' + new Date().toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric',year:'numeric'})
+    + '<div style="margin-bottom:14px">'
+    + '<label style="font-size:.74rem;font-weight:700;color:var(--slate-mid);display:block;margin-bottom:4px">Assessment Date</label>'
+    + '<input type="date" id="adl-assess-date" value="' + new Date().toISOString().split('T')[0] + '"'
+    + ' style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:.88rem;background:#fff;color:var(--navy);box-sizing:border-box">'
     + '</div>'
     + '<button class="adl-assess-save" ontouchstart="if(document.activeElement)document.activeElement.blur()" onclick="saveADLAssess()">💾 Save Assessment</button>'
     + '</div></div>';
@@ -15507,7 +15509,8 @@ function saveADLAssess(){
     ? ADL_DEFS.filter(d => d.key === _adlSpotKey)
     : ADL_DEFS;
 
-  const today = new Date().toISOString().split('T')[0];
+  var dateEl = document.getElementById('adl-assess-date');
+  const today = (dateEl && dateEl.value) ? dateEl.value : new Date().toISOString().split('T')[0];
   const hist  = getADLHistory();
   let saved   = 0;
 
