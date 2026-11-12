@@ -15431,7 +15431,6 @@ function openADLAssess(mode, spotKey){
             + lv.label + '</button>'
           ).join('')
         + '<textarea class="adl-assess-note" id="adl-note-' + d.key + '" rows="2"'
-        + ' oninput="setADLNote(\'' + d.key + '\',this.value)"'
         + ' placeholder="Optional note (e.g. needed verbal prompts for sequence)…"></textarea>'
         + '</div>'
       ).join('')
@@ -15442,6 +15441,12 @@ function openADLAssess(mode, spotKey){
     + '</div></div>';
 
   overlay.classList.add('open');
+
+  // Attach input listeners after overlay is in DOM — avoids inline-handler scope issues
+  adlsToShow.forEach(function(d){
+    var ta = document.getElementById('adl-note-' + d.key);
+    if(ta) ta.addEventListener('input', function(){ _adlNotes[d.key] = this.value; });
+  });
 }
 
 function _showADLPicker(){
