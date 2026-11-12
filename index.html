@@ -3211,6 +3211,13 @@ body {
     <div class="ph-sub">Complete clinical summary from all logged data</div></div>
   </div>
 
+  <div style="background:#EFF6FF;border:2px solid #BFDBFE;border-radius:var(--r);padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div>
+      <div style="font-size:.88rem;font-weight:800;color:#1D4ED8;margin-bottom:2px">👨‍⚕️ Doctor Summary PDF</div>
+      <div style="font-size:.76rem;color:#3B82F6;line-height:1.4">ADL status · trend direction · medications · patient info — ready to share with a physician</div>
+    </div>
+    <button class="btn btn-teal" style="background:#1D4ED8;border-color:#1D4ED8;white-space:nowrap" onclick="generateDoctorSummaryPDF()">📄 Download PDF</button>
+  </div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
     <button class="btn btn-secondary" onclick="renderReport()">🔄 Refresh</button>
     <button class="btn btn-teal" onclick="printReport()">📄 Save PDF</button>
@@ -9812,6 +9819,160 @@ function renderReport(){
     toast('✅ Report generated', 'var(--given)');
     _bindReportButtons();
   }
+}
+
+// ── Doctor Summary PDF ────────────────────────────────────────
+function generateDoctorSummaryPDF(){
+  // Gather patient
+  var pid = _globalPatientId;
+  var pat = pid ? (D.patients||[]).find(function(p){ return String(p.id)===String(pid); }) : null;
+  if(!pat){ toast('Select a care recipient first.','var(--held)'); return; }
+
+  // Gather ADL data
+  var allHist = getADLHistory().filter(function(e){ return !pid || !e.patientId || String(e.patientId)===String(pid); });
+  var adlRows = ADL_DEFS.map(function(d){
+    var entries = allHist.filter(function(e){ return e.adl===d.key; }).sort(function(a,b){ return a.date.localeCompare(b.date); });
+    var last = entries.length ? entries[entries.length-1] : null;
+    var prev = entries.length>1 ? entries[entries.length-2] : null;
+    var trend = '—';
+    if(last && prev){
+      if(last.level < prev.level) trend = '▼ Declining';
+      else if(last.level > prev.level) trend = '▲ Improving';
+      else trend = '● Stable';
+    } else if(last){ trend = '● Stable'; }
+    var levelLabel = last ? (ADL_LEVELS[last.level]||ADL_LEVELS[0]).label : 'Not assessed';
+    var lastDate = last ? new Date(last.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+    var note = last && last.note ? last.note : '';
+    return { label: d.icon+' '+d.label, level: levelLabel, trend: trend, date: lastDate, note: note };
+  });
+
+  // Gather active meds for this patient
+  var meds = (D.meds||[]).filter(function(m){ return !m.discontinued && (!m.patientId || String(m.patientId)===String(pid)); });
+
+  // Build PDF
+  var jsPDFClass = null;
+  try {
+    if(window.jspdf && typeof window.jspdf.jsPDF==='function') jsPDFClass = window.jspdf.jsPDF;
+    else if(typeof window.jsPDF==='function') jsPDFClass = window.jsPDF;
+  } catch(e){}
+
+  if(!jsPDFClass){
+    toast('PDF library not loaded yet — try again in a moment.','var(--held)');
+    return;
+  }
+
+  var doc = new jsPDFClass({unit:'mm', format:'a4', orientation:'portrait'});
+  var pW = doc.internal.pageSize.getWidth();
+  var pH = doc.internal.pageSize.getHeight();
+  var ml = 15, mr = 15, y = 15;
+  var cw = pW - ml - mr;
+
+  function checkPage(need){
+    if(y + need > pH - 15){ doc.addPage(); y = 15; }
+  }
+  function hline(col){ doc.setDrawColor(col||180,col?col:180,col?col:180); doc.line(ml,y,pW-mr,y); y+=4; }
+  function txt(str, size, bold, color){
+    doc.setFontSize(size||9);
+    doc.setFont('helvetica', bold?'bold':'normal');
+    if(color) doc.setTextColor(color[0],color[1],color[2]); else doc.setTextColor(50,50,50);
+    var lines = doc.splitTextToSize(str, cw);
+    lines.forEach(function(l){
+      checkPage(doc.getFontSize()*0.45+1);
+      doc.text(l, ml, y);
+      y += doc.getFontSize()*0.45;
+    });
+  }
+
+  // ── Header block ──
+  var today = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  var patName = (pat.fname||'') + ' ' + (pat.lname||'');
+  var age = pat.dob ? Math.floor((Date.now()-new Date(pat.dob))/(365.25*24*3600*1000)) : null;
+  var dobStr = pat.dob ? new Date(pat.dob+'T00:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '';
+
+  doc.setFillColor(12,27,51);
+  doc.rect(0,0,pW,28,'F');
+  doc.setFontSize(14); doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255);
+  doc.text('Doctor Summary — Tended Health Pro', ml, 11);
+  doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(180,200,230);
+  doc.text('Prepared by family caregiver  ·  '+today, ml, 18);
+  doc.text('For informational purposes only — not an official medical record', ml, 24);
+  y = 34;
+
+  // Patient info
+  txt('CARE RECIPIENT', 10, true, [12,27,51]); y+=1; hline(200);
+  txt(patName+(age?' (Age '+age+')':''), 11, true, [12,27,51]); y+=1;
+  if(dobStr) txt('Date of Birth: '+dobStr, 9, false);
+  if(pat.doctor) txt('Primary Physician: '+pat.doctor+(pat.doctorPhone?' — '+pat.doctorPhone:''), 9, false);
+  if(pat.room) txt('Address: '+pat.room, 9, false);
+  y+=3;
+
+  // ADL Status Table
+  checkPage(20);
+  txt('ACTIVITIES OF DAILY LIVING (ADL) STATUS', 10, true, [12,27,51]); y+=1; hline(200);
+  txt('Level scale: Independent  ·  Minimal Support  ·  Moderate Support  ·  Full Support', 7.5, false, [120,130,145]); y+=2;
+
+  adlRows.forEach(function(r){
+    checkPage(10);
+    // Row background alternating
+    var rowH = r.note ? 14 : 10;
+    doc.setFillColor(248,250,252);
+    doc.rect(ml, y-3.5, cw, rowH, 'F');
+    // ADL name
+    doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(12,27,51);
+    doc.text(r.label, ml+2, y);
+    // Level
+    doc.setFont('helvetica','normal'); doc.setTextColor(50,50,50);
+    doc.text(r.level, ml+58, y);
+    // Trend
+    var tCol = [80,80,80];
+    if(r.trend.indexOf('Declin')>-1) tCol=[192,57,43];
+    else if(r.trend.indexOf('Improv')>-1) tCol=[10,122,74];
+    doc.setTextColor(tCol[0],tCol[1],tCol[2]);
+    doc.text(r.trend, ml+105, y);
+    // Date
+    doc.setTextColor(120,130,145);
+    doc.text(r.date, ml+140, y);
+    y+=5;
+    if(r.note){
+      doc.setFontSize(8); doc.setFont('helvetica','italic'); doc.setTextColor(80,90,105);
+      var noteLines = doc.splitTextToSize('Note: '+r.note, cw-6);
+      noteLines.forEach(function(l){ checkPage(4); doc.text(l, ml+4, y); y+=4; });
+    }
+    y+=2;
+  });
+  y+=2;
+
+  // Medications
+  checkPage(20);
+  txt('CURRENT MEDICATIONS', 10, true, [12,27,51]); y+=1; hline(200);
+  if(!meds.length){
+    txt('No active medications on record.', 9, false, [120,130,145]);
+  } else {
+    meds.forEach(function(m){
+      checkPage(8);
+      doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(12,27,51);
+      doc.text((m.name||'Unknown')+(m.dose?' — '+m.dose:''), ml+2, y);
+      if(m.schedule){
+        doc.setFont('helvetica','normal'); doc.setTextColor(80,90,105);
+        doc.setFontSize(8);
+        var schLines = doc.splitTextToSize(m.schedule, cw-6);
+        y+=4;
+        schLines.forEach(function(l){ checkPage(4); doc.text(l, ml+4, y); y+=4; });
+      } else { y+=5; }
+    });
+  }
+  y+=4;
+
+  // Footer disclaimer
+  checkPage(12);
+  doc.setFontSize(7.5); doc.setFont('helvetica','italic'); doc.setTextColor(140,150,165);
+  var disc = 'This document is a family caregiving record generated by Tended Health Pro. It is not a clinical document, official medical record, or substitute for professional medical advice. Consult a qualified healthcare provider for all medical decisions.';
+  var dLines = doc.splitTextToSize(disc, cw);
+  dLines.forEach(function(l){ doc.text(l, ml, y); y+=4; });
+
+  var fname = patName.replace(/\s+/g,'-') + '-Doctor-Summary-' + new Date().toISOString().split('T')[0] + '.pdf';
+  doc.save(fname);
+  toast('📄 Doctor Summary PDF downloaded.','var(--given)');
 }
 
 function printReport(){
