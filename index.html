@@ -15437,7 +15437,7 @@ function openADLAssess(mode, spotKey){
     + '<div style="font-size:.74rem;color:var(--slate-light);margin-bottom:12px;text-align:center">'
     + 'Date: ' + new Date().toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric',year:'numeric'})
     + '</div>'
-    + '<button class="adl-assess-save" onclick="saveADLAssess()">💾 Save Assessment</button>'
+    + '<button class="adl-assess-save" ontouchstart="if(document.activeElement)document.activeElement.blur()" onclick="saveADLAssess()">💾 Save Assessment</button>'
     + '</div></div>';
 
   overlay.classList.add('open');
@@ -15480,6 +15480,12 @@ function closeADLAssess(){
 }
 
 function saveADLAssess(){
+  // Read note textareas directly from DOM right now — no event timing dependency
+  ADL_DEFS.forEach(function(d){
+    var ta = document.getElementById('adl-note-' + d.key);
+    if(ta) _adlNotes[d.key] = ta.value;
+  });
+
   const adlsToSave = (_adlAssessMode === 'spot' && _adlSpotKey)
     ? ADL_DEFS.filter(d => d.key === _adlSpotKey)
     : ADL_DEFS;
