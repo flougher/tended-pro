@@ -1303,6 +1303,50 @@ body {
 #section-journey{padding:0}
 /* ── Legal & Financial ───────────────────────────────────── */
 #section-legalfin{padding:0}
+
+/* ═══ ADL Tracker (section-adl) ═══ */
+#section-adl .adl-wrap{max-width:560px;margin:0 auto}
+#section-adl .adl-header{background:var(--navy);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+#section-adl .adl-header-title{color:#fff;font-size:1.05rem;font-weight:800}
+#section-adl .adl-header-sub{color:var(--teal-bright);font-size:.75rem;margin-top:3px}
+#section-adl .adl-action-row{display:flex;gap:10px;margin-bottom:18px}
+#section-adl .adl-btn-full{flex:1;background:var(--teal);color:#fff;border:none;border-radius:var(--r);padding:13px 10px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;text-align:center;line-height:1.4}
+#section-adl .adl-btn-spot{flex:1;background:#fff;color:var(--navy);border:2px solid var(--border);border-radius:var(--r);padding:13px 10px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;text-align:center;line-height:1.4}
+#section-adl .adl-status-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+#section-adl .adl-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--r);padding:14px 14px 10px;cursor:pointer;transition:border-color .15s}
+#section-adl .adl-card:hover{border-color:var(--teal-mid)}
+#section-adl .adl-card-icon{font-size:1.4rem;margin-bottom:6px}
+#section-adl .adl-card-name{font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:4px}
+#section-adl .adl-card-level{font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:20px;display:inline-block}
+#section-adl .adl-card-date{font-size:.68rem;color:var(--slate-light);margin-top:4px}
+.adl-level-0{background:#D1F5E8;color:#0A7A4A}
+.adl-level-1{background:#EAF4FF;color:#1D5FA8}
+.adl-level-2{background:#FFF3D0;color:#C47A00}
+.adl-level-3{background:#FFE4E4;color:#C0392B}
+#section-adl .adl-history-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate-mid);margin-bottom:8px}
+#section-adl .adl-hist-row{background:#fff;border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;margin-bottom:6px;display:flex;align-items:flex-start;gap:10px}
+#section-adl .adl-hist-date{font-size:.7rem;color:var(--slate-light);min-width:68px;flex-shrink:0;padding-top:1px}
+#section-adl .adl-hist-body{flex:1}
+#section-adl .adl-hist-name{font-size:.82rem;font-weight:700;color:var(--navy)}
+#section-adl .adl-hist-level{font-size:.72rem;font-weight:700;padding:2px 7px;border-radius:20px;display:inline-block;margin-top:3px}
+#section-adl .adl-hist-note{font-size:.74rem;color:var(--slate-mid);margin-top:4px;line-height:1.5}
+#adl-assess-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(12,27,51,.55);z-index:3100;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#adl-assess-overlay.open{display:flex;align-items:flex-start;justify-content:center;padding:20px 12px 40px}
+.adl-assess-panel{background:#fff;border-radius:var(--r-lg);width:100%;max-width:520px;overflow:hidden;box-shadow:var(--sh-lg)}
+.adl-assess-head{background:var(--navy);padding:16px 18px;display:flex;align-items:center;justify-content:space-between}
+.adl-assess-title{color:#fff;font-size:1rem;font-weight:800}
+.adl-assess-close{background:rgba(255,255,255,.12);border:none;border-radius:20px;color:#fff;font-size:.8rem;padding:5px 14px;cursor:pointer;font-family:inherit}
+.adl-assess-body{padding:16px 18px}
+.adl-assess-adl{margin-bottom:20px}
+.adl-assess-adl-label{font-size:.86rem;font-weight:700;color:var(--navy);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.adl-level-btn{display:block;width:100%;background:var(--off-white);border:2px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;text-align:left;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;color:var(--slate);margin-bottom:6px;transition:all .12s}
+.adl-level-btn.selected{border-color:var(--teal-mid);background:var(--teal-pale);color:var(--teal)}
+.adl-level-btn:active{transform:scale(.99)}
+.adl-assess-note{width:100%;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-family:inherit;font-size:.84rem;color:var(--text);resize:none;margin-top:4px}
+.adl-assess-note:focus{outline:none;border-color:var(--teal-mid)}
+.adl-assess-save{width:100%;background:var(--teal);color:#fff;border:none;border-radius:var(--r);padding:14px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:6px}
+.adl-assess-save:active{transform:scale(.99)}
+
 .lf-header{background:linear-gradient(135deg,#1A2E4A 0%,#14213D 100%);padding:22px 18px 16px;color:#fff}
 .lf-header-title{font-size:1.15rem;font-weight:800;margin-bottom:4px}
 .lf-header-sub{font-size:.78rem;opacity:.8;line-height:1.5}
@@ -3355,6 +3399,11 @@ body {
   </div>
 </div>
 
+<!-- ═══ ADL TRACKER ═════════════════════════════════════════ -->
+<div id="section-adl" class="section">
+  <div id="adl-root"></div>
+</div>
+
 </main><!-- content -->
 </div><!-- body-area -->
 
@@ -3386,6 +3435,7 @@ body {
     <button class="more-btn" onclick="mobileNavTo('comms')"><span class="more-icon">📞</span>Family Log</button>
     <button id="bnav-nutrition" class="more-btn" onclick="mobileNavTo('intake')"><span class="more-icon">🍽️</span>Diet & Fluids</button>
     <button class="more-btn" onclick="mobileNavTo('toileting')"><span class="more-icon">🚻</span>Toileting</button>
+    <button class="more-btn" onclick="mobileNavTo('adl')"><span class="more-icon">🏃</span>ADL Tracker</button>
   </div>
 
   <!-- ── Clinical ───────────────────────────────────────────── -->
@@ -4573,7 +4623,8 @@ function navTo(id, btn){
     checkin:    renderCheckin,
     itm:        renderITM,
     journey:    renderJourney,
-    legalfin:   renderLegalFin
+    legalfin:   renderLegalFin,
+    adl:        renderADL
   };
   if(renders[id]) renders[id]();
 }
@@ -15237,5 +15288,216 @@ function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
     </div>
   </div>
 </div>
+
+<!-- ADL Assessment Overlay -->
+<div id="adl-assess-overlay"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// ADL TRACKER
+// ═══════════════════════════════════════════════════════════════
+const ADL_DEFS = [
+  { key:'bathing',    icon:'🚿', label:'Bathing' },
+  { key:'dressing',   icon:'👕', label:'Dressing' },
+  { key:'toileting',  icon:'🚻', label:'Toileting' },
+  { key:'continence', icon:'💧', label:'Continence' },
+  { key:'mobility',   icon:'🚶', label:'Mobility / Transfers' },
+  { key:'eating',     icon:'🍽️', label:'Eating / Feeding' },
+  { key:'hygiene',    icon:'🪥', label:'Personal Hygiene' }
+];
+
+const ADL_LEVELS = [
+  { value:0, label:'Independent',           short:'Independent' },
+  { value:1, label:'With Reminder',         short:'With Reminder' },
+  { value:2, label:'Minimum Assistance',    short:'Min Assistance' },
+  { value:3, label:'Full Physical Support', short:'Full Support' }
+];
+
+function getADLHistory(){
+  try { return JSON.parse(localStorage.getItem('tendedPro_adlHistory') || '[]'); } catch(e){ return []; }
+}
+function saveADLHistory(arr){
+  try { localStorage.setItem('tendedPro_adlHistory', JSON.stringify(arr)); } catch(e){}
+}
+
+function getADLCurrentStatus(){
+  const hist = getADLHistory();
+  const status = {};
+  ADL_DEFS.forEach(d => { status[d.key] = null; });
+  for(let i = hist.length - 1; i >= 0; i--){
+    const e = hist[i];
+    if(e && status.hasOwnProperty(e.adl) && status[e.adl] === null) status[e.adl] = e;
+    if(Object.values(status).every(v => v !== null)) break;
+  }
+  return status;
+}
+
+function renderADL(){
+  const root = document.getElementById('adl-root');
+  if(!root) return;
+  const status = getADLCurrentStatus();
+  const hist   = getADLHistory().slice().reverse();
+
+  root.innerHTML = '<div class="adl-wrap">'
+    + '<div class="adl-header">'
+    + '<div><div class="adl-header-title">🏃 ADL Tracker</div>'
+    + '<div class="adl-header-sub">Activities of Daily Living — Katz Index</div></div>'
+    + '</div>'
+    + '<div class="adl-action-row">'
+    + '<button class="adl-btn-full" onclick="openADLAssess(\'full\',null)">📋 Full Assessment<br><span style="font-size:.72rem;font-weight:400;opacity:.85">All 7 ADLs</span></button>'
+    + '<button class="adl-btn-spot" onclick="openADLAssess(\'spot\',null)">✏️ Spot Update<br><span style="font-size:.72rem;font-weight:400;opacity:.7">Single ADL</span></button>'
+    + '</div>'
+    + '<div class="adl-history-label">Current Status</div>'
+    + '<div class="adl-status-grid">'
+    + ADL_DEFS.map(d => {
+        const e   = status[d.key];
+        const lvl = e != null ? e.level : null;
+        const cls = lvl !== null ? 'adl-level-' + lvl : '';
+        const lbl = lvl !== null ? ADL_LEVELS[lvl].short : 'Not assessed';
+        const dt  = e ? new Date(e.date + 'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+        return '<div class="adl-card" onclick="openADLAssess(\'spot\',\'' + d.key + '\')">'
+          + '<div class="adl-card-icon">' + d.icon + '</div>'
+          + '<div class="adl-card-name">' + d.label + '</div>'
+          + '<span class="adl-card-level ' + cls + '">' + lbl + '</span>'
+          + (dt ? '<div class="adl-card-date">Last: ' + dt + '</div>' : '')
+          + '</div>';
+      }).join('')
+    + '</div>'
+    + '<div class="adl-history-label" style="margin-top:8px">Recent History</div>'
+    + (hist.length === 0
+        ? '<div style="text-align:center;color:var(--slate-light);font-size:.85rem;padding:24px 0 16px">No assessments yet.<br>Tap <b>Full Assessment</b> to get started.</div>'
+        : hist.slice(0,20).map(e => {
+            const def = ADL_DEFS.find(d => d.key === e.adl) || {icon:'•', label: e.adl};
+            const lv  = ADL_LEVELS[e.level] || ADL_LEVELS[0];
+            const dt  = new Date(e.date + 'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+            return '<div class="adl-hist-row">'
+              + '<div class="adl-hist-date">' + dt + '</div>'
+              + '<div class="adl-hist-body">'
+              + '<div class="adl-hist-name">' + def.icon + ' ' + def.label + '</div>'
+              + '<span class="adl-hist-level adl-level-' + e.level + '">' + lv.label + '</span>'
+              + (e.note ? '<div class="adl-hist-note">' + e.note + '</div>' : '')
+              + '</div></div>';
+          }).join('')
+      )
+    + '</div>';
+}
+
+let _adlAssessMode = 'full';
+let _adlSpotKey    = null;
+let _adlSelections = {};
+
+function openADLAssess(mode, spotKey){
+  _adlAssessMode = mode || 'full';
+  _adlSpotKey    = spotKey || null;
+  _adlSelections = {};
+
+  if(_adlAssessMode === 'spot' && !_adlSpotKey){
+    _showADLPicker();
+    return;
+  }
+
+  const adlsToShow = (_adlAssessMode === 'spot' && _adlSpotKey)
+    ? ADL_DEFS.filter(d => d.key === _adlSpotKey)
+    : ADL_DEFS;
+
+  const status = getADLCurrentStatus();
+  adlsToShow.forEach(d => {
+    const e = status[d.key];
+    if(e) _adlSelections[d.key] = e.level;
+  });
+
+  const overlay = document.getElementById('adl-assess-overlay');
+  if(!overlay) return;
+  const title = (_adlAssessMode === 'full')
+    ? 'Full Assessment — All 7 ADLs'
+    : 'Update — ' + (ADL_DEFS.find(d => d.key === _adlSpotKey) || {label:_adlSpotKey}).label;
+
+  overlay.innerHTML = '<div class="adl-assess-panel">'
+    + '<div class="adl-assess-head">'
+    + '<span class="adl-assess-title">' + title + '</span>'
+    + '<button class="adl-assess-close" onclick="closeADLAssess()">✕ Cancel</button>'
+    + '</div>'
+    + '<div class="adl-assess-body">'
+    + '<div style="font-size:.78rem;color:var(--slate-mid);margin-bottom:16px;line-height:1.5">Select the level that best describes current functional ability.</div>'
+    + adlsToShow.map(d =>
+        '<div class="adl-assess-adl" id="adl-block-' + d.key + '">'
+        + '<div class="adl-assess-adl-label">' + d.icon + ' ' + d.label + '</div>'
+        + ADL_LEVELS.map(lv =>
+            '<button class="adl-level-btn' + (_adlSelections[d.key] === lv.value ? ' selected' : '') + '"'
+            + ' onclick="selectADLLevel(\'' + d.key + '\',' + lv.value + ',this)">'
+            + lv.label + '</button>'
+          ).join('')
+        + '<textarea class="adl-assess-note" id="adl-note-' + d.key + '" rows="2"'
+        + ' placeholder="Optional note (e.g. needed verbal prompts for sequence)…"></textarea>'
+        + '</div>'
+      ).join('')
+    + '<div style="font-size:.74rem;color:var(--slate-light);margin-bottom:12px;text-align:center">'
+    + 'Date: ' + new Date().toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric',year:'numeric'})
+    + '</div>'
+    + '<button class="adl-assess-save" onclick="saveADLAssess()">💾 Save Assessment</button>'
+    + '</div></div>';
+
+  overlay.classList.add('open');
+}
+
+function _showADLPicker(){
+  const overlay = document.getElementById('adl-assess-overlay');
+  if(!overlay) return;
+  overlay.innerHTML = '<div class="adl-assess-panel">'
+    + '<div class="adl-assess-head">'
+    + '<span class="adl-assess-title">Spot Update — Choose an ADL</span>'
+    + '<button class="adl-assess-close" onclick="closeADLAssess()">✕ Cancel</button>'
+    + '</div>'
+    + '<div class="adl-assess-body">'
+    + ADL_DEFS.map(d =>
+        '<button class="adl-level-btn" style="font-size:.88rem;padding:12px 14px" onclick="openADLAssess(\'spot\',\'' + d.key + '\')">'
+        + d.icon + ' ' + d.label + '</button>'
+      ).join('')
+    + '</div></div>';
+  overlay.classList.add('open');
+}
+
+function selectADLLevel(key, value, btn){
+  _adlSelections[key] = value;
+  const block = document.getElementById('adl-block-' + key);
+  if(!block) return;
+  block.querySelectorAll('.adl-level-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function closeADLAssess(){
+  const overlay = document.getElementById('adl-assess-overlay');
+  if(overlay){ overlay.classList.remove('open'); overlay.innerHTML = ''; }
+}
+
+function saveADLAssess(){
+  const adlsToSave = (_adlAssessMode === 'spot' && _adlSpotKey)
+    ? ADL_DEFS.filter(d => d.key === _adlSpotKey)
+    : ADL_DEFS;
+
+  const today = new Date().toISOString().split('T')[0];
+  const hist  = getADLHistory();
+  let saved   = 0;
+
+  adlsToSave.forEach(d => {
+    if(_adlSelections[d.key] === undefined) return;
+    const noteEl = document.getElementById('adl-note-' + d.key);
+    const note   = noteEl ? noteEl.value.trim() : '';
+    hist.push({ id: Date.now() + '_' + d.key, date: today, adl: d.key, level: _adlSelections[d.key], note: note });
+    saved++;
+  });
+
+  if(saved === 0){
+    if(typeof toast === 'function') toast('Select at least one level before saving.', 'var(--held)');
+    return;
+  }
+
+  saveADLHistory(hist);
+  closeADLAssess();
+  renderADL();
+  if(typeof toast === 'function') toast('ADL assessment saved (' + saved + ' item' + (saved > 1 ? 's' : '') + ').', 'var(--given)');
+}
+</script>
+
 </body>
 </html>
