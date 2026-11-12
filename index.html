@@ -15386,7 +15386,19 @@ let _adlAssessMode = 'full';
 let _adlSpotKey    = null;
 let _adlSelections = {};
 let _adlNotes      = {};
+let _adlNotesTimer = null;
 function setADLNote(key, val){ _adlNotes[key] = val; }
+function _adlStartNotePolling(){
+  if(_adlNotesTimer) clearInterval(_adlNotesTimer);
+  _adlNotesTimer = setInterval(function(){
+    var ov = document.getElementById('adl-assess-overlay');
+    if(!ov || !ov.classList.contains('open')){ clearInterval(_adlNotesTimer); _adlNotesTimer = null; return; }
+    ov.querySelectorAll('textarea.adl-assess-note').forEach(function(ta){
+      var key = ta.id ? ta.id.replace('adl-note-','') : '';
+      if(key) _adlNotes[key] = ta.value;
+    });
+  }, 200);
+}
 
 function openADLAssess(mode, spotKey){
   _adlAssessMode = mode || 'full';
@@ -15442,11 +15454,12 @@ function openADLAssess(mode, spotKey){
 
   overlay.classList.add('open');
 
-  // Attach input listeners after overlay is in DOM — avoids inline-handler scope issues
+  // Attach input listeners + start polling for Android TWA timing reliability
   adlsToShow.forEach(function(d){
     var ta = document.getElementById('adl-note-' + d.key);
     if(ta) ta.addEventListener('input', function(){ _adlNotes[d.key] = this.value; });
   });
+  _adlStartNotePolling();
 }
 
 function _showADLPicker(){
@@ -15475,6 +15488,7 @@ function selectADLLevel(key, value, btn){
 }
 
 function closeADLAssess(){
+  if(_adlNotesTimer){ clearInterval(_adlNotesTimer); _adlNotesTimer = null; }
   const overlay = document.getElementById('adl-assess-overlay');
   if(overlay){ overlay.classList.remove('open'); overlay.innerHTML = ''; }
 }
