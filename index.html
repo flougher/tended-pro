@@ -15385,11 +15385,13 @@ function renderADL(){
 let _adlAssessMode = 'full';
 let _adlSpotKey    = null;
 let _adlSelections = {};
+let _adlNotes      = {};
 
 function openADLAssess(mode, spotKey){
   _adlAssessMode = mode || 'full';
   _adlSpotKey    = spotKey || null;
   _adlSelections = {};
+  _adlNotes      = {};
 
   if(_adlAssessMode === 'spot' && !_adlSpotKey){
     _showADLPicker();
@@ -15428,6 +15430,7 @@ function openADLAssess(mode, spotKey){
             + lv.label + '</button>'
           ).join('')
         + '<textarea class="adl-assess-note" id="adl-note-' + d.key + '" rows="2"'
+        + ' oninput="_adlNotes[\'' + d.key + '\']=this.value"'
         + ' placeholder="Optional note (e.g. needed verbal prompts for sequence)…"></textarea>'
         + '</div>'
       ).join('')
@@ -15481,8 +15484,7 @@ function saveADLAssess(){
 
   adlsToSave.forEach(d => {
     if(_adlSelections[d.key] === undefined) return;
-    const noteEl = document.getElementById('adl-note-' + d.key);
-    const note   = noteEl ? noteEl.value.trim() : '';
+    const note = (_adlNotes[d.key] || '').trim();
     hist.push({ id: Date.now() + '_' + d.key, date: today, adl: d.key, level: _adlSelections[d.key], note: note });
     saved++;
   });
