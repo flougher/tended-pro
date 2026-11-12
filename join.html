@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Get Tended Health Pro</title>
+<!--
+  Agency referral link: https://flougher.github.io/tended-pro/join.html?a=<agencyId>
+  (agencyId: lowercase letters, digits, - or _, up to 36 characters, e.g. a=nnv_alz)
+
+  - App already installed on Android: Android opens the app directly (App Links) and the app
+    records the agency itself. This page never loads.
+  - App not installed, on Android: this page forwards to the Play Store listing with the agency id
+    in the install referrer. The app reads it on first launch (Play Install Referrer API).
+  - Any other device: shows the Play Store button and a link to the browser version.
+
+  This page sets no cookies and loads no analytics or third-party scripts.
+-->
+<style>
+  :root { --teal:#0C7A6E; --navy:#1E2A44; --slate:#475569; --bg:#F4F8F7; --card:#FFFFFF; --border:#D9E6E3; }
+  @media (prefers-color-scheme: dark) {
+    :root { --navy:#E6EEF0; --slate:#A8B6C2; --bg:#0F1A1E; --card:#16242A; --border:#25383F; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+         background:var(--bg); color:var(--navy); padding:16px;
+         font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:16px;
+          max-width:420px; width:100%; padding:28px 24px; text-align:center; }
+  img { width:72px; height:72px; border-radius:16px; }
+  h1 { font-size:1.35rem; margin:14px 0 8px; }
+  p { color:var(--slate); line-height:1.6; font-size:.95rem; margin:0 0 18px; }
+  .btn { display:block; background:var(--teal); color:#fff; text-decoration:none; font-weight:600;
+         padding:13px 16px; border-radius:10px; margin-bottom:10px; }
+  .link { color:var(--teal); font-size:.88rem; }
+  .note { font-size:.8rem; margin:16px 0 0; }
+</style>
+</head>
+<body>
+<main class="card">
+  <img src="icon-192.png" alt="">
+  <h1>Tended Health Pro</h1>
+  <p id="lead">A caregiving companion for families caring for a loved one with Alzheimer's or dementia — track medications, behaviors, incidents and daily care, all kept private on your phone.</p>
+  <a class="btn" id="play" href="https://play.google.com/store/apps/details?id=com.flougher.tendedpro">Get it on Google Play</a>
+  <a class="link" href="index.html">Or use it in your web browser</a>
+  <p class="note" id="status"></p>
+</main>
+<script>
+(function () {
+  var PACKAGE = 'com.flougher.tendedpro';
+  var raw = '';
+  try { raw = (new URLSearchParams(window.location.search).get('a') || '').trim().toLowerCase(); } catch (e) {}
+  var agency = /^[a-z0-9_-]{1,36}$/.test(raw) ? raw : '';
+
+  var playUrl = 'https://play.google.com/store/apps/details?id=' + PACKAGE;
+  if (agency) {
+    // `a` is read by the app; the utm_* fields also feed Firebase's own acquisition reports.
+    var referrer = 'a=' + agency + '&utm_source=' + agency + '&utm_medium=agency_referral&utm_campaign=agency';
+    playUrl += '&referrer=' + encodeURIComponent(referrer);
+  }
+  document.getElementById('play').href = playUrl;
+
+  if (/Android/i.test(navigator.userAgent || '')) {
+    document.getElementById('status').textContent = 'Opening Google Play…';
+    window.location.replace(playUrl);
+  }
+})();
+</script>
+</body>
+</html>

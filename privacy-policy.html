@@ -67,8 +67,8 @@
 
   <div class="meta">
     <span>Effective date: August 1, 2026</span>
-    <span>Last updated: September 28, 2026</span>
-    <span>Version 2.0</span>
+    <span>Last updated: November 9, 2026</span>
+    <span>Version 2.1</span>
   </div>
 
   <!-- Non-HIPAA Notice -->
@@ -81,11 +81,11 @@
   <div class="summary-banner">
     <h2>🔐 The Short Version</h2>
     <div class="summary-grid">
-      <div class="summary-item"><span class="icon">📵</span><div><strong>No data collection.</strong> We do not collect, store, or transmit your health information.</div></div>
+      <div class="summary-item"><span class="icon">📵</span><div><strong>Your health information stays private.</strong> Nothing you enter is ever collected, stored, or transmitted by us.</div></div>
       <div class="summary-item"><span class="icon">🖥️</span><div><strong>Stays on your device.</strong> Everything is stored locally in your browser's storage.</div></div>
       <div class="summary-item"><span class="icon">🚫</span><div><strong>No accounts required.</strong> No sign-up, no email, no passwords on our end.</div></div>
-      <div class="summary-item"><span class="icon">📊</span><div><strong>No analytics.</strong> We do not track how you use the app.</div></div>
-      <div class="summary-item"><span class="icon">🤝</span><div><strong>No third parties.</strong> Your data is never sold or shared.</div></div>
+      <div class="summary-item"><span class="icon">📊</span><div><strong>Anonymous usage statistics only.</strong> The Android app counts which screens are used — never what you type. See Section 6.</div></div>
+      <div class="summary-item"><span class="icon">🤝</span><div><strong>Never sold, no ads.</strong> Your data is never sold or used for advertising.</div></div>
       <div class="summary-item"><span class="icon">🗑️</span><div><strong>You control everything.</strong> Delete your data any time from within the app.</div></div>
     </div>
   </div>
@@ -96,7 +96,7 @@
     <h2>Introduction and Intended Use</h2>
     <p>Tended Health Pro ("the app," "we," "our") is a personal caregiving companion designed for family caregivers, private duty individuals, and people caring for aging parents or loved ones at home. It is built to help personal caregivers organize medication schedules, log care observations, track health patterns, and document daily caregiving activities for their own reference.</p>
     <p><strong>Tended Health Pro is not a HIPAA-covered service.</strong> It is not designed for, marketed to, or intended to be used by healthcare covered entities (including home health agencies, medical practices, hospitals, or hospices) or their business associates. It is a personal productivity and caregiving organization tool only.</p>
-    <p>Because Tended Health Pro is built as a local-first application, this policy is straightforward: <strong>we do not collect, transmit, or store any information you enter on any server.</strong></p>
+    <p>Because Tended Health Pro is built as a local-first application, this policy is straightforward: <strong>we do not collect, transmit, or store any information you enter on any server.</strong> The Android app sends a limited set of anonymous usage statistics, described in full in Section 6.</p>
     <p>By using Tended Health Pro, you acknowledge that you have read this policy and that you are using the app as a personal caregiving tool, not as part of a covered entity's operations under HIPAA.</p>
   </div>
 
@@ -118,8 +118,8 @@
       <li>Medication names, dosages, schedules, or administration records</li>
       <li>Health metrics, vital signs, pain scores, or clinical observations</li>
       <li>Care event logs, wound documentation, or behavioral notes</li>
-      <li>Device identifiers, IP addresses, or location data</li>
-      <li>Usage patterns, session data, or analytics of any kind</li>
+      <li>Your precise location</li>
+      <li>Your advertising ID</li>
       <li>Payment information of any kind</li>
     </ul>
     <div class="highlight">
@@ -156,9 +156,21 @@
   <!-- 6. No Advertising or Analytics -->
   <div class="section">
     <div class="section-num">Section 6</div>
-    <h2>No Advertising or Analytics</h2>
+    <h2>No Advertising; Anonymous Usage Statistics</h2>
     <p>Tended Health Pro contains no advertising of any kind. We do not work with advertisers, ad networks, or data brokers. Your use of the app generates no revenue for us through advertising.</p>
-    <p>Tended Health Pro contains no analytics software. We do not use Google Analytics, Firebase Analytics, Mixpanel, or any other analytics platform. We have no visibility into how you use the app, how often you open it, or what features you use.</p>
+    <p>The Tended Health Pro Android app uses Google Firebase services (Analytics, Remote Config and Cloud Messaging) so we can understand which features help caregivers, measure how many people reach the app through partner organizations, switch paid features on or off without an app update, and deliver notifications. Through these services the app sends:</p>
+    <ul>
+      <li>Which screens of the app are opened and which features are used — for example "Medication Log opened" or "report exported" — never the contents of any screen or report</li>
+      <li>App opens, time spent in the app, install date and app version</li>
+      <li>Device model, operating system version, language, and approximate country or region (derived by Google from the connection's IP address)</li>
+      <li>A random app-installation identifier created by Firebase, which is not linked to your name, email address, or Google account</li>
+      <li>The partner organization code, if you installed the app from a partner's link</li>
+      <li>Whether the app is unlocked, and whether it was purchased or provided free</li>
+    </ul>
+    <div class="highlight">
+      <strong>Never sent:</strong> anything you type or record — names, medications, notes, health observations, reports, or any other care information. The app filters what it sends and only passes short screen and feature names.
+    </div>
+    <p>The app does not collect your advertising ID, and ad personalization is turned off. Google processes this information on our behalf under the <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a>, and usage statistics are retained for no longer than 14 months. Uninstalling the app stops all collection. The browser version of Tended Health Pro contains no analytics.</p>
   </div>
 
   <!-- 7. Children's Privacy -->
@@ -172,7 +184,7 @@
   <div class="section">
     <div class="section-num">Section 8</div>
     <h2>Your Rights and Controls</h2>
-    <p>Because all data is stored on your device and we collect nothing, you have complete control at all times:</p>
+    <p>Because everything you enter is stored on your device and never collected by us, you have complete control at all times:</p>
     <ul>
       <li><strong>Access:</strong> All your data is visible within the app at all times</li>
       <li><strong>Export:</strong> Export a full copy of your data from Settings → Data &amp; Transfer</li>
@@ -187,7 +199,7 @@
     <div class="section-num">Section 9</div>
     <h2>Changes to This Policy</h2>
     <p>If we make material changes to this Privacy Policy, we will update the "Last updated" date at the top of this page and note the change in the app's version release notes. Continued use of the app after changes are posted constitutes your acceptance of the updated policy.</p>
-    <p>Because Tended Health Pro collects no personal information, changes to this policy are unlikely to affect you in practice. Your data will always remain on your device and under your control.</p>
+    <p>Whatever changes are made to this policy, the information you enter will always remain on your device and under your control.</p>
   </div>
 
   <!-- 10. Contact -->
