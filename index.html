@@ -1360,6 +1360,8 @@ body {
 .adl-chart-legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 #section-adl .adl-sparkline{margin-top:5px;line-height:0}
 #section-adl .adl-card-chart-btn{background:none;border:none;color:var(--teal);font-size:.62rem;cursor:pointer;padding:3px 0 0;line-height:1;font-family:inherit;display:block;width:100%;text-align:right}
+.adl-hist-edit-btn{background:none;border:1px solid var(--border);border-radius:var(--r-sm);color:var(--slate-mid);font-size:.65rem;cursor:pointer;padding:2px 8px;font-family:inherit;line-height:1.4;white-space:nowrap;flex-shrink:0;margin-left:8px}
+.adl-hist-edit-btn:active{background:var(--off-white)}
 
 .lf-header{background:linear-gradient(135deg,#1A2E4A 0%,#14213D 100%);padding:22px 18px 16px;color:#fff}
 .lf-header-title{font-size:1.15rem;font-weight:800;margin-bottom:4px}
@@ -4587,6 +4589,8 @@ function navTo(id, btn){
   // Push history entry for back-button support — skipped when triggered by popstate
   if(id !== _currentSection){
     _pushHistory({ section: id });
+    // Clear ADL recent-edit IDs when navigating away from the ADL section
+    if(_currentSection === 'adl' && id !== 'adl' && typeof _adlRecentIds !== 'undefined') _adlRecentIds = [];
     _currentSection = id;
   }
   // Persist section so orientation-change reloads can restore it
@@ -15385,18 +15389,24 @@ function renderADL(){
     + '<div class="adl-history-label" style="margin-top:8px">Recent History</div>'
     + (hist.length === 0
         ? '<div style="text-align:center;color:var(--slate-light);font-size:.85rem;padding:24px 0 16px">No assessments yet.<br>Tap <b>Full Assessment</b> to get started.</div>'
-        : hist.slice(0,20).map(e => {
-            const def = ADL_DEFS.find(d => d.key === e.adl) || {icon:'•', label: e.adl};
-            const lv  = ADL_LEVELS[e.level] || ADL_LEVELS[0];
-            const dt  = new Date(e.date + 'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-            return '<div class="adl-hist-row">'
-              + '<div class="adl-hist-date">' + dt + '</div>'
-              + '<div class="adl-hist-body">'
-              + '<div class="adl-hist-name">' + def.icon + ' ' + def.label + '</div>'
-              + '<span class="adl-hist-level adl-level-' + e.level + '">' + lv.label + '</span>'
-              + (e.note ? '<div class="adl-hist-note">' + e.note + '</div>' : '')
-              + '</div></div>';
-          }).join('')
+        : (function(){
+            return hist.slice(0,20).map(function(e){
+              const def = ADL_DEFS.find(d => d.key === e.adl) || {icon:'•', label: e.adl};
+              const lv  = ADL_LEVELS[e.level] || ADL_LEVELS[0];
+              const dt  = new Date(e.date + 'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+              var isEditable = _adlRecentIds.indexOf(e.id) !== -1;
+              return '<div class="adl-hist-row">'
+                + '<div class="adl-hist-date">' + dt + '</div>'
+                + '<div class="adl-hist-body" style="flex:1;min-width:0">'
+                + '<div style="display:flex;align-items:center;justify-content:space-between;gap:4px">'
+                + '<div class="adl-hist-name">' + def.icon + ' ' + def.label + '</div>'
+                + (isEditable ? '<button class="adl-hist-edit-btn" onclick="event.stopPropagation();openADLEdit(\'' + e.id + '\')">✏️ Edit</button>' : '')
+                + '</div>'
+                + '<span class="adl-hist-level adl-level-' + e.level + '">' + lv.label + '</span>'
+                + (e.note ? '<div class="adl-hist-note">' + e.note + '</div>' : '')
+                + '</div></div>';
+            }).join('');
+          })()
       )
     + '</div>';
 }
@@ -15492,11 +15502,80 @@ function closeADLChart(){
   if(ov){ov.classList.remove('open');ov.innerHTML='';}
 }
 
+function openADLEdit(entryId){
+  var hist = getADLHistory();
+  var entry = hist.find(function(e){ return e.id === entryId; });
+  if(!entry) return;
+  var def = ADL_DEFS.find(function(d){ return d.key === entry.adl; });
+  if(!def) return;
+  _adlEditId = entryId;
+  var overlay = document.getElementById('adl-assess-overlay');
+  if(!overlay) return;
+  _adlSelections = {};
+  _adlNotes = {};
+  _adlSelections[entry.adl] = entry.level;
+  _adlNotes[entry.adl] = entry.note || '';
+  var levelsHTML = ADL_LEVELS.map(function(lv){
+    var sel = (entry.level === lv.value) ? ' adl-level-btn-sel' : '';
+    return '<button class="adl-level-btn'+sel+'" onclick="'
+      +'_adlSelections[\''+entry.adl+'\']='+lv.value+';'
+      +'this.closest(\'.adl-assess-item\').querySelectorAll(\'.adl-level-btn\').forEach(function(b){b.classList.remove(\'adl-level-btn-sel\')});'
+      +'this.classList.add(\'adl-level-btn-sel\')">'
+      +lv.short+'</button>';
+  }).join('');
+  overlay.innerHTML = '<div class="adl-assess-panel">'
+    +'<div class="adl-assess-head">'
+    +'<span class="adl-assess-title">✏️ Edit Entry — '+def.icon+' '+def.label+'</span>'
+    +'<button class="adl-assess-close" onclick="closeADLEdit()">✕</button>'
+    +'</div>'
+    +'<div class="adl-assess-body">'
+    +'<div class="adl-assess-item">'
+    +'<div class="adl-assess-item-head"><span class="adl-assess-item-icon">'+def.icon+'</span><span class="adl-assess-item-name">'+def.label+'</span></div>'
+    +'<div class="adl-assess-levels">'+levelsHTML+'</div>'
+    +'<textarea id="adl-edit-note" class="adl-assess-note" placeholder="Note (optional)" rows="2">'+(entry.note||'')+'</textarea>'
+    +'</div>'
+    +'<div style="margin-bottom:14px">'
+    +'<label style="font-size:.74rem;font-weight:700;color:var(--slate-mid);display:block;margin-bottom:4px">Entry Date</label>'
+    +'<input type="date" id="adl-edit-date" value="'+entry.date+'"'
+    +' style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:.88rem;background:#fff;color:var(--navy);box-sizing:border-box">'
+    +'</div>'
+    +'<button class="adl-assess-save" ontouchstart="if(document.activeElement)document.activeElement.blur()" onclick="saveADLEdit()">💾 Save Changes</button>'
+    +'<button onclick="closeADLEdit()" style="display:block;width:100%;margin-top:8px;padding:10px;background:none;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:.85rem;color:var(--slate-mid);cursor:pointer;font-family:inherit">Cancel</button>'
+    +'</div></div>';
+  overlay.classList.add('open');
+  var ta = document.getElementById('adl-edit-note');
+  if(ta) ta.addEventListener('input', function(){ _adlNotes[entry.adl] = this.value; });
+}
+function saveADLEdit(){
+  if(!_adlEditId) return;
+  var ta = document.getElementById('adl-edit-note');
+  var note = ta ? ta.value.trim() : '';
+  var dateEl = document.getElementById('adl-edit-date');
+  var date = (dateEl && dateEl.value) ? dateEl.value : new Date().toISOString().split('T')[0];
+  var hist = getADLHistory();
+  var idx = hist.findIndex(function(e){ return e.id === _adlEditId; });
+  if(idx === -1){ toast('Entry not found.','var(--held)'); return; }
+  var adlKey = hist[idx].adl;
+  var level = (_adlSelections[adlKey] !== undefined) ? _adlSelections[adlKey] : hist[idx].level;
+  hist[idx] = { id: hist[idx].id, date: date, adl: adlKey, level: level, note: note };
+  saveADLHistory(hist);
+  closeADLEdit();
+  renderADL();
+  toast('Entry updated.','var(--given)');
+}
+function closeADLEdit(){
+  _adlEditId = null;
+  var overlay = document.getElementById('adl-assess-overlay');
+  if(overlay){ overlay.classList.remove('open'); overlay.innerHTML=''; }
+}
+
 let _adlAssessMode = 'full';
 let _adlSpotKey    = null;
 let _adlSelections = {};
 let _adlNotes      = {};
 let _adlNotesTimer = null;
+let _adlEditId     = null;
+let _adlRecentIds  = [];
 function setADLNote(key, val){ _adlNotes[key] = val; }
 function _adlStartNotePolling(){
   if(_adlNotesTimer) clearInterval(_adlNotesTimer);
@@ -15624,10 +15703,13 @@ function saveADLAssess(){
   const hist  = getADLHistory();
   let saved   = 0;
 
+  var newIds = [];
   adlsToSave.forEach(d => {
     if(_adlSelections[d.key] === undefined) return;
     const note = (_adlNotes[d.key] || '').trim();
-    hist.push({ id: Date.now() + '_' + d.key, date: today, adl: d.key, level: _adlSelections[d.key], note: note });
+    var newId = Date.now() + '_' + d.key;
+    hist.push({ id: newId, date: today, adl: d.key, level: _adlSelections[d.key], note: note });
+    newIds.push(newId);
     saved++;
   });
 
@@ -15636,6 +15718,7 @@ function saveADLAssess(){
     return;
   }
 
+  _adlRecentIds = newIds;
   saveADLHistory(hist);
   closeADLAssess();
   renderADL();
