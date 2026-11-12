@@ -15386,6 +15386,7 @@ let _adlAssessMode = 'full';
 let _adlSpotKey    = null;
 let _adlSelections = {};
 let _adlNotes      = {};
+function setADLNote(key, val){ _adlNotes[key] = val; }
 
 function openADLAssess(mode, spotKey){
   _adlAssessMode = mode || 'full';
@@ -15430,7 +15431,7 @@ function openADLAssess(mode, spotKey){
             + lv.label + '</button>'
           ).join('')
         + '<textarea class="adl-assess-note" id="adl-note-' + d.key + '" rows="2"'
-        + ' oninput="_adlNotes[\'' + d.key + '\']=this.value"'
+        + ' oninput="setADLNote(\'' + d.key + '\',this.value)"'
         + ' placeholder="Optional note (e.g. needed verbal prompts for sequence)…"></textarea>'
         + '</div>'
       ).join('')
