@@ -2426,19 +2426,18 @@ body {
     <span><strong>Works offline</strong> — all your data is saved on this device only. No internet connection required after install. No cloud, no account, no subscription needed to use the app.</span>
   </div>
 
-  <!-- Early Adopter Offer -->
-  <div style="margin:0 0 12px">
+  <!-- Early Adopter Offer — shown/hidden by renderEarlyAdopterCard() -->
+  <div id="early-adopter-card" style="margin:0 0 12px;display:none">
     <div class="card" style="border:2px solid var(--teal);background:linear-gradient(135deg,#F0FDF4,#E6F7F4)">
       <div class="card-title" style="color:var(--teal)">🎁 Free for Early Supporters — Offer Expires December 31, 2026</div>
       <p style="font-size:.82rem;color:var(--slate-mid);line-height:1.7;margin:8px 0 12px">
-        Download Tended Health Pro before <strong>December 31, 2026</strong> and get a free
-        permanent unlock code — yours to keep forever, no subscription, no catch.
-        After December 31 the unlock is <strong>$14.99</strong> one time.
+        You're one of our early supporters — so your unlock is free. Reach out before <strong>December 31, 2026</strong> for your permanent code, yours to keep forever: no subscription, no catch. After December 31, unlocking is a one-time <strong>$14.99</strong>.
       </p>
       <p style="font-size:.82rem;color:var(--slate-mid);line-height:1.7;margin:0 0 14px">
         To claim your free code, simply reach out directly:
       </p>
       <a href="mailto:tendedhealthapps@gmail.com?subject=Free%20Lifetime%20Code%20Request"
+         onclick="trackEvent('early_supporter_email',{source:'settings_card'})"
          style="display:flex;align-items:center;gap:10px;padding:12px 14px;
                 background:var(--teal);border-radius:var(--r);text-decoration:none;
                 color:white;font-size:.86rem;font-weight:600;margin-bottom:8px">
@@ -4602,6 +4601,7 @@ function navTo(id, btn){
     // Clear ADL recent-edit IDs when navigating away from the ADL section
     if(_currentSection === 'adl' && id !== 'adl' && typeof _adlRecentIds !== 'undefined') _adlRecentIds = [];
     _currentSection = id;
+    if(typeof trackEvent === 'function') trackEvent('screen_view', { screen_name: id });
   }
   // Persist section so orientation-change reloads can restore it
   try { localStorage.setItem('tendedPro_lastSection', id); } catch(e){}
@@ -4686,6 +4686,14 @@ function dismissLaunchBanner(){
 }
 
 
+function renderEarlyAdopterCard(){
+  const el = document.getElementById('early-adopter-card');
+  if(!el) return;
+  const expired = new Date().toISOString().split('T')[0] > EARLY_ADOPTER_EXPIRY;
+  const premium = (typeof isPremium === 'function') ? isPremium() : false;
+  el.style.display = (!expired && !premium) ? 'block' : 'none';
+}
+
 function renderTrialExpiryBanner(){
   const host = document.getElementById('trial-expiry-banner');
   if(!host) return;
@@ -4706,7 +4714,7 @@ function renderTrialExpiryBanner(){
           As an early supporter, email me for your free lifetime unlock code — no cost, no catch.
         </div>
       </div>
-      <a href="mailto:tendedhealthapps@gmail.com?subject=Free%20Lifetime%20Code%20Request&body=Hi%2C%20I%20would%20like%20my%20free%20lifetime%20unlock%20code%20for%20Tended%20Health%20Pro."
+      <a onclick="trackEvent('early_supporter_email',{source:'trial_banner'})" href="mailto:tendedhealthapps@gmail.com?subject=Free%20Lifetime%20Code%20Request&body=Hi%2C%20I%20would%20like%20my%20free%20lifetime%20unlock%20code%20for%20Tended%20Health%20Pro."
          style="display:inline-flex;align-items:center;gap:6px;background:#C9963A;color:white;
                 border-radius:8px;padding:8px 14px;text-decoration:none;font-size:.76rem;
                 font-weight:600;white-space:nowrap;flex-shrink:0">
@@ -7517,6 +7525,7 @@ function loadSettings(){
   set('set-supervisor', s.supervisor);
   set('set-facility',     s.facility);
   if(typeof renderPremiumCard === 'function') renderPremiumCard();
+  if(typeof renderEarlyAdopterCard === 'function') renderEarlyAdopterCard();
   renderProfileCompletion();
   renderManageFeatures();
   // Clear dirty state on load
@@ -11207,6 +11216,39 @@ const LAUNCH_BANNER_EXPIRY = '2026-06-30';
 const BANNER_DISMISSED_KEY = 'tendedPro_bannerDismissed';
 const TRIAL_DAYS    = 10;
 const PRICE_DISPLAY = '$14.99';
+const EARLY_ADOPTER_EXPIRY = '2026-12-31';
+
+// ═══ ANDROID APP BRIDGE — remote paywall switch + analytics ═══════════
+// KEEP THIS BLOCK when uploading a new index.html. In the Android app, window.TendedNative is
+// provided by the app. The paywall is switched on/off from the Firebase console (Remote Config:
+// paywall_enabled, grandfather_free_users) and the app reports the result as `freeAccess`.
+// In a normal browser TendedNative does not exist: freeAccess is false and trackEvent does nothing.
+// trackEvent only accepts short ids (e.g. 'mar', 'settings_card') — never pass names or notes.
+let _appConfigCache = null;
+function getAppConfig(){
+  if(_appConfigCache) return _appConfigCache;
+  try {
+    if(window.TendedNative && typeof window.TendedNative.getConfig === 'function'){
+      _appConfigCache = JSON.parse(window.TendedNative.getConfig()) || {};
+      return _appConfigCache;
+    }
+  } catch(e){}
+  return {};
+}
+function hasFreeAccess(){ return getAppConfig().freeAccess === true; }
+function trackEvent(name, params){
+  try {
+    if(window.TendedNative && typeof window.TendedNative.logEvent === 'function'){
+      window.TendedNative.logEvent(name, JSON.stringify(params || {}));
+    }
+  } catch(e){}
+}
+// The app fires this when the paywall setting changes while it is open.
+window.addEventListener('tendedconfig', function(e){
+  _appConfigCache = (e && e.detail) || null;
+  try { updatePremiumUI(); renderPremiumCard(); renderTrialExpiryBanner(); renderEarlyAdopterCard(); renderLaunchBanner(); } catch(err){}
+});
+// ═══ END ANDROID APP BRIDGE ═════════════════════════════════════════
 
 function getPremiumState(){ try { const r=localStorage.getItem(PREMIUM_KEY); return r?JSON.parse(r):null; } catch(e){ return null; } }
 function setPremiumState(s){
@@ -11214,7 +11256,10 @@ function setPremiumState(s){
   // Mirror to IndexedDB shadow for BUG-004 recovery
   _idbPut('premium', s);
 }
-function isPremium(){ const s=getPremiumState(); return s&&s.status==='premium'; }
+// isPurchased(): paid / promo-code unlock only. isPremium(): full access for any reason,
+// including the free-access switch above — every paywall gate uses isPremium().
+function isPurchased(){ const s=getPremiumState(); return !!(s&&s.status==='premium'); }
+function isPremium(){ return isPurchased() || hasFreeAccess(); }
 
 // BUG-004 — write trial fingerprint to every layer we have
 function _writeTrialFingerprint(startIso, expired){
@@ -11296,7 +11341,7 @@ function activatePremium(source){
   window._pendingOrderId = null;
   const pw = document.getElementById('paywall-overlay');
   if(pw) pw.classList.remove('open');
-  updatePremiumUI(); renderPremiumCard();
+  updatePremiumUI(); renderPremiumCard(); renderEarlyAdopterCard();
   toast('⭐ Tended Health Pro unlocked! Thank you.', 'var(--teal)');
 }
 // The Android wrapper sets a specific UA suffix ("TendedHealthPro/..."). The TWA's MainActivity
@@ -11344,6 +11389,7 @@ window.TendedProBilling = {
   }
 };
 function triggerGooglePlayPurchase(){
+  trackEvent('unlock_tapped', { source: 'paywall' });
   if(window.Android&&typeof window.Android.launchBilling==='function'){ window.Android.launchBilling('tended_pro_unlock'); }
   else { if(confirm('Google Play Billing is only available in the installed app.\n\nDev mode: Simulate a successful purchase?')) activatePremium('dev'); }
 }
@@ -11368,6 +11414,7 @@ function revokePremium(){ localStorage.removeItem(PREMIUM_KEY); updatePremiumUI(
 function openPaywall(source){
   if(isPremium()) return;
   const el=document.getElementById('paywall-overlay'); if(!el) return;
+  trackEvent('paywall_shown', { source: source || 'unknown' });
   // Set subtitle to match actual trial state — don't tell an active-trial user their trial has ended.
   const sub=document.getElementById('paywall-sub');
   if(sub){
@@ -11392,6 +11439,7 @@ function closePaywall(){ const el=document.getElementById('paywall-overlay'); if
 function dismissTrialBanner(){ const el=document.getElementById('trial-banner'); if(el) el.style.display='none'; }
 function updatePremiumUI(){
   const premium=isPremium(), trial=getTrialState();
+  try { if(window.TendedNative && typeof window.TendedNative.setPurchased === 'function') window.TendedNative.setPurchased(isPurchased()); } catch(e){}
   const banner=document.getElementById('trial-banner'), bannerTxt=document.getElementById('trial-banner-text');
   const badge=document.getElementById('premium-badge');
   if(badge) badge.classList.toggle('show', premium);
@@ -11404,6 +11452,10 @@ function updatePremiumUI(){
 function renderPremiumCard(){
   const el=document.getElementById('premium-status-card'); if(!el) return;
   const premium=isPremium(), trial=getTrialState(), state=getPremiumState();
+  if(premium && !isPurchased()){
+    el.innerHTML=`<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(11,122,110,.08);border:1.5px solid var(--teal-pale);border-radius:var(--r)"><div style="font-size:1.6rem">🎁</div><div><div style="font-weight:700;color:var(--teal);font-size:.92rem">Full Access — Free</div><div style="font-size:.76rem;color:var(--slate-light);margin-top:2px">Every feature is unlocked. No purchase needed.</div></div></div>`;
+    return;
+  }
   if(premium){
     const dt=state?.activatedAt?new Date(state.activatedAt).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'Unknown';
     el.innerHTML=`<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(11,122,110,.08);border:1.5px solid var(--teal-pale);border-radius:var(--r)"><div style="font-size:1.6rem">⭐</div><div><div style="font-weight:700;color:var(--teal);font-size:.92rem">Tended Health Pro Unlocked</div><div style="font-size:.76rem;color:var(--slate-light);margin-top:2px">Full access · Activated ${dt}</div></div></div><div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-secondary btn-sm" onclick="restorePremium()">🔄 Restore Purchase</button><button class="btn btn-secondary btn-sm" style="color:var(--slate-light)" onclick="if(confirm('Revoke premium? Dev/test only')) revokePremium()">🧪 Dev: Revoke</button></div>`;
