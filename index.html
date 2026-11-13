@@ -1928,7 +1928,7 @@ body {
   <div class="card">
     <div class="card-title">📝 MAR Notes — <span id="mar-notes-date"></span></div>
     <div style="background:#F0F9FF;border:1.5px solid #0EA5E9;border-radius:var(--r);padding:10px 14px;margin-bottom:10px;font-size:.74rem;color:#0C4A6E;line-height:1.65">
-      <strong>⚕️ Side Effect Guidance:</strong> Include the medication name, specific symptom, when it started, and duration. Side effects from Donepezil, Memantine, Seroquel, and Depakote can overlap with dementia symptoms and may be expected and temporary. Always report to the supervising nurse or physician. <strong>Never adjust or discontinue any medication without physician guidance.</strong>
+      <strong>⚕️ Side Effect Guidance:</strong> Include the medication name, specific symptom, when it started, and duration. Side effects from Donepezil, Memantine, Seroquel, and Depakote can overlap with dementia symptoms and may be expected and temporary. Always report to your physician. <strong>Never adjust or discontinue any medication without physician guidance.</strong>
     </div>
     <div class="fg" style="margin-bottom:10px">
       <textarea id="mar-notes" rows="2" placeholder="Medication refusals, side effects observed, notable reactions…"></textarea>
@@ -2115,8 +2115,8 @@ body {
         <option>Not effective — required additional support</option>
       </select>
     </div>
-    <div class="fg"><label>Supervisor Notified</label>
-      <input id="sd-notified" placeholder="Name of supervisor notified (if applicable)"></div>
+    <div class="fg"><label>Physician Notified</label>
+      <input id="sd-notified" placeholder="Name of physician notified (if applicable)"></div>
     <div class="fg"><label>Environmental Factors <span style="font-size:.7rem;color:var(--slate-light)">(select all that apply)</span></label>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px" id="sd-env-factors">
         <label style="display:flex;align-items:center;gap:4px;font-size:.8rem;cursor:pointer"><input type="checkbox" value="low-light"> 🌑 Low / dim light</label>
@@ -2187,7 +2187,7 @@ body {
     <div class="fg"><label>Action Taken</label>
       <textarea id="wd-action" rows="2" placeholder="e.g. Escorted back to room, reassured, offered snack, applied door alarm, notified charge nurse…"></textarea>
     </div>
-    <div class="fg"><label>Supervisor / Family Notified *</label>
+    <div class="fg"><label>Physician / Family Notified *</label>
       <input id="wd-notified" placeholder="Names of all persons notified"></div>
     <div class="fg"><label>Prevention Measures Implemented</label>
       <input id="wd-prevention" placeholder="e.g. Door alarm activated, bed alarm set, room moved closer to nurses station…"></div>
@@ -2719,7 +2719,7 @@ body {
   <!-- Privacy note re: no photos -->
   <div style="display:flex;align-items:flex-start;gap:10px;background:#F0F4F8;border-radius:var(--r);padding:10px 14px;margin-bottom:14px;font-size:.76rem;color:var(--slate-mid);line-height:1.6">
     <span style="font-size:1rem;flex-shrink:0">🔒</span>
-    <span><strong style="color:var(--navy)">Photo documentation is not included in this app.</strong> To protect care recipient privacy, wound status should be documented using detailed written descriptions, measurements, and staging notes. Professional caregivers should follow their agency's protocol for clinical photography. This app is a personal caregiving tool and is not a HIPAA-covered service.</span>
+    <span><strong style="color:var(--navy)">Photo documentation is not included in this app.</strong> To protect care recipient privacy, wound status should be documented using detailed written descriptions, measurements, and staging notes. This app is a personal caregiving tool and is not a HIPAA-covered service.</span>
   </div>
 
   <div id="wound-list">
@@ -3137,7 +3137,7 @@ body {
         <div style="color:var(--refused);font-size:.78rem">Tachypnea: &gt;20/min</div>
       </div>
     </div>
-    <div style="margin-top:10px;font-size:.72rem;color:var(--slate-light);line-height:1.5">⚕️ Reference ranges are general guidelines for adults. Always follow your care recipient's physician-ordered target ranges, which may differ. Report out-of-range values to your supervisor immediately.</div>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--slate-light);line-height:1.5">⚕️ Reference ranges are general guidelines for adults. Always follow your care recipient's physician-ordered target ranges, which may differ. Report out-of-range values to your physician immediately.</div>
   </div>
 </div>
 
@@ -3660,7 +3660,7 @@ body {
       <textarea id="inc-desc" rows="3" placeholder="Describe exactly what happened, what you observed, and the circumstances…"></textarea>
     </div>
     <div class="fg"><label>Action Taken</label>
-      <textarea id="inc-action" rows="2" placeholder="e.g. Assisted to chair, applied ice pack, notified supervisor, called 911…"></textarea>
+      <textarea id="inc-action" rows="2" placeholder="e.g. Assisted to chair, applied ice pack, notified physician, called 911…"></textarea>
     </div>
     <div class="fg"><label>Follow-Up Status</label>
       <select id="inc-status" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
@@ -3670,7 +3670,7 @@ body {
       </select>
     </div>
     <div class="fg"><label>Reported To</label>
-      <input id="inc-reported" placeholder="Supervisor name / family member notified">
+      <input id="inc-reported" placeholder="Physician / family member notified">
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('incident-modal')">Cancel</button>
@@ -5198,7 +5198,7 @@ const CONTACT_TYPES = [
   '☎️ Hospice',
   '📋 Power of Attorney',
   '📞 Case Manager',
-  '🏛️ Agency Supervisor',
+  '🏛️ Agency / Physician',
   '📝 Other'
 ];
 
@@ -6170,11 +6170,11 @@ function exportAgencySummary(){
       <div class="sig-value">${dateDisp}</div>
     </div>
     <div class="sig-block">
-      <div class="sig-label">Supervisor Review</div>
+      <div class="sig-label">Physician Review</div>
       <div class="sig-value">&nbsp;</div>
     </div>
     <div class="sig-block">
-      <div class="sig-label">Supervisor Signature</div>
+      <div class="sig-label">Physician Signature</div>
       <div class="sig-value">&nbsp;</div>
     </div>
   </div>
@@ -6464,7 +6464,7 @@ function printMAR(){
   ${notes ? `<div class="notes"><strong>Notes:</strong> ${notes}</div>` : ''}
   <div class="sig">
     <div class="sig-line">Caregiver Signature &amp; Date</div>
-    <div class="sig-line">Supervisor Signature &amp; Date</div>
+    <div class="sig-line">Physician Signature &amp; Date</div>
   </div>
   <div class="foot">
     <span>Tended Health Pro — Medication Administration Record</span>
@@ -6512,7 +6512,7 @@ function printMAR(){
     <div class="fg"><label>Who Was Notified</label>
       <select id="refusal-notified" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
         <option value="">— Select —</option>
-        <option>Nurse / supervisor notified</option>
+        <option>Physician / family notified</option>
         <option>Physician notified</option>
         <option>Family / emergency contact notified</option>
         <option>No notification required</option>
@@ -6581,7 +6581,7 @@ function printMAR(){
         <option>Repositioned patient</option>
         <option>Medication administered (per log)</option>
         <option>Applied heat/cold pack</option>
-        <option>Notified nurse / supervisor</option>
+        <option>Notified physician / family</option>
         <option>Distraction / comfort measures</option>
         <option>Care recipient declined intervention</option>
         <option>No action — monitoring</option>
@@ -9825,7 +9825,7 @@ function renderReport(){
         ${sections}
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:24px;padding-top:16px;border-top:1.5px solid var(--border)">
           <div style="border-top:1.5px solid var(--navy);padding-top:6px;font-size:.74rem;color:var(--slate-light)">Caregiver Signature &amp; Date</div>
-          <div style="border-top:1.5px solid var(--navy);padding-top:6px;font-size:.74rem;color:var(--slate-light)">Supervisor Signature &amp; Date</div>
+          <div style="border-top:1.5px solid var(--navy);padding-top:6px;font-size:.74rem;color:var(--slate-light)">Physician Signature &amp; Date</div>
         </div>
       </div>`;
     toast('✅ Report generated', 'var(--given)');
@@ -10635,7 +10635,7 @@ function buildSampleData(){
   const vitals = [
     { id:13001, date:todayISO, time:'07:10', patientId:pid, bpSys:138, bpDia:84, pulse:74, resp:16, temp:98.4, spo2:96, glucose:68,  weight:null, position:'Sitting',         notes:'Pre-breakfast. BG low — OJ given. Physician notified.', alerts:[{level:'high',msg:'Glucose 68 mg/dL — Hypoglycemia. Give 15g carbs, recheck in 15 min.'}] },
     { id:13002, date:todayISO, time:'09:30', patientId:pid, bpSys:132, bpDia:80, pulse:72, resp:16, temp:98.6, spo2:97, glucose:94,  weight:null, position:'Sitting',         notes:'Post-OJ recheck. BG normalized.', alerts:[] },
-    { id:13003, date:dStr2(-1), time:'08:00', patientId:pid, bpSys:142, bpDia:88, pulse:78, resp:18, temp:98.8, spo2:96, glucose:112, weight:143.5, position:'Sitting',       notes:'Morning vitals. BP slightly elevated.', alerts:[{level:'high',msg:'BP 142/88 — Stage 2 hypertension. Report to supervisor.'}] },
+    { id:13003, date:dStr2(-1), time:'08:00', patientId:pid, bpSys:142, bpDia:88, pulse:78, resp:18, temp:98.8, spo2:96, glucose:112, weight:143.5, position:'Sitting',       notes:'Morning vitals. BP slightly elevated.', alerts:[{level:'high',msg:'BP 142/88 — Stage 2 hypertension. Report to physician.'}] },
     { id:13004, date:dStr2(-1), time:'14:00', patientId:pid, bpSys:128, bpDia:78, pulse:70, resp:16, temp:98.4, spo2:97, glucose:105, weight:null,  position:'Post-medication',notes:'Post-afternoon meds. BP improved.', alerts:[] },
     { id:13005, date:dStr2(-2), time:'08:15', patientId:pid, bpSys:135, bpDia:82, pulse:76, resp:16, temp:98.6, spo2:97, glucose:108, weight:null,  position:'Sitting',        notes:'', alerts:[] },
   ];
@@ -11835,7 +11835,7 @@ function _residentStatusItems(p, todayISO, nowMin, GRACE){
   if(severePAINAD){
     items.push({
       dot:'#C0392B', label:`Severe pain — PAINAD ${severePAINAD.total}/10`,
-      sub:'Supervisor notification recommended', nav:'pain', priority:1
+      sub:'Physician notification recommended', nav:'pain', priority:1
     });
   }
 
@@ -12101,7 +12101,7 @@ function renderCriticalAlerts(){
       level: 'amber',
       icon:  '🧠',
       title: `${nm} — PAINAD ${e.total}/10 (Severe pain)`,
-      detail: 'Supervisor notification recommended · Tap to review',
+      detail: 'Physician notification recommended · Tap to review',
       nav:   'pain'
     });
   });
@@ -12522,21 +12522,21 @@ function vitalsAlerts(v){
   const alerts = [];
   if(v.bpSys !== null && v.bpDia !== null){
     if(v.bpSys > 180 || v.bpDia > 120)  alerts.push({ level:'critical', msg:`BP ${v.bpSys}/${v.bpDia} — Hypertensive crisis. Notify physician immediately.` });
-    else if(v.bpSys > 160 || v.bpDia > 100) alerts.push({ level:'high', msg:`BP ${v.bpSys}/${v.bpDia} — Stage 2 hypertension. Report to supervisor.` });
+    else if(v.bpSys > 160 || v.bpDia > 100) alerts.push({ level:'high', msg:`BP ${v.bpSys}/${v.bpDia} — Stage 2 hypertension. Report to physician.` });
     else if(v.bpSys < 90)                alerts.push({ level:'high', msg:`BP ${v.bpSys}/${v.bpDia} — Low blood pressure. Monitor for dizziness, falls.` });
   }
   if(v.pulse !== null){
-    if(v.pulse > 120)  alerts.push({ level:'high',    msg:`Pulse ${v.pulse} bpm — Tachycardia. Report to supervisor.` });
-    else if(v.pulse < 50) alerts.push({ level:'high', msg:`Pulse ${v.pulse} bpm — Bradycardia. Report to supervisor.` });
+    if(v.pulse > 120)  alerts.push({ level:'high',    msg:`Pulse ${v.pulse} bpm — Tachycardia. Report to physician.` });
+    else if(v.pulse < 50) alerts.push({ level:'high', msg:`Pulse ${v.pulse} bpm — Bradycardia. Report to physician.` });
   }
   if(v.temp !== null){
     if(v.temp >= 103)  alerts.push({ level:'critical', msg:`Temp ${v.temp}°F — High fever. Notify physician immediately.` });
-    else if(v.temp >= 100.4) alerts.push({ level:'high', msg:`Temp ${v.temp}°F — Fever present. Report to supervisor.` });
-    else if(v.temp < 95)     alerts.push({ level:'high', msg:`Temp ${v.temp}°F — Hypothermia risk. Warm patient, notify supervisor.` });
+    else if(v.temp >= 100.4) alerts.push({ level:'high', msg:`Temp ${v.temp}°F — Fever present. Report to physician.` });
+    else if(v.temp < 95)     alerts.push({ level:'high', msg:`Temp ${v.temp}°F — Hypothermia risk. Warm patient, notify physician.` });
   }
   if(v.spo2 !== null){
     if(v.spo2 < 90)   alerts.push({ level:'critical', msg:`SpO2 ${v.spo2}% — Critical hypoxia. Notify physician immediately.` });
-    else if(v.spo2 < 94) alerts.push({ level:'high',  msg:`SpO2 ${v.spo2}% — Low oxygen saturation. Reposition, notify supervisor.` });
+    else if(v.spo2 < 94) alerts.push({ level:'high',  msg:`SpO2 ${v.spo2}% — Low oxygen saturation. Reposition, notify physician.` });
   }
   if(v.glucose !== null){
     if(v.glucose < 60)   alerts.push({ level:'critical', msg:`Glucose ${v.glucose} mg/dL — Severe hypoglycemia. Give glucose, notify physician.` });
@@ -12545,7 +12545,7 @@ function vitalsAlerts(v){
     else if(v.glucose > 180) alerts.push({ level:'high',    msg:`Glucose ${v.glucose} mg/dL — Elevated. Document and report per agency protocol.` });
   }
   if(v.resp !== null){
-    if(v.resp > 24 || v.resp < 10) alerts.push({ level:'high', msg:`Respirations ${v.resp}/min — Abnormal. Report to supervisor.` });
+    if(v.resp > 24 || v.resp < 10) alerts.push({ level:'high', msg:`Respirations ${v.resp}/min — Abnormal. Report to physician.` });
   }
   return alerts;
 }
@@ -14081,7 +14081,7 @@ function savePain(){
       ...fields
     });
     const sc = parseInt(score);
-    if(sc >= 7) toast(`⚠️ Pain score ${sc}/10 — notify supervisor`,'var(--refused)');
+    if(sc >= 7) toast(`⚠️ Pain score ${sc}/10 — notify physician`,'var(--refused)');
     else toast('✅ Pain assessment saved','var(--given)');
   }
   save(); closeModal('pain-modal');
@@ -14505,7 +14505,7 @@ const ITM_SCENARIOS = {
       {text:'Step back and give space for a few minutes', sub:'Removing pressure can reset the refusal'},
       {text:'Return with a choice, not a yes/no question', sub:'"Now, or after we sit together for a bit?"'},
       {text:'Frame the task as familiar routine', sub:'"This is what we do every morning."'},
-      {text:'If medication is refused, never force it', sub:'Document and notify your supervisor per protocol'},
+      {text:'If medication is refused, never force it', sub:'Document and notify your physician'},
       {text:'Try again in 15–20 minutes with a different approach', sub:'Short-term memory means the refusal may not persist'}
     ]
   },
@@ -14518,8 +14518,8 @@ const ITM_SCENARIOS = {
       {text:'Check positioning before offering food', sub:'Upright positioning reduces aspiration risk'},
       {text:'Offer small portions of a preferred food', sub:'Familiarity increases acceptance'},
       {text:'Try calm, simple reassurance', sub:'"Take your time — I\'m not in a rush."'},
-      {text:'Stop and notify your supervisor if swallowing difficulty is observed', sub:'Aspiration risk needs prompt clinical assessment'},
-      {text:'Document exactly what was offered, refused, and why', sub:'Two or more consecutive refusals should be flagged to your supervisor'}
+      {text:'Stop and notify your physician if swallowing difficulty is observed', sub:'Aspiration risk needs prompt clinical assessment'},
+      {text:'Document exactly what was offered, refused, and why', sub:'Two or more consecutive refusals should be flagged to your physician'}
     ]
   },
   sundowning: {
@@ -14532,7 +14532,7 @@ const ITM_SCENARIOS = {
       {text:'Keep the routine calm and predictable', sub:'Avoid sudden changes during this window'},
       {text:'Offer a small familiar snack', sub:'Can help during the peak risk window'},
       {text:'Try a known calming activity — music, a familiar object', sub:'See patient-specific tips below if available'},
-      {text:'Notify your supervisor if it escalates beyond mild agitation', sub:''}
+      {text:'Notify your physician if it escalates beyond mild agitation', sub:''}
     ]
   },
   wandering: {
@@ -14545,7 +14545,7 @@ const ITM_SCENARIOS = {
       {text:'Ask where they\'re going and validate the answer', sub:'"Of course, let me help you get ready."'},
       {text:'Create a brief task that delays departure', sub:'"First, let me show you something."'},
       {text:'Walk with them away from the exit toward a comfortable area', sub:'Moving together is safer than them moving alone'},
-      {text:'Notify your supervisor and document this now', sub:'Exit-seeking events require prompt supervisor notification'}
+      {text:'Notify your physician and document this now', sub:'Exit-seeking events require prompt physician notification'}
     ]
   },
   combative: {
@@ -14558,7 +14558,7 @@ const ITM_SCENARIOS = {
       {text:'Lower your body — crouch or sit if it\'s safe to do so', sub:'Standing over someone can feel threatening'},
       {text:'Speak slowly and calmly', sub:'"I\'m not going to hurt you. You\'re safe."'},
       {text:'Leave the room briefly if it\'s safe to do so', sub:'Removing yourself can remove the perceived threat'},
-      {text:'Notify your supervisor now and document the episode', sub:'Combative episodes require prompt notification per protocol'}
+      {text:'Notify your physician now and document the episode', sub:'Combative episodes require prompt physician notification'}
     ]
   },
   fall: {
@@ -14570,7 +14570,7 @@ const ITM_SCENARIOS = {
       {text:'Do not move them until injury is assessed', sub:'Spinal or hip injury may be present'},
       {text:'Call for help immediately', sub:'You\'ll need a second person before helping them up'},
       {text:'Keep them warm and calm while waiting', sub:'"I\'m right here. Help is coming. You\'re safe."'},
-      {text:'Notify your supervisor immediately — this is mandatory', sub:'All falls require notification and a care event report'},
+      {text:'Notify your physician immediately — this is mandatory', sub:'All falls require notification and a care event report'},
       {text:'Document exact time, location, and what you witnessed', sub:'Complete the care event log within your shift'}
     ]
   },
@@ -14580,7 +14580,7 @@ const ITM_SCENARIOS = {
     translation:'This is a medical emergency. Follow the sequence below immediately — document afterward, not during.',
     steps:[
       {text:'Call 911 immediately if life-threatening', sub:'Chest pain, difficulty breathing, unresponsive, seizure — call now'},
-      {text:'Notify your supervisor at the same time, not after', sub:'Both need to know immediately — don\'t wait'},
+      {text:'Notify your physician at the same time, not after', sub:'Both need to know immediately — don\'t wait'},
       {text:'Do not leave them alone', sub:'Stay present and keep talking to them calmly'},
       {text:'Check DNR status in the care plan before beginning CPR', sub:'Confirm status — don\'t assume'},
       {text:'Note exactly when symptoms began and what you observed', sub:'Critical information for emergency responders'},
@@ -14606,7 +14606,7 @@ const ITM_SCENARIOS = {
     translation:'Changes in breathing, mottling, unresponsiveness, or withdrawal from food and fluids may indicate the final stage of life. Calm, compassionate presence is the most important thing you can offer right now.',
     steps:[
       {text:'Stay with them — do not leave them alone', sub:'Your presence is the most important thing you can give right now'},
-      {text:'Notify your supervisor immediately', sub:'End-of-life changes require prompt clinical and family notification'},
+      {text:'Notify your physician immediately', sub:'End-of-life changes require prompt physician and family notification'},
       {text:'Contact the emergency/family contact on file', sub:'Family has the right to be present — notify promptly'},
       {text:'Ensure they\'re comfortable — reposition if needed', sub:'Assess for pain even if they can\'t communicate'},
       {text:'Speak gently even if they seem unresponsive', sub:'Hearing is often the last sense to fade'},
@@ -14736,7 +14736,7 @@ function itmCommitEpisode(key, stepsCompletedCount, totalSteps, escalated){
   const dateStr = now.toISOString().split('T')[0];
   const timeStr = now.toTimeString().slice(0,5);
   const stepsNote = 'Guided via Help Me Now — ' + stepsCompletedCount + '/' + totalSteps + ' steps completed';
-  const escalationNote = escalated ? 'Marked as escalated via Help Me Now — confirm supervisor was contacted directly' : '';
+  const escalationNote = escalated ? 'Marked as escalated via Help Me Now — confirm physician was contacted directly' : '';
 
   if(cfg.target === 'sundowning'){
     if(!D.sundowning) D.sundowning = [];
@@ -14754,7 +14754,7 @@ function itmCommitEpisode(key, stepsCompletedCount, totalSteps, escalated){
       type:'Wandering — within facility', isElopement:false,
       location:'', duration:'', condition:'',
       action: stepsNote,
-      notified: escalationNote || 'Not yet confirmed — follow up with supervisor',
+      notified: escalationNote || 'Not yet confirmed — follow up with physician',
       prevention:'', triggers:[], whatWorked:'',
       source:'itm'
     });
@@ -14837,7 +14837,7 @@ function itmRenderEntry(root){
         </button>`;
       }).join('')}
     </div>
-    <div style="font-size:.72rem;color:var(--slate-light);text-align:center;line-height:1.5">General caregiving guidance, not medical advice. Always follow your facility's protocols and your supervisor's direction.</div>
+    <div style="font-size:.72rem;color:var(--slate-light);text-align:center;line-height:1.5">General caregiving guidance, not medical advice. Always follow your facility's protocols and your physician's direction.</div>
   `;
 
   const bar = document.getElementById('itm-patient-bar');
@@ -14927,10 +14927,10 @@ function itmRenderGuidance(root){
     <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
       <button class="btn btn-teal" style="width:100%;margin-bottom:8px" onclick="itmResolve(false)">✅ Episode resolved</button>
       <button class="btn btn-danger" style="width:100%;margin-bottom:8px" onclick="itmResolve(true)">📞 Mark as escalated</button>
-      <div style="font-size:.7rem;color:var(--slate-light);text-align:center;margin-bottom:12px">Marking as escalated documents this step — it does not notify anyone. You must still contact your supervisor directly.</div>
+      <div style="font-size:.7rem;color:var(--slate-light);text-align:center;margin-bottom:12px">Marking as escalated documents this step — it does not notify anyone. You must still contact your physician directly.</div>
       <button class="btn btn-secondary" style="width:100%" onclick="itmBackToEntry()">← Different scenario</button>
     </div>
-    <div style="font-size:.7rem;color:var(--slate-light);text-align:center;line-height:1.5;margin-top:14px">General caregiving guidance, not medical advice. Always follow your facility's protocols and your supervisor's direction.</div>
+    <div style="font-size:.7rem;color:var(--slate-light);text-align:center;line-height:1.5;margin-top:14px">General caregiving guidance, not medical advice. Always follow your facility's protocols and your physician's direction.</div>
   `;
 }
 
@@ -14956,7 +14956,7 @@ function itmResolve(escalated){
   _itmLastResolved = { key, cfg, stepsCompleted: progress.length, total, escalated, time: new Date() };
   _itmScreen = 'resolved';
   renderITM();
-  toast(escalated ? 'Marked as escalated — contact your supervisor directly' : '✅ Episode logged', escalated ? 'var(--refused)' : 'var(--given)');
+  toast(escalated ? 'Marked as escalated — contact your physician directly' : '✅ Episode logged', escalated ? 'var(--refused)' : 'var(--given)');
 }
 
 function itmRenderResolved(root){
@@ -14967,7 +14967,7 @@ function itmRenderResolved(root){
     <div style="padding:20px 0;text-align:center">
       <div style="font-size:2.8rem;margin-bottom:10px">${r.escalated ? '📞' : '✅'}</div>
       <div style="font-size:1.1rem;font-weight:800;color:var(--navy);margin-bottom:6px">${r.escalated ? 'Marked as escalated' : 'Episode logged'}</div>
-      <div style="font-size:.82rem;color:var(--slate-mid);margin-bottom:20px">${r.escalated ? 'Remember to contact your supervisor directly — this only documents the step.' : 'This has been added to this patient\u2019s history and will inform future guidance.'}</div>
+      <div style="font-size:.82rem;color:var(--slate-mid);margin-bottom:20px">${r.escalated ? 'Remember to contact your physician directly — this only documents the step.' : 'This has been added to this patient\u2019s history and will inform future guidance.'}</div>
       <div style="background:var(--given-bg);border:1.5px solid var(--given);border-radius:var(--r-lg);padding:14px;margin-bottom:16px;text-align:left">
         <div style="font-size:.68rem;font-weight:700;color:var(--given);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Summary</div>
         <div style="font-size:.8rem;color:var(--slate);padding:2px 0"><strong>Time:</strong> ${timeStr}</div>
@@ -15561,7 +15561,7 @@ function renderCheckin(){ ciStopBreathe(); _ciGroundIdx = 0; ciGo('checkin'); }
       <div id="pa-severity-label" style="font-size:.78rem;font-weight:700;margin-top:4px"></div>
       <div id="pa-alert-msg" style="display:none;background:#FFF0F0;border:1.5px solid var(--refused);
            border-radius:8px;padding:8px 12px;margin-top:8px;font-size:.74rem;color:var(--refused);
-           font-weight:700">⚠️ Supervisor notification required — score ≥ 7</div>
+           font-weight:700">⚠️ Physician notification required — score ≥ 7</div>
     </div>
 
     <!-- Notes -->
