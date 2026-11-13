@@ -1616,12 +1616,13 @@ body {
   </div>
   <div class="nav-group">
     <div class="nav-label">Health &amp; Care Notes</div>
+    <button id="snav-vitals" class="nav-btn" onclick="navTo('vitals',this)"><span class="ni">🩺</span> Vital Signs <span class="nav-badge" id="nb-vitals"></span></button>
+    <button class="nav-btn" onclick="navTo('pain',this)"><span class="ni">😣</span> Pain Scale <span class="nav-badge" id="nb-pain"></span></button>
     <button class="nav-btn" onclick="navTo('careplan',this)"><span class="ni">📌</span> Care Preferences</button>
     <button class="nav-btn" onclick="navTo('comfortcare',this)"><span class="ni">🕊️</span> Comfort Care Log</button>
     <button id="snav-wounds" class="nav-btn" onclick="navTo('wounds',this)"><span class="ni">🩹</span> Wound &amp; Skin Care</button>
     <button id="snav-nutrition" class="nav-btn" onclick="navTo('intake',this)"><span class="ni">🍽️</span> Diet & Fluids</button>
     <button class="nav-btn" onclick="navTo('comms',this)"><span class="ni">📞</span> Family Log</button>
-    <button id="snav-vitals" class="nav-btn" onclick="navTo('pain',this)"><span class="ni">😣</span> Pain Scale <span class="nav-badge" id="nb-pain"></span></button>
   </div>
   <div class="nav-group">
     <div class="nav-label">Daily Behaviors</div>
@@ -1630,7 +1631,6 @@ body {
     <button class="nav-btn" onclick="navTo('behaviors',this)"><span class="ni">🧠</span> Behavior Patterns</button>
     <button class="nav-btn" onclick="navTo('toileting',this)"><span class="ni">🚻</span> Toileting</button>
     <button class="nav-btn" onclick="navTo('trends',this)"><span class="ni">📊</span> Weekly Trends</button>
-    <button id="snav-vitals2" class="nav-btn" onclick="navTo('vitals',this)"><span class="ni">🩺</span> Vital Signs <span class="nav-badge" id="nb-vitals"></span></button>
   </div>
   <div id="snav-memory-group" class="nav-group">
     <div class="nav-label">💜 Memory Care</div>
@@ -2426,18 +2426,19 @@ body {
     <span><strong>Works offline</strong> — all your data is saved on this device only. No internet connection required after install. No cloud, no account, no subscription needed to use the app.</span>
   </div>
 
-  <!-- Early Adopter Offer — shown/hidden by renderEarlyAdopterCard() -->
-  <div id="early-adopter-card" style="margin:0 0 12px;display:none">
+  <!-- Early Adopter Offer -->
+  <div style="margin:0 0 12px">
     <div class="card" style="border:2px solid var(--teal);background:linear-gradient(135deg,#F0FDF4,#E6F7F4)">
       <div class="card-title" style="color:var(--teal)">🎁 Free for Early Supporters — Offer Expires December 31, 2026</div>
       <p style="font-size:.82rem;color:var(--slate-mid);line-height:1.7;margin:8px 0 12px">
-        You're one of our early supporters — so your unlock is free. Reach out before <strong>December 31, 2026</strong> for your permanent code, yours to keep forever: no subscription, no catch. After December 31, unlocking is a one-time <strong>$14.99</strong>.
+        Download Tended Health Pro before <strong>December 31, 2026</strong> and get a free
+        permanent unlock code — yours to keep forever, no subscription, no catch.
+        After December 31 the unlock is <strong>$14.99</strong> one time.
       </p>
       <p style="font-size:.82rem;color:var(--slate-mid);line-height:1.7;margin:0 0 14px">
         To claim your free code, simply reach out directly:
       </p>
       <a href="mailto:tendedhealthapps@gmail.com?subject=Free%20Lifetime%20Code%20Request"
-         onclick="trackEvent('early_supporter_email',{source:'settings_card'})"
          style="display:flex;align-items:center;gap:10px;padding:12px 14px;
                 background:var(--teal);border-radius:var(--r);text-decoration:none;
                 color:white;font-size:.86rem;font-weight:600;margin-bottom:8px">
@@ -3062,6 +3063,9 @@ body {
       <div><div class="stat-val" id="vs-spo2">—</div><div class="stat-lbl">SpO2 %</div></div>
     </div>
   </div>
+
+  <!-- Vitals sparkline trends -->
+  <div id="vitals-sparklines" style="display:none;margin-bottom:16px"></div>
 
   <!-- Patient selector -->
   <div class="card" style="margin-bottom:16px">
@@ -4598,7 +4602,6 @@ function navTo(id, btn){
     // Clear ADL recent-edit IDs when navigating away from the ADL section
     if(_currentSection === 'adl' && id !== 'adl' && typeof _adlRecentIds !== 'undefined') _adlRecentIds = [];
     _currentSection = id;
-    if(typeof trackEvent === 'function') trackEvent('screen_view', { screen_name: id });
   }
   // Persist section so orientation-change reloads can restore it
   try { localStorage.setItem('tendedPro_lastSection', id); } catch(e){}
@@ -4683,14 +4686,6 @@ function dismissLaunchBanner(){
 }
 
 
-function renderEarlyAdopterCard(){
-  const el = document.getElementById('early-adopter-card');
-  if(!el) return;
-  const expired = new Date().toISOString().split('T')[0] > EARLY_ADOPTER_EXPIRY;
-  const premium = (typeof isPremium === 'function') ? isPremium() : false;
-  el.style.display = (!expired && !premium) ? 'block' : 'none';
-}
-
 function renderTrialExpiryBanner(){
   const host = document.getElementById('trial-expiry-banner');
   if(!host) return;
@@ -4711,7 +4706,7 @@ function renderTrialExpiryBanner(){
           As an early supporter, email me for your free lifetime unlock code — no cost, no catch.
         </div>
       </div>
-      <a onclick="trackEvent('early_supporter_email',{source:'trial_banner'})" href="mailto:tendedhealthapps@gmail.com?subject=Free%20Lifetime%20Code%20Request&body=Hi%2C%20I%20would%20like%20my%20free%20lifetime%20unlock%20code%20for%20Tended%20Health%20Pro."
+      <a href="mailto:tendedhealthapps@gmail.com?subject=Free%20Lifetime%20Code%20Request&body=Hi%2C%20I%20would%20like%20my%20free%20lifetime%20unlock%20code%20for%20Tended%20Health%20Pro."
          style="display:inline-flex;align-items:center;gap:6px;background:#C9963A;color:white;
                 border-radius:8px;padding:8px 14px;text-decoration:none;font-size:.76rem;
                 font-weight:600;white-space:nowrap;flex-shrink:0">
@@ -7522,7 +7517,6 @@ function loadSettings(){
   set('set-supervisor', s.supervisor);
   set('set-facility',     s.facility);
   if(typeof renderPremiumCard === 'function') renderPremiumCard();
-  if(typeof renderEarlyAdopterCard === 'function') renderEarlyAdopterCard();
   renderProfileCompletion();
   renderManageFeatures();
   // Clear dirty state on load
@@ -9951,6 +9945,88 @@ function generateDoctorSummaryPDF(){
   });
   y+=2;
 
+  // ── Vitals Trend Table ────────────────────────────────────────
+  var vitalsPdf = (D.vitals||[])
+    .filter(function(e){ return !pid || String(e.patientId)===String(pid); })
+    .sort(function(a,b){ return (a.date+a.time).localeCompare(b.date+b.time); })
+    .slice(-7);  // last 7 readings
+
+  if(vitalsPdf.length){
+    checkPage(20);
+    txt('RECENT VITALS TREND  (Last '+vitalsPdf.length+' readings)', 10, true, [12,27,51]); y+=1; hline(200);
+
+    // Column definitions: label, x offset, width, field getter, alert checker
+    var vCols = [
+      { label:'Date',      x:0,   w:30 },
+      { label:'BP (mmHg)', x:32,  w:28 },
+      { label:'Pulse',     x:62,  w:18 },
+      { label:'Glucose',   x:82,  w:22 },
+      { label:'SpO2',      x:106, w:18 },
+      { label:'Temp °F',   x:126, w:18 },
+      { label:'Weight',    x:146, w:18 },
+      { label:'Notes',     x:166, w:34 }
+    ];
+
+    // Header row
+    doc.setFillColor(12,27,51);
+    doc.rect(ml, y-3.5, cw, 7, 'F');
+    doc.setFontSize(7.5); doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255);
+    vCols.forEach(function(c){ doc.text(c.label, ml+c.x+1, y); });
+    y+=4;
+
+    // Data rows
+    vitalsPdf.forEach(function(v, ri){
+      checkPage(8);
+      var rowH = 7;
+      if(ri%2===0){ doc.setFillColor(248,250,252); doc.rect(ml, y-3, cw, rowH, 'F'); }
+
+      var bp = (v.bpSys && v.bpDia) ? v.bpSys+'/'+v.bpDia : '—';
+      var bpAlert = v.bpSys && (v.bpSys >= 160 || v.bpSys < 90);
+      var pulseAlert = v.pulse && (v.pulse > 120 || v.pulse < 50);
+      var glucAlert = v.glucose && (v.glucose > 180 || v.glucose < 70);
+      var spo2Alert = v.spo2 && v.spo2 < 94;
+
+      var dStr = v.date ? new Date(v.date+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'}) : '—';
+
+      doc.setFontSize(8); doc.setFont('helvetica','normal');
+
+      function cell(val, x, alert){
+        if(alert){ doc.setTextColor(192,57,43); doc.setFont('helvetica','bold'); }
+        else { doc.setTextColor(50,50,50); doc.setFont('helvetica','normal'); }
+        doc.text(val||'—', ml+x+1, y);
+      }
+
+      cell(dStr,                      vCols[0].x, false);
+      cell(bp,                        vCols[1].x, bpAlert);
+      cell(v.pulse?String(v.pulse):'—', vCols[2].x, pulseAlert);
+      cell(v.glucose?String(v.glucose):'—', vCols[3].x, glucAlert);
+      cell(v.spo2?v.spo2+'%':'—',     vCols[4].x, spo2Alert);
+      cell(v.temp?v.temp+'°':'—',     vCols[5].x, false);
+      cell(v.weight?String(v.weight):'—', vCols[6].x, false);
+
+      // Notes (truncated)
+      doc.setTextColor(100,110,125); doc.setFont('helvetica','italic'); doc.setFontSize(7);
+      if(v.notes){
+        var noteSnip = v.notes.length>30 ? v.notes.substring(0,28)+'…' : v.notes;
+        doc.text(noteSnip, ml+vCols[7].x+1, y);
+      }
+      // Alert flags inline
+      if(v.alerts && v.alerts.length){
+        doc.setFontSize(6.5); doc.setTextColor(192,57,43); doc.setFont('helvetica','bold');
+        doc.text('⚠ '+v.alerts.length+' alert'+(v.alerts.length>1?'s':''), ml+vCols[7].x+1, y+3.5);
+        y+=3.5;
+      }
+      y+=4.5;
+    });
+
+    // Legend
+    y+=1;
+    doc.setFontSize(7); doc.setFont('helvetica','italic'); doc.setTextColor(192,57,43);
+    doc.text('Red = out-of-range value  (BP ≥160/90 or <90 sys · Pulse >120 or <50 · Glucose >180 or <70 · SpO2 <94%)', ml, y);
+    y+=5;
+  }
+  y+=2;
+
   // Medications
   checkPage(20);
   txt('CURRENT MEDICATIONS', 10, true, [12,27,51]); y+=1; hline(200);
@@ -11131,39 +11207,6 @@ const LAUNCH_BANNER_EXPIRY = '2026-06-30';
 const BANNER_DISMISSED_KEY = 'tendedPro_bannerDismissed';
 const TRIAL_DAYS    = 10;
 const PRICE_DISPLAY = '$14.99';
-const EARLY_ADOPTER_EXPIRY = '2026-12-31';
-
-// ═══ ANDROID APP BRIDGE — remote paywall switch + analytics ═══════════
-// KEEP THIS BLOCK when uploading a new index.html. In the Android app, window.TendedNative is
-// provided by the app. The paywall is switched on/off from the Firebase console (Remote Config:
-// paywall_enabled, grandfather_free_users) and the app reports the result as `freeAccess`.
-// In a normal browser TendedNative does not exist: freeAccess is false and trackEvent does nothing.
-// trackEvent only accepts short ids (e.g. 'mar', 'settings_card') — never pass names or notes.
-let _appConfigCache = null;
-function getAppConfig(){
-  if(_appConfigCache) return _appConfigCache;
-  try {
-    if(window.TendedNative && typeof window.TendedNative.getConfig === 'function'){
-      _appConfigCache = JSON.parse(window.TendedNative.getConfig()) || {};
-      return _appConfigCache;
-    }
-  } catch(e){}
-  return {};
-}
-function hasFreeAccess(){ return getAppConfig().freeAccess === true; }
-function trackEvent(name, params){
-  try {
-    if(window.TendedNative && typeof window.TendedNative.logEvent === 'function'){
-      window.TendedNative.logEvent(name, JSON.stringify(params || {}));
-    }
-  } catch(e){}
-}
-// The app fires this when the paywall setting changes while it is open.
-window.addEventListener('tendedconfig', function(e){
-  _appConfigCache = (e && e.detail) || null;
-  try { updatePremiumUI(); renderPremiumCard(); renderTrialExpiryBanner(); renderEarlyAdopterCard(); renderLaunchBanner(); } catch(err){}
-});
-// ═══ END ANDROID APP BRIDGE ═════════════════════════════════════════
 
 function getPremiumState(){ try { const r=localStorage.getItem(PREMIUM_KEY); return r?JSON.parse(r):null; } catch(e){ return null; } }
 function setPremiumState(s){
@@ -11171,10 +11214,7 @@ function setPremiumState(s){
   // Mirror to IndexedDB shadow for BUG-004 recovery
   _idbPut('premium', s);
 }
-// isPurchased(): paid / promo-code unlock only. isPremium(): full access for any reason,
-// including the free-access switch above — every paywall gate uses isPremium().
-function isPurchased(){ const s=getPremiumState(); return !!(s&&s.status==='premium'); }
-function isPremium(){ return isPurchased() || hasFreeAccess(); }
+function isPremium(){ const s=getPremiumState(); return s&&s.status==='premium'; }
 
 // BUG-004 — write trial fingerprint to every layer we have
 function _writeTrialFingerprint(startIso, expired){
@@ -11256,7 +11296,7 @@ function activatePremium(source){
   window._pendingOrderId = null;
   const pw = document.getElementById('paywall-overlay');
   if(pw) pw.classList.remove('open');
-  updatePremiumUI(); renderPremiumCard(); renderEarlyAdopterCard();
+  updatePremiumUI(); renderPremiumCard();
   toast('⭐ Tended Health Pro unlocked! Thank you.', 'var(--teal)');
 }
 // The Android wrapper sets a specific UA suffix ("TendedHealthPro/..."). The TWA's MainActivity
@@ -11304,7 +11344,6 @@ window.TendedProBilling = {
   }
 };
 function triggerGooglePlayPurchase(){
-  trackEvent('unlock_tapped', { source: 'paywall' });
   if(window.Android&&typeof window.Android.launchBilling==='function'){ window.Android.launchBilling('tended_pro_unlock'); }
   else { if(confirm('Google Play Billing is only available in the installed app.\n\nDev mode: Simulate a successful purchase?')) activatePremium('dev'); }
 }
@@ -11329,7 +11368,6 @@ function revokePremium(){ localStorage.removeItem(PREMIUM_KEY); updatePremiumUI(
 function openPaywall(source){
   if(isPremium()) return;
   const el=document.getElementById('paywall-overlay'); if(!el) return;
-  trackEvent('paywall_shown', { source: source || 'unknown' });
   // Set subtitle to match actual trial state — don't tell an active-trial user their trial has ended.
   const sub=document.getElementById('paywall-sub');
   if(sub){
@@ -11354,7 +11392,6 @@ function closePaywall(){ const el=document.getElementById('paywall-overlay'); if
 function dismissTrialBanner(){ const el=document.getElementById('trial-banner'); if(el) el.style.display='none'; }
 function updatePremiumUI(){
   const premium=isPremium(), trial=getTrialState();
-  try { if(window.TendedNative && typeof window.TendedNative.setPurchased === 'function') window.TendedNative.setPurchased(isPurchased()); } catch(e){}
   const banner=document.getElementById('trial-banner'), bannerTxt=document.getElementById('trial-banner-text');
   const badge=document.getElementById('premium-badge');
   if(badge) badge.classList.toggle('show', premium);
@@ -11367,10 +11404,6 @@ function updatePremiumUI(){
 function renderPremiumCard(){
   const el=document.getElementById('premium-status-card'); if(!el) return;
   const premium=isPremium(), trial=getTrialState(), state=getPremiumState();
-  if(premium && !isPurchased()){
-    el.innerHTML=`<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(11,122,110,.08);border:1.5px solid var(--teal-pale);border-radius:var(--r)"><div style="font-size:1.6rem">🎁</div><div><div style="font-weight:700;color:var(--teal);font-size:.92rem">Full Access — Free</div><div style="font-size:.76rem;color:var(--slate-light);margin-top:2px">Every feature is unlocked. No purchase needed.</div></div></div>`;
-    return;
-  }
   if(premium){
     const dt=state?.activatedAt?new Date(state.activatedAt).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'Unknown';
     el.innerHTML=`<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(11,122,110,.08);border:1.5px solid var(--teal-pale);border-radius:var(--r)"><div style="font-size:1.6rem">⭐</div><div><div style="font-weight:700;color:var(--teal);font-size:.92rem">Tended Health Pro Unlocked</div><div style="font-size:.76rem;color:var(--slate-light);margin-top:2px">Full access · Activated ${dt}</div></div></div><div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-secondary btn-sm" onclick="restorePremium()">🔄 Restore Purchase</button><button class="btn btn-secondary btn-sm" style="color:var(--slate-light)" onclick="if(confirm('Revoke premium? Dev/test only')) revokePremium()">🧪 Dev: Revoke</button></div>`;
@@ -12170,6 +12203,162 @@ function toggleBBW(){
 // VITAL SIGNS
 // ═══════════════════════════════════════════════════════════════
 
+// ── Vitals Sparklines ─────────────────────────────────────────
+function _vitalsSparkSVG(entries, field, opts){
+  // opts: { min, max, bands:[{lo,hi,color}], dual, field2, w, h }
+  var w = opts.w||120, h = opts.h||40;
+  var pts = entries.filter(function(e){ return e[field]!=null; });
+  if(pts.length < 2) return '';
+  var n = pts.length;
+  var lo = opts.min, hi = opts.max;
+  // Auto-range with 10% padding if not fixed
+  if(lo===undefined){ lo = pts.reduce(function(m,e){ return Math.min(m,e[field]); }, Infinity); lo = Math.floor(lo*0.9); }
+  if(hi===undefined){ hi = pts.reduce(function(m,e){ return Math.max(m,e[field]); }, -Infinity); hi = Math.ceil(hi*1.1); }
+  var range = hi - lo || 1;
+  function px(val){ return Math.round(2 + (val-lo)/range*(w-4)); }
+  function py(val){ return Math.round((h-2) - (val-lo)/range*(h-4)); }
+  var svg = '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" style="display:block;border-radius:4px">';
+  // Range bands
+  if(opts.bands){
+    opts.bands.forEach(function(b){
+      var by1 = py(Math.min(b.hi, hi));
+      var by2 = py(Math.max(b.lo, lo));
+      if(by2 > by1) svg += '<rect x="0" y="'+by1+'" width="'+w+'" height="'+(by2-by1)+'" fill="'+b.color+'" opacity="0.18"/>';
+    });
+  }
+  // Primary line
+  var lineColor = '#1D5FA8';
+  var linePoints = pts.map(function(e,i){ return px(i/(n-1)*(w-4)+2)+','+py(e[field]); }).join(' ');
+  // Recalc x by index position
+  linePoints = pts.map(function(e,i){ return Math.round(2+(i/(n-1))*(w-4))+','+py(e[field]); }).join(' ');
+  svg += '<polyline points="'+linePoints+'" fill="none" stroke="'+lineColor+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
+  // Dual line for BP diastolic
+  if(opts.dual && opts.field2){
+    var pts2 = entries.filter(function(e){ return e[opts.field2]!=null; });
+    if(pts2.length >= 2){
+      var n2 = pts2.length;
+      var lp2 = pts2.map(function(e,i){ return Math.round(2+(i/(n2-1))*(w-4))+','+py(e[opts.field2]); }).join(' ');
+      svg += '<polyline points="'+lp2+'" fill="none" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3,2"/>';
+    }
+  }
+  // Dots — red if alert-level
+  pts.forEach(function(e,i){
+    var x = Math.round(2+(i/(n-1))*(w-4));
+    var y2 = py(e[field]);
+    var isAlert = (opts.alertHi && e[field]>opts.alertHi)||(opts.alertLo && e[field]<opts.alertLo);
+    var dotColor = isAlert ? '#C0392B' : lineColor;
+    svg += '<circle cx="'+x+'" cy="'+y2+'" r="2.5" fill="'+dotColor+'" stroke="#fff" stroke-width="1"/>';
+  });
+  svg += '</svg>';
+  return svg;
+}
+
+function _vitalsSparkCard(label, svg, currentVal, unit, flagStyle){
+  return '<div style="background:var(--card-bg,white);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;min-width:0">'
+    +'<div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--slate-mid);margin-bottom:4px">'+label+'</div>'
+    +'<div style="font-family:var(--font-mono);font-size:1rem;font-weight:700;'+flagStyle+'margin-bottom:6px">'+currentVal+(unit?' <span style="font-size:.7rem;font-weight:400;color:var(--slate-mid)">'+unit+'</span>':'')+'</div>'
+    +(svg||'<div style="height:40px;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--slate-light)">Not enough data</div>')
+    +'</div>';
+}
+
+function renderVitalsSparklines(entries){
+  var el = document.getElementById('vitals-sparklines');
+  if(!el) return;
+  if(!entries || entries.length < 2){ el.style.display='none'; return; }
+  el.style.display='block';
+
+  // Last 14 entries sorted oldest→newest for charting
+  var sorted = entries.slice().sort(function(a,b){ return (a.date+a.time).localeCompare(b.date+b.time); }).slice(-14);
+  var latest = sorted[sorted.length-1];
+
+  // BP sparkline (systolic solid + diastolic dashed)
+  var bpEntries = sorted.filter(function(e){ return e.bpSys!=null && e.bpDia!=null; });
+  var bpSVG = _vitalsSparkSVG(bpEntries,'bpSys',{
+    min:60, max:220,
+    bands:[
+      {lo:0,   hi:90,  color:'#C0392B'},   // hypotension red
+      {lo:90,  hi:120, color:'#0A7A4A'},   // normal green
+      {lo:120, hi:140, color:'#C47A00'},   // elevated amber
+      {lo:140, hi:220, color:'#C0392B'}    // high red
+    ],
+    dual:true, field2:'bpDia',
+    alertHi:160, alertLo:90, w:130, h:44
+  });
+  var bpCur = latest.bpSys && latest.bpDia ? latest.bpSys+'/'+latest.bpDia : '—';
+  var bpFlag = latest.bpSys ? vitalFlag(latest.bpSys,'bpSys')+';' : '';
+
+  // Pulse sparkline
+  var pulseEntries = sorted.filter(function(e){ return e.pulse!=null; });
+  var pulseSVG = _vitalsSparkSVG(pulseEntries,'pulse',{
+    min:30, max:160,
+    bands:[
+      {lo:0,   hi:60,  color:'#C0392B'},
+      {lo:60,  hi:100, color:'#0A7A4A'},
+      {lo:100, hi:160, color:'#C0392B'}
+    ],
+    alertHi:120, alertLo:50, w:120, h:44
+  });
+  var pulseCur = latest.pulse || '—';
+  var pulseFlag = latest.pulse ? vitalFlag(latest.pulse,'pulse')+';' : '';
+
+  // Glucose sparkline
+  var glucEntries = sorted.filter(function(e){ return e.glucose!=null; });
+  var glucSVG = _vitalsSparkSVG(glucEntries,'glucose',{
+    min:40, max:320,
+    bands:[
+      {lo:0,   hi:70,  color:'#C0392B'},   // hypoglycemia
+      {lo:70,  hi:140, color:'#0A7A4A'},   // target
+      {lo:140, hi:180, color:'#C47A00'},   // elevated
+      {lo:180, hi:320, color:'#C0392B'}    // high
+    ],
+    alertHi:180, alertLo:70, w:120, h:44
+  });
+  var glucCur = latest.glucose || '—';
+  var glucFlag = latest.glucose ? vitalFlag(latest.glucose,'glucose')+';' : '';
+
+  // Weight sparkline (no range bands — trend only)
+  var wtEntries = sorted.filter(function(e){ return e.weight!=null; });
+  var wtSVG = _vitalsSparkSVG(wtEntries,'weight',{ w:120, h:44 });
+  var wtCur = latest.weight || '—';
+
+  // SpO2 sparkline
+  var spo2Entries = sorted.filter(function(e){ return e.spo2!=null; });
+  var spo2SVG = _vitalsSparkSVG(spo2Entries,'spo2',{
+    min:80, max:100,
+    bands:[
+      {lo:0,  hi:90, color:'#C0392B'},
+      {lo:90, hi:94, color:'#C47A00'},
+      {lo:94, hi:100,color:'#0A7A4A'}
+    ],
+    alertLo:94, w:120, h:44
+  });
+  var spo2Cur = latest.spo2 ? latest.spo2+'%' : '—';
+  var spo2Flag = latest.spo2 ? vitalFlag(latest.spo2,'spo2')+';' : '';
+
+  var html = '<div style="background:var(--card-bg,white);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px">'
+    +'<div style="font-size:.78rem;font-weight:700;color:var(--navy);margin-bottom:10px">📈 Trends — last '+sorted.length+' readings'
+    +'<span style="font-size:.68rem;font-weight:400;color:var(--slate-mid);margin-left:8px">Red dot = out-of-range reading</span></div>'
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">'
+    +_vitalsSparkCard('❤️ Blood Pressure', bpSVG, bpCur, 'mmHg', bpFlag)
+    +'<div style="background:var(--card-bg,white);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;min-width:0">'
+    +'<div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--slate-mid);margin-bottom:2px">BP Key</div>'
+    +'<div style="font-size:.7rem;line-height:1.6;color:var(--slate-mid)">'
+    +'<span style="color:#1D5FA8">— Systolic</span><br>'
+    +'<span style="color:#7C3AED">- - Diastolic</span><br>'
+    +'<span style="color:#0A7A4A">■</span> Normal &lt;120/80<br>'
+    +'<span style="color:#C47A00">■</span> Elevated<br>'
+    +'<span style="color:#C0392B">■</span> High / Low'
+    +'</div></div>'
+    +_vitalsSparkCard('💓 Pulse', pulseSVG, pulseCur, 'bpm', pulseFlag)
+    +_vitalsSparkCard('🩸 Glucose', glucSVG, glucCur, 'mg/dL', glucFlag)
+    +_vitalsSparkCard('⚖️ Weight', wtSVG, wtCur, 'lbs', '')
+    +_vitalsSparkCard('🫁 SpO2', spo2SVG, spo2Cur, '', spo2Flag)
+    +'</div></div>';
+
+  el.innerHTML = html;
+}
+// ─────────────────────────────────────────────────────────────
+
 function initVitals(){
   populatePatientBars();
   const dateEl = document.getElementById('vitals-date');
@@ -12391,6 +12580,10 @@ function renderVitals(){
       const el = document.getElementById(id); if(el){ el.textContent='—'; el.removeAttribute('style'); }
     });
   }
+
+  // Render sparkline trends (use all entries for this patient, not date-filtered)
+  var allPatientEntries = (D.vitals||[]).filter(function(e){ return !patientId || e.patientId == patientId; });
+  renderVitalsSparklines(allPatientEntries);
 
   // Render log
   const listEl = document.getElementById('vitals-list');
