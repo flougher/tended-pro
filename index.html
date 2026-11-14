@@ -7207,7 +7207,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v41';
+const CACHE = 'tended-pro-v42';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -11797,7 +11797,7 @@ function renderQuickLogCard(){
     { icon:'🚶',  label:'Wandering',           action:'wandering',     col:'#B45309' },
     { icon:'😡',  label:'Agitated',            action:'agitated',      col:'#B45309' },
     { icon:'😊',  label:'Happy',               action:'happy',         col:'#16A34A' },
-    { icon:'😴',  label:'Sleeping',            action:'sleeping',      col:'#0C7A6E' },
+    { icon:'😴',  label:'Sleep Log',            action:'sleeping',      col:'#0C7A6E' },
     { icon:'🚽',  label:'Bathroom',            action:'bathroom',      col:'#0C3B6E' },
     { icon:'🩹',  label:'Injury',              action:'injury',        col:'#C0392B' },
   ];
@@ -11915,7 +11915,7 @@ function _quickLogDispatch(action){
     'wandering':    { section:'wandering',  delay:250, fn:'_qlOpenWandering'      },
     'agitated':     { section:'behaviors', delay:250, fn:'_qlOpenAgitated'       },
     'happy':        { section:'behaviors', delay:250, fn:'_qlOpenHappy'           },
-    'sleeping':     { section:'routines',  delay:150, fn:null                     },
+    'sleeping':     { section:'sleep',     delay:250, fn:'_qlOpenSleep'           },
     'bathroom':     { section:'toileting', delay:250, fn:'_qlOpenBathroom'        },
     'injury':       { section:'incidents', delay:250, fn:'_qlOpenInjury'          },
   };
@@ -12053,6 +12053,15 @@ function _qlOpenInjury(){
   const type=document.getElementById('inc-type'); if(type) type.value='Fall';
   const sev=document.getElementById('inc-sev'); if(sev) sev.value='moderate';
   setTimeout(()=>{ const d=document.getElementById('inc-desc'); if(d&&!d.value) d.focus(); },50);
+}
+
+function _qlOpenSleep(){
+  // Pre-select the quick-log patient in the sleep modal and open it
+  if(_quickLogPatient){
+    const sel = document.getElementById('slp-patient');
+    if(sel) sel.value = _quickLogPatient.id;
+  }
+  openModal('sleep-modal');
 }
 
 // ═══════════════════════════════════════════════════════════════
