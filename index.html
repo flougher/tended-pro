@@ -3507,6 +3507,7 @@ body {
   <div class="more-group-label">🩺 Clinical</div>
   <div class="more-grid">
     <button id="bnav-vitals" class="more-btn" onclick="mobileNavTo('vitals')"><span class="more-icon">🩺</span>Vitals</button>
+    <button id="bnav-sleep" class="more-btn" onclick="mobileNavTo('sleep')"><span class="more-icon">😴</span>Sleep Log</button>
     <button id="bnav-vitals-pain" class="more-btn" onclick="mobileNavTo('pain')"><span class="more-icon">😣</span>Pain</button>
     <button id="bnav-wounds" class="more-btn" onclick="mobileNavTo('wounds')"><span class="more-icon">🩹</span>Wounds</button>
     <button class="more-btn" onclick="mobileNavTo('trends')"><span class="more-icon">📊</span>Trends</button>
@@ -7206,7 +7207,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v39';
+const CACHE = 'tended-pro-v41';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -14768,50 +14769,16 @@ function renderTriggerReminderCard(){
 const _NAV_DEFAULT_OPEN = ['Overview', 'Care Recipients', 'Health', 'Daily Behaviors', 'Safety', 'Account'];
 
 function _wireSidebarCollapse(){
-  const labels = document.querySelectorAll('.nav-group .nav-label');
-  const hasSavedState = !!localStorage.getItem('tendedPro_sidebarCollapsed');
-  let collapsed = [];
-  try { collapsed = JSON.parse(localStorage.getItem('tendedPro_sidebarCollapsed') || '[]'); } catch(e){}
-
-  // Migration: force-open Health & Care Notes and Daily Behaviors if they were collapsed
-  if(hasSavedState){
-    const forceOpen = ['Health & Care Notes', 'Daily Behaviors'];
-    let migrated = false;
-    forceOpen.forEach(key => {
-      if(collapsed.includes(key)){ collapsed = collapsed.filter(x => x !== key); migrated = true; }
-    });
-    if(migrated) try { localStorage.setItem('tendedPro_sidebarCollapsed', JSON.stringify(collapsed)); } catch(e){}
-  }
-
-  labels.forEach((lbl, idx) => {
-    const groupKey = (lbl.textContent || ('group-'+idx)).trim();
-    // First-ever visit: collapse all groups not in the default-open list
-    if(!hasSavedState){
-      const isOpen = _NAV_DEFAULT_OPEN.some(name => groupKey.toLowerCase().includes(name.toLowerCase()));
-      if(!isOpen){
-        lbl.parentElement.classList.add('collapsed');
-        collapsed.push(groupKey);
-      }
-    } else {
-      if(collapsed.includes(groupKey)) lbl.parentElement.classList.add('collapsed');
-    }
-
+  // Clear any saved collapsed state so all groups are always visible
+  try { localStorage.removeItem('tendedPro_sidebarCollapsed'); } catch(e){}
+  // Remove collapsed class from every group — all nav sections open by default
+  document.querySelectorAll('.nav-group.collapsed').forEach(g => g.classList.remove('collapsed'));
+  // Still wire click-to-collapse so power users can hide groups they don't use
+  document.querySelectorAll('.nav-group .nav-label').forEach(lbl => {
     lbl.addEventListener('click', () => {
-      const group = lbl.parentElement;
-      group.classList.toggle('collapsed');
-      const isCollapsed = group.classList.contains('collapsed');
-      let cur = [];
-      try { cur = JSON.parse(localStorage.getItem('tendedPro_sidebarCollapsed') || '[]'); } catch(e){}
-      cur = cur.filter(x => x !== groupKey);
-      if(isCollapsed) cur.push(groupKey);
-      try { localStorage.setItem('tendedPro_sidebarCollapsed', JSON.stringify(cur)); } catch(e){}
+      lbl.parentElement.classList.toggle('collapsed');
     });
   });
-
-  // Save initial collapsed state on first visit
-  if(!hasSavedState){
-    try { localStorage.setItem('tendedPro_sidebarCollapsed', JSON.stringify(collapsed)); } catch(e){}
-  }
 }
 
 // Auto-expand the sidebar group that contains the nav button for a given section id
