@@ -4292,6 +4292,16 @@ async function _idbGet(key){
 let _saveDebounce = null;
 let _saveErrorShown = false;     // avoid toast spam on every save attempt
 let _quotaWarningShown = false;  // show once per session
+
+// Returns today's date in YYYY-MM-DD using the device's LOCAL timezone (not UTC)
+function localDate(d){
+  const dt = d || new Date();
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth()+1).padStart(2,'0');
+  const day = String(dt.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+
 function save(){
   let primaryOk = true;
   try {
@@ -4453,14 +4463,14 @@ function openModal(id){
     buildPainPicker();
     populatePainPatients();
     const pd = document.getElementById('pain-date');
-    if(pd && !pd.value) pd.value = new Date().toISOString().split('T')[0];
+    if(pd && !pd.value) pd.value = localDate();
     const pt = document.getElementById('pain-time');
     if(pt && !pt.value) pt.value = new Date().toTimeString().slice(0,5);
   }
   if(id === 'vitals-modal'){
     populateVitalsPatients();
     const vd = document.getElementById('vm-date');
-    if(vd && !vd.value) vd.value = new Date().toISOString().split('T')[0];
+    if(vd && !vd.value) vd.value = localDate();
     const vt = document.getElementById('vm-time');
     if(vt && !vt.value) vt.value = new Date().toTimeString().slice(0,5);
   }
@@ -4523,7 +4533,7 @@ function recordPatientStatus(status, explicitId){
   const idx=D.patients.findIndex(p=>String(p.id)===targetId);
   if(idx<0){toast('Care recipient not found','var(--held)');return;}
   D.patients[idx].status=status;
-  D.patients[idx].statusDate=new Date().toISOString().split('T')[0];
+  D.patients[idx].statusDate=localDate();
   save();renderPatients();renderDashboard();
   if(status==='deceased'){
     _wtdnPatientId = D.patients[idx].id;
@@ -4675,7 +4685,7 @@ function updateTopbar(){
 function renderLaunchBanner(){
   const el = document.getElementById('launch-promo-banner');
   if(!el) return;
-  const expired   = new Date().toISOString().split('T')[0] > LAUNCH_BANNER_EXPIRY;
+  const expired   = localDate() > LAUNCH_BANNER_EXPIRY;
   const dismissed = localStorage.getItem(BANNER_DISMISSED_KEY) === 'true';
   const premium   = isPremium ? isPremium() : false;
   el.style.display = (!expired && !dismissed && !premium) ? 'flex' : 'none';
@@ -4690,7 +4700,7 @@ function dismissLaunchBanner(){
 function renderEarlyAdopterCard(){
   const el = document.getElementById('early-adopter-card');
   if(!el) return;
-  const expired = new Date().toISOString().split('T')[0] > EARLY_ADOPTER_EXPIRY;
+  const expired = localDate() > EARLY_ADOPTER_EXPIRY;
   const premium = (typeof isPremium === 'function') ? isPremium() : false;
   el.style.display = (!expired && !premium) ? 'block' : 'none';
 }
@@ -4805,7 +4815,7 @@ function renderDashboard(){
   renderLaunchBanner();
   renderTrialExpiryBanner();
   _showGettingStartedIfNew();
-  const todayISO = new Date().toISOString().split('T')[0];
+  const todayISO = localDate();
   const h = new Date().getHours();
 
   // ── Greeting ──────────────────────────────────────────────
@@ -4996,7 +5006,7 @@ function renderDashboard(){
       nav:   'sundowning', icon: '🌅'
     },
     (() => {
-      const todayISO = new Date().toISOString().split('T')[0];
+      const todayISO = localDate();
       const activePat = _globalPatientId ? D.patients.find(p => String(p.id) === String(_globalPatientId)) : null;
       const risk = (activePat?.fallRisk || '').toLowerCase();
       const nonRisky = !activePat || risk === '' || risk === 'none' || risk === 'low';
@@ -5744,7 +5754,7 @@ function discontinueMed(id){
   D.meds[idx] = {
     ...D.meds[idx],
     discontinued:       true,
-    discontinuedDate:   new Date().toISOString().split('T')[0],
+    discontinuedDate:   localDate(),
     discontinuedReason: reason.trim() || 'Discontinued'
   };
   save();
@@ -5789,7 +5799,7 @@ function deleteMed(id){
 function initMAR(){
   populatePatientBars();
   const dateEl = document.getElementById('mar-date');
-  if(dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+  if(dateEl && !dateEl.value) dateEl.value = localDate();
   const initEl = document.getElementById('mar-initials');
   if(initEl) initEl.value = D.settings.initials || '';
   populateMARPatients();
@@ -5840,7 +5850,7 @@ function setMARTab(tab){
 function renderMARAllPatients(){
   const el = document.getElementById('mar-all-content');
   if(!el) return;
-  const dateVal = document.getElementById('mar-date')?.value || new Date().toISOString().split('T')[0];
+  const dateVal = document.getElementById('mar-date')?.value || localDate();
   const patients = D.patients || [];
   if(!patients.length){
     el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">No patients added yet.</div></div>';
@@ -5848,7 +5858,7 @@ function renderMARAllPatients(){
   }
   const now  = new Date();
   const nowMins = now.getHours() * 60 + now.getMinutes();
-  const isToday = dateVal === new Date().toISOString().split('T')[0];
+  const isToday = dateVal === localDate();
   let html = '';
   patients.forEach(p => {
     const ptMeds = (D.meds||[]).filter(m => !m.patientId || m.patientId == p.id);
@@ -5898,7 +5908,7 @@ function renderMARAllPatients(){
 
 // ── Agency/supervisor export ──────────────────────────────────
 function exportAgencySummary(){
-  const today     = new Date().toISOString().split('T')[0];
+  const today     = localDate();
   const dateDisp  = new Date(today+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   const caregiver = D.settings?.name     || 'Caregiver';
   const agency    = D.settings?.agency   || '';
@@ -6206,7 +6216,7 @@ function exportAgencySummary(){
 }
 
 function renderMAR(){
-  const dateVal    = document.getElementById('mar-date')?.value || new Date().toISOString().split('T')[0];
+  const dateVal    = document.getElementById('mar-date')?.value || localDate();
   const patientId  = document.getElementById('mar-patient')?.value || _globalPatientId || '';
   const table      = document.getElementById('mar-table');
   const notesEl    = document.getElementById('mar-notes');
@@ -6252,7 +6262,7 @@ function renderMAR(){
   // ── Bulk-given button ───────────────────────────────────────────────────
   const bulkEl = document.getElementById('mar-bulk-btn');
   if(bulkEl){
-    const isToday = dateVal === new Date().toISOString().split('T')[0];
+    const isToday = dateVal === localDate();
     if(!isToday || !patMeds.length){
       bulkEl.innerHTML = '';
     } else {
@@ -6313,7 +6323,7 @@ function renderMAR(){
         const isRefused = st === 'refused';
         const hasRefusalDoc = isRefused && rec.refusalReason;
         // Overdue detection — must be after rec is declared
-        const isToday_mar = dateVal === new Date().toISOString().split('T')[0];
+        const isToday_mar = dateVal === localDate();
         const isOverdue_mar = isToday_mar && st === 'pending' && m.time && (() => {
           const [h,mn] = m.time.split(':').map(Number);
           const nowMins = new Date().getHours()*60 + new Date().getMinutes();
@@ -6406,8 +6416,8 @@ function getMedWindow(m){
 
 // ── Mark all pending meds in current time window as Given ───────────────────
 function markAllGiven(win){
-  const dateVal   = document.getElementById('mar-date')?.value || new Date().toISOString().split('T')[0];
-  const today     = new Date().toISOString().split('T')[0];
+  const dateVal   = document.getElementById('mar-date')?.value || localDate();
+  const today     = localDate();
   if(dateVal !== today) return;          // guard: never bulk-log a past date
 
   const patientId = document.getElementById('mar-patient')?.value || _globalPatientId || '';
@@ -6484,7 +6494,7 @@ function setMARTime(key, time){
 }
 
 function saveMARNotes(){
-  const dateVal = document.getElementById('mar-date')?.value || new Date().toISOString().split('T')[0];
+  const dateVal = document.getElementById('mar-date')?.value || localDate();
   const patId   = document.getElementById('mar-patient')?.value || _globalPatientId || '';
   setMARNotes(dateVal, patId, document.getElementById('mar-notes')?.value || '');
   save();
@@ -6492,7 +6502,7 @@ function saveMARNotes(){
 }
 
 function printMAR(){
-  const dateVal  = document.getElementById('mar-date')?.value || new Date().toISOString().split('T')[0];
+  const dateVal  = document.getElementById('mar-date')?.value || localDate();
   const patId    = document.getElementById('mar-patient')?.value || '';
   const patient  = D.patients.find(p => p.id == patId);
   const dateDisp = new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
@@ -7358,7 +7368,7 @@ function renderIncidents(){
   const _patFilter = _globalPatientId;
 
   // Update nav badge
-  const todayISO = new Date().toISOString().split('T')[0];
+  const todayISO = localDate();
   let _incSource = D.incidents||[];
   if(_patFilter) _incSource = _incSource.filter(i => String(i.patientId) === String(_patFilter));
   const todayInc = _incSource.filter(i => i.dt && i.dt.startsWith(todayISO));
@@ -7407,7 +7417,7 @@ function deleteIncident(id){
 // ═══════════════════════════════════════════════════════════════
 function generateHandoff(){
   const today     = new Date();
-  const todayISO  = today.toISOString().split('T')[0];
+  const todayISO  = localDate(today);
   const todayDisp = today.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   const out       = document.getElementById('ho-out')?.value.trim()      || 'Outgoing caregiver';
   const incoming  = document.getElementById('ho-in')?.value.trim()       || 'Incoming caregiver';
@@ -7467,7 +7477,7 @@ function generateHandoff(){
 
   // Hydration summary for handoff
   const hydrLines = (D.patients||[]).filter(p=>p.active!==false&&p.status!=='deceased'&&p.status!=='discharged').map(p=>{
-    const td=new Date().toISOString().split('T')[0];
+    const td=localDate();
     const all=(D.intake||[]).filter(e=>e.date===td&&String(e.patientId)===String(p.id));
     const offers   =all.filter(e=>e.type==='Fluid Offer'||['Water','Juice','Milk','Coffee / Tea','Supplement drink','Other fluid','IV fluids'].includes(e.type));
     const declined =all.filter(e=>e.type==='Fluid Offer — Declined');
@@ -7759,7 +7769,7 @@ async function exportData(){
     ...D
   };
   const plaintext = JSON.stringify(payload, null, 2);
-  const baseName  = 'tended-pro-backup-' + new Date().toISOString().split('T')[0];
+  const baseName  = 'tended-pro-backup-' + localDate();
   if(wantsEncrypt){
     const pass = prompt('Enter a passphrase (min 8 chars). You will need this to restore the backup.');
     if(!pass || pass.length < 8){ toast('Passphrase too short — export cancelled', 'var(--refused)'); return; }
@@ -8010,7 +8020,7 @@ function openWoundModal(editId){
   document.getElementById('wm-save').textContent = isEdit ? 'Update' : 'Add Wound';
   const w = isEdit ? D.wounds.find(x => x.id === _editWoundId) : null;
   const get = id => document.getElementById(id);
-  get('wm-date').value      = w?.date      || new Date().toISOString().split('T')[0];
+  get('wm-date').value      = w?.date      || localDate();
   get('wm-location').value  = w?.location  || '';
   get('wm-type').value      = w?.type      || 'Pressure ulcer / injury';
   get('wm-stage').value     = w?.stage     || 'Stage 1 — Non-blanchable redness';
@@ -8179,7 +8189,7 @@ function saveHydrSettings(patientId, patch){
 
 // ── Last fluid offer time for a patient ──────────────────────
 function lastFluidTime(patientId){
-  const today = new Date().toISOString().split('T')[0];
+  const today = localDate();
   const offers = (D.intake||[]).filter(e =>
     e.date === today && String(e.patientId) === String(patientId) &&
     (e.type === 'Fluid Offer' || e.type === 'Fluid Offer — Declined' ||
@@ -8229,7 +8239,7 @@ function renderHydrationCard(){
     el.style.display = 'none'; return;
   }
   el.style.display = '';
-  const today = new Date().toISOString().split('T')[0];
+  const today = localDate();
 
   const rows = active.map(p => {
     const st    = getHydrSettings(p.id);
@@ -8303,7 +8313,7 @@ function logFluidOffer(accepted){
   const now  = new Date();
   const pad  = n => String(n).padStart(2,'0');
   const time = pad(now.getHours())+':'+pad(now.getMinutes());
-  const date = now.toISOString().split('T')[0];
+  const date = localDate(now);
   const fluidMl = Math.round(amt * 29.5735);
   if(!D.intake) D.intake = [];
   D.intake.push({
@@ -8377,7 +8387,7 @@ function stopHydrationReminders(){
 function initIntake(){
   populatePatientBars();
   const dateEl = document.getElementById('intake-date');
-  if(dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+  if(dateEl && !dateEl.value) dateEl.value = localDate();
   const timeEl = document.getElementById('im-time');
   if(timeEl && !timeEl.value) timeEl.value = new Date().toTimeString().slice(0,5);
   // Auto-select the sole patient so the hydration card shows immediately
@@ -8418,7 +8428,7 @@ function openIntakeModal(editId){
 function saveIntake(){
   const type = document.getElementById('im-type')?.value;
   if(!type){ toast('Please select a type', 'var(--held)'); return; }
-  const dateVal = document.getElementById('intake-date')?.value || new Date().toISOString().split('T')[0];
+  const dateVal = document.getElementById('intake-date')?.value || localDate();
   const fields = {
     date:      dateVal,
     time:      document.getElementById('im-time')?.value || new Date().toTimeString().slice(0,5),
@@ -8447,7 +8457,7 @@ function saveIntake(){
 }
 
 function renderIntake(){
-  const dateVal = document.getElementById('intake-date')?.value || new Date().toISOString().split('T')[0];
+  const dateVal = document.getElementById('intake-date')?.value || localDate();
   const sub = document.getElementById('intake-date-sub');
   if(sub) sub.textContent = new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
 
@@ -8702,7 +8712,7 @@ function saveRoutineItem(){
   renderRoutineList(period);
 }
 
-function _todayKey(){ return new Date().toISOString().split('T')[0]; }
+function _todayKey(){ return localDate(); }
 function isRoutineDoneToday(item){
   if(!item) return false;
   const t = _todayKey();
@@ -8718,7 +8728,7 @@ function toggleRoutineDone(period, id){
     const t = _todayKey();
     item.doneByDate[t] = !item.doneByDate[t];
     // Cleanup: keep only last 14 days of history
-    const cutoff = new Date(Date.now() - 14*24*60*60*1000).toISOString().split('T')[0];
+    const cutoff = localDate(new Date(Date.now() - 14*24*60*60*1000));
     Object.keys(item.doneByDate).forEach(k => { if(k < cutoff) delete item.doneByDate[k]; });
     if('vibrate' in navigator) navigator.vibrate(20);
   }
@@ -9079,7 +9089,7 @@ function deleteBehavior(id){
 // ── 4. TOILETING ──────────────────────────────────────────────
 function initToileting(){
   const dateEl = document.getElementById('toilet-date');
-  if(dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+  if(dateEl && !dateEl.value) dateEl.value = localDate();
   renderToileting();
 }
 
@@ -9114,7 +9124,7 @@ function quickLogDiscoveredAccident(){
 function saveToileting(){
   const type = document.getElementById('tl-type')?.value;
   if(!type){ toast('Please select a type', 'var(--held)'); return; }
-  const dateVal = document.getElementById('toilet-date')?.value || new Date().toISOString().split('T')[0];
+  const dateVal = document.getElementById('toilet-date')?.value || localDate();
   if(!D.toileting) D.toileting = [];
   const fields = {
     date:      dateVal,
@@ -9152,7 +9162,7 @@ function saveToileting(){
 }
 
 function renderToileting(){
-  const dateVal = document.getElementById('toilet-date')?.value || new Date().toISOString().split('T')[0];
+  const dateVal = document.getElementById('toilet-date')?.value || localDate();
   const sub = document.getElementById('toilet-date-sub');
   if(sub) sub.textContent = new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
 
@@ -9260,7 +9270,7 @@ function getLast7Days(){
   const days = [];
   for(let i=6; i>=0; i--){
     const d = new Date(); d.setDate(d.getDate()-i);
-    days.push(d.toISOString().split('T')[0]);
+    days.push(localDate(d));
   }
   return days;
 }
@@ -9667,7 +9677,7 @@ function renderReport(){
   if(!monthEl?.value) return;
   const [year, month] = monthEl.value.split('-').map(Number);
   const monthStart = monthEl.value + '-01';
-  const monthEnd   = new Date(year, month, 0).toISOString().split('T')[0];
+  const monthEnd   = localDate(new Date(year, month, 0));
   const inMonth    = dt => dt && dt >= monthStart && dt <= monthEnd;
 
   const patientId  = document.getElementById('report-patient')?.value || _globalPatientId || '';
@@ -10145,7 +10155,7 @@ function generateDoctorSummaryPDF(){
   var dLines = doc.splitTextToSize(disc, cw);
   dLines.forEach(function(l){ doc.text(l, ml, y); y+=4; });
 
-  var fname = patName.replace(/\s+/g,'-') + '-Doctor-Summary-' + new Date().toISOString().split('T')[0] + '.pdf';
+  var fname = patName.replace(/\s+/g,'-') + '-Doctor-Summary-' + localDate() + '.pdf';
   doc.save(fname);
   toast('📄 Doctor Summary PDF downloaded.','var(--given)');
 }
@@ -10282,7 +10292,7 @@ function buildReportEmailText(){
   const monthVal  = document.getElementById('report-month')?.value || new Date().toISOString().slice(0,7);
   const [yr,mo]   = monthVal.split('-').map(Number);
   const monthStart= monthVal + '-01';
-  const monthEnd  = new Date(yr, mo, 0).toISOString().split('T')[0];
+  const monthEnd  = localDate(new Date(yr, mo, 0));
   const inMonth   = d => d && d >= monthStart && d <= monthEnd;
   const patObj    = (D.patients||[]).find(p=>String(p.id)===String(patientId));
   const patName   = patObj ? patObj.fname+' '+patObj.lname : (D.settings?.name||'Care Recipient');
@@ -10546,8 +10556,8 @@ function shareReport(){
 // ═══════════════════════════════════════════════════════════════
 function buildSampleData(){
   const today    = new Date();
-  const todayISO = today.toISOString().split('T')[0];
-  const dStr = d => { const dt = new Date(today); dt.setDate(dt.getDate()+d); return dt.toISOString().split('T')[0]; };
+  const todayISO = localDate(today);
+  const dStr = d => { const dt = new Date(today); dt.setDate(dt.getDate()+d); return localDate(dt); };
   const dtAt = (dayOffset, hhmm) => {
     const dt = new Date(today); dt.setDate(dt.getDate() + dayOffset);
     const [h, m] = hhmm.split(':').map(Number); dt.setHours(h, m, 0, 0); return dt.toISOString();
@@ -10712,7 +10722,7 @@ function buildSampleData(){
   ];
   const settings = { name:'Jordan Rivera', agency:'', role:'Daughter', initials:'JR', supervisor:'Dr. Maria Sanchez · 702-555-0199' };
   // Sample vitals
-  const dStr2 = d => { const dt = new Date(); dt.setDate(dt.getDate()+d); return dt.toISOString().split('T')[0]; };
+  const dStr2 = d => { const dt = new Date(); dt.setDate(dt.getDate()+d); return localDate(dt); };
   const vitals = [
     { id:13001, date:todayISO, time:'07:10', patientId:pid, bpSys:138, bpDia:84, pulse:74, resp:16, temp:98.4, spo2:96, glucose:68,  weight:null, position:'Sitting',         notes:'Pre-breakfast. BG low — OJ given. Physician notified.', alerts:[{level:'high',msg:'Glucose 68 mg/dL — Hypoglycemia. Give 15g carbs, recheck in 15 min.'}] },
     { id:13002, date:todayISO, time:'09:30', patientId:pid, bpSys:132, bpDia:80, pulse:72, resp:16, temp:98.6, spo2:97, glucose:94,  weight:null, position:'Sitting',         notes:'Post-OJ recheck. BG normalized.', alerts:[] },
@@ -11267,7 +11277,7 @@ function checkFirstLaunch(){
   // Stamp first-install date once, never overwrite
   try {
     if(!localStorage.getItem('tendedPro_installDate')){
-      localStorage.setItem('tendedPro_installDate', new Date().toISOString().split('T')[0]);
+      localStorage.setItem('tendedPro_installDate', localDate());
     }
   } catch(e){}
   if(!welcomed && !D.patients.length){
@@ -11867,7 +11877,7 @@ function _qlOpenBathroom(){
   openModal('toilet-modal');
   // Pre-fill date, time, and default type so caregiver can save in one tap
   const d = document.getElementById('toilet-date');
-  if(d && !d.value) d.value = new Date().toISOString().split('T')[0];
+  if(d && !d.value) d.value = localDate();
   const t = document.getElementById('tl-time');
   if(t && !t.value) t.value = new Date().toTimeString().slice(0,5);
   const tp = document.getElementById('tl-type');
@@ -12031,7 +12041,7 @@ function renderResidentRows(){
   const active   = (D.patients||[]).filter(p => p.active !== false && p.status !== 'deceased' && p.status !== 'discharged');
   if(!active.length){ el.innerHTML = ''; return; }
 
-  const todayISO = new Date().toISOString().split('T')[0];
+  const todayISO = localDate();
   const nowMin   = new Date().getHours()*60 + new Date().getMinutes();
   const GRACE    = 30;
 
@@ -12110,7 +12120,7 @@ function renderCriticalAlerts(){
   const existing = document.getElementById('dash-critical-alerts');
   if(existing) existing.remove();
 
-  const todayISO = new Date().toISOString().split('T')[0];
+  const todayISO = localDate();
   const nowMin   = new Date().getHours() * 60 + new Date().getMinutes();
   const GRACE    = 30; // minutes grace period before marking overdue
 
@@ -12495,7 +12505,7 @@ function renderVitalsSparklines(entries){
 function initVitals(){
   populatePatientBars();
   const dateEl = document.getElementById('vitals-date');
-  if(dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+  if(dateEl && !dateEl.value) dateEl.value = localDate();
   populateVitalsPatients();
   renderVitals();
 }
@@ -12664,7 +12674,7 @@ function vitalFlag(val, type){
 }
 
 function renderVitals(){
-  const dateVal   = document.getElementById('vitals-date')?.value || new Date().toISOString().split('T')[0];
+  const dateVal   = document.getElementById('vitals-date')?.value || localDate();
   const patientId = document.getElementById('vitals-patient')?.value || '';
   const view      = document.getElementById('vitals-view')?.value || 'today';
   const sub       = document.getElementById('vitals-date-sub');
@@ -12672,16 +12682,16 @@ function renderVitals(){
   populateVitalsPatients();
 
   // Date filter
-  const today = new Date().toISOString().split('T')[0];
+  const today = localDate();
   let entries = (D.vitals||[]);
   if(patientId) entries = entries.filter(e => e.patientId == patientId);
   if(view === 'today')  entries = entries.filter(e => e.date === today);
   else if(view === 'week'){
     const ago = new Date(); ago.setDate(ago.getDate()-7);
-    entries = entries.filter(e => e.date >= ago.toISOString().split('T')[0]);
+    entries = entries.filter(e => e.date >= localDate(ago));
   } else if(view === 'month'){
     const ago = new Date(); ago.setDate(ago.getDate()-30);
-    entries = entries.filter(e => e.date >= ago.toISOString().split('T')[0]);
+    entries = entries.filter(e => e.date >= localDate(ago));
   }
 
   if(sub) sub.textContent = view === 'today'
@@ -12791,7 +12801,7 @@ function deleteVitals(id){
 function renderVitalsDashboardAlert(){
   const existing = document.getElementById('dash-vitals-alert');
   if(existing) existing.remove();
-  const today = new Date().toISOString().split('T')[0];
+  const today = localDate();
 
   // Collect alerts with patient names
   const alertEntries = (D.vitals||[])
@@ -12838,7 +12848,7 @@ const SHIFT_NOTES_KEY = 'tendedPro_shiftNotes';
 function saveShiftNotes(){
   const text    = document.getElementById('shift-notes-text')?.value || '';
   const dateEl  = document.getElementById('shift-notes-date');
-  const today   = new Date().toISOString().split('T')[0];
+  const today   = localDate();
   const dateVal = dateEl?.value || today;
   const notes = JSON.parse(localStorage.getItem(SHIFT_NOTES_KEY) || '{}');
   notes[dateVal] = text;
@@ -12854,7 +12864,7 @@ function saveShiftNotes(){
 }
 
 function loadShiftNotes(){
-  const today = new Date().toISOString().split('T')[0];
+  const today = localDate();
   const dateEl = document.getElementById('shift-notes-date');
   if(dateEl && !dateEl.value) dateEl.value = today;
   updateShiftNotesDateLabel(today);
@@ -12878,8 +12888,8 @@ function loadShiftNotesByDate(){
 function updateShiftNotesDateLabel(dateVal){
   const labelEl = document.getElementById('shift-notes-date-label');
   if(!labelEl) return;
-  const today     = new Date().toISOString().split('T')[0];
-  const yesterday = new Date(Date.now()-86400000).toISOString().split('T')[0];
+  const today     = localDate();
+  const yesterday = localDate(new Date(Date.now()-86400000));
   if(dateVal === today)         labelEl.textContent = '(Today)';
   else if(dateVal === yesterday) labelEl.textContent = '(Yesterday)';
   else if(dateVal)              labelEl.textContent = new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
@@ -12887,7 +12897,7 @@ function updateShiftNotesDateLabel(dateVal){
 }
 
 function getShiftNotesForToday(){
-  const today = new Date().toISOString().split('T')[0];
+  const today = localDate();
   const notes = JSON.parse(localStorage.getItem(SHIFT_NOTES_KEY) || '{}');
   return notes[today] || '';
 }
@@ -12906,7 +12916,7 @@ function clockIn(){
     clockIn:     now.toISOString(),
     clockInDisp: now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}),
     caregiver:   D.settings.name || 'Caregiver',
-    date:        now.toISOString().split('T')[0],
+    date:        localDate(now),
     clockOut:    null,
     fgActiveMs:  0,
     lastTickMs:  now.getTime()
@@ -13061,7 +13071,7 @@ function _checkStaleShiftOnLaunch(){
 // ═══════════════════════════════════════════════════════════════
 function initSundowning(){
   const dateEl = document.getElementById('sundowning-date');
-  if(dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+  if(dateEl && !dateEl.value) dateEl.value = localDate();
   // Auto show-all if data exists across multiple dates
   const dates = [...new Set((D.sundowning||[]).map(e => e.date))];
   if(dates.length > 1 && !_sdShowAll){
@@ -13259,7 +13269,7 @@ function renderSundowning(){
   populatePatientBars();
   const el = document.getElementById('sundowning-list');
   if(!el) return;
-  const dateVal = document.getElementById('sundowning-date')?.value || new Date().toISOString().split('T')[0];
+  const dateVal = document.getElementById('sundowning-date')?.value || localDate();
   const _sdPat = _globalPatientId;
   let allEntries = D.sundowning||[];
   if(_sdPat) allEntries = allEntries.filter(e => String(e.patientId) === String(_sdPat));
@@ -13339,7 +13349,7 @@ function deleteSundowning(id){
 // ═══════════════════════════════════════════════════════════════
 function initWandering(){
   const dateEl = document.getElementById('wd-date');
-  if(dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+  if(dateEl && !dateEl.value) dateEl.value = localDate();
   const timeEl = document.getElementById('wd-time');
   if(timeEl && !timeEl.value) timeEl.value = new Date().toTimeString().slice(0,5);
   renderWandering();
@@ -13612,7 +13622,7 @@ function deleteWandering(id){
 // ═══════════════════════════════════════════════════════════════
 function initMemoryCare(){
   const dateEl = document.getElementById('mc-date');
-  if(dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+  if(dateEl && !dateEl.value) dateEl.value = localDate();
   renderMemoryCare();
 }
 
@@ -13799,7 +13809,7 @@ function openPainADModal(editId){
   const now = new Date();
   const dateEl = document.getElementById('pa-date');
   const timeEl = document.getElementById('pa-time');
-  if(dateEl) dateEl.value = isEdit ? entry.date : now.toISOString().split('T')[0];
+  if(dateEl) dateEl.value = isEdit ? entry.date : localDate(now);
   if(timeEl) timeEl.value = isEdit ? entry.time : now.toTimeString().slice(0,5);
 
   // Populate patient dropdown
@@ -13986,7 +13996,7 @@ function renderPAINADLog(){
   if(!el) return;
 
   const patientId = document.getElementById('pain-patient')?.value || '';
-  const today     = new Date().toISOString().split('T')[0];
+  const today     = localDate();
   let entries = (D.painad||[]).filter(e => e.date === today);
   if(patientId) entries = entries.filter(e => String(e.patientId) === String(patientId));
   entries = entries.sort((a,b) => b.time.localeCompare(a.time));
@@ -14064,7 +14074,7 @@ function deletePAINAD(id){
 function initPain(){
   populatePatientBars();
   const dateEl = document.getElementById('pain-date');
-  if(dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+  if(dateEl && !dateEl.value) dateEl.value = localDate();
   populatePainPatients();
   buildPainPicker();
   renderPainLog();
@@ -14178,13 +14188,13 @@ function renderPainLog(){
   populatePainPatients();
   const patientId = document.getElementById('pain-patient')?.value || '';
   const view      = document.getElementById('pain-view')?.value || 'today';
-  const today     = new Date().toISOString().split('T')[0];
+  const today     = localDate();
   let entries     = (D.pain||[]);
   if(patientId) entries = entries.filter(e => e.patientId == patientId);
   if(view==='today')  entries = entries.filter(e => e.date === today);
   else if(view==='week'){
     const ago = new Date(); ago.setDate(ago.getDate()-7);
-    entries = entries.filter(e => e.date >= ago.toISOString().split('T')[0]);
+    entries = entries.filter(e => e.date >= localDate(ago));
   }
   const el = document.getElementById('pain-list');
   if(!el) return;
@@ -14814,7 +14824,7 @@ function itmCommitEpisode(key, stepsCompletedCount, totalSteps, escalated){
   // (e.g. deleted mid-episode, or from another device/tab).
   if(!itmPatientExists(patId)) return false;
   const now = new Date();
-  const dateStr = now.toISOString().split('T')[0];
+  const dateStr = localDate(now);
   const timeStr = now.toTimeString().slice(0,5);
   const stepsNote = 'Guided via Help Me Now — ' + stepsCompletedCount + '/' + totalSteps + ' steps completed';
   const escalationNote = escalated ? 'Marked as escalated via Help Me Now — confirm physician was contacted directly' : '';
@@ -16090,7 +16100,7 @@ function saveADLEdit(){
   var ta = document.getElementById('adl-edit-note');
   var note = ta ? ta.value.trim() : '';
   var dateEl = document.getElementById('adl-edit-date');
-  var date = (dateEl && dateEl.value) ? dateEl.value : new Date().toISOString().split('T')[0];
+  var date = (dateEl && dateEl.value) ? dateEl.value : localDate();
   var hist = getADLHistory();
   var idx = hist.findIndex(function(e){ return e.id === _adlEditId; });
   if(idx === -1){ toast('Entry not found.','var(--held)'); return; }
@@ -16176,7 +16186,7 @@ function openADLAssess(mode, spotKey){
       ).join('')
     + '<div style="margin-bottom:14px">'
     + '<label style="font-size:.74rem;font-weight:700;color:var(--slate-mid);display:block;margin-bottom:4px">Assessment Date</label>'
-    + '<input type="date" id="adl-assess-date" value="' + new Date().toISOString().split('T')[0] + '"'
+    + '<input type="date" id="adl-assess-date" value="' + localDate() + '"'
     + ' style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:.88rem;background:#fff;color:var(--navy);box-sizing:border-box">'
     + '</div>'
     + '<button class="adl-assess-save" ontouchstart="if(document.activeElement)document.activeElement.blur()" onclick="saveADLAssess()">💾 Save Assessment</button>'
@@ -16238,7 +16248,7 @@ function saveADLAssess(){
     : ADL_DEFS;
 
   var dateEl = document.getElementById('adl-assess-date');
-  const today = (dateEl && dateEl.value) ? dateEl.value : new Date().toISOString().split('T')[0];
+  const today = (dateEl && dateEl.value) ? dateEl.value : localDate();
   const hist  = getADLHistory();
   let saved   = 0;
 
