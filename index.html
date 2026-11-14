@@ -1617,6 +1617,7 @@ body {
   <div class="nav-group">
     <div class="nav-label">Health &amp; Care Notes</div>
     <button id="snav-vitals" class="nav-btn" onclick="navTo('vitals',this)"><span class="ni">🩺</span> Vital Signs <span class="nav-badge" id="nb-vitals"></span></button>
+    <button id="snav-sleep" class="nav-btn" onclick="navTo('sleep',this)"><span class="ni">😴</span> Sleep Log</button>
     <button class="nav-btn" onclick="navTo('pain',this)"><span class="ni">😣</span> Pain Scale <span class="nav-badge" id="nb-pain"></span></button>
     <button class="nav-btn" onclick="navTo('careplan',this)"><span class="ni">📌</span> Care Preferences</button>
     <button class="nav-btn" onclick="navTo('comfortcare',this)"><span class="ni">🕊️</span> Comfort Care Log</button>
@@ -3094,15 +3095,6 @@ body {
     <div id="vitals-list"></div>
   </div>
 
-  <!-- Sleep log -->
-  <div class="card" style="margin-top:12px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <div class="card-title" style="margin:0">😴 Sleep Log</div>
-      <button class="btn btn-teal btn-sm" onclick="openModal('sleep-modal')">+ Log Sleep</button>
-    </div>
-    <div id="sleep-list"></div>
-  </div>
-
   <!-- Reference ranges card -->
   <div class="card" style="margin-top:4px">
     <div class="card-title">📖 Normal Reference Ranges (Adult)</div>
@@ -3148,6 +3140,44 @@ body {
       </div>
     </div>
     <div style="margin-top:10px;font-size:.72rem;color:var(--slate-light);line-height:1.5">⚕️ Reference ranges are general guidelines for adults. Always follow your care recipient's physician-ordered target ranges, which may differ. Report out-of-range values to your physician immediately.</div>
+  </div>
+</div>
+
+
+<!-- ═══ SLEEP LOG ════════════════════════════════════════════ -->
+<div id="section-sleep" class="section">
+  <div class="ph">
+    <div class="ph-title">😴 Sleep Log</div>
+    <div class="ph-sub">Track night sleep and daytime naps</div>
+  </div>
+
+  <!-- Patient + View filter -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="form-row" style="margin:0">
+      <div class="fg" style="margin:0">
+        <label>Care Recipient</label>
+        <select id="sleep-patient-filter" onchange="renderSleep()" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+          <option value="">— All recipients —</option>
+        </select>
+      </div>
+      <div class="fg" style="margin:0">
+        <label>View</label>
+        <select id="sleep-view-filter" onchange="renderSleep()" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+          <option value="week">Last 7 days</option>
+          <option value="today">Today</option>
+          <option value="month">Last 30 days</option>
+          <option value="all">All entries</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="card-title" style="margin:0">Sleep Entries</div>
+      <button class="btn btn-teal btn-sm" onclick="openModal('sleep-modal')">+ Log Sleep</button>
+    </div>
+    <div id="sleep-list"></div>
   </div>
 </div>
 
@@ -4686,7 +4716,8 @@ function navTo(id, btn){
     itm:        renderITM,
     journey:    renderJourney,
     legalfin:   renderLegalFin,
-    adl:        renderADL
+    adl:        renderADL,
+    sleep:      initSleepSection
   };
   if(renders[id]) renders[id]();
 }
@@ -12936,6 +12967,22 @@ function deleteVitals(id){
 let _editSleepId = null;
 let _napCount    = 0;
 
+function initSleepSection(){
+  // Populate the section-level patient filter
+  const sel = document.getElementById('sleep-patient-filter');
+  if(sel){
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">— All recipients —</option>';
+    activePats().forEach(p => {
+      const o = document.createElement('option');
+      o.value = p.id; o.textContent = `${p.fname} ${p.lname}`;
+      sel.appendChild(o);
+    });
+    if(cur) sel.value = cur;
+  }
+  renderSleep();
+}
+
 function populateSleepPatients(){
   const sel = document.getElementById('slp-patient');
   if(!sel) return;
@@ -13106,13 +13153,25 @@ function renderSleep(){
   const listEl = document.getElementById('sleep-list');
   if(!listEl) return;
 
-  const patientId = document.getElementById('vitals-patient')?.value || '';
-  const view      = document.getElementById('vitals-view')?.value    || 'today';
+  // Use dedicated sleep filters if on sleep section, otherwise fall back to vitals filters
+  const patientId = document.getElementById('sleep-patient-filter')?.value ||
+                    document.getElementById('vitals-patient')?.value || '';
+  const view      = document.getElementById('sleep-view-filter')?.value ||
+                    document.getElementById('vitals-view')?.value || 'week';
   const today     = localDate();
 
   let entries = (D.sleep||[]);
-  if(patientId) entries = entries.filter(e => e.patientId == patientId);
-  if(view === 'today') entries = entries.filter(e => e.date === today);
+  // Filter by patient — entries with no patientId always show regardless of selector
+  if(patientId) entries = entries.filter(e => !e.patientId || e.patientId == patientId);
+  // Date filter — when "today" shows nothing, expand to last 7 days automatically
+  if(view === 'today'){
+    const todayEntries = entries.filter(e => e.date === today);
+    if(todayEntries.length){ entries = todayEntries; }
+    else {
+      const ago = new Date(); ago.setDate(ago.getDate()-7);
+      entries = entries.filter(e => e.date >= localDate(ago));
+    }
+  }
   else if(view === 'week'){
     const ago = new Date(); ago.setDate(ago.getDate()-7);
     entries = entries.filter(e => e.date >= localDate(ago));
