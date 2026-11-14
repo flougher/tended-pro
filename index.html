@@ -1424,7 +1424,7 @@ body {
     <div style="font-size:.92rem;color:var(--slate-mid);line-height:1.7;margin-bottom:10px">Daily care tracking for <strong style="color:var(--navy)">family caregivers.</strong> No training needed.</div>
     <div style="background:#F0FDF4;border:1.5px solid #A7F3D0;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:.84rem;color:#065F46;line-height:1.6">💚 <strong>If you can send a text, you can use this app.</strong> Use what helps. Ignore the rest. Most caregivers start with the medication log and nothing else.</div>
     <div style="font-size:.84rem;color:var(--slate-light);line-height:1.6;margin-bottom:6px">Medications · Care Notes · Vitals · Wound Care · Behavior Log · <strong style="color:#7C3AED">Memory Care</strong> · Monthly Summary</div>
-    <div style="font-size:.8rem;color:var(--slate-light);line-height:1.6;margin-bottom:16px">Everything stays on your phone. Nothing is shared. No account required.</div>
+    <div style="font-size:.8rem;color:var(--slate-light);line-height:1.6;margin-bottom:16px">Everything you enter stays on your phone — your loved one's information is never sent anywhere. No account required.</div>
     <!-- Name field — optional, first name only -->
     <div style="background:var(--off-white);border-radius:12px;padding:16px;margin-bottom:20px;text-align:left">
       <label for="welcome-name" style="display:block;font-size:.8rem;font-weight:600;color:var(--slate-mid);margin-bottom:6px">Your name <span style="font-weight:400;color:var(--slate-light)">(optional)</span></label>
@@ -1917,6 +1917,7 @@ body {
         </div>
       </div>
     </div>
+    <div id="mar-bulk-btn" style="margin-bottom:12px"></div>
     <div id="mar-table" style="margin-bottom:16px"></div>
   </div>
 
@@ -6248,6 +6249,34 @@ function renderMAR(){
   const statusLabel = { given:'✓ Given', refused:'✗ Refused', held:'⏸ Held', pending:'○ Pending' };
   const nextStatus  = { given:'refused', refused:'held', held:'pending', pending:'given' };
 
+  // ── Bulk-given button ───────────────────────────────────────────────────
+  const bulkEl = document.getElementById('mar-bulk-btn');
+  if(bulkEl){
+    const isToday = dateVal === new Date().toISOString().split('T')[0];
+    if(!isToday || !patMeds.length){
+      bulkEl.innerHTML = '';
+    } else {
+      const winLabel = { morning:'🌅 Morning', afternoon:'☀️ Afternoon', evening:'🌙 Evening' };
+      // Find earliest window that still has pending meds (handles late caregivers)
+      const countPending = w => sorted.filter(m => {
+        const key = dateVal + '|' + (patientId||'default') + '|' + m.id;
+        return (D.mar[key]?.status||'pending') === 'pending' && getMedWindow(m) === w;
+      }).length;
+      const win = ['morning','afternoon','evening'].find(w => countPending(w) > 0);
+      const pendingCount = win ? countPending(win) : 0;
+      bulkEl.innerHTML = win ? `
+        <div>
+          <button class="btn btn-teal" style="width:100%;justify-content:center;font-size:.88rem;padding:11px 16px"
+            onclick="markAllGiven('${win}')">
+            ✓ Mark All ${winLabel[win]} Meds Given
+          </button>
+          <div style="text-align:center;font-size:.72rem;color:var(--slate-light);margin-top:5px">
+            Marks ${pendingCount} pending medication${pendingCount>1?'s':''} as given &nbsp;·&nbsp; Does not change Refused or Held
+          </div>
+        </div>` : '';
+    }
+  }
+
   table.innerHTML = `
     <div class="mar-wrap">
       <div class="mar-head">
@@ -6364,6 +6393,58 @@ function cycleMAR(key, newStatus){
   if(newStatus === 'refused'){
     openRefusalModal(key);
   }
+}
+
+// ── MAR time-window helper ──────────────────────────────────────────────────
+function getMedWindow(m){
+  if(!m.time) return 'morning';          // no scheduled time → treat as morning
+  const h = parseInt(m.time.split(':')[0], 10);
+  if(h < 12) return 'morning';
+  if(h < 18) return 'afternoon';
+  return 'evening';
+}
+
+// ── Mark all pending meds in current time window as Given ───────────────────
+function markAllGiven(win){
+  const dateVal   = document.getElementById('mar-date')?.value || new Date().toISOString().split('T')[0];
+  const today     = new Date().toISOString().split('T')[0];
+  if(dateVal !== today) return;          // guard: never bulk-log a past date
+
+  const patientId = document.getElementById('mar-patient')?.value || _globalPatientId || '';
+  const who       = D.settings.initials || document.getElementById('mar-initials')?.value || '(unknown)';
+  const now       = new Date();
+  const timeGiven = now.toTimeString().slice(0,5);
+
+  const patMeds = (patientId
+    ? (D.meds||[]).filter(m => String(m.patientId) === String(patientId))
+    : (D.meds||[])).filter(m => !m.discontinued);
+
+  const toMark = patMeds.filter(m => {
+    const key = dateVal + '|' + (patientId||'default') + '|' + m.id;
+    const rec = D.mar[key] || {};
+    return (rec.status||'pending') === 'pending' && getMedWindow(m) === win;
+  });
+
+  if(!toMark.length){
+    toast('No pending medications in this time window', 'var(--slate-mid)');
+    return;
+  }
+
+  toMark.forEach(m => {
+    const key = dateVal + '|' + (patientId||'default') + '|' + m.id;
+    if(!D.mar[key]) D.mar[key] = {};
+    const rec = D.mar[key];
+    if(!Array.isArray(rec.history)) rec.history = [];
+    rec.history.push({ at: now.toISOString(), who: who, from: rec.status||'pending', to: 'given' });
+    rec.status   = 'given';
+    rec.initials = who;
+    if(!rec.timeGiven) rec.timeGiven = timeGiven;
+  });
+
+  if('vibrate' in navigator) navigator.vibrate(15);
+  save();
+  renderMAR();
+  toast(`✅ ${toMark.length} medication${toMark.length>1?'s':''} marked given`, 'var(--given)');
 }
 
 function openRefusalModal(key){
