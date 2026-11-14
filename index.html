@@ -14765,13 +14765,23 @@ function renderTriggerReminderCard(){
 // ═══════════════════════════════════════════════════════════════
 // UX-004 — sidebar groups collapsible; state persisted in localStorage
 // Groups always expanded for new users (no saved state): Overview, Patient Care, Safety, Account
-const _NAV_DEFAULT_OPEN = ['Overview', 'Care Recipients', 'Safety', 'Account'];
+const _NAV_DEFAULT_OPEN = ['Overview', 'Care Recipients', 'Health', 'Daily Behaviors', 'Safety', 'Account'];
 
 function _wireSidebarCollapse(){
   const labels = document.querySelectorAll('.nav-group .nav-label');
   const hasSavedState = !!localStorage.getItem('tendedPro_sidebarCollapsed');
   let collapsed = [];
   try { collapsed = JSON.parse(localStorage.getItem('tendedPro_sidebarCollapsed') || '[]'); } catch(e){}
+
+  // Migration: force-open Health & Care Notes and Daily Behaviors if they were collapsed
+  if(hasSavedState){
+    const forceOpen = ['Health & Care Notes', 'Daily Behaviors'];
+    let migrated = false;
+    forceOpen.forEach(key => {
+      if(collapsed.includes(key)){ collapsed = collapsed.filter(x => x !== key); migrated = true; }
+    });
+    if(migrated) try { localStorage.setItem('tendedPro_sidebarCollapsed', JSON.stringify(collapsed)); } catch(e){}
+  }
 
   labels.forEach((lbl, idx) => {
     const groupKey = (lbl.textContent || ('group-'+idx)).trim();
