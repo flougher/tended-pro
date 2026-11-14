@@ -3062,14 +3062,6 @@ body {
       <div class="stat-icon" style="background:rgba(11,122,110,.1)">🫁</div>
       <div><div class="stat-val" id="vs-spo2">—</div><div class="stat-lbl">SpO2 %</div></div>
     </div>
-    <div class="stat-card" onclick="navTo('vitals')">
-      <div class="stat-icon" style="background:rgba(90,60,140,.08)">🌙</div>
-      <div><div class="stat-val" id="vs-sleep-night">—</div><div class="stat-lbl">Night Sleep</div></div>
-    </div>
-    <div class="stat-card" onclick="navTo('vitals')">
-      <div class="stat-icon" style="background:rgba(90,60,140,.08)">💤</div>
-      <div><div class="stat-val" id="vs-sleep-nap">—</div><div class="stat-lbl">Daytime Nap</div></div>
-    </div>
   </div>
 
   <!-- Vitals sparkline trends -->
@@ -3100,6 +3092,15 @@ body {
   <div class="card">
     <div class="card-title" id="vitals-log-title">📋 Vitals Log</div>
     <div id="vitals-list"></div>
+  </div>
+
+  <!-- Sleep log -->
+  <div class="card" style="margin-top:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="card-title" style="margin:0">😴 Sleep Log</div>
+      <button class="btn btn-teal btn-sm" onclick="openModal('sleep-modal')">+ Log Sleep</button>
+    </div>
+    <div id="sleep-list"></div>
   </div>
 
   <!-- Reference ranges card -->
@@ -4440,7 +4441,7 @@ const GATED_MODALS = new Set([
   'incident-modal','behavior-modal','toilet-modal','vitals-modal','pain-modal',
   'sundowning-modal','wandering-modal','memorycare-modal','wound-modal',
   'intake-modal','comm-modal','trigger-modal','cred-modal','billing-modal',
-  'med-modal','routine-modal','refusal-modal'
+  'med-modal','routine-modal','refusal-modal','sleep-modal'
 ]);
 function openModal(id){
   const el = document.getElementById(id);
@@ -4481,6 +4482,19 @@ function openModal(id){
     if(vd && !vd.value) vd.value = localDate();
     const vt = document.getElementById('vm-time');
     if(vt && !vt.value) vt.value = new Date().toTimeString().slice(0,5);
+  }
+  if(id === 'sleep-modal'){
+    populateSleepPatients();
+    const sd = document.getElementById('slp-date');
+    if(sd && !sd.value) sd.value = localDate();
+    // Init nap list if empty
+    const napDiv = document.getElementById('slp-naps');
+    if(napDiv && napDiv.children.length === 0) addNapRow();
+    // Wire up night calc
+    ['slp-bed','slp-wake'].forEach(eid => {
+      const el = document.getElementById(eid);
+      if(el) el.addEventListener('change', updateNightCalc);
+    });
   }
 }
 
@@ -4574,6 +4588,7 @@ function closeModal(id){
     'behavior-modal':   () => { _editBehaviorId   = null; const t=document.querySelector('#behavior-modal .modal-title');   if(t) t.textContent='Log a Behavior Episode'; },
     'toilet-modal':     () => { _editToiletId      = null; const t=document.querySelector('#toilet-modal .modal-title');     if(t) t.textContent='Log Toileting'; },
     'vitals-modal':     () => { _editVitalsId      = null; const t=document.querySelector('#vitals-modal .modal-title');     if(t) t.textContent='Log Vital Signs'; const b=document.getElementById('vm-save-btn'); if(b) b.textContent='Save Vitals'; },
+    'sleep-modal':      () => { _editSleepId       = null; const t=document.querySelector('#sleep-modal .modal-title');      if(t) t.textContent='Log Sleep'; const b=document.getElementById('slp-save-btn'); if(b) b.textContent='Save Sleep Log'; },
     'sundowning-modal': () => { _editSundownId     = null; const t=document.querySelector('#sundowning-modal .modal-title'); if(t) t.textContent='🌅 Log Sundowning Episode'; const b=document.querySelector('#sundowning-modal .btn-teal'); if(b) b.textContent='Save Episode'; },
     'wandering-modal':  () => { _editWanderingId   = null; const t=document.querySelector('#wandering-modal .modal-title');  if(t) t.textContent='🚶 Log Wandering / Exit Event'; const b=document.querySelector('#wandering-modal .btn-teal'); if(b) b.textContent='Save Event'; },
     'memorycare-modal': () => { _editMemoryCareId  = null; const t=document.querySelector('#memorycare-modal .modal-title'); if(t) t.textContent='💬 Add Memory Care Note'; const b=document.querySelector('#memorycare-modal .btn-teal'); if(b) b.textContent='Save Note'; },
@@ -6755,33 +6770,62 @@ function printMAR(){
         <option>Post-medication</option>
       </select>
     </div>
-    <!-- Sleep tracking -->
-    <div style="border-top:1.5px solid var(--border);margin:12px 0 10px;padding-top:12px">
-      <div style="font-size:.78rem;font-weight:700;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">😴 Sleep (optional)</div>
-      <div class="form-row">
-        <div class="fg"><label>🌙 Last Night's Sleep (hrs)</label>
-          <input type="number" id="vm-sleep-night" placeholder="e.g. 6.5" step="0.5" min="0" max="16">
-        </div>
-        <div class="fg"><label>💤 Daytime Naps (hrs)</label>
-          <input type="number" id="vm-sleep-nap" placeholder="e.g. 1.5" step="0.5" min="0" max="8">
-        </div>
-      </div>
-      <div class="fg"><label>Sleep Quality</label>
-        <select id="vm-sleep-quality" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
-          <option value="">— Not assessed —</option>
-          <option>Good</option>
-          <option>Fair</option>
-          <option>Poor</option>
-          <option>Restless</option>
-        </select>
-      </div>
-    </div>
     <div class="fg" style="margin-bottom:0"><label>Notes / Alerts</label>
       <input id="vm-notes" placeholder="e.g. They reported dizziness, physician notified…">
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('vitals-modal')">Cancel</button>
       <button class="btn btn-teal" id="vm-save" onclick="saveVitals()">Save Vitals</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLEEP MODAL ══════════════════════════════════════════ -->
+<div class="overlay" id="sleep-modal">
+  <div class="modal">
+    <div class="modal-title" id="sleep-modal-title">Log Sleep</div>
+    <!-- Date + Patient on same row -->
+    <div class="form-row">
+      <div class="fg"><label>Date *</label><input type="date" id="slp-date"></div>
+      <div class="fg"><label>Care Recipient</label>
+        <select id="slp-patient" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+          <option value="">— Select —</option>
+        </select>
+      </div>
+    </div>
+    <!-- Night sleep -->
+    <div style="background:var(--bg-soft,#f4f7fb);border-radius:var(--r);padding:12px;margin-bottom:12px">
+      <div style="font-size:.78rem;font-weight:700;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">🌙 Night Sleep (previous night)</div>
+      <div class="form-row" style="margin-bottom:4px">
+        <div class="fg" style="margin-bottom:0"><label>Bedtime</label><input type="time" id="slp-bed"></div>
+        <div class="fg" style="margin-bottom:0"><label>Wake Time</label><input type="time" id="slp-wake"></div>
+      </div>
+      <div id="slp-night-calc" style="font-size:.8rem;color:var(--teal);font-weight:600;margin-top:6px;min-height:18px"></div>
+    </div>
+    <!-- Naps -->
+    <div style="background:var(--bg-soft,#f4f7fb);border-radius:var(--r);padding:12px;margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:.78rem;font-weight:700;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.07em">💤 Daytime Naps</div>
+        <button type="button" class="btn btn-secondary btn-sm" style="font-size:.74rem;padding:4px 10px" onclick="addNapRow()">+ Add Nap</button>
+      </div>
+      <div id="slp-naps"></div>
+    </div>
+    <!-- Quality & notes -->
+    <div class="fg"><label>Sleep Quality</label>
+      <select id="slp-quality" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+        <option value="">— Not assessed —</option>
+        <option>Good</option>
+        <option>Fair</option>
+        <option>Poor</option>
+        <option>Restless</option>
+      </select>
+    </div>
+    <div class="fg" style="margin-bottom:0"><label>Notes</label>
+      <input id="slp-notes" placeholder="e.g. Woke twice, agitated around 3am…">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('sleep-modal')">Cancel</button>
+      <button class="btn btn-teal" id="slp-save-btn" onclick="saveSleep()">Save Sleep Log</button>
     </div>
   </div>
 </div>
@@ -10154,47 +10198,63 @@ function generateDoctorSummaryPDF(){
     doc.text('Red = out-of-range value  (BP ≥160/90 or <90 sys · Pulse >120 or <50 · Glucose >180 or <70 · SpO2 <94%)', ml, y);
     y+=5;
 
-    // Sleep summary (entries that have any sleep data)
-    var sleepEntries = vitalsPdf.filter(function(v){ return v.sleepNight != null || v.sleepNap != null; });
-    if(sleepEntries.length){
-      checkPage(10);
-      txt('SLEEP LOG  (from vitals entries above)', 9, true, [12,27,51]); y+=1; hline(200);
-      var sCols = [
-        { label:'Date',       x:0,   w:30 },
-        { label:'Night Sleep',x:32,  w:28 },
-        { label:'Daytime Nap',x:62,  w:28 },
-        { label:'Quality',    x:92,  w:28 },
-        { label:'Notes',      x:122, w:78 }
-      ];
-      doc.setFillColor(12,27,51);
-      doc.rect(ml, y-3.5, cw, 7, 'F');
-      doc.setFontSize(7.5); doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255);
-      sCols.forEach(function(c){ doc.text(c.label, ml+c.x+1, y); });
-      y+=4;
-      sleepEntries.forEach(function(v, ri){
-        checkPage(7);
-        if(ri%2===0){ doc.setFillColor(248,250,252); doc.rect(ml, y-3, cw, 7, 'F'); }
-        var dStr2 = v.date ? new Date(v.date+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'}) : '—';
-        doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(50,50,50);
-        // flag if night sleep < 4hrs (possible concern)
-        var nightFlag = v.sleepNight != null && v.sleepNight < 4;
-        if(nightFlag){ doc.setTextColor(192,57,43); doc.setFont('helvetica','bold'); }
-        doc.text(dStr2, ml+sCols[0].x+1, y);
-        doc.text(v.sleepNight != null ? v.sleepNight+'h' : '—', ml+sCols[1].x+1, y);
-        doc.setTextColor(50,50,50); doc.setFont('helvetica','normal');
-        doc.text(v.sleepNap != null ? v.sleepNap+'h' : '—', ml+sCols[2].x+1, y);
-        doc.text(v.sleepQuality || '—', ml+sCols[3].x+1, y);
-        if(v.notes){ doc.setTextColor(100,110,125); doc.setFont('helvetica','italic'); doc.setFontSize(7);
-          var ns = v.notes.length>42 ? v.notes.substring(0,40)+'…' : v.notes;
-          doc.text(ns, ml+sCols[4].x+1, y);
-        }
-        y+=4.5;
-      });
-      y+=2;
-      doc.setFontSize(7); doc.setFont('helvetica','italic'); doc.setTextColor(192,57,43);
-      doc.text('Red = night sleep under 4 hours', ml, y);
-      y+=5;
+  }
+  y+=2;
+
+  // Sleep Log
+  var sleepPdf = (D.sleep||[])
+    .filter(function(e){ return !pid || String(e.patientId)===String(pid); })
+    .sort(function(a,b){ return a.date.localeCompare(b.date); })
+    .slice(-7);
+
+  if(sleepPdf.length){
+    function fmtPdfTime(t){
+      if(!t) return '—';
+      var parts = t.split(':'); var h = parseInt(parts[0],10); var m = parts[1];
+      return (h%12||12)+':'+m+(h<12?'am':'pm');
     }
+    checkPage(20);
+    txt('SLEEP LOG  (Last '+sleepPdf.length+' entr'+(sleepPdf.length===1?'y':'ies')+')', 10, true, [12,27,51]); y+=1; hline(200);
+    var slpCols = [
+      {label:'Date',      x:0  },
+      {label:'Bedtime',   x:26 },
+      {label:'Wake',      x:48 },
+      {label:'Night Hrs', x:70 },
+      {label:'Naps',      x:92 },
+      {label:'Nap Hrs',   x:108},
+      {label:'Quality',   x:130},
+      {label:'Notes',     x:154}
+    ];
+    doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(44,62,80);
+    slpCols.forEach(function(c){ doc.text(c.label, ml+c.x, y); });
+    y+=1; hline(200); y+=1;
+    doc.setFont('helvetica','normal'); doc.setFontSize(7);
+    sleepPdf.forEach(function(e){
+      checkPage(6);
+      var totalNapHrs = 0;
+      (e.naps||[]).forEach(function(n){ if(n.hours) totalNapHrs += n.hours; });
+      totalNapHrs = totalNapHrs ? Math.round(totalNapHrs*10)/10 : 0;
+      var nightFlag = e.nightHours && e.nightHours < 4;
+      doc.setTextColor(nightFlag ? 192 : 44, nightFlag ? 57 : 62, nightFlag ? 43 : 80);
+      doc.text(e.date||'', ml+slpCols[0].x, y);
+      doc.setTextColor(44,62,80);
+      doc.text(fmtPdfTime(e.bedtime),  ml+slpCols[1].x, y);
+      doc.text(fmtPdfTime(e.wakeTime), ml+slpCols[2].x, y);
+      var nhTxt = e.nightHours != null ? String(e.nightHours)+'h' : '—';
+      doc.setTextColor(nightFlag ? 192 : 44, nightFlag ? 57 : 62, nightFlag ? 43 : 80);
+      doc.text(nhTxt, ml+slpCols[3].x, y);
+      doc.setTextColor(44,62,80);
+      doc.text(String((e.naps||[]).length||0), ml+slpCols[4].x, y);
+      doc.text(totalNapHrs ? totalNapHrs+'h' : '—', ml+slpCols[5].x, y);
+      doc.text(e.quality||'—', ml+slpCols[6].x, y);
+      var notesTxt = (e.notes||'').substring(0,38);
+      doc.text(notesTxt, ml+slpCols[7].x, y);
+      y+=4;
+    });
+    y+=1;
+    doc.setFontSize(7); doc.setFont('helvetica','italic'); doc.setTextColor(192,57,43);
+    doc.text('Red = night sleep under 4 hours', ml, y);
+    y+=5;
   }
   y+=2;
 
@@ -12630,11 +12690,8 @@ function saveVitals(){
     spo2:     document.getElementById('vm-spo2')?.value     ? parseInt(document.getElementById('vm-spo2').value)    : null,
     glucose:  document.getElementById('vm-glucose')?.value  ? parseInt(document.getElementById('vm-glucose').value) : null,
     weight:   document.getElementById('vm-weight')?.value   ? parseFloat(document.getElementById('vm-weight').value): null,
-    position:     document.getElementById('vm-position')?.value || '',
-    notes:        document.getElementById('vm-notes')?.value.trim() || '',
-    sleepNight:   document.getElementById('vm-sleep-night')?.value  ? parseFloat(document.getElementById('vm-sleep-night').value)  : null,
-    sleepNap:     document.getElementById('vm-sleep-nap')?.value    ? parseFloat(document.getElementById('vm-sleep-nap').value)    : null,
-    sleepQuality: document.getElementById('vm-sleep-quality')?.value || '',
+    position: document.getElementById('vm-position')?.value || '',
+    notes:    document.getElementById('vm-notes')?.value.trim() || '',
     alerts:   []
   };
 
@@ -12675,11 +12732,10 @@ function saveVitals(){
   }
   D.vitals.sort((a,b) => (b.date+b.time).localeCompare(a.date+a.time));
   save(); closeModal('vitals-modal');
-  ['vm-bp-sys','vm-bp-dia','vm-pulse','vm-resp','vm-temp','vm-spo2','vm-glucose','vm-weight','vm-notes','vm-sleep-night','vm-sleep-nap'].forEach(id => {
+  ['vm-bp-sys','vm-bp-dia','vm-pulse','vm-resp','vm-temp','vm-spo2','vm-glucose','vm-weight','vm-notes'].forEach(id => {
     const el = document.getElementById(id); if(el) el.value = '';
   });
   document.getElementById('vm-position').value = '';
-  const sqEl = document.getElementById('vm-sleep-quality'); if(sqEl) sqEl.value = '';
   renderVitals();
   renderVitalsDashboardAlert();
 }
@@ -12793,14 +12849,8 @@ function renderVitals(){
     if(latest.pulse)  document.getElementById('vs-pulse').setAttribute('style', vitalFlag(latest.pulse,'pulse')+';font-family:var(--font-mono);font-size:1.4rem;font-weight:600;line-height:1');
     if(latest.temp)   document.getElementById('vs-temp').setAttribute('style',  vitalFlag(latest.temp,'temp')+';font-family:var(--font-mono);font-size:1.4rem;font-weight:600;line-height:1');
     if(latest.spo2)   document.getElementById('vs-spo2').setAttribute('style',  vitalFlag(latest.spo2,'spo2')+';font-family:var(--font-mono);font-size:1.4rem;font-weight:600;line-height:1');
-    // Sleep stat cards — use most recent entry that has sleep data
-    const latestSleep = entries.find(e => e.sleepNight != null || e.sleepNap != null);
-    const nsEl = document.getElementById('vs-sleep-night');
-    const napEl = document.getElementById('vs-sleep-nap');
-    if(nsEl)  nsEl.textContent  = latestSleep?.sleepNight != null ? latestSleep.sleepNight+'h' : '—';
-    if(napEl) napEl.textContent = latestSleep?.sleepNap   != null ? latestSleep.sleepNap+'h'   : '—';
   } else {
-    ['vs-bp','vs-pulse','vs-temp','vs-spo2','vs-sleep-night','vs-sleep-nap'].forEach(id => {
+    ['vs-bp','vs-pulse','vs-temp','vs-spo2'].forEach(id => {
       const el = document.getElementById(id); if(el){ el.textContent='—'; el.removeAttribute('style'); }
     });
   }
@@ -12808,6 +12858,7 @@ function renderVitals(){
   // Render sparkline trends (use all entries for this patient, not date-filtered)
   var allPatientEntries = (D.vitals||[]).filter(function(e){ return !patientId || e.patientId == patientId; });
   renderVitalsSparklines(allPatientEntries);
+  renderSleep();
 
   // Render log
   const listEl = document.getElementById('vitals-list');
@@ -12840,10 +12891,7 @@ function renderVitals(){
         ${e.spo2    ? `<div style="background:var(--off-white);border-radius:6px;padding:5px 10px;text-align:center"><div style="font-size:.64rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em">SpO2</div><div style="font-family:var(--font-mono);font-size:.88rem;font-weight:600;${vitalFlag(e.spo2,'spo2')}">${e.spo2}%</div></div>` : ''}
         ${e.glucose ? `<div style="background:var(--off-white);border-radius:6px;padding:5px 10px;text-align:center"><div style="font-size:.64rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em">Glucose</div><div style="font-family:var(--font-mono);font-size:.88rem;font-weight:600;${vitalFlag(e.glucose,'glucose')}">${e.glucose}</div></div>` : ''}
         ${e.resp    ? `<div style="background:var(--off-white);border-radius:6px;padding:5px 10px;text-align:center"><div style="font-size:.64rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em">Resp</div><div style="font-family:var(--font-mono);font-size:.88rem;font-weight:600">${e.resp}/min</div></div>` : ''}
-        ${e.weight      ? `<div style="background:var(--off-white);border-radius:6px;padding:5px 10px;text-align:center"><div style="font-size:.64rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em">Weight</div><div style="font-family:var(--font-mono);font-size:.88rem;font-weight:600">${e.weight} lbs</div></div>` : ''}
-        ${e.sleepNight != null ? `<div style="background:rgba(90,60,140,.07);border-radius:6px;padding:5px 10px;text-align:center"><div style="font-size:.64rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em">🌙 Night</div><div style="font-family:var(--font-mono);font-size:.88rem;font-weight:600">${e.sleepNight}h</div></div>` : ''}
-        ${e.sleepNap   != null ? `<div style="background:rgba(90,60,140,.07);border-radius:6px;padding:5px 10px;text-align:center"><div style="font-size:.64rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em">💤 Nap</div><div style="font-family:var(--font-mono);font-size:.88rem;font-weight:600">${e.sleepNap}h</div></div>` : ''}
-        ${e.sleepQuality ? `<div style="background:rgba(90,60,140,.07);border-radius:6px;padding:5px 10px;text-align:center"><div style="font-size:.64rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em">Quality</div><div style="font-size:.82rem;font-weight:600">${e.sleepQuality}</div></div>` : ''}
+        ${e.weight  ? `<div style="background:var(--off-white);border-radius:6px;padding:5px 10px;text-align:center"><div style="font-size:.64rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em">Weight</div><div style="font-family:var(--font-mono);font-size:.88rem;font-weight:600">${e.weight} lbs</div></div>` : ''}
       </div>
       ${hasAlerts ? e.alerts.map(a => `<div style="font-size:.76rem;padding:4px 8px;border-radius:4px;margin-bottom:4px;background:${a.level==='critical'?'var(--refused-bg)':'var(--held-bg)'};color:${a.level==='critical'?'var(--refused)':'var(--held)'}">⚠️ ${a.msg}</div>`).join('') : ''}
       ${e.notes ? `<div style="font-size:.78rem;color:var(--slate-mid);font-style:italic;margin-top:4px">📝 ${e.notes}</div>` : ''}
@@ -12864,12 +12912,9 @@ function editVitals(id){
   set('vm-spo2',   e.spo2||'');
   set('vm-glucose',e.glucose||'');
   set('vm-weight', e.weight||'');
-  set('vm-position',    e.position||'');
-  set('vm-notes',       e.notes||'');
-  set('vm-patient',     e.patientId||'');
-  set('vm-sleep-night', e.sleepNight||'');
-  set('vm-sleep-nap',   e.sleepNap||'');
-  set('vm-sleep-quality', e.sleepQuality||'');
+  set('vm-position', e.position||'');
+  set('vm-notes',    e.notes||'');
+  set('vm-patient',  e.patientId||'');
   _editVitalsId = id;
   const title = document.querySelector('#vitals-modal .modal-title');
   if(title) title.textContent = 'Edit Vital Signs';
@@ -12883,6 +12928,240 @@ function deleteVitals(id){
   if(!confirm('Delete this vitals entry?')) return;
   D.vitals = (D.vitals||[]).filter(x => x.id !== id);
   save(); renderVitals(); renderVitalsDashboardAlert();
+}
+
+// ══════════════════════════════════════════════════════════════
+// SLEEP LOG
+// ══════════════════════════════════════════════════════════════
+let _editSleepId = null;
+let _napCount    = 0;
+
+function populateSleepPatients(){
+  const sel = document.getElementById('slp-patient');
+  if(!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— Select care recipient —</option>';
+  activePats().forEach(p => {
+    const o = document.createElement('option');
+    o.value = p.id; o.textContent = `${p.fname} ${p.lname}`;
+    sel.appendChild(o);
+  });
+  if(cur) sel.value = cur;
+}
+
+function calcHours(t1, t2){
+  if(!t1 || !t2) return null;
+  const [h1,m1] = t1.split(':').map(Number);
+  const [h2,m2] = t2.split(':').map(Number);
+  let mins = (h2*60+m2) - (h1*60+m1);
+  if(mins <= 0) mins += 24*60;
+  return Math.round(mins/60*10)/10;
+}
+
+function updateNightCalc(){
+  const bed  = document.getElementById('slp-bed')?.value;
+  const wake = document.getElementById('slp-wake')?.value;
+  const el   = document.getElementById('slp-night-calc');
+  if(!el) return;
+  const h = calcHours(bed, wake);
+  el.textContent = h !== null ? `🕐 ${h} hours of night sleep` : '';
+}
+
+function addNapRow(startVal, endVal){
+  const napDiv = document.getElementById('slp-naps');
+  if(!napDiv) return;
+  _napCount++;
+  const idx = _napCount;
+  const napNum = napDiv.children.length + 1;
+  const row = document.createElement('div');
+  row.id = `nap-row-${idx}`;
+  row.style.cssText = 'display:flex;gap:8px;align-items:flex-end;margin-bottom:10px';
+  row.innerHTML = `
+    <div class="fg" style="margin:0"><label style="font-size:.78rem">Nap ${napNum} Start</label>
+      <input type="time" id="nap-start-${idx}" value="${startVal||''}" onchange="updateNapCalc(${idx})">
+    </div>
+    <div class="fg" style="margin:0"><label style="font-size:.78rem">End</label>
+      <input type="time" id="nap-end-${idx}" value="${endVal||''}" onchange="updateNapCalc(${idx})">
+    </div>
+    <div id="nap-calc-${idx}" style="font-size:.76rem;color:var(--teal);font-weight:600;white-space:nowrap;padding-bottom:10px;min-width:44px"></div>
+    <button type="button" class="btn btn-danger btn-xs btn-icon" style="margin-bottom:8px" onclick="removeNapRow(${idx})">✕</button>`;
+  napDiv.appendChild(row);
+  if(startVal && endVal) updateNapCalc(idx);
+}
+
+function updateNapCalc(idx){
+  const s = document.getElementById(`nap-start-${idx}`)?.value;
+  const e = document.getElementById(`nap-end-${idx}`)?.value;
+  const el = document.getElementById(`nap-calc-${idx}`);
+  if(!el) return;
+  const h = calcHours(s, e);
+  el.textContent = h !== null ? h+'h' : '';
+}
+
+function removeNapRow(idx){
+  const row = document.getElementById(`nap-row-${idx}`);
+  if(row) row.remove();
+  const napDiv = document.getElementById('slp-naps');
+  if(!napDiv) return;
+  Array.from(napDiv.children).forEach((r, i) => {
+    const lbl = r.querySelector('label');
+    if(lbl) lbl.textContent = `Nap ${i+1} Start`;
+  });
+}
+
+function saveSleep(){
+  const date = document.getElementById('slp-date')?.value;
+  if(!date){ toast('Please enter a date', 'var(--held)'); return; }
+  if(!D.sleep) D.sleep = [];
+
+  const bed  = document.getElementById('slp-bed')?.value  || null;
+  const wake = document.getElementById('slp-wake')?.value || null;
+  const nightHours = calcHours(bed, wake);
+
+  const napDiv = document.getElementById('slp-naps');
+  const naps = [];
+  if(napDiv){
+    Array.from(napDiv.children).forEach(row => {
+      const idx = row.id.replace('nap-row-','');
+      const s = document.getElementById(`nap-start-${idx}`)?.value || null;
+      const e = document.getElementById(`nap-end-${idx}`)?.value   || null;
+      if(s || e) naps.push({ start: s, end: e, hours: calcHours(s, e) });
+    });
+  }
+
+  const entry = {
+    id:        Date.now(),
+    date,
+    patientId: document.getElementById('slp-patient')?.value || '',
+    bedtime:   bed,
+    wakeTime:  wake,
+    nightHours,
+    naps,
+    quality:   document.getElementById('slp-quality')?.value  || '',
+    notes:     document.getElementById('slp-notes')?.value.trim() || ''
+  };
+
+  if(_editSleepId !== null){
+    const idx = D.sleep.findIndex(x => x.id === _editSleepId);
+    if(idx !== -1) D.sleep[idx] = { ...D.sleep[idx], ...entry, id: _editSleepId };
+    _editSleepId = null;
+    const title = document.querySelector('#sleep-modal .modal-title');
+    if(title) title.textContent = 'Log Sleep';
+    toast('✅ Sleep entry updated', 'var(--given)');
+  } else {
+    D.sleep.push(entry);
+    toast('✅ Sleep logged', 'var(--given)');
+  }
+  D.sleep.sort((a,b) => b.date.localeCompare(a.date));
+  save(); closeModal('sleep-modal');
+  ['slp-date','slp-bed','slp-wake','slp-notes'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  const qEl = document.getElementById('slp-quality'); if(qEl) qEl.value = '';
+  const napDivR = document.getElementById('slp-naps'); if(napDivR) napDivR.innerHTML = '';
+  const calcEl = document.getElementById('slp-night-calc'); if(calcEl) calcEl.textContent = '';
+  _napCount = 0;
+  renderSleep();
+}
+
+function editSleep(id){
+  const e = (D.sleep||[]).find(x => x.id === id);
+  if(!e) return;
+  populateSleepPatients();
+  const set = (elId, val) => { const el = document.getElementById(elId); if(el) el.value = val||''; };
+  set('slp-date',    e.date);
+  set('slp-patient', e.patientId||'');
+  set('slp-bed',     e.bedtime||'');
+  set('slp-wake',    e.wakeTime||'');
+  set('slp-quality', e.quality||'');
+  set('slp-notes',   e.notes||'');
+  updateNightCalc();
+  const napDiv = document.getElementById('slp-naps');
+  if(napDiv){ napDiv.innerHTML = ''; _napCount = 0; }
+  (e.naps||[]).forEach(n => addNapRow(n.start, n.end));
+  if(!e.naps || !e.naps.length) addNapRow();
+  _editSleepId = id;
+  const title = document.querySelector('#sleep-modal .modal-title');
+  if(title) title.textContent = 'Edit Sleep Entry';
+  const btn = document.getElementById('slp-save-btn');
+  if(btn) btn.textContent = 'Update Sleep Log';
+  openModal('sleep-modal');
+}
+
+function deleteSleep(id){
+  if(!confirm('Delete this sleep entry?')) return;
+  D.sleep = (D.sleep||[]).filter(x => x.id !== id);
+  save(); renderSleep();
+}
+
+function fmtSleepTime(t){
+  if(!t) return '—';
+  const [h,m] = t.split(':').map(Number);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const hh = h % 12 || 12;
+  return `${hh}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+
+function renderSleep(){
+  const listEl = document.getElementById('sleep-list');
+  if(!listEl) return;
+
+  const patientId = document.getElementById('vitals-patient')?.value || '';
+  const view      = document.getElementById('vitals-view')?.value    || 'today';
+  const today     = localDate();
+
+  let entries = (D.sleep||[]);
+  if(patientId) entries = entries.filter(e => e.patientId == patientId);
+  if(view === 'today') entries = entries.filter(e => e.date === today);
+  else if(view === 'week'){
+    const ago = new Date(); ago.setDate(ago.getDate()-7);
+    entries = entries.filter(e => e.date >= localDate(ago));
+  } else if(view === 'month'){
+    const ago = new Date(); ago.setDate(ago.getDate()-30);
+    entries = entries.filter(e => e.date >= localDate(ago));
+  }
+
+  if(!entries.length){
+    listEl.innerHTML = `<div class="empty" style="padding:20px"><div class="empty-icon" style="font-size:1.4rem">😴</div><div class="empty-text" style="font-size:.82rem">No sleep entries for this period.<br>Tap + Log Sleep to start.</div></div>`;
+    return;
+  }
+
+  listEl.innerHTML = entries.map(e => {
+    const patient = (D.patients||[]).find(p => p.id == e.patientId);
+    const totalNapH = (e.naps||[]).reduce((s,n) => s + (n.hours||0), 0);
+    const napLabel  = totalNapH ? Math.round(totalNapH*10)/10+'h total' : null;
+    const qualColor = { Good:'var(--given)', Fair:'var(--held)', Poor:'var(--refused)', Restless:'var(--held)' }[e.quality] || 'var(--slate-mid)';
+    return `<div style="padding:12px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div>
+          <span style="font-family:var(--font-mono);font-size:.8rem;color:var(--slate-mid)">${e.date}</span>
+          ${patient ? `<span style="font-size:.76rem;color:var(--teal);margin-left:8px">👤 ${patient.fname} ${patient.lname}</span>` : ''}
+          ${e.quality ? `<span style="font-size:.72rem;font-weight:600;color:${qualColor};margin-left:8px">${e.quality}</span>` : ''}
+        </div>
+        <div style="display:flex;gap:4px">
+          <button class="btn btn-secondary btn-xs" style="font-size:.68rem;padding:2px 7px" onclick="editSleep(${e.id})">✏️</button>
+          <button class="btn btn-danger btn-xs btn-icon" onclick="deleteSleep(${e.id})">✕</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:${e.notes?'8px':'0'}">
+        ${e.bedtime||e.wakeTime ? `<div style="background:rgba(90,60,140,.07);border-radius:6px;padding:5px 10px">
+          <div style="font-size:.64rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em">🌙 Night Sleep</div>
+          <div style="font-family:var(--font-mono);font-size:.88rem;font-weight:600">${fmtSleepTime(e.bedtime)} → ${fmtSleepTime(e.wakeTime)}</div>
+          ${e.nightHours != null ? `<div style="font-size:.72rem;color:var(--teal);font-weight:600">${e.nightHours}h</div>` : ''}
+        </div>` : ''}
+        ${(e.naps||[]).map((n,i) => `<div style="background:rgba(90,60,140,.07);border-radius:6px;padding:5px 10px">
+          <div style="font-size:.64rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em">💤 Nap ${i+1}</div>
+          <div style="font-family:var(--font-mono);font-size:.88rem;font-weight:600">${fmtSleepTime(n.start)} → ${fmtSleepTime(n.end)}</div>
+          ${n.hours != null ? `<div style="font-size:.72rem;color:var(--teal);font-weight:600">${n.hours}h</div>` : ''}
+        </div>`).join('')}
+        ${napLabel && e.naps && e.naps.length > 1 ? `<div style="background:rgba(90,60,140,.07);border-radius:6px;padding:5px 10px;text-align:center">
+          <div style="font-size:.64rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em">Total Naps</div>
+          <div style="font-family:var(--font-mono);font-size:.88rem;font-weight:600">${napLabel}</div>
+        </div>` : ''}
+      </div>
+      ${e.notes ? `<div style="font-size:.78rem;color:var(--slate-mid);font-style:italic">📝 ${e.notes}</div>` : ''}
+    </div>`;
+  }).join('');
 }
 
 function renderVitalsDashboardAlert(){
