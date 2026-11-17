@@ -1617,6 +1617,7 @@ body {
   <div class="nav-group">
     <div class="nav-label">Health &amp; Care Notes</div>
     <button id="snav-vitals" class="nav-btn" onclick="navTo('vitals',this)"><span class="ni">🩺</span> Vital Signs <span class="nav-badge" id="nb-vitals"></span></button>
+    <button id="snav-sleep" class="nav-btn" onclick="navTo('sleep',this)"><span class="ni">😴</span> Sleep Log</button>
     <button class="nav-btn" onclick="navTo('pain',this)"><span class="ni">😣</span> Pain Scale <span class="nav-badge" id="nb-pain"></span></button>
     <button class="nav-btn" onclick="navTo('careplan',this)"><span class="ni">📌</span> Care Preferences</button>
     <button class="nav-btn" onclick="navTo('comfortcare',this)"><span class="ni">🕊️</span> Comfort Care Log</button>
@@ -3143,6 +3144,44 @@ body {
 </div>
 
 
+<!-- ═══ SLEEP LOG ════════════════════════════════════════════ -->
+<div id="section-sleep" class="section">
+  <div class="ph">
+    <div class="ph-title">😴 Sleep Log</div>
+    <div class="ph-sub">Track night sleep and daytime naps</div>
+  </div>
+
+  <!-- Patient + View filter -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="form-row" style="margin:0">
+      <div class="fg" style="margin:0">
+        <label>Care Recipient</label>
+        <select id="sleep-patient-filter" onchange="renderSleep()" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+          <option value="">— All recipients —</option>
+        </select>
+      </div>
+      <div class="fg" style="margin:0">
+        <label>View</label>
+        <select id="sleep-view-filter" onchange="renderSleep()" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+          <option value="week">Last 7 days</option>
+          <option value="today">Today</option>
+          <option value="month">Last 30 days</option>
+          <option value="all">All entries</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="card-title" style="margin:0">Sleep Entries</div>
+      <button class="btn btn-teal btn-sm" onclick="openModal('sleep-modal')">+ Log Sleep</button>
+    </div>
+    <div id="sleep-list"></div>
+  </div>
+</div>
+
+
 <!-- ═══ VOICE TO TEXT ═══════════════════════════════════════ -->
 <div id="section-voice" class="section">
   <div class="ph">
@@ -3468,6 +3507,7 @@ body {
   <div class="more-group-label">🩺 Clinical</div>
   <div class="more-grid">
     <button id="bnav-vitals" class="more-btn" onclick="mobileNavTo('vitals')"><span class="more-icon">🩺</span>Vitals</button>
+    <button id="bnav-sleep" class="more-btn" onclick="mobileNavTo('sleep')"><span class="more-icon">😴</span>Sleep Log</button>
     <button id="bnav-vitals-pain" class="more-btn" onclick="mobileNavTo('pain')"><span class="more-icon">😣</span>Pain</button>
     <button id="bnav-wounds" class="more-btn" onclick="mobileNavTo('wounds')"><span class="more-icon">🩹</span>Wounds</button>
     <button class="more-btn" onclick="mobileNavTo('trends')"><span class="more-icon">📊</span>Trends</button>
@@ -4432,7 +4472,7 @@ const GATED_MODALS = new Set([
   'incident-modal','behavior-modal','toilet-modal','vitals-modal','pain-modal',
   'sundowning-modal','wandering-modal','memorycare-modal','wound-modal',
   'intake-modal','comm-modal','trigger-modal','cred-modal','billing-modal',
-  'med-modal','routine-modal','refusal-modal'
+  'med-modal','routine-modal','refusal-modal','sleep-modal'
 ]);
 function openModal(id){
   const el = document.getElementById(id);
@@ -4473,6 +4513,19 @@ function openModal(id){
     if(vd && !vd.value) vd.value = localDate();
     const vt = document.getElementById('vm-time');
     if(vt && !vt.value) vt.value = new Date().toTimeString().slice(0,5);
+  }
+  if(id === 'sleep-modal'){
+    populateSleepPatients();
+    const sd = document.getElementById('slp-date');
+    if(sd && !sd.value) sd.value = localDate();
+    // Init nap list if empty
+    const napDiv = document.getElementById('slp-naps');
+    if(napDiv && napDiv.children.length === 0) addNapRow();
+    // Wire up night calc
+    ['slp-bed','slp-wake'].forEach(eid => {
+      const el = document.getElementById(eid);
+      if(el) el.addEventListener('change', updateNightCalc);
+    });
   }
 }
 
@@ -4566,6 +4619,7 @@ function closeModal(id){
     'behavior-modal':   () => { _editBehaviorId   = null; const t=document.querySelector('#behavior-modal .modal-title');   if(t) t.textContent='Log a Behavior Episode'; },
     'toilet-modal':     () => { _editToiletId      = null; const t=document.querySelector('#toilet-modal .modal-title');     if(t) t.textContent='Log Toileting'; },
     'vitals-modal':     () => { _editVitalsId      = null; const t=document.querySelector('#vitals-modal .modal-title');     if(t) t.textContent='Log Vital Signs'; const b=document.getElementById('vm-save-btn'); if(b) b.textContent='Save Vitals'; },
+    'sleep-modal':      () => { _editSleepId       = null; const t=document.querySelector('#sleep-modal .modal-title');      if(t) t.textContent='Log Sleep'; const b=document.getElementById('slp-save-btn'); if(b) b.textContent='Save Sleep Log'; },
     'sundowning-modal': () => { _editSundownId     = null; const t=document.querySelector('#sundowning-modal .modal-title'); if(t) t.textContent='🌅 Log Sundowning Episode'; const b=document.querySelector('#sundowning-modal .btn-teal'); if(b) b.textContent='Save Episode'; },
     'wandering-modal':  () => { _editWanderingId   = null; const t=document.querySelector('#wandering-modal .modal-title');  if(t) t.textContent='🚶 Log Wandering / Exit Event'; const b=document.querySelector('#wandering-modal .btn-teal'); if(b) b.textContent='Save Event'; },
     'memorycare-modal': () => { _editMemoryCareId  = null; const t=document.querySelector('#memorycare-modal .modal-title'); if(t) t.textContent='💬 Add Memory Care Note'; const b=document.querySelector('#memorycare-modal .btn-teal'); if(b) b.textContent='Save Note'; },
@@ -4663,7 +4717,8 @@ function navTo(id, btn){
     itm:        renderITM,
     journey:    renderJourney,
     legalfin:   renderLegalFin,
-    adl:        renderADL
+    adl:        renderADL,
+    sleep:      initSleepSection
   };
   if(renders[id]) renders[id]();
 }
@@ -6757,6 +6812,56 @@ function printMAR(){
   </div>
 </div>
 
+<!-- ══ SLEEP MODAL ══════════════════════════════════════════ -->
+<div class="overlay" id="sleep-modal">
+  <div class="modal">
+    <div class="modal-title" id="sleep-modal-title">Log Sleep</div>
+    <!-- Date + Patient on same row -->
+    <div class="form-row">
+      <div class="fg"><label>Date *</label><input type="date" id="slp-date"></div>
+      <div class="fg"><label>Care Recipient</label>
+        <select id="slp-patient" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+          <option value="">— Select —</option>
+        </select>
+      </div>
+    </div>
+    <!-- Night sleep -->
+    <div style="background:var(--bg-soft,#f4f7fb);border-radius:var(--r);padding:12px;margin-bottom:12px">
+      <div style="font-size:.78rem;font-weight:700;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">🌙 Night Sleep (previous night)</div>
+      <div class="form-row" style="margin-bottom:4px">
+        <div class="fg" style="margin-bottom:0"><label>Bedtime</label><input type="time" id="slp-bed"></div>
+        <div class="fg" style="margin-bottom:0"><label>Wake Time</label><input type="time" id="slp-wake"></div>
+      </div>
+      <div id="slp-night-calc" style="font-size:.8rem;color:var(--teal);font-weight:600;margin-top:6px;min-height:18px"></div>
+    </div>
+    <!-- Naps -->
+    <div style="background:var(--bg-soft,#f4f7fb);border-radius:var(--r);padding:12px;margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:.78rem;font-weight:700;color:var(--slate-mid);text-transform:uppercase;letter-spacing:.07em">💤 Daytime Naps</div>
+        <button type="button" class="btn btn-secondary btn-sm" style="font-size:.74rem;padding:4px 10px" onclick="addNapRow()">+ Add Nap</button>
+      </div>
+      <div id="slp-naps"></div>
+    </div>
+    <!-- Quality & notes -->
+    <div class="fg"><label>Sleep Quality</label>
+      <select id="slp-quality" style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:.9rem;background:white;width:100%">
+        <option value="">— Not assessed —</option>
+        <option>Good</option>
+        <option>Fair</option>
+        <option>Poor</option>
+        <option>Restless</option>
+      </select>
+    </div>
+    <div class="fg" style="margin-bottom:0"><label>Notes</label>
+      <input id="slp-notes" placeholder="e.g. Woke twice, agitated around 3am…">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('sleep-modal')">Cancel</button>
+      <button class="btn btn-teal" id="slp-save-btn" onclick="saveSleep()">Save Sleep Log</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ WOUND MODAL ══════════════════════════════════════════ -->
 <div class="overlay" id="wound-modal">
   <div class="modal">
@@ -7102,7 +7207,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v38';
+const CACHE = 'tended-pro-v43';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
@@ -10124,6 +10229,64 @@ function generateDoctorSummaryPDF(){
     doc.setFontSize(7); doc.setFont('helvetica','italic'); doc.setTextColor(192,57,43);
     doc.text('Red = out-of-range value  (BP ≥160/90 or <90 sys · Pulse >120 or <50 · Glucose >180 or <70 · SpO2 <94%)', ml, y);
     y+=5;
+
+  }
+  y+=2;
+
+  // Sleep Log
+  var sleepPdf = (D.sleep||[])
+    .filter(function(e){ return !pid || String(e.patientId)===String(pid); })
+    .sort(function(a,b){ return a.date.localeCompare(b.date); })
+    .slice(-7);
+
+  if(sleepPdf.length){
+    function fmtPdfTime(t){
+      if(!t) return '—';
+      var parts = t.split(':'); var h = parseInt(parts[0],10); var m = parts[1];
+      return (h%12||12)+':'+m+(h<12?'am':'pm');
+    }
+    checkPage(20);
+    txt('SLEEP LOG  (Last '+sleepPdf.length+' entr'+(sleepPdf.length===1?'y':'ies')+')', 10, true, [12,27,51]); y+=1; hline(200);
+    var slpCols = [
+      {label:'Date',      x:0  },
+      {label:'Bedtime',   x:26 },
+      {label:'Wake',      x:48 },
+      {label:'Night Hrs', x:70 },
+      {label:'Naps',      x:92 },
+      {label:'Nap Hrs',   x:108},
+      {label:'Quality',   x:130},
+      {label:'Notes',     x:154}
+    ];
+    doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(44,62,80);
+    slpCols.forEach(function(c){ doc.text(c.label, ml+c.x, y); });
+    y+=1; hline(200); y+=1;
+    doc.setFont('helvetica','normal'); doc.setFontSize(7);
+    sleepPdf.forEach(function(e){
+      checkPage(6);
+      var totalNapHrs = 0;
+      (e.naps||[]).forEach(function(n){ if(n.hours) totalNapHrs += n.hours; });
+      totalNapHrs = totalNapHrs ? Math.round(totalNapHrs*10)/10 : 0;
+      var nightFlag = e.nightHours && e.nightHours < 4;
+      doc.setTextColor(nightFlag ? 192 : 44, nightFlag ? 57 : 62, nightFlag ? 43 : 80);
+      doc.text(e.date||'', ml+slpCols[0].x, y);
+      doc.setTextColor(44,62,80);
+      doc.text(fmtPdfTime(e.bedtime),  ml+slpCols[1].x, y);
+      doc.text(fmtPdfTime(e.wakeTime), ml+slpCols[2].x, y);
+      var nhTxt = e.nightHours != null ? String(e.nightHours)+'h' : '—';
+      doc.setTextColor(nightFlag ? 192 : 44, nightFlag ? 57 : 62, nightFlag ? 43 : 80);
+      doc.text(nhTxt, ml+slpCols[3].x, y);
+      doc.setTextColor(44,62,80);
+      doc.text(String((e.naps||[]).length||0), ml+slpCols[4].x, y);
+      doc.text(totalNapHrs ? totalNapHrs+'h' : '—', ml+slpCols[5].x, y);
+      doc.text(e.quality||'—', ml+slpCols[6].x, y);
+      var notesTxt = (e.notes||'').substring(0,38);
+      doc.text(notesTxt, ml+slpCols[7].x, y);
+      y+=4;
+    });
+    y+=1;
+    doc.setFontSize(7); doc.setFont('helvetica','italic'); doc.setTextColor(192,57,43);
+    doc.text('Red = night sleep under 4 hours', ml, y);
+    y+=5;
   }
   y+=2;
 
@@ -11313,7 +11476,8 @@ const EARLY_ADOPTER_EXPIRY = '2026-12-31';
 // KEEP THIS BLOCK when uploading a new index.html. In the Android app, window.TendedNative is
 // provided by the app. The paywall is switched on/off from the Firebase console (Remote Config:
 // paywall_enabled, grandfather_free_users) and the app reports the result as `freeAccess`.
-// In a normal browser TendedNative does not exist: freeAccess is false and trackEvent does nothing.
+// In a normal browser TendedNative does not exist: WEB_FREE_ACCESS below decides, and trackEvent
+// does nothing.
 // trackEvent only accepts short ids (e.g. 'mar', 'settings_card') — never pass names or notes.
 let _appConfigCache = null;
 function getAppConfig(){
@@ -11326,7 +11490,24 @@ function getAppConfig(){
   } catch(e){}
   return {};
 }
-function hasFreeAccess(){ return getAppConfig().freeAccess === true; }
+// ── Browser version free switch ──────────────────────────────────────
+// The Firebase switch above only reaches the Android app. These two lines control the browser
+// version (iPhone, computers, anyone not using the Android app):
+//   WEB_FREE_ACCESS       true  = browser version is free for everyone (no trial, no paywall)
+//                         false = normal 10-day trial, then the paywall
+//   WEB_GRANDFATHER_FREE  true  = anyone who used the browser version while it was free keeps
+//                                 free access after WEB_FREE_ACCESS is set back to false
+var WEB_FREE_ACCESS      = true;
+var WEB_GRANDFATHER_FREE = true;
+var WEB_FREE_PERIOD_KEY  = 'tendedPro_webFreePeriodUser';
+function _isAndroidAppBridge(){ return !!(window.TendedNative && typeof window.TendedNative.getConfig === 'function'); }
+function hasFreeAccess(){
+  if(_isAndroidAppBridge()) return getAppConfig().freeAccess === true;   // app: Firebase decides
+  try {
+    if(WEB_FREE_ACCESS){ localStorage.setItem(WEB_FREE_PERIOD_KEY, '1'); return true; }
+    return WEB_GRANDFATHER_FREE && localStorage.getItem(WEB_FREE_PERIOD_KEY) === '1';
+  } catch(e){ return WEB_FREE_ACCESS; }
+}
 function trackEvent(name, params){
   try {
     if(window.TendedNative && typeof window.TendedNative.logEvent === 'function'){
@@ -11482,7 +11663,18 @@ window.TendedProBilling = {
 function triggerGooglePlayPurchase(){
   trackEvent('unlock_tapped', { source: 'paywall' });
   if(window.Android&&typeof window.Android.launchBilling==='function'){ window.Android.launchBilling('tended_pro_unlock'); }
-  else { if(confirm('Google Play Billing is only available in the installed app.\n\nDev mode: Simulate a successful purchase?')) activatePremium('dev'); }
+  else {
+    // Browser version: there is no way to pay here. The old "Dev mode: simulate a purchase"
+    // prompt let anyone unlock for free, so it now only exists on a local test server.
+    const host = (location.hostname || '');
+    if(host === 'localhost' || host === '127.0.0.1' || location.protocol === 'file:'){
+      if(confirm('Dev mode (local only): simulate a successful purchase?')) activatePremium('dev');
+      return;
+    }
+    if(confirm('The unlock is available in the Tended Health Pro Android app on Google Play.\n\nOpen Google Play now?')){
+      window.open('https://play.google.com/store/apps/details?id=com.flougher.tendedpro', '_blank');
+    }
+  }
 }
 function restorePremium(){
   if(window.Android && typeof window.Android.restorePurchases === 'function'){
@@ -11634,7 +11826,7 @@ function renderQuickLogCard(){
     { icon:'🚶',  label:'Wandering',           action:'wandering',     col:'#B45309' },
     { icon:'😡',  label:'Agitated',            action:'agitated',      col:'#B45309' },
     { icon:'😊',  label:'Happy',               action:'happy',         col:'#16A34A' },
-    { icon:'😴',  label:'Sleeping',            action:'sleeping',      col:'#0C7A6E' },
+    { icon:'😴',  label:'Sleep Log',            action:'sleeping',      col:'#0C7A6E' },
     { icon:'🚽',  label:'Bathroom',            action:'bathroom',      col:'#0C3B6E' },
     { icon:'🩹',  label:'Injury',              action:'injury',        col:'#C0392B' },
   ];
@@ -11664,7 +11856,7 @@ function renderQuickLogCard(){
         </div>
         <div style="font-size:.7rem;color:var(--slate-light);font-weight:600">2 taps</div>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;overflow:hidden">
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px">
         ${btns}
       </div>
     </div>`;
@@ -11752,7 +11944,7 @@ function _quickLogDispatch(action){
     'wandering':    { section:'wandering',  delay:250, fn:'_qlOpenWandering'      },
     'agitated':     { section:'behaviors', delay:250, fn:'_qlOpenAgitated'       },
     'happy':        { section:'behaviors', delay:250, fn:'_qlOpenHappy'           },
-    'sleeping':     { section:'routines',  delay:150, fn:null                     },
+    'sleeping':     { section:'sleep',     delay:250, fn:'_qlOpenSleep'           },
     'bathroom':     { section:'toileting', delay:250, fn:'_qlOpenBathroom'        },
     'injury':       { section:'incidents', delay:250, fn:'_qlOpenInjury'          },
   };
@@ -11890,6 +12082,15 @@ function _qlOpenInjury(){
   const type=document.getElementById('inc-type'); if(type) type.value='Fall';
   const sev=document.getElementById('inc-sev'); if(sev) sev.value='moderate';
   setTimeout(()=>{ const d=document.getElementById('inc-desc'); if(d&&!d.value) d.focus(); },50);
+}
+
+function _qlOpenSleep(){
+  // Pre-select the quick-log patient in the sleep modal and open it
+  if(_quickLogPatient){
+    const sel = document.getElementById('slp-patient');
+    if(sel) sel.value = _quickLogPatient.id;
+  }
+  openModal('sleep-modal');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -12727,6 +12928,7 @@ function renderVitals(){
   // Render sparkline trends (use all entries for this patient, not date-filtered)
   var allPatientEntries = (D.vitals||[]).filter(function(e){ return !patientId || e.patientId == patientId; });
   renderVitalsSparklines(allPatientEntries);
+  renderSleep();
 
   // Render log
   const listEl = document.getElementById('vitals-list');
@@ -12780,9 +12982,9 @@ function editVitals(id){
   set('vm-spo2',   e.spo2||'');
   set('vm-glucose',e.glucose||'');
   set('vm-weight', e.weight||'');
-  set('vm-position',e.position||'');
-  set('vm-notes',  e.notes||'');
-  set('vm-patient',e.patientId||'');
+  set('vm-position', e.position||'');
+  set('vm-notes',    e.notes||'');
+  set('vm-patient',  e.patientId||'');
   _editVitalsId = id;
   const title = document.querySelector('#vitals-modal .modal-title');
   if(title) title.textContent = 'Edit Vital Signs';
@@ -12796,6 +12998,268 @@ function deleteVitals(id){
   if(!confirm('Delete this vitals entry?')) return;
   D.vitals = (D.vitals||[]).filter(x => x.id !== id);
   save(); renderVitals(); renderVitalsDashboardAlert();
+}
+
+// ══════════════════════════════════════════════════════════════
+// SLEEP LOG
+// ══════════════════════════════════════════════════════════════
+let _editSleepId = null;
+let _napCount    = 0;
+
+function initSleepSection(){
+  // Populate the section-level patient filter
+  const sel = document.getElementById('sleep-patient-filter');
+  if(sel){
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">— All recipients —</option>';
+    activePats().forEach(p => {
+      const o = document.createElement('option');
+      o.value = p.id; o.textContent = `${p.fname} ${p.lname}`;
+      sel.appendChild(o);
+    });
+    if(cur) sel.value = cur;
+  }
+  renderSleep();
+}
+
+function populateSleepPatients(){
+  const sel = document.getElementById('slp-patient');
+  if(!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— Select care recipient —</option>';
+  activePats().forEach(p => {
+    const o = document.createElement('option');
+    o.value = p.id; o.textContent = `${p.fname} ${p.lname}`;
+    sel.appendChild(o);
+  });
+  if(cur) sel.value = cur;
+}
+
+function calcHours(t1, t2){
+  if(!t1 || !t2) return null;
+  const [h1,m1] = t1.split(':').map(Number);
+  const [h2,m2] = t2.split(':').map(Number);
+  let mins = (h2*60+m2) - (h1*60+m1);
+  if(mins <= 0) mins += 24*60;
+  return Math.round(mins/60*10)/10;
+}
+
+function updateNightCalc(){
+  const bed  = document.getElementById('slp-bed')?.value;
+  const wake = document.getElementById('slp-wake')?.value;
+  const el   = document.getElementById('slp-night-calc');
+  if(!el) return;
+  const h = calcHours(bed, wake);
+  el.textContent = h !== null ? `🕐 ${h} hours of night sleep` : '';
+}
+
+function addNapRow(startVal, endVal){
+  const napDiv = document.getElementById('slp-naps');
+  if(!napDiv) return;
+  _napCount++;
+  const idx = _napCount;
+  const napNum = napDiv.children.length + 1;
+  const row = document.createElement('div');
+  row.id = `nap-row-${idx}`;
+  row.style.cssText = 'display:flex;gap:8px;align-items:flex-end;margin-bottom:10px';
+  row.innerHTML = `
+    <div class="fg" style="margin:0"><label style="font-size:.78rem">Nap ${napNum} Start</label>
+      <input type="time" id="nap-start-${idx}" value="${startVal||''}" onchange="updateNapCalc(${idx})">
+    </div>
+    <div class="fg" style="margin:0"><label style="font-size:.78rem">End</label>
+      <input type="time" id="nap-end-${idx}" value="${endVal||''}" onchange="updateNapCalc(${idx})">
+    </div>
+    <div id="nap-calc-${idx}" style="font-size:.76rem;color:var(--teal);font-weight:600;white-space:nowrap;padding-bottom:10px;min-width:44px"></div>
+    <button type="button" class="btn btn-danger btn-xs btn-icon" style="margin-bottom:8px" onclick="removeNapRow(${idx})">✕</button>`;
+  napDiv.appendChild(row);
+  if(startVal && endVal) updateNapCalc(idx);
+}
+
+function updateNapCalc(idx){
+  const s = document.getElementById(`nap-start-${idx}`)?.value;
+  const e = document.getElementById(`nap-end-${idx}`)?.value;
+  const el = document.getElementById(`nap-calc-${idx}`);
+  if(!el) return;
+  const h = calcHours(s, e);
+  el.textContent = h !== null ? h+'h' : '';
+}
+
+function removeNapRow(idx){
+  const row = document.getElementById(`nap-row-${idx}`);
+  if(row) row.remove();
+  const napDiv = document.getElementById('slp-naps');
+  if(!napDiv) return;
+  Array.from(napDiv.children).forEach((r, i) => {
+    const lbl = r.querySelector('label');
+    if(lbl) lbl.textContent = `Nap ${i+1} Start`;
+  });
+}
+
+function saveSleep(){
+  const date = document.getElementById('slp-date')?.value;
+  if(!date){ toast('Please enter a date', 'var(--held)'); return; }
+  if(!D.sleep) D.sleep = [];
+
+  const bed  = document.getElementById('slp-bed')?.value  || null;
+  const wake = document.getElementById('slp-wake')?.value || null;
+  const nightHours = calcHours(bed, wake);
+
+  const napDiv = document.getElementById('slp-naps');
+  const naps = [];
+  if(napDiv){
+    Array.from(napDiv.children).forEach(row => {
+      const idx = row.id.replace('nap-row-','');
+      const s = document.getElementById(`nap-start-${idx}`)?.value || null;
+      const e = document.getElementById(`nap-end-${idx}`)?.value   || null;
+      if(s || e) naps.push({ start: s, end: e, hours: calcHours(s, e) });
+    });
+  }
+
+  const entry = {
+    id:        Date.now(),
+    date,
+    patientId: document.getElementById('slp-patient')?.value || '',
+    bedtime:   bed,
+    wakeTime:  wake,
+    nightHours,
+    naps,
+    quality:   document.getElementById('slp-quality')?.value  || '',
+    notes:     document.getElementById('slp-notes')?.value.trim() || ''
+  };
+
+  if(_editSleepId !== null){
+    const idx = D.sleep.findIndex(x => x.id === _editSleepId);
+    if(idx !== -1) D.sleep[idx] = { ...D.sleep[idx], ...entry, id: _editSleepId };
+    _editSleepId = null;
+    const title = document.querySelector('#sleep-modal .modal-title');
+    if(title) title.textContent = 'Log Sleep';
+    toast('✅ Sleep entry updated', 'var(--given)');
+  } else {
+    D.sleep.push(entry);
+    toast('✅ Sleep logged', 'var(--given)');
+  }
+  D.sleep.sort((a,b) => b.date.localeCompare(a.date));
+  save(); closeModal('sleep-modal');
+  ['slp-date','slp-bed','slp-wake','slp-notes'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  const qEl = document.getElementById('slp-quality'); if(qEl) qEl.value = '';
+  const napDivR = document.getElementById('slp-naps'); if(napDivR) napDivR.innerHTML = '';
+  const calcEl = document.getElementById('slp-night-calc'); if(calcEl) calcEl.textContent = '';
+  _napCount = 0;
+  renderSleep();
+}
+
+function editSleep(id){
+  const e = (D.sleep||[]).find(x => x.id === id);
+  if(!e) return;
+  populateSleepPatients();
+  const set = (elId, val) => { const el = document.getElementById(elId); if(el) el.value = val||''; };
+  set('slp-date',    e.date);
+  set('slp-patient', e.patientId||'');
+  set('slp-bed',     e.bedtime||'');
+  set('slp-wake',    e.wakeTime||'');
+  set('slp-quality', e.quality||'');
+  set('slp-notes',   e.notes||'');
+  updateNightCalc();
+  const napDiv = document.getElementById('slp-naps');
+  if(napDiv){ napDiv.innerHTML = ''; _napCount = 0; }
+  (e.naps||[]).forEach(n => addNapRow(n.start, n.end));
+  if(!e.naps || !e.naps.length) addNapRow();
+  _editSleepId = id;
+  const title = document.querySelector('#sleep-modal .modal-title');
+  if(title) title.textContent = 'Edit Sleep Entry';
+  const btn = document.getElementById('slp-save-btn');
+  if(btn) btn.textContent = 'Update Sleep Log';
+  openModal('sleep-modal');
+}
+
+function deleteSleep(id){
+  if(!confirm('Delete this sleep entry?')) return;
+  D.sleep = (D.sleep||[]).filter(x => x.id !== id);
+  save(); renderSleep();
+}
+
+function fmtSleepTime(t){
+  if(!t) return '—';
+  const [h,m] = t.split(':').map(Number);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const hh = h % 12 || 12;
+  return `${hh}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+
+function renderSleep(){
+  const listEl = document.getElementById('sleep-list');
+  if(!listEl) return;
+
+  // Use dedicated sleep filters if on sleep section, otherwise fall back to vitals filters
+  const patientId = document.getElementById('sleep-patient-filter')?.value ||
+                    document.getElementById('vitals-patient')?.value || '';
+  const view      = document.getElementById('sleep-view-filter')?.value ||
+                    document.getElementById('vitals-view')?.value || 'week';
+  const today     = localDate();
+
+  let entries = (D.sleep||[]);
+  // Filter by patient — entries with no patientId always show regardless of selector
+  if(patientId) entries = entries.filter(e => !e.patientId || e.patientId == patientId);
+  // Date filter — when "today" shows nothing, expand to last 7 days automatically
+  if(view === 'today'){
+    const todayEntries = entries.filter(e => e.date === today);
+    if(todayEntries.length){ entries = todayEntries; }
+    else {
+      const ago = new Date(); ago.setDate(ago.getDate()-7);
+      entries = entries.filter(e => e.date >= localDate(ago));
+    }
+  }
+  else if(view === 'week'){
+    const ago = new Date(); ago.setDate(ago.getDate()-7);
+    entries = entries.filter(e => e.date >= localDate(ago));
+  } else if(view === 'month'){
+    const ago = new Date(); ago.setDate(ago.getDate()-30);
+    entries = entries.filter(e => e.date >= localDate(ago));
+  }
+
+  if(!entries.length){
+    listEl.innerHTML = `<div class="empty" style="padding:20px"><div class="empty-icon" style="font-size:1.4rem">😴</div><div class="empty-text" style="font-size:.82rem">No sleep entries for this period.<br>Tap + Log Sleep to start.</div></div>`;
+    return;
+  }
+
+  listEl.innerHTML = entries.map(e => {
+    const patient = (D.patients||[]).find(p => p.id == e.patientId);
+    const totalNapH = (e.naps||[]).reduce((s,n) => s + (n.hours||0), 0);
+    const napLabel  = totalNapH ? Math.round(totalNapH*10)/10+'h total' : null;
+    const qualColor = { Good:'var(--given)', Fair:'var(--held)', Poor:'var(--refused)', Restless:'var(--held)' }[e.quality] || 'var(--slate-mid)';
+    return `<div style="padding:12px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div>
+          <span style="font-family:var(--font-mono);font-size:.8rem;color:var(--slate-mid)">${e.date}</span>
+          ${patient ? `<span style="font-size:.76rem;color:var(--teal);margin-left:8px">👤 ${patient.fname} ${patient.lname}</span>` : ''}
+          ${e.quality ? `<span style="font-size:.72rem;font-weight:600;color:${qualColor};margin-left:8px">${e.quality}</span>` : ''}
+        </div>
+        <div style="display:flex;gap:4px">
+          <button class="btn btn-secondary btn-xs" style="font-size:.68rem;padding:2px 7px" onclick="editSleep(${e.id})">✏️</button>
+          <button class="btn btn-danger btn-xs btn-icon" onclick="deleteSleep(${e.id})">✕</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:${e.notes?'8px':'0'}">
+        ${e.bedtime||e.wakeTime ? `<div style="background:rgba(90,60,140,.07);border-radius:6px;padding:5px 10px">
+          <div style="font-size:.64rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em">🌙 Night Sleep</div>
+          <div style="font-family:var(--font-mono);font-size:.88rem;font-weight:600">${fmtSleepTime(e.bedtime)} → ${fmtSleepTime(e.wakeTime)}</div>
+          ${e.nightHours != null ? `<div style="font-size:.72rem;color:var(--teal);font-weight:600">${e.nightHours}h</div>` : ''}
+        </div>` : ''}
+        ${(e.naps||[]).map((n,i) => `<div style="background:rgba(90,60,140,.07);border-radius:6px;padding:5px 10px">
+          <div style="font-size:.64rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em">💤 Nap ${i+1}</div>
+          <div style="font-family:var(--font-mono);font-size:.88rem;font-weight:600">${fmtSleepTime(n.start)} → ${fmtSleepTime(n.end)}</div>
+          ${n.hours != null ? `<div style="font-size:.72rem;color:var(--teal);font-weight:600">${n.hours}h</div>` : ''}
+        </div>`).join('')}
+        ${napLabel && e.naps && e.naps.length > 1 ? `<div style="background:rgba(90,60,140,.07);border-radius:6px;padding:5px 10px;text-align:center">
+          <div style="font-size:.64rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em">Total Naps</div>
+          <div style="font-family:var(--font-mono);font-size:.88rem;font-weight:600">${napLabel}</div>
+        </div>` : ''}
+      </div>
+      ${e.notes ? `<div style="font-size:.78rem;color:var(--slate-mid);font-style:italic">📝 ${e.notes}</div>` : ''}
+    </div>`;
+  }).join('');
 }
 
 function renderVitalsDashboardAlert(){
@@ -14340,43 +14804,19 @@ function renderTriggerReminderCard(){
 // ═══════════════════════════════════════════════════════════════
 // UX-004 — sidebar groups collapsible; state persisted in localStorage
 // Groups always expanded for new users (no saved state): Overview, Patient Care, Safety, Account
-const _NAV_DEFAULT_OPEN = ['Overview', 'Care Recipients', 'Safety', 'Account'];
+const _NAV_DEFAULT_OPEN = ['Overview', 'Care Recipients', 'Health', 'Daily Behaviors', 'Safety', 'Account'];
 
 function _wireSidebarCollapse(){
-  const labels = document.querySelectorAll('.nav-group .nav-label');
-  const hasSavedState = !!localStorage.getItem('tendedPro_sidebarCollapsed');
-  let collapsed = [];
-  try { collapsed = JSON.parse(localStorage.getItem('tendedPro_sidebarCollapsed') || '[]'); } catch(e){}
-
-  labels.forEach((lbl, idx) => {
-    const groupKey = (lbl.textContent || ('group-'+idx)).trim();
-    // First-ever visit: collapse all groups not in the default-open list
-    if(!hasSavedState){
-      const isOpen = _NAV_DEFAULT_OPEN.some(name => groupKey.toLowerCase().includes(name.toLowerCase()));
-      if(!isOpen){
-        lbl.parentElement.classList.add('collapsed');
-        collapsed.push(groupKey);
-      }
-    } else {
-      if(collapsed.includes(groupKey)) lbl.parentElement.classList.add('collapsed');
-    }
-
+  // Clear any saved collapsed state so all groups are always visible
+  try { localStorage.removeItem('tendedPro_sidebarCollapsed'); } catch(e){}
+  // Remove collapsed class from every group — all nav sections open by default
+  document.querySelectorAll('.nav-group.collapsed').forEach(g => g.classList.remove('collapsed'));
+  // Still wire click-to-collapse so power users can hide groups they don't use
+  document.querySelectorAll('.nav-group .nav-label').forEach(lbl => {
     lbl.addEventListener('click', () => {
-      const group = lbl.parentElement;
-      group.classList.toggle('collapsed');
-      const isCollapsed = group.classList.contains('collapsed');
-      let cur = [];
-      try { cur = JSON.parse(localStorage.getItem('tendedPro_sidebarCollapsed') || '[]'); } catch(e){}
-      cur = cur.filter(x => x !== groupKey);
-      if(isCollapsed) cur.push(groupKey);
-      try { localStorage.setItem('tendedPro_sidebarCollapsed', JSON.stringify(cur)); } catch(e){}
+      lbl.parentElement.classList.toggle('collapsed');
     });
   });
-
-  // Save initial collapsed state on first visit
-  if(!hasSavedState){
-    try { localStorage.setItem('tendedPro_sidebarCollapsed', JSON.stringify(collapsed)); } catch(e){}
-  }
 }
 
 // Auto-expand the sidebar group that contains the nav button for a given section id

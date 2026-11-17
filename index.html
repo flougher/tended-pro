@@ -11476,7 +11476,8 @@ const EARLY_ADOPTER_EXPIRY = '2026-12-31';
 // KEEP THIS BLOCK when uploading a new index.html. In the Android app, window.TendedNative is
 // provided by the app. The paywall is switched on/off from the Firebase console (Remote Config:
 // paywall_enabled, grandfather_free_users) and the app reports the result as `freeAccess`.
-// In a normal browser TendedNative does not exist: freeAccess is false and trackEvent does nothing.
+// In a normal browser TendedNative does not exist: WEB_FREE_ACCESS below decides, and trackEvent
+// does nothing.
 // trackEvent only accepts short ids (e.g. 'mar', 'settings_card') — never pass names or notes.
 let _appConfigCache = null;
 function getAppConfig(){
@@ -11489,7 +11490,24 @@ function getAppConfig(){
   } catch(e){}
   return {};
 }
-function hasFreeAccess(){ return getAppConfig().freeAccess === true; }
+// ── Browser version free switch ──────────────────────────────────────
+// The Firebase switch above only reaches the Android app. These two lines control the browser
+// version (iPhone, computers, anyone not using the Android app):
+//   WEB_FREE_ACCESS       true  = browser version is free for everyone (no trial, no paywall)
+//                         false = normal 10-day trial, then the paywall
+//   WEB_GRANDFATHER_FREE  true  = anyone who used the browser version while it was free keeps
+//                                 free access after WEB_FREE_ACCESS is set back to false
+var WEB_FREE_ACCESS      = true;
+var WEB_GRANDFATHER_FREE = true;
+var WEB_FREE_PERIOD_KEY  = 'tendedPro_webFreePeriodUser';
+function _isAndroidAppBridge(){ return !!(window.TendedNative && typeof window.TendedNative.getConfig === 'function'); }
+function hasFreeAccess(){
+  if(_isAndroidAppBridge()) return getAppConfig().freeAccess === true;   // app: Firebase decides
+  try {
+    if(WEB_FREE_ACCESS){ localStorage.setItem(WEB_FREE_PERIOD_KEY, '1'); return true; }
+    return WEB_GRANDFATHER_FREE && localStorage.getItem(WEB_FREE_PERIOD_KEY) === '1';
+  } catch(e){ return WEB_FREE_ACCESS; }
+}
 function trackEvent(name, params){
   try {
     if(window.TendedNative && typeof window.TendedNative.logEvent === 'function'){
@@ -11645,7 +11663,18 @@ window.TendedProBilling = {
 function triggerGooglePlayPurchase(){
   trackEvent('unlock_tapped', { source: 'paywall' });
   if(window.Android&&typeof window.Android.launchBilling==='function'){ window.Android.launchBilling('tended_pro_unlock'); }
-  else { if(confirm('Google Play Billing is only available in the installed app.\n\nDev mode: Simulate a successful purchase?')) activatePremium('dev'); }
+  else {
+    // Browser version: there is no way to pay here. The old "Dev mode: simulate a purchase"
+    // prompt let anyone unlock for free, so it now only exists on a local test server.
+    const host = (location.hostname || '');
+    if(host === 'localhost' || host === '127.0.0.1' || location.protocol === 'file:'){
+      if(confirm('Dev mode (local only): simulate a successful purchase?')) activatePremium('dev');
+      return;
+    }
+    if(confirm('The unlock is available in the Tended Health Pro Android app on Google Play.\n\nOpen Google Play now?')){
+      window.open('https://play.google.com/store/apps/details?id=com.flougher.tendedpro', '_blank');
+    }
+  }
 }
 function restorePremium(){
   if(window.Android && typeof window.Android.restorePurchases === 'function'){
