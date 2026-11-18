@@ -1778,9 +1778,9 @@ body {
     </div>
   </div>
 
-  <!-- ⚡ Quick Actions — moved above resident rows for immediate access -->
+  <!-- ⚡ App Shortcuts — moved above resident rows for immediate access -->
   <div class="card" style="margin-bottom:20px">
-    <div class="card-title">⚡ Quick Actions</div>
+    <div class="card-title">⚡ App Shortcuts</div>
     <div style="display:flex;flex-direction:column;gap:8px">
       <button class="btn btn-teal btn-sm" style="justify-content:flex-start;gap:10px" onclick="navTo('mar')">
         <span style="font-size:1rem">💊</span>
@@ -1813,7 +1813,7 @@ body {
           <div style="text-align:left"><div style="font-weight:700">Wound & Skin Care</div><div style="font-size:.72rem;color:var(--slate-light);font-weight:400">Skin integrity tracker</div></div>
         </button>
       </div>
-      <button id="quick-actions-toggle" onclick="toggleQuickActionsMore()" style="background:none;border:none;color:var(--teal);font-size:.76rem;font-weight:600;cursor:pointer;text-align:left;padding:2px 0">▸ More actions</button>
+      <button id="quick-actions-toggle" onclick="toggleQuickActionsMore()" style="background:none;border:none;color:var(--teal);font-size:.76rem;font-weight:600;cursor:pointer;text-align:left;padding:2px 0">▸ More shortcuts</button>
     </div>
   </div>
 
@@ -4795,7 +4795,7 @@ function toggleQuickActionsMore(){
   if(!more || !btn) return;
   const open = more.style.display !== 'none';
   more.style.display = open ? 'none' : 'flex';
-  btn.textContent = open ? '▸ More actions' : '▴ Less';
+  btn.textContent = open ? '▸ More shortcuts' : '▴ Less shortcuts';
 }
 
 function dismissGettingStarted(){
@@ -7207,7 +7207,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v43';
+const CACHE = 'tended-pro-v44';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
