@@ -1394,7 +1394,7 @@ body {
 .jrny-stage-label{font-size:.72rem;font-weight:700;letter-spacing:.02em}
 .jrny-stage-desc{font-size:.64rem;opacity:.75;margin-top:2px;line-height:1.4}
 .jrny-tabs{display:flex;background:var(--off-white);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;position:sticky;top:-16px;z-index:10}
-.jrny-tab{flex:1;min-width:72px;padding:11px 6px;text-align:center;font-size:.75rem;font-weight:700;color:var(--slate-mid);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .18s}
+.jrny-tab{flex:0 0 auto;min-width:72px;padding:11px 10px;text-align:center;font-size:.75rem;font-weight:700;color:var(--slate-mid);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .18s}
 .jrny-tab.active{color:var(--teal);border-bottom-color:var(--teal);background:#fff}
 .jrny-body{padding:16px}
 .jrny-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
@@ -7207,7 +7207,7 @@ if('serviceWorker' in navigator){
     if(!isRealHost) return;
 
     const swCode = `
-const CACHE = 'tended-pro-v45';
+const CACHE = 'tended-pro-v46';
 const APP_SHELL = [
   'https://flougher.github.io/tended-pro/',
   'https://flougher.github.io/tended-pro/index.html',
